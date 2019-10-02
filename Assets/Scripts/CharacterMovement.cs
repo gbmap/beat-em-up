@@ -21,6 +21,7 @@ public class CharacterMovement : MonoBehaviour
 {
     // === REFS
     CharacterHealth _health;
+    CharacterCombat _combat;
 
     // ==== MOVEMENT
     public Vector3 direction;
@@ -34,20 +35,12 @@ public class CharacterMovement : MonoBehaviour
     private float _speedBumpT;
     private Vector3 _speedBumpDir;
 
-    // ===== COMBAT
-    [HideInInspector] public bool IsOnCombo;
-    
-    private int _nComboHits;
-
-    public System.Action<EAttackType> OnRequestCharacterAttack;
-    public System.Action<CharacterAttackData> OnCharacterAttack;
-    public System.Action OnComboStarted;
-    public System.Action OnComboEnded;
-
     private void Awake()
     {
+        _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
         _health.OnDamaged += OnDamagedCallback;
+
     }
 
     void Start()
@@ -57,20 +50,18 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        OnComboStarted += OnComboStartedCallback;
-        OnComboEnded += OnComboEndedCallback;
+        _combat.OnCharacterAttack += OnCharacterAttackCallback;
     }
 
     private void OnDisable()
     {
-        OnComboStarted -= OnComboStartedCallback;
-        OnComboEnded -= OnComboEndedCallback;
+        _combat.OnCharacterAttack -= OnCharacterAttackCallback;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!IsOnCombo)
+        if (!_combat.IsOnCombo)
         {
             var dirNorm = direction.normalized;
             _rigidbody.velocity = dirNorm * moveSpeed;
@@ -91,57 +82,17 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public void RequestAttack(EAttackType type)
-    {
-        OnRequestCharacterAttack?.Invoke(type);
-    }
-
-    /*
-     *  CHAMADO PELO ANIMATOR!!!1111
-     */
-    public void Attack(EAttackType type)
-    {
-        Attack(new CharacterAttackData { type = type, attacker = gameObject, hitNumber = ++_nComboHits });
-    }
-
-    private void Attack(CharacterAttackData attack)
-    {
-        // bump speed factor on attack after events because it gets zeroed on combo start
-        _speedBumpT = 1f;
-        _speedBumpDir = transform.forward;
-
-        Collider[] colliders = Physics.OverlapBox(transform.position + transform.forward, Vector3.one);
-        attack.hits = colliders;
-        foreach (var c in colliders)
-        {
-            if (c.gameObject == gameObject) continue;
-            c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
-        }
-
-        OnCharacterAttack?.Invoke(attack);
-    }
-    
-    /*
-     * CALLBACKS
-     */ 
-    private void OnComboStartedCallback()
-    {
-        Debug.Log("Combo started");
-        IsOnCombo = true;
-    }
-
-    private void OnComboEndedCallback()
-    {
-        Debug.Log("Combo ended");
-        IsOnCombo = false;
-        _nComboHits = 0;
-    }
-
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         //_speedBumpDir = -transform.forward;
         _speedBumpDir = attack.attacker.transform.forward * (1f + 0.15f*attack.hitNumber);
         _speedBumpT = 1f;
+    }
+
+    private void OnCharacterAttackCallback(CharacterAttackData obj)
+    {
+        _speedBumpT = 1f;
+        _speedBumpDir = transform.forward;
     }
 
 }

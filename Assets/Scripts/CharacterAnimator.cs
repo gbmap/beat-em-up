@@ -11,6 +11,7 @@ public class CharacterAnimator : MonoBehaviour
     public Animator animator;
 
     CharacterMovement _charMovement;
+    CharacterCombat _charCombat;
     CharacterHealth _charHealth;
 
     // ==== MOVEMENT
@@ -33,20 +34,21 @@ public class CharacterAnimator : MonoBehaviour
     {
         _charMovement = GetComponent<CharacterMovement>();
         _charHealth = GetComponent<CharacterHealth>();
+        _charCombat = GetComponent<CharacterCombat>();
     }
 
     private void OnEnable()
     {
         var attackSM = animator.GetBehaviour<AttackStateMachineBehaviour>();
-        attackSM.OnComboStarted += delegate { _charMovement.OnComboStarted?.Invoke(); };
-        attackSM.OnComboEnded += delegate { _charMovement.OnComboEnded?.Invoke(); };
+        attackSM.OnComboStarted += delegate { _charCombat.OnComboStarted?.Invoke(); };
+        attackSM.OnComboEnded += delegate { _charCombat.OnComboEnded?.Invoke(); };
 
         var healthSM = animator.GetBehaviour<HurtStateMachineBehaviour>();
         healthSM.OnCharacterFall += _charHealth.OnFall;
         healthSM.OnCharacterGetUp += _charHealth.OnGetUp;
 
-        _charMovement.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
-        _charMovement.OnCharacterAttack += OnCharacterAttackCallback;
+        _charCombat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
+        _charCombat.OnCharacterAttack += OnCharacterAttackCallback;
 
         _charHealth.OnDamaged += OnCharacterDamagedCallback;
         _charHealth.OnGetUp += OnGetUpCallback;
@@ -68,8 +70,8 @@ public class CharacterAnimator : MonoBehaviour
             healthSM.OnCharacterGetUp += _charHealth.OnGetUp;
         }
 
-        _charMovement.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
-        _charMovement.OnCharacterAttack -= OnCharacterAttackCallback;
+        _charCombat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
+        _charCombat.OnCharacterAttack -= OnCharacterAttackCallback;
 
         _charHealth.OnDamaged -= OnCharacterDamagedCallback;
     }

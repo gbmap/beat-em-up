@@ -4,11 +4,13 @@
 public class CharacterMovementPlayerInput : MonoBehaviour
 {
     CharacterMovement _movement;
+    CharacterCombat _combat;
 
     // Start is called before the first frame update
     void Awake()
     {
         _movement = GetComponent<CharacterMovement>();
+        _combat = GetComponent<CharacterCombat>();
     }
 
     // Update is called once per frame
@@ -22,11 +24,11 @@ public class CharacterMovementPlayerInput : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            _movement.RequestAttack(EAttackType.Weak);
+            _combat.RequestAttack(EAttackType.Weak);
         }
         else if (Input.GetMouseButtonDown(1))
         {
-            _movement.RequestAttack(EAttackType.Strong);
+            _combat.RequestAttack(EAttackType.Strong);
         }
     }
 }
