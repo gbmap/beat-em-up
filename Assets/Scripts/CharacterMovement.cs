@@ -3,20 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EAttackType
-{
-    Weak,
-    Strong
-}
-
-public struct CharacterAttackData
-{
-    public EAttackType type;
-    public GameObject attacker;
-    public int hitNumber;
-    public Collider[] hits;
-}
-
 public class CharacterMovement : MonoBehaviour
 {
     // === REFS
@@ -40,7 +26,6 @@ public class CharacterMovement : MonoBehaviour
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
         _health.OnDamaged += OnDamagedCallback;
-
     }
 
     void Start()

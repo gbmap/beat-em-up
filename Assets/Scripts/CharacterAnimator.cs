@@ -92,7 +92,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
-        if (attack.hits != null && attack.hits.Length > 0)
+        if (attack.defender != null)
         {
             _timeSpeedReset = Time.time;
             animator.speed = 0f;

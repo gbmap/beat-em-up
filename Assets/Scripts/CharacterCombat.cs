@@ -56,11 +56,18 @@ public class CharacterCombat : MonoBehaviour
 
     private void Attack(CharacterAttackData attack)
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position + transform.forward, Vector3.one);
-        attack.hits = colliders;
+        Collider[] colliders = Physics.OverlapBox(
+            transform.position + transform.forward, 
+            Vector3.one, 
+            Quaternion.identity, 
+            1 << LayerMask.NameToLayer("Entities")
+        );
+
         foreach (var c in colliders)
         {
             if (c.gameObject == gameObject) continue;
+            attack.defender = c.gameObject;
+            CombatManager.Attack(gameObject, c.gameObject, ref attack);
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
 
