@@ -65,6 +65,14 @@ public class CharacterHealth : MonoBehaviour
         _fx.ImpactHit(transform.position + Vector3.up);
         _fx.DamageLabel(transform.position + Vector3.up, data.damage);
 
-        OnDamaged?.Invoke(data);
+        if (data.defenderStats.Health <= 0)
+        {
+            // TODO: dar um funeral digno pros personagens
+            Destroy(gameObject);
+        }
+        else
+        {
+            OnDamaged?.Invoke(data);
+        }
     }
 }

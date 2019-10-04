@@ -6,12 +6,44 @@ using System.Collections.Generic;
   * */
 #region TCharAttributes
 
+public enum EAttribute
+{
+    Vigor,
+    Strength,
+    Dexterity,
+    Magic
+}
+
 public class TCharAttributes<T>
 {
     public T Vigor;
     public T Strength;
     public T Dexterity;
     public T Magic;
+
+    public T GetAttr(EAttribute attr)
+    {
+        switch (attr)
+        {
+            case EAttribute.Vigor: return Vigor;
+            case EAttribute.Strength: return Strength;
+            case EAttribute.Magic: return Magic;
+            case EAttribute.Dexterity: return Dexterity;
+            default: throw new NotImplementedException(string.Format("Couldn't find attribute: {0}", attr.ToString()));
+        }
+    }
+
+    public void SetAttr(EAttribute attr, T v)
+    {
+        switch (attr)
+        {
+            case EAttribute.Vigor: Vigor = v; break;
+            case EAttribute.Strength: Strength = v; break;
+            case EAttribute.Magic: Magic = v; break;
+            case EAttribute.Dexterity: Dexterity = v; break;
+            default: throw new NotImplementedException(string.Format("Couldn't find attribute: {0}", attr.ToString()));
+        }
+    }
 
     public static TCharAttributes<T> Empty {
         get
@@ -125,6 +157,41 @@ public enum EWeaponType
 public class Weapon : Item
 {
     public EWeaponType Type;
+}
+
+#endregion
+
+/**
+ * 
+ * */
+#region CharacterSkillTree
+
+public class CharacterSkillTree
+{
+    public const int MaxLevel = 10;
+
+    CharAttributesI AttributeLevels;
+
+    public CharacterSkillTree()
+    {
+        AttributeLevels = new CharAttributesI
+        {
+            Vigor = 0,
+            Strength = 0,
+            Dexterity = 0,
+            Magic = 0
+        };
+    }
+
+    public void UpgradeAttribute(EAttribute attribute)
+    {
+        int attr = AttributeLevels.GetAttr(attribute);
+        if (attr < MaxLevel)
+        {
+            AttributeLevels.SetAttr(attribute, attr+1);
+        }
+    }
+    
 }
 
 #endregion

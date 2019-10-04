@@ -30,7 +30,7 @@ public class UIDamageLabel : MonoBehaviour
 
         rectTransform.anchoredPosition += Vector2.up * Speed * (1f - Mathf.Pow(T, 2f)) * Time.deltaTime;
 
-        if (T <= 0f)
+        if (T >= 1f)
         {
             Destroy(gameObject);
         }

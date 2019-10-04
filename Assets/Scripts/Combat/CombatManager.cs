@@ -12,7 +12,9 @@ public struct CharacterAttackData
 {
     public EAttackType type;
     public GameObject attacker;
+    public CharacterStats attackerStats;
     public GameObject defender;
+    public CharacterStats defenderStats;
     public int damage;
     public int hitNumber;
 }
@@ -58,6 +60,9 @@ public class CombatManager
 
     public static void Attack(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
     {
+        attackData.attackerStats = attacker;
+        attackData.defenderStats = defender;
+
         int damage = GetDamage(attacker, defender);
         defender.Health -= damage;
         attackData.damage = damage;

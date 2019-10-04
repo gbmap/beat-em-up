@@ -575,11 +575,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4591743901854272397, guid: a04174840aa4b944ab6c2304972f645c,
-        type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 4300070, guid: b69174d668ba02d44b14a084b217670a, type: 3}
     - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: attackComboWindow
@@ -956,7 +951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048af258b4e1dcc44beb1792abf101d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Canvas: {fileID: 145685595}
   ParticleImpactHit: {fileID: 485801956}
   PrefabDamageLabel: {fileID: 2069182790612280980, guid: 460daa9d30ba23f41abc86d549426182,
     type: 3}
