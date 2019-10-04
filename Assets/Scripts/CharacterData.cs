@@ -1,16 +1,13 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class AttributeOverride : TCharAttributes<int> { }
-
 public class CharacterData : MonoBehaviour
 {
     public CharacterStats Stats { get; private set; }
 
     [Header("Attribute Override")]
     public bool OverrideAttributes = false;
-    public AttributeOverride AttributeOverride;
+    public CharAttributesI AttributeOverride;
 
     // Start is called before the first frame update
     void Awake()

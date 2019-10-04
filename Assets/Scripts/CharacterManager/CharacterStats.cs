@@ -27,6 +27,18 @@ public class TCharAttributes<T>
     }
 }
 
+[Serializable]
+public class CharAttributesI : TCharAttributes<int>
+{
+
+}
+
+[Serializable]
+public class CharAttributesF : TCharAttributes<float>
+{
+    
+}
+
 public static class TCharAttributeExtension
 {
     public static void Add(this TCharAttributes<float> a, TCharAttributes<float> b)
@@ -65,9 +77,9 @@ public enum EInventorySlot
 
 public class Inventory : Dictionary<EInventorySlot, Item>
 {
-    public TCharAttributes<int> GetTotalAttributes()
+    public CharAttributesI GetTotalAttributes()
     {
-        TCharAttributes<int> t = new TCharAttributes<int>();
+        CharAttributesI t = new CharAttributesI();
 
         var values = (EInventorySlot[])Enum.GetValues(typeof(EInventorySlot));
         foreach (var v in values)
@@ -79,9 +91,9 @@ public class Inventory : Dictionary<EInventorySlot, Item>
         return t;
     } 
 
-    public TCharAttributes<float> GetTotalDamageScaling()
+    public CharAttributesF GetTotalDamageScaling()
     {
-        TCharAttributes<float> t = new TCharAttributes<float>();
+        CharAttributesF t = new CharAttributesF();
 
         var values = (EInventorySlot[])Enum.GetValues(typeof(EInventorySlot));
         foreach (var v in values)
@@ -97,8 +109,8 @@ public class Inventory : Dictionary<EInventorySlot, Item>
 public class Item
 {
     public int Id;
-    public TCharAttributes<int> Attributes;
-    public TCharAttributes<float> DamageScaling;
+    public CharAttributesI Attributes;
+    public CharAttributesF DamageScaling;
     public Skill Skill;
 }
 
@@ -149,13 +161,13 @@ public class CharacterStats
 
     public int Mana { get; set; }
 
-    public TCharAttributes<int> Attributes;
+    public CharAttributesI Attributes;
     public Inventory Inventory;
 
     public CharacterStats()
     {
         Level = 1;
-        Attributes = new TCharAttributes<int>()
+        Attributes = new CharAttributesI()
         {
             Strength = 10,
             Dexterity = 10,

@@ -29,5 +29,10 @@ public class UIDamageLabel : MonoBehaviour
         text.color = c;
 
         rectTransform.anchoredPosition += Vector2.up * Speed * (1f - Mathf.Pow(T, 2f)) * Time.deltaTime;
+
+        if (T <= 0f)
+        {
+            Destroy(gameObject);
+        }
     }
 }
