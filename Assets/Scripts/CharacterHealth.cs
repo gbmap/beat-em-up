@@ -37,14 +37,16 @@ public class CharacterHealth : MonoBehaviour
 
     private void OnGetUpCallback()
     {
-        _rigidbody.isKinematic = false;
+        //_rigidbody.isKinematic = false;
+        _rigidbody.useGravity = true;
         _collider.enabled = true;
         _isOnFloor = false;
     }
 
     private void OnFallCallback()
     {
-        _rigidbody.isKinematic = true;
+        //_rigidbody.isKinematic = true;
+        _rigidbody.useGravity = false;
         _collider.enabled = false;
         _isOnFloor = true;
     }
@@ -60,9 +62,9 @@ public class CharacterHealth : MonoBehaviour
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
 
+        _fx.ImpactHit(transform.position + Vector3.up);
+        _fx.DamageLabel(transform.position + Vector3.up, data.damage);
+
         OnDamaged?.Invoke(data);
-
-        _fx.FxImpactHit(transform.position + Vector3.up);
     }
-
 }

@@ -10,6 +10,13 @@ public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
 
+    [Header("Weapon Animator Overrides")]
+    private RuntimeAnimatorController defaultController;
+    public AnimatorOverrideController SwordController;
+    public AnimatorOverrideController DaggerController;
+    public AnimatorOverrideController ScepterController;
+
+    CharacterData _charData;
     CharacterMovement _charMovement;
     CharacterCombat _charCombat;
     CharacterHealth _charHealth;
@@ -32,9 +39,12 @@ public class CharacterAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        _charData = GetComponent<CharacterData>();
         _charMovement = GetComponent<CharacterMovement>();
         _charHealth = GetComponent<CharacterHealth>();
         _charCombat = GetComponent<CharacterCombat>();
+
+        defaultController = animator.runtimeAnimatorController;
     }
 
     private void OnEnable()
@@ -43,16 +53,16 @@ public class CharacterAnimator : MonoBehaviour
         attackSM.OnComboStarted += delegate { _charCombat.OnComboStarted?.Invoke(); };
         attackSM.OnComboEnded += delegate { _charCombat.OnComboEnded?.Invoke(); };
 
-        var healthSM = animator.GetBehaviour<HurtStateMachineBehaviour>();
-        healthSM.OnCharacterFall += _charHealth.OnFall;
-        healthSM.OnCharacterGetUp += _charHealth.OnGetUp;
-
         _charCombat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
         _charCombat.OnCharacterAttack += OnCharacterAttackCallback;
 
         _charHealth.OnDamaged += OnCharacterDamagedCallback;
         _charHealth.OnGetUp += OnGetUpCallback;
-    } 
+
+        // Isso aqui tá bugando pq a Unity não garante que o OnEnable vai ser chamado antes do Awake pra componentes diferentes.
+        // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
+        //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
+    }
 
     private void OnDisable()
     {
@@ -61,13 +71,6 @@ public class CharacterAnimator : MonoBehaviour
         {
             attackSM.OnComboStarted = null;
             attackSM.OnComboEnded = null;
-        }
-
-        var healthSM = animator.GetBehaviour<HurtStateMachineBehaviour>();
-        if (healthSM != null)
-        {
-            healthSM.OnCharacterFall += _charHealth.OnFall;
-            healthSM.OnCharacterGetUp += _charHealth.OnGetUp;
         }
 
         _charCombat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
@@ -102,6 +105,32 @@ public class CharacterAnimator : MonoBehaviour
     private void OnGetUpCallback()
     {
         animator.SetTrigger(_recoverHash);
+    }
+
+    private void OnStatsChangedCallback(CharacterStats stats)
+    {
+        EWeaponType type = EWeaponType.Fists;
+        if (stats.Inventory.ContainsKey(EInventorySlot.Weapon) && stats.Inventory[EInventorySlot.Weapon] != null)
+        {
+            type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
+        }
+
+        var controller = WeaponTypeToController(type);
+        if (controller != animator.runtimeAnimatorController)
+        {
+            animator.runtimeAnimatorController = controller;
+        }
+    }
+
+    private RuntimeAnimatorController WeaponTypeToController(EWeaponType type)
+    {
+        switch (type)
+        {
+            case EWeaponType.Dagger: return DaggerController;
+            case EWeaponType.Scepter: return ScepterController;
+            case EWeaponType.Sword: return SwordController;
+            default: return defaultController;
+        }
     }
 
     // Update is called once per frame

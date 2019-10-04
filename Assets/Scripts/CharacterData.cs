@@ -1,15 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+
+[Serializable]
+public class AttributeOverride : TCharAttributes<int> { }
 
 public class CharacterData : MonoBehaviour
 {
     public CharacterStats Stats { get; private set; }
 
+    [Header("Attribute Override")]
+    public bool OverrideAttributes = false;
+    public AttributeOverride AttributeOverride;
+
     // Start is called before the first frame update
     void Awake()
     {
-        Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID());
+        if (OverrideAttributes)
+        {
+            Stats = CharacterManager.RegisterCharacter(
+                gameObject.GetInstanceID(), 
+                new CharacterStats { Attributes = AttributeOverride }
+            );
+        }
+        else
+        {
+            Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID());
+        }
     }
 
     private void OnDestroy()

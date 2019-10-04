@@ -102,6 +102,19 @@ public class Item
     public Skill Skill;
 }
 
+public enum EWeaponType
+{
+    Fists,
+    Sword,
+    Dagger,
+    Scepter
+}
+
+public class Weapon : Item
+{
+    public EWeaponType Type;
+}
+
 #endregion
 
 public class Skill
@@ -111,6 +124,8 @@ public class Skill
 
 public class CharacterStats
 {
+    public System.Action<CharacterStats> OnStatsChanged = delegate { };
+
     public int Level { get; set; }
 
     // provável bottleneck aqui, health provavelmente vai ser acessado constantemente

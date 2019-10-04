@@ -6,7 +6,11 @@ public static class CharacterManager
 
     public static CharacterStats RegisterCharacter(int instanceId)
     {
-        var stats = new CharacterStats();
+        return RegisterCharacter(instanceId, new CharacterStats());
+    }
+
+    public static CharacterStats RegisterCharacter(int instanceId, CharacterStats stats)
+    {
         CharacterStats[instanceId] = stats;
         return stats;
     }
