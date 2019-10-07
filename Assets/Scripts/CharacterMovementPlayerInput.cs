@@ -22,6 +22,11 @@ public class CharacterMovementPlayerInput : MonoBehaviour
 
         _movement.direction = cFwd;
 
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _movement.Jump();
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             _combat.RequestAttack(EAttackType.Weak);
@@ -30,5 +35,6 @@ public class CharacterMovementPlayerInput : MonoBehaviour
         {
             _combat.RequestAttack(EAttackType.Strong);
         }
+        
     }
 }

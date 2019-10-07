@@ -14,6 +14,8 @@ public class CharacterMovement : MonoBehaviour
     public Vector3 velocity { get { return _rigidbody.velocity; } }
     public float moveSpeed = 3.0f;
 
+    public float jumpForce = 1f;
+
     private Vector3 _acceleration;
     private Vector3 _speed;
     private Rigidbody _rigidbody;
@@ -21,11 +23,32 @@ public class CharacterMovement : MonoBehaviour
     private float _speedBumpT;
     private Vector3 _speedBumpDir;
 
+    private CapsuleCollider capsuleCollider;
+
+    [SerializeField]
+    private float raycastDistance = 0.2f;
+
+    public bool IsJumping
+    {
+        get
+        {
+            // cuidado!!!! chances de hemorragia ocular!!!!11111111 
+            Ray r = new Ray
+            {
+                origin = transform.position + Vector3.up * 0.05f, // remove as chances do raycast começar dentro do collider do chão
+                direction = Vector3.down
+            };
+            return !Physics.Raycast(r, raycastDistance, 1 << LayerMask.NameToLayer("Level"), QueryTriggerInteraction.Ignore);
+        }
+    }
+
     private void Awake()
     {
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
         _health.OnDamaged += OnDamagedCallback;
+
+        capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
     void Start()
@@ -48,11 +71,13 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!_combat.IsOnCombo)
         {
-            var dirNorm = direction.normalized;
-            _rigidbody.velocity = dirNorm * moveSpeed;
+            var dirNorm = direction.normalized * moveSpeed;
+            dirNorm.y = _rigidbody.velocity.y;
+            _rigidbody.velocity = dirNorm;
 
             if (direction.sqrMagnitude > 0.025)
             {
+                dirNorm.y = 0f;
                 transform.LookAt(transform.position + dirNorm);
             }
         }
@@ -61,7 +86,9 @@ public class CharacterMovement : MonoBehaviour
         {
             // applies dash on attack
             float t = 1f - _speedBumpT;
-            _rigidbody.velocity = 4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
+            var dir =  4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
+            //dir.y = _rigidbody.velocity.y;
+            _rigidbody.velocity = dir;
 
             _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
         }
@@ -78,6 +105,21 @@ public class CharacterMovement : MonoBehaviour
     {
         _speedBumpT = 1f;
         _speedBumpDir = transform.forward;
+    }
+
+    public void Jump()
+    {
+        //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        _rigidbody.velocity = _rigidbody.velocity + Vector3.up * jumpForce;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+
+        Gizmos.color = IsJumping ? Color.red : Color.green;
+        var origin = transform.position;
+        Gizmos.DrawLine(origin, origin + Vector3.down * raycastDistance);
     }
 
 }

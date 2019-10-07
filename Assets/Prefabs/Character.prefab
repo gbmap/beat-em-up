@@ -351,6 +351,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf8c6b746b03ad646a5d4f4d074581be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OverrideAttributes: 0
+  AttributeOverride:
+    Vigor: 0
+    Strength: 0
+    Dexterity: 0
+    Magic: 0
 --- !u!114 &6927136765418665498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0, z: 0}
   moveSpeed: 3
+  jumpForce: 7.5
+  raycastDistance: 0.075
 --- !u!114 &4779215824379891065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,6 +398,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5463593265913646897}
+  SwordController: {fileID: 0}
+  DaggerController: {fileID: 0}
+  ScepterController: {fileID: 0}
 --- !u!114 &2839161661665923376
 MonoBehaviour:
   m_ObjectHideFlags: 0
