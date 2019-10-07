@@ -109,6 +109,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump()
     {
+        if (IsJumping) return;
+
         //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         _rigidbody.velocity = _rigidbody.velocity + Vector3.up * jumpForce;
     }
