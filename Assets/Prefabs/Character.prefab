@@ -385,6 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HealthQuad: {fileID: 6927136765445453994}
 --- !u!114 &6927136765418665499
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -580,6 +580,11 @@ PrefabInstance:
       propertyPath: attackComboWindow
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: jumpForce
+      value: 7.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
 --- !u!1 &1310710088 stripped
@@ -612,7 +617,7 @@ GameObject:
   - component: {fileID: 1334862910}
   - component: {fileID: 1334862909}
   - component: {fileID: 1334862908}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -774,6 +779,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 3ddd5eaa4b93bd44abc43a2cf1cb3f18, type: 2}
+    - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: jumpForce
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
 --- !u!1 &1687258581

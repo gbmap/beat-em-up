@@ -16,11 +16,15 @@ public class CharacterHealth : MonoBehaviour
     private Rigidbody _rigidbody;
     private Collider _collider;
 
+    public MeshRenderer HealthQuad;
+
     private void Awake()
     {
         _fx = FindObjectOfType<FX>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+
+        UpdateHealthQuad(1f);
     }
 
     private void OnEnable()
@@ -65,6 +69,8 @@ public class CharacterHealth : MonoBehaviour
         _fx.ImpactHit(transform.position + Vector3.up);
         _fx.DamageLabel(transform.position + Vector3.up, data.damage);
 
+        UpdateHealthQuad(((float)data.defenderStats.Health) / data.defenderStats.MaxHealth);
+
         if (data.defenderStats.Health <= 0)
         {
             // TODO: dar um funeral digno pros personagens
@@ -74,5 +80,10 @@ public class CharacterHealth : MonoBehaviour
         {
             OnDamaged?.Invoke(data);
         }
+    }
+
+    private void UpdateHealthQuad(float healthPercentage)
+    {
+        HealthQuad.material.SetFloat("_Health", healthPercentage);
     }
 }

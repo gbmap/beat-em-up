@@ -55,8 +55,8 @@ public class CharacterCombat : MonoBehaviour
     private void Attack(CharacterAttackData attack)
     {
         Collider[] colliders = Physics.OverlapBox(
-            transform.position + transform.forward, 
-            Vector3.one, 
+            transform.position + transform.forward + Vector3.up, 
+            Vector3.one*0.5f, 
             Quaternion.identity, 
             1 << LayerMask.NameToLayer("Entities")
         );

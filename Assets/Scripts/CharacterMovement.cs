@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -24,6 +21,10 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 _speedBumpDir;
 
     private CapsuleCollider capsuleCollider;
+    public CapsuleCollider Collider
+    {
+        get { return capsuleCollider; }
+    }
 
     [SerializeField]
     private float raycastDistance = 0.2f;
@@ -69,7 +70,7 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_combat.IsOnCombo)
+        if (!_combat.IsOnCombo && !IsJumping)
         {
             var dirNorm = direction.normalized * moveSpeed;
             dirNorm.y = _rigidbody.velocity.y;
