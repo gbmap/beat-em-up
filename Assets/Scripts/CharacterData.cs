@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CharacterData : MonoBehaviour
 {
+    public ECharacterType Type = ECharacterType.None;
+
     public CharacterStats Stats { get; private set; }
 
     [Header("Attribute Override")]
@@ -22,6 +24,14 @@ public class CharacterData : MonoBehaviour
         else
         {
             Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID());
+        }
+    }
+
+    private void Start()
+    {
+        if (Type != ECharacterType.None)
+        {
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, Type));
         }
     }
 

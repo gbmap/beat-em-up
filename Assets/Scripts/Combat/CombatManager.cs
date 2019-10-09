@@ -17,8 +17,17 @@ public struct CharacterAttackData
     public int hitNumber;
 }
 
-public class CombatManager
+public class CombatManager : Singleton<CombatManager>
 {
+    private CombatManagerConfig config;
+    public CombatManagerConfig Config
+    {
+        get
+        {
+            return config ?? (config = Resources.Load<CombatManagerConfig>("Data/CombatManagerConfig"));
+        }
+    }
+
     public static float GetCritFactor(CharacterStats c)
     {
         return 2f;

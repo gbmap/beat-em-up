@@ -27,6 +27,14 @@ public class CharacterHealth : MonoBehaviour
         UpdateHealthQuad(1f);
     }
 
+    private void Update()
+    {
+        // manter hud no chão
+        RaycastHit hitInfo;
+        Physics.Raycast(transform.position+Vector3.up*0.1f, Vector3.down, out hitInfo);
+        HealthQuad.transform.position = hitInfo.point + Vector3.up * 0.001f; // previnir flickering
+    }
+
     private void OnEnable()
     {
         OnFall += OnFallCallback;

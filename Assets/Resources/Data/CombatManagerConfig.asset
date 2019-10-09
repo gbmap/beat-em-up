@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 904c1a438da525d4e959357a8b6e4af7, type: 3}
+  m_Name: CombatManagerConfig
+  m_EditorClassIdentifier: 
+  DefaultController: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  SwordController: {fileID: 0}
+  DaggerController: {fileID: 0}
+  ScepterController: {fileID: 0}

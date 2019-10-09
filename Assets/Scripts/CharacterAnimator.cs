@@ -3,18 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
-
-    [Header("Weapon Animator Overrides")]
-    private RuntimeAnimatorController defaultController;
-    public AnimatorOverrideController SwordController;
-    public AnimatorOverrideController DaggerController;
-    public AnimatorOverrideController ScepterController;
 
     CharacterData _charData;
     CharacterMovement _charMovement;
@@ -43,8 +35,6 @@ public class CharacterAnimator : MonoBehaviour
         _charMovement = GetComponent<CharacterMovement>();
         _charHealth = GetComponent<CharacterHealth>();
         _charCombat = GetComponent<CharacterCombat>();
-
-        defaultController = animator.runtimeAnimatorController;
     }
 
     private void OnEnable()
@@ -115,21 +105,10 @@ public class CharacterAnimator : MonoBehaviour
             type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
         }
 
-        var controller = WeaponTypeToController(type);
+        var controller = CombatManager.Instance.Config.WeaponTypeToController(type);
         if (controller != animator.runtimeAnimatorController)
         {
             animator.runtimeAnimatorController = controller;
-        }
-    }
-
-    private RuntimeAnimatorController WeaponTypeToController(EWeaponType type)
-    {
-        switch (type)
-        {
-            case EWeaponType.Dagger: return DaggerController;
-            case EWeaponType.Scepter: return ScepterController;
-            case EWeaponType.Sword: return SwordController;
-            default: return defaultController;
         }
     }
 

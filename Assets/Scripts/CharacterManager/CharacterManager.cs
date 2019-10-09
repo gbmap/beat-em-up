@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public static class CharacterManager
+public class CharacterManager : Singleton<CharacterManager>
 {
     private static Dictionary<int, CharacterStats> CharacterStats = new Dictionary<int, CharacterStats>();
 
@@ -23,5 +25,16 @@ public static class CharacterManager
     public static CharacterStats GetCharacterStats(int instanceId)
     {
         return CharacterStats.ContainsKey(instanceId) ? CharacterStats[instanceId] : null;
+    }
+
+    private CharacterManagerConfig config;
+    public CharacterManagerConfig Config
+    {
+        get { return config ?? (config = Resources.Load<CharacterManagerConfig>("Data/CharacterManagerConfig")); }
+    }
+
+    public IEnumerator SetupCharacter(GameObject instance, ECharacterType type)
+    {
+        yield return Config.SetupCharacter(instance, type);
     }
 }
