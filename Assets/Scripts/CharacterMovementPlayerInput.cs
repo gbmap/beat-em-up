@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Rewired;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterMovementPlayerInput : MonoBehaviour
 {
     CharacterMovement _movement;
     CharacterCombat _combat;
+
+    Player _rewiredPlayer;
 
     // Start is called before the first frame update
     void Awake()
@@ -13,25 +16,31 @@ public class CharacterMovementPlayerInput : MonoBehaviour
         _combat = GetComponent<CharacterCombat>();
     }
 
+    void Start()
+    {
+        // Get first player as default
+        _rewiredPlayer = ReInput.players.GetPlayer(0);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        Vector3 cFwd = Camera.main.transform.forward * Input.GetAxis("Vertical") +
-            Camera.main.transform.right * Input.GetAxis("Horizontal");
+        Vector3 cFwd = Camera.main.transform.forward * _rewiredPlayer.GetAxis("VerticalMovement") +
+            Camera.main.transform.right * _rewiredPlayer.GetAxis("HorizontalMovement");
         cFwd.y = 0;
 
         _movement.direction = cFwd;
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (_rewiredPlayer.GetButtonUp("Jump"))
         {
             _movement.Jump();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (_rewiredPlayer.GetButtonDown("WeakAttack"))
         {
             _combat.RequestAttack(EAttackType.Weak);
         }
-        else if (Input.GetMouseButtonDown(1))
+        else if (_rewiredPlayer.GetButtonDown("StrongAttack"))
         {
             _combat.RequestAttack(EAttackType.Strong);
         }
