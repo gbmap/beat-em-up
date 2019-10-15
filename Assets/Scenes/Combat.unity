@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.28502667, g: 0.37139323, b: 0.49600998, a: 1}
+  m_IndirectSpecularColor: {r: 0.2850269, g: 0.3713935, b: 0.49601045, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1910,7 +1910,7 @@ BoxCollider:
   m_GameObject: {fileID: 1334862907}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -5307,12 +5307,17 @@ PrefabInstance:
     - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: Type
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7427395823478885728, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665500, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
