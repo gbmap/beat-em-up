@@ -74,8 +74,8 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetInteger(_damagedNHits, attack.hitNumber);
         animator.SetTrigger(_damagedHash);
 
-        //_timeSpeedReset = Time.time;
-        //animator.speed = 0f;
+        _timeSpeedReset = Time.time;
+        animator.speed = 0f;
     }
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
@@ -100,7 +100,7 @@ public class CharacterAnimator : MonoBehaviour
     private void OnStatsChangedCallback(CharacterStats stats)
     {
         EWeaponType type = EWeaponType.Fists;
-        if (stats.Inventory.ContainsKey(EInventorySlot.Weapon) && stats.Inventory[EInventorySlot.Weapon] != null)
+        if (stats.Inventory[EInventorySlot.Weapon] != null && stats.Inventory[EInventorySlot.Weapon] != null)
         {
             type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
         }
@@ -117,7 +117,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         animator.SetBool(_movingHash, _charMovement.direction.sqrMagnitude > 0.15f);
 
-        if (animator.speed < 1f && Time.time > _timeSpeedReset + 0.2f)
+        if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
         {
             animator.speed = 1f;
         }

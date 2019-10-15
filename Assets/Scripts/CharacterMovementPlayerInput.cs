@@ -4,6 +4,13 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterMovementPlayerInput : MonoBehaviour
 {
+    [SerializeField] private int playerIndex;
+    public int PlayerIndex
+    {
+        get { return playerIndex; }
+        set { _rewiredPlayer = ReInput.players.GetPlayer(playerIndex = value); }
+    }
+
     CharacterMovement _movement;
     CharacterCombat _combat;
 
@@ -19,7 +26,8 @@ public class CharacterMovementPlayerInput : MonoBehaviour
     void Start()
     {
         // Get first player as default
-        _rewiredPlayer = ReInput.players.GetPlayer(0);
+        //_rewiredPlayer = ReInput.players.GetPlayer(0);
+        PlayerIndex = playerIndex;
     }
 
     // Update is called once per frame

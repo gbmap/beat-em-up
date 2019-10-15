@@ -1,25 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
-public class CharacterData : MonoBehaviour
+
+[Serializable]
+public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
-    public ECharacterType Type = ECharacterType.None;
-
-    public CharacterStats Stats { get; private set; }
-
-    [Header("Attribute Override")]
-    public bool OverrideAttributes = false;
-    public CharAttributesI AttributeOverride;
-
-    // Start is called before the first frame update
     void Awake()
     {
-        if (OverrideAttributes)
+        if (InitData)
         {
-            Stats = CharacterManager.RegisterCharacter(
-                gameObject.GetInstanceID(), 
-                new CharacterStats { Attributes = AttributeOverride }
-            );
+            Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID(), DataInit);
         }
         else
         {
@@ -29,9 +19,9 @@ public class CharacterData : MonoBehaviour
 
     private void Start()
     {
-        if (Type != ECharacterType.None)
+        if (Id != ECharacterType.None)
         {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, Type));
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, Id));
         }
     }
 

@@ -39,7 +39,9 @@ public class CharacterMovement : MonoBehaviour
                 origin = transform.position + Vector3.up * 0.05f, // remove as chances do raycast começar dentro do collider do chão
                 direction = Vector3.down
             };
-            return !Physics.Raycast(r, raycastDistance, 1 << LayerMask.NameToLayer("Level"), QueryTriggerInteraction.Ignore);
+
+            string[] world =  { "Level", "Entities" };
+            return !Physics.Raycast(r, raycastDistance, LayerMask.GetMask(world), QueryTriggerInteraction.Ignore);
         }
     }
 

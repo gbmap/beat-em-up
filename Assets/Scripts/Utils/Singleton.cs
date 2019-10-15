@@ -1,5 +1,19 @@
 ﻿using UnityEngine;
 
+public abstract class ConfigurableSingleton<T, S> : Singleton<T> where T : MonoBehaviour where S : ScriptableObject
+{
+    private S config;
+    public S Config
+    {
+        get
+        {
+            return config ?? (config = Resources.Load<S>(Path));
+        }
+    }
+
+    protected abstract string Path { get; }
+}
+
 /// <summary>
 /// Inherit from this base class to create a singleton.
 /// e.g. public class MyClassName : Singleton<MyClassName> {}
