@@ -12,18 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
   m_Name: Sword1
   m_EditorClassIdentifier: 
-  Name: Sword 1
-  Prefab: {fileID: 181534, guid: 13af847dfa6dbe844ba4b7c902f98f67, type: 3}
+  Name: Espada Boladona
+  Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,
+    seria decorada por um bon\xE9 aba reta virado pro lado."
   Stats:
     Id: 0
-    Rarity: 0
+    Rarity: 3
     Attributes:
-      Vigor: 0
-      Strength: 0
-      Dexterity: 0
-      Magic: 0
+      Vigor: 10
+      Strength: 10
+      Dexterity: 10
+      Magic: 10
     DamageScaling:
-      Vigor: 0
-      Strength: 0
-      Dexterity: 0
-      Magic: 0
+      Vigor: 0.1
+      Strength: 0.1
+      Dexterity: 0.1
+      Magic: 0.1
+  Prefab: {fileID: 181534, guid: 13af847dfa6dbe844ba4b7c902f98f67, type: 3}

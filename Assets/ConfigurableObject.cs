@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class ConfigurableObject<StatsData, TypeEnum> : MonoBehaviour
+public abstract class ConfigurableObject<StatsData, TypeEnum> : MonoBehaviour
 {
-    public TypeEnum Id;
+    public TypeEnum TypeId;
     public StatsData Stats { get; protected set; }
 
     [Header("Data Initialization")]

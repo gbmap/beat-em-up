@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_EnemyHighlight 1
+  m_Name: M_EnemyHighlight
   m_Shader: {fileID: -6465566751694194690, guid: f128d1cc17714f34b8f3d70b71300b95,
     type: 3}
   m_ShaderKeywords: 

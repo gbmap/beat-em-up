@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RarityMaterials:
   - {fileID: 2100000, guid: 93ffab191d6da584a9c39fe8e5a82577, type: 2}
-  - {fileID: 2100000, guid: 93ffab191d6da584a9c39fe8e5a82577, type: 2}
-  - {fileID: 2100000, guid: 93ffab191d6da584a9c39fe8e5a82577, type: 2}
-  - {fileID: 2100000, guid: 93ffab191d6da584a9c39fe8e5a82577, type: 2}
+  - {fileID: 2100000, guid: 762f0008a17175d4cb6d62ff7601b3a4, type: 2}
+  - {fileID: 2100000, guid: 93b04df7b88ee574cb061eb0e1da619a, type: 2}
+  - {fileID: 2100000, guid: 23c9bbce388f5a5478110e8c4a34ab30, type: 2}

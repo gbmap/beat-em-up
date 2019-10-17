@@ -6,11 +6,17 @@ public class ItemData : ConfigurableObject<ItemStats, int>
 {
     private void Awake()
     {
-        Stats = ItemManager.Instance.GetItem(Id);
+        Stats = ItemManager.Instance.RegisterItemInstance(this);
+    }
+
+    private void OnDestroy()
+    {
+        // isso aqui tá dando exceção qnd fecha o jogo :(
+        ItemManager.Instance.UnregisterItemInstance(gameObject.GetInstanceID());
     }
 
     private void Start()
     {
-        ItemManager.Instance.SetupItem(gameObject, Id);
+        ItemManager.Instance.SetupItem(gameObject, TypeId);
     }
 }

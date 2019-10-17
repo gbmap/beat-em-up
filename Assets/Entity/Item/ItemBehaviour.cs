@@ -38,6 +38,9 @@ public class ItemBehaviour : MonoBehaviour
         }
 
         SetHighlight(playersSelecting.Count > 0);
+
+        // TODO: tirar isso aqui daqui
+        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -48,5 +51,8 @@ public class ItemBehaviour : MonoBehaviour
         }
 
         SetHighlight(playersSelecting.Count > 0);
+
+        // TODO: daqui tb
+        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), false);
     }
 }

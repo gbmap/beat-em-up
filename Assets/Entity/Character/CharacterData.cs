@@ -19,9 +19,9 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     private void Start()
     {
-        if (Id != ECharacterType.None)
+        if (TypeId != ECharacterType.None)
         {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, Id));
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
     }
 

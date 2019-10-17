@@ -7,6 +7,17 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
 {
     protected override string Path => "Data/ItemManagerConfig";
 
+    public ItemStats RegisterItemInstance(ItemData item)
+    {
+        UIManager.Instance.CreateItemLabel(item);
+        return GetItem(item.TypeId);
+    }
+
+    public void UnregisterItemInstance(int instanceId)
+    {
+        UIManager.Instance.DestroyItemLabel(instanceId);
+    }
+
     public ItemConfig GetItemConfig(int id)
     {
         return Config.GetItemConfig(id);
