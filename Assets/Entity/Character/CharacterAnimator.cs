@@ -7,6 +7,7 @@ using UnityEngine;
 public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
+    public Transform HandTransform;
 
     CharacterData _charData;
     CharacterMovement _charMovement;
@@ -102,7 +103,7 @@ public class CharacterAnimator : MonoBehaviour
         EWeaponType type = EWeaponType.Fists;
         if (stats.Inventory[EInventorySlot.Weapon] != null && stats.Inventory[EInventorySlot.Weapon] != null)
         {
-            type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
+            //type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
         }
 
         var controller = CombatManager.Instance.Config.WeaponTypeToController(type);
@@ -121,5 +122,13 @@ public class CharacterAnimator : MonoBehaviour
         {
             animator.speed = 1f;
         }
+    }
+
+    public void Equip(ItemData item)
+    {
+        var model = item.transform.Find("ModelRoot").GetChild(0);
+        model.transform.parent = HandTransform;
+        model.transform.localPosition = Vector3.zero;
+        model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
     }
 }

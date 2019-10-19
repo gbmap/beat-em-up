@@ -252,6 +252,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UILabel: {fileID: 5190256921611753958, guid: d75ae24aeeaa9d040ba4237ceca67f88, type: 3}
+--- !u!4 &469728730 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6710643987341954856, guid: a04174840aa4b944ab6c2304972f645c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1874254704}
+  m_PrefabAsset: {fileID: 0}
 --- !u!198 &485801956 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 264208890446775308, guid: d1c641e0a629d394fa7325515f768eeb,
@@ -2173,6 +2179,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521420463213465305, guid: f07415b63cc3b4594958a14efdcbc267,
+        type: 3}
+      propertyPath: _userData.keyboardMaps.Array.data[0].actionElementMaps.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521420463213465305, guid: f07415b63cc3b4594958a14efdcbc267,
+        type: 3}
+      propertyPath: _userData.keyboardMaps.Array.data[0].actionElementMaps.Array.data[7]._actionId
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521420463213465305, guid: f07415b63cc3b4594958a14efdcbc267,
+        type: 3}
+      propertyPath: _userData.keyboardMaps.Array.data[0].actionElementMaps.Array.data[7]._elementType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521420463213465305, guid: f07415b63cc3b4594958a14efdcbc267,
+        type: 3}
+      propertyPath: _userData.keyboardMaps.Array.data[0].actionElementMaps.Array.data[7]._elementIdentifierId
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521420463213465305, guid: f07415b63cc3b4594958a14efdcbc267,
+        type: 3}
+      propertyPath: _userData.keyboardMaps.Array.data[0].actionElementMaps.Array.data[7]._keyboardKeyCode
+      value: 101
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07415b63cc3b4594958a14efdcbc267, type: 3}
@@ -6684,6 +6715,11 @@ PrefabInstance:
       propertyPath: InitData
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: TypeId
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7427395823478885728, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_IsActive
@@ -6698,6 +6734,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665499, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: HandTransform
+      value: 
+      objectReference: {fileID: 469728730}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
 --- !u!224 &1956901244 stripped

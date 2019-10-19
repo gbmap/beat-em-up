@@ -152,6 +152,12 @@ public class Inventory
     }
 }
 
+public enum EItemType
+{
+    Equip,
+    Consumable
+}
+
 public enum EItemRarity
 {
     Common,
@@ -164,7 +170,10 @@ public enum EItemRarity
 public class ItemStats
 {
     public int Id;
+    public EItemType ItemType;
     public EItemRarity Rarity;
+    public EInventorySlot Slot;
+    public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
     public Skill Skill;
@@ -176,11 +185,6 @@ public enum EWeaponType
     Sword,
     Dagger,
     Scepter
-}
-
-public class Weapon : ItemStats
-{
-    public EWeaponType Type;
 }
 
 #endregion

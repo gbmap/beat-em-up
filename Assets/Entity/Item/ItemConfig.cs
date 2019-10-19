@@ -11,6 +11,7 @@ public class ItemConfig : ScriptableObject
 
     public string Name;
     public string Description;
-    public ItemStats Stats;
     public GameObject Prefab;
+
+    public ItemStats Stats;
 }

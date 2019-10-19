@@ -182,6 +182,16 @@ public class CharacterManagerConfig : ScriptableObject
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
 
+        CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
+        if (characterModelInfo != null)
+        {
+            instance.GetComponent<CharacterAnimator>().HandTransform = characterModelInfo.HandBone;
+        }
+        else
+        {
+            Debug.LogError(string.Format("No hand transform found in model: {0}", packInstance.name));
+        }
+
         yield return null;
 
         Transform characterModel = null;
@@ -196,6 +206,8 @@ public class CharacterManagerConfig : ScriptableObject
                 characterModel.localPosition = Vector3.zero;
             }
         }
+
+     
 
         yield return null;
 

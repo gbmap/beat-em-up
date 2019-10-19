@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,5 +34,11 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
     public IEnumerator SetupCharacter(GameObject instance, ECharacterType type)
     {
         yield return Config.SetupCharacter(instance, type);
+    }
+
+    public bool Interact(CharacterData character, ItemData item)
+    {
+        character.Stats.Inventory[item.Stats.Slot] = item.Stats;
+        return true;
     }
 }

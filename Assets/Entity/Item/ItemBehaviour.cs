@@ -35,12 +35,10 @@ public class ItemBehaviour : MonoBehaviour
         if (ValidCollision(other, true))
         {
             playersSelecting.Add(other.gameObject);
+            other.GetComponent<CharacterData>().OnItemInRange(GetComponent<ItemData>());
         }
 
-        SetHighlight(playersSelecting.Count > 0);
-
-        // TODO: tirar isso aqui daqui
-        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), true);
+        UpdateVisuals(true);
     }
 
     private void OnTriggerExit(Collider other)
@@ -48,11 +46,15 @@ public class ItemBehaviour : MonoBehaviour
         if (ValidCollision(other, false))
         {
             playersSelecting.Remove(other.gameObject);
+            other.GetComponent<CharacterData>().OnItemOutOfRange(GetComponent<ItemData>());
         }
 
-        SetHighlight(playersSelecting.Count > 0);
+        UpdateVisuals(false);
+    }
 
-        // TODO: daqui tb
-        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), false);
+    private void UpdateVisuals(bool enterExit)
+    {
+        SetHighlight(playersSelecting.Count > 0);
+        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), enterExit);
     }
 }

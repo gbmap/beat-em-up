@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class ItemData : ConfigurableObject<ItemStats, int>
 {
-    private void Awake()
-    {
-        Stats = ItemManager.Instance.RegisterItemInstance(this);
-    }
-
     private void OnDestroy()
     {
         // isso aqui tá dando exceção qnd fecha o jogo :(
@@ -17,6 +12,7 @@ public class ItemData : ConfigurableObject<ItemStats, int>
 
     private void Start()
     {
+        Stats = ItemManager.Instance.RegisterItemInstance(this);
         ItemManager.Instance.SetupItem(gameObject, TypeId);
     }
 }

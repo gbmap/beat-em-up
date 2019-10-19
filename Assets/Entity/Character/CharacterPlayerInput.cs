@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
-public class CharacterMovementPlayerInput : MonoBehaviour
+public class CharacterPlayerInput : MonoBehaviour
 {
     [SerializeField] private int playerIndex;
     public int PlayerIndex
@@ -11,16 +11,18 @@ public class CharacterMovementPlayerInput : MonoBehaviour
         set { _rewiredPlayer = ReInput.players.GetPlayer(playerIndex = value); }
     }
 
-    CharacterMovement _movement;
-    CharacterCombat _combat;
+    private CharacterData characterData;
+    private CharacterMovement movement;
+    private CharacterCombat combat;
 
     Player _rewiredPlayer;
 
     // Start is called before the first frame update
     void Awake()
     {
-        _movement = GetComponent<CharacterMovement>();
-        _combat = GetComponent<CharacterCombat>();
+        characterData = GetComponent<CharacterData>();
+        movement = GetComponent<CharacterMovement>();
+        combat = GetComponent<CharacterCombat>();
     }
 
     void Start()
@@ -37,21 +39,25 @@ public class CharacterMovementPlayerInput : MonoBehaviour
             Camera.main.transform.right * _rewiredPlayer.GetAxis("HorizontalMovement");
         cFwd.y = 0;
 
-        _movement.direction = cFwd;
+        movement.direction = cFwd;
 
         if (_rewiredPlayer.GetButtonUp("Jump"))
         {
-            _movement.Jump();
+            movement.Jump();
         }
 
         if (_rewiredPlayer.GetButtonDown("WeakAttack"))
         {
-            _combat.RequestAttack(EAttackType.Weak);
+            combat.RequestAttack(EAttackType.Weak);
         }
         else if (_rewiredPlayer.GetButtonDown("StrongAttack"))
         {
-            _combat.RequestAttack(EAttackType.Strong);
+            combat.RequestAttack(EAttackType.Strong);
         }
-        
+
+        if (_rewiredPlayer.GetButtonDown("Submit"))
+        {
+            characterData.Interact();
+        }
     }
 }
