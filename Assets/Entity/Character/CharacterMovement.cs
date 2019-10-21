@@ -100,7 +100,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         //_speedBumpDir = -transform.forward;
-        _speedBumpDir = attack.attacker.transform.forward * (1f + 0.15f*attack.hitNumber);
+        _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f*attack.HitNumber);
         _speedBumpT = 1f;
     }
 

@@ -8,13 +8,15 @@ public enum EAttackType
 
 public struct CharacterAttackData
 {
-    public EAttackType type;
-    public GameObject attacker;
-    public CharacterStats attackerStats;
-    public GameObject defender;
-    public CharacterStats defenderStats;
-    public int damage;
-    public int hitNumber;
+    public EAttackType Type;
+    public GameObject Attacker;
+    public CharacterStats AttackerStats;
+    public GameObject Defender;
+    public CharacterStats DefenderStats;
+    public int Damage;
+    public int HitNumber;
+
+    public bool Poised;
 }
 
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
@@ -34,6 +36,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         // esse 256 é arbitrário e significa o valor de destreza que equivale a 50% de chance de crit.
         return 1f - (1f / (Mathf.Pow(d/256, 2f)+1f));
         //return Mathf.Pow(d/256, 1f/1.75f);
+    }
+
+    public static float GetPoiseChance(CharacterStats c)
+    {
+        var attr = c.Inventory.GetTotalAttributes();
+        float d = c.Attributes.Dexterity + attr.Dexterity;
+        return 1f - (1f / (Mathf.Pow(d / 256, 2f) + 1f));
     }
 
     public static int GetMaxHealth(CharacterStats c)
@@ -60,12 +69,22 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static void Attack(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
     {
-        attackData.attackerStats = attacker;
-        attackData.defenderStats = defender;
+        attackData.AttackerStats = attacker;
+        attackData.DefenderStats = defender;
 
+        // calcula dano cru
         int damage = GetDamage(attacker, defender);
+
+        // rola o dado pra poise
+        attackData.Poised = Random.value < defender.PoiseChance;
+        if (attackData.Poised)
+        {
+            damage = (int)(damage * 0.9f);
+        }
+        
         defender.Health -= damage;
-        attackData.damage = damage;
+
+        attackData.Damage = damage;
     }
 
     public static void Attack(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)

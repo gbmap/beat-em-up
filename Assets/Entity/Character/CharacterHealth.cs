@@ -62,16 +62,16 @@ public class CharacterHealth : MonoBehaviour
             return;
         }
 
-        var lookAt = data.attacker.transform.position;
+        var lookAt = data.Attacker.transform.position;
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
 
         _fx.ImpactHit(transform.position + Vector3.up);
-        _fx.DamageLabel(transform.position + Vector3.up, data.damage);
+        _fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
-        UpdateHealthQuad(((float)data.defenderStats.Health) / data.defenderStats.MaxHealth);
+        UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth);
 
-        if (data.defenderStats.Health <= 0)
+        if (data.DefenderStats.Health <= 0)
         {
             // TODO: dar um funeral digno pros personagens
             Destroy(gameObject);

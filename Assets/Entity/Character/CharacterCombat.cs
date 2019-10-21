@@ -49,7 +49,7 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
-        Attack(new CharacterAttackData { type = type, attacker = gameObject, hitNumber = ++_nComboHits });
+        Attack(new CharacterAttackData { Type = type, Attacker = gameObject, HitNumber = ++_nComboHits });
     }
 
     private void Attack(CharacterAttackData attack)
@@ -64,7 +64,7 @@ public class CharacterCombat : MonoBehaviour
         foreach (var c in colliders)
         {
             if (c.gameObject == gameObject) continue;
-            attack.defender = c.gameObject;
+            attack.Defender = c.gameObject;
             CombatManager.Attack(gameObject, c.gameObject, ref attack);
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }

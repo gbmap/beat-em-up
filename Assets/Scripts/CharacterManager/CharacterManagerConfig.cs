@@ -207,8 +207,6 @@ public class CharacterManagerConfig : ScriptableObject
             }
         }
 
-     
-
         yield return null;
 
         // ATUALIZA O AVATAR DO ANIMATOR

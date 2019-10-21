@@ -72,7 +72,12 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
-        animator.SetInteger(_damagedNHits, attack.hitNumber);
+        if (attack.Poised)
+        {
+            return;
+        }
+
+        animator.SetInteger(_damagedNHits, attack.HitNumber);
         animator.SetTrigger(_damagedHash);
 
         _timeSpeedReset = Time.time;
@@ -86,7 +91,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
-        if (attack.defender != null)
+        if (attack.Defender != null)
         {
             _timeSpeedReset = Time.time;
             animator.speed = 0f;

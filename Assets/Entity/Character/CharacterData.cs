@@ -70,6 +70,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
             }
         }
 
+        OnItemOutOfRange(item);
+        Destroy(item.gameObject);
         return true;
     }
 }

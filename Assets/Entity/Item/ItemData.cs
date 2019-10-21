@@ -1,13 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 public class ItemData : ConfigurableObject<ItemStats, int>
 {
+    public int InstanceId;
+
+    private void Awake()
+    {
+        InstanceId = GetInstanceID(); // fix nojento
+    }
+
     private void OnDestroy()
     {
         // isso aqui tá dando exceção qnd fecha o jogo :(
-        ItemManager.Instance.UnregisterItemInstance(gameObject.GetInstanceID());
+        ItemManager.Instance.UnregisterItemInstance(InstanceId);
     }
 
     private void Start()

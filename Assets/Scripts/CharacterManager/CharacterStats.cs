@@ -22,6 +22,8 @@ public class TCharAttributes<T>
     public T Dexterity;
     public T Magic;
 
+
+
     public T GetAttr(EAttribute attr)
     {
         switch (attr)
@@ -258,6 +260,22 @@ public class CharacterStats
     public int Mana { get; set; }
 
     public CharAttributesI Attributes;
+
+    public int Stagger
+    {
+        get { return Attributes.Vigor; }
+    }
+
+    public int Poise
+    {
+        get { return Attributes.Dexterity; }
+    }
+
+    public float PoiseChance
+    {
+        get { return CombatManager.GetPoiseChance(this); }
+    }
+
     public Inventory Inventory;
 
     public CharacterStats()
