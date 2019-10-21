@@ -27,7 +27,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
     }
-
+    
     private void OnDestroy()
     {
         CharacterManager.UnregisterCharacter(gameObject.GetInstanceID());

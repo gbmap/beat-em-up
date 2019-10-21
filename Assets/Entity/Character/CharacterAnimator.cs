@@ -23,6 +23,7 @@ public class CharacterAnimator : MonoBehaviour
 
     // ====== HEALTH
     int _damagedHash = Animator.StringToHash("Damaged");
+    int _damagedFallHash = Animator.StringToHash("DamagedFall");
     int _damagedNHits = Animator.StringToHash("DamagedHits");
     int _recoverHash = Animator.StringToHash("Recovered");
 
@@ -78,7 +79,7 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         animator.SetInteger(_damagedNHits, attack.HitNumber);
-        animator.SetTrigger(_damagedHash);
+        animator.SetTrigger(attack.Knockdown ? _damagedFallHash : _damagedHash);
 
         _timeSpeedReset = Time.time;
         animator.speed = 0f;

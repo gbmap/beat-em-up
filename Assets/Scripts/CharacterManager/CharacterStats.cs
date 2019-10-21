@@ -276,6 +276,20 @@ public class CharacterStats
         get { return CombatManager.GetPoiseChance(this); }
     }
 
+    private float poiseBar = 1f;
+    public float PoiseBar
+    {
+        get
+        {
+            return poiseBar;
+        }
+
+        set
+        {
+            poiseBar = Mathf.Clamp01(value);
+        }
+    }
+
     public Inventory Inventory;
 
     public CharacterStats()

@@ -17,6 +17,7 @@ public struct CharacterAttackData
     public int HitNumber;
 
     public bool Poised;
+    public bool Knockdown;
 }
 
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
@@ -81,7 +82,12 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         {
             damage = (int)(damage * 0.9f);
         }
-        
+
+        defender.PoiseBar -= ((float)damage) / defender.Poise;
+
+        // vê se derrubou o BONECO
+        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0);
+
         defender.Health -= damage;
 
         attackData.Damage = damage;

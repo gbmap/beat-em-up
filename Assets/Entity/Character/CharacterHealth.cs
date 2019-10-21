@@ -18,13 +18,26 @@ public class CharacterHealth : MonoBehaviour
 
     public MeshRenderer HealthQuad;
 
+    private float lastHit;
+    private CharacterData characterData;
+
     private void Awake()
     {
         _fx = FindObjectOfType<FX>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+        characterData = GetComponent<CharacterData>();
 
-        UpdateHealthQuad(1f);
+        UpdateHealthQuad(1f, 1f);
+    }
+
+    private void Update()
+    {
+        if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
+        {
+            characterData.Stats.PoiseBar = 1f;
+            UpdatePoise(1f);
+        }
     }
 
     private void OnEnable()
@@ -62,6 +75,8 @@ public class CharacterHealth : MonoBehaviour
             return;
         }
 
+        lastHit = Time.time;
+
         var lookAt = data.Attacker.transform.position;
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
@@ -69,7 +84,7 @@ public class CharacterHealth : MonoBehaviour
         _fx.ImpactHit(transform.position + Vector3.up);
         _fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
-        UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth);
+        UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth, data.DefenderStats.PoiseBar);
 
         if (data.DefenderStats.Health <= 0)
         {
@@ -82,8 +97,19 @@ public class CharacterHealth : MonoBehaviour
         }
     }
 
-    private void UpdateHealthQuad(float healthPercentage)
+    private void UpdateHealthQuad(float healthPercentage, float poiseBar)
+    {
+        UpdateHealth(healthPercentage);
+        UpdatePoise(poiseBar);
+    }
+
+    private void UpdateHealth(float healthPercentage)
     {
         HealthQuad.material.SetFloat("_Health", healthPercentage);
+    }
+
+    private void UpdatePoise(float poiseBar)
+    {
+        HealthQuad.material.SetFloat("_Poise", poiseBar);
     }
 }

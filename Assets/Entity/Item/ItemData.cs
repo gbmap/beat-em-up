@@ -11,7 +11,7 @@ public class ItemData : ConfigurableObject<ItemStats, int>
     private void OnDestroy()
     {
         // isso aqui tá dando exceção qnd fecha o jogo :(
-        ItemManager.Instance.UnregisterItemInstance(InstanceId);
+        ItemManager.Instance?.UnregisterItemInstance(InstanceId);
     }
 
     private void Start()
