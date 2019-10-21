@@ -16,6 +16,8 @@ public class CharacterAnimator : MonoBehaviour
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
+    int _isOnAirHash = Animator.StringToHash("IsOnAir");
+    int _speedYHash = Animator.StringToHash("SpeedY");
 
     // ===== COMBAT
     int _weakAttackHash = Animator.StringToHash("WeakAttack");
@@ -23,7 +25,7 @@ public class CharacterAnimator : MonoBehaviour
 
     // ====== HEALTH
     int _damagedHash = Animator.StringToHash("Damaged");
-    int _damagedFallHash = Animator.StringToHash("DamagedFall");
+    int _knockdownHash = Animator.StringToHash("Knockdown");
     int _damagedNHits = Animator.StringToHash("DamagedHits");
     int _recoverHash = Animator.StringToHash("Recovered");
 
@@ -79,7 +81,7 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         animator.SetInteger(_damagedNHits, attack.HitNumber);
-        animator.SetTrigger(attack.Knockdown ? _damagedFallHash : _damagedHash);
+        animator.SetTrigger(attack.Knockdown ? _knockdownHash : _damagedHash);
 
         _timeSpeedReset = Time.time;
         animator.speed = 0f;
@@ -123,6 +125,8 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, _charMovement.direction.sqrMagnitude > 0.15f);
+        animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
+        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.velocity.y, -1f, 1f));
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
         {

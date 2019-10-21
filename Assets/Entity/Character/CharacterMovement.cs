@@ -13,8 +13,6 @@ public class CharacterMovement : MonoBehaviour
 
     public float jumpForce = 1f;
 
-    private Vector3 _acceleration;
-    private Vector3 _speed;
     private Rigidbody _rigidbody;
 
     private float _speedBumpT;
@@ -29,7 +27,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField]
     private float raycastDistance = 0.2f;
 
-    public bool IsJumping
+    public bool IsOnAir
     {
         get
         {
@@ -40,7 +38,7 @@ public class CharacterMovement : MonoBehaviour
                 direction = Vector3.down
             };
 
-            string[] world =  { "Level", "Entities" };
+            string[] world = { "Level", "Entities" };
             return !Physics.Raycast(r, raycastDistance, LayerMask.GetMask(world), QueryTriggerInteraction.Ignore);
         }
     }
@@ -72,7 +70,7 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_combat.IsOnCombo && !IsJumping)
+        if (!_combat.IsOnCombo && !IsOnAir)
         {
             var dirNorm = direction.normalized * moveSpeed;
             dirNorm.y = _rigidbody.velocity.y;
@@ -100,11 +98,18 @@ public class CharacterMovement : MonoBehaviour
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         //_speedBumpDir = -transform.forward;
-        _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f*attack.HitNumber);
-        _speedBumpT = 1f;
+        if (attack.Knockdown && !IsOnAir)
+        {
+            _rigidbody.velocity = _rigidbody.velocity + (Vector3.up+ attack.Attacker.transform.forward*0.25f) * jumpForce;
+        }
+        else
+        {
+            _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f * attack.HitNumber);
+            _speedBumpT = 1f;
+        }
     }
 
-    private void OnCharacterAttackCallback(CharacterAttackData obj)
+    private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
         _speedBumpT = 1f;
         _speedBumpDir = transform.forward;
@@ -112,7 +117,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump()
     {
-        if (IsJumping) return;
+        if (IsOnAir) return;
 
         //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         _rigidbody.velocity = _rigidbody.velocity + Vector3.up * jumpForce;
@@ -122,7 +127,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!Application.isPlaying) return;
 
-        Gizmos.color = IsJumping ? Color.red : Color.green;
+        Gizmos.color = IsOnAir ? Color.red : Color.green;
         var origin = transform.position;
         Gizmos.DrawLine(origin, origin + Vector3.down * raycastDistance);
     }
