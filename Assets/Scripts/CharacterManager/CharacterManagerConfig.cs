@@ -105,6 +105,8 @@ public class CharacterManagerConfig : ScriptableObject
     public CharacterPrefabConfig[] CharacterPrefabs;
 
     public RuntimeAnimatorController CharacterAnimator;
+    public AnimatorOverrideController SwordOverrideController;
+
     public GameObject AdventureCharacterPack;
     public GameObject DungeonCharacterPack;
     public GameObject FantasyRivalsCharacterPack;

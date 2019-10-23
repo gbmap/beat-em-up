@@ -140,5 +140,20 @@ public class CharacterAnimator : MonoBehaviour
         model.transform.parent = HandTransform;
         model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+        if (item.Stats.ItemType == EItemType.Equip)
+        {
+            if (item.Stats.Slot == EInventorySlot.Weapon)
+            {
+                if (item.Stats.WeaponType == EWeaponType.Sword)
+                {
+                    animator.runtimeAnimatorController = CharacterManager.Instance.Config.SwordOverrideController;
+                }
+                else {
+                    animator.runtimeAnimatorController = CharacterManager.Instance.Config.CharacterAnimator;
+                }
+            }
+        }
+        
     }
 }
