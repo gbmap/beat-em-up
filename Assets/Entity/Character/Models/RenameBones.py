@@ -70,3 +70,8 @@ for bone in rig.bones:
     bone.name = bone.name.replace("mixamorig:", "")
     if bone.name in boneMapping:
         bone.name = boneMapping[bone.name]
+        
+# remover translação do modelo
+fcurves = bpy.data.actions[0].fcurves
+for i in range(3):
+    fcurves.remove(fcurves[0]) 
