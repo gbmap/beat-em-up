@@ -25,7 +25,7 @@ public class CharacterHealth : MonoBehaviour
     // hora q caiu no chão do Knockdown
     private float recoverTimer;
     private float recoverCooldown = 2f;
-    private bool falling;
+    public bool IsFalling;
 
     private void Awake()
     {
@@ -48,12 +48,12 @@ public class CharacterHealth : MonoBehaviour
 
 
         // timer pra se recuperar
-        if (falling && !characterMovement.IsOnAir && recoverTimer > 0f)
+        if (IsFalling && !characterMovement.IsOnAir && recoverTimer > 0f)
         {
             recoverTimer -= Time.deltaTime;
             if (recoverTimer < 0f)
             {
-                falling = false;
+                IsFalling = false;
                 OnGetUp?.Invoke();
             }
         }
@@ -85,13 +85,13 @@ public class CharacterHealth : MonoBehaviour
         //_rigidbody.useGravity = false;
         //_collider.enabled = false;
         //_isOnFloor = true;
-        falling = true;
+        IsFalling = true;
         recoverTimer = recoverCooldown;
     }
 
     public void TakeDamage(CharacterAttackData data)
     {
-        if (falling && characterMovement.IsOnAir)
+        if (IsFalling && characterMovement.IsOnAir)
         {
             return;
         }

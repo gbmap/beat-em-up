@@ -27,6 +27,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField]
     private float raycastDistance = 0.2f;
 
+    
+
     public bool IsOnAir
     {
         get
@@ -47,6 +49,7 @@ public class CharacterMovement : MonoBehaviour
     {
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
+
         _health.OnDamaged += OnDamagedCallback;
 
         capsuleCollider = GetComponent<CapsuleCollider>();
@@ -70,7 +73,7 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_combat.IsOnCombo && !IsOnAir)
+        if (!_combat.IsOnCombo && !IsOnAir && !_health.IsFalling)
         {
             var dirNorm = direction.normalized * moveSpeed;
             dirNorm.y = _rigidbody.velocity.y;
@@ -100,7 +103,7 @@ public class CharacterMovement : MonoBehaviour
         //_speedBumpDir = -transform.forward;
         if (attack.Knockdown && !IsOnAir)
         {
-            _rigidbody.velocity = _rigidbody.velocity + (Vector3.up+ attack.Attacker.transform.forward*0.25f) * jumpForce;
+            _rigidbody.velocity = _rigidbody.velocity + (Vector3.up+ attack.Attacker.transform.forward*0.3f) * jumpForce *1.1f;
         }
         else
         {
