@@ -105,7 +105,21 @@ public class CharacterManagerConfig : ScriptableObject
     public CharacterPrefabConfig[] CharacterPrefabs;
 
     public RuntimeAnimatorController CharacterAnimator;
+    public AnimatorOverrideController DaggerOverrideController;
     public AnimatorOverrideController SwordOverrideController;
+    public AnimatorOverrideController ScepterOverrideController;
+
+    public RuntimeAnimatorController GetRuntimeAnimatorController(EWeaponType type)
+    {
+        switch (type)
+        {
+            case EWeaponType.Dagger: return DaggerOverrideController;
+            case EWeaponType.Sword: return SwordOverrideController;
+            case EWeaponType.Scepter: return ScepterOverrideController;
+            case EWeaponType.Fists: return CharacterAnimator;
+            default: return CharacterAnimator;
+        }
+    }
 
     public GameObject AdventureCharacterPack;
     public GameObject DungeonCharacterPack;

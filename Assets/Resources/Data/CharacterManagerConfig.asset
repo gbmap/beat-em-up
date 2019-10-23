@@ -51,7 +51,9 @@ MonoBehaviour:
     prefab: {fileID: 1033247876357254, guid: b2739774a07ffdb459c1bd60e3ef4f10, type: 3}
   - type: 21
     prefab: {fileID: 1473157611212552, guid: 2250a4a4fc528684c85ba955eb992ec6, type: 3}
-  CharacterAnimator: {fileID: 0}
+  CharacterAnimator: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  SwordOverrideController: {fileID: 22100000, guid: e69c0dbd0a3e46041907978de6c90454,
+    type: 2}
   AdventureCharacterPack: {fileID: 100018, guid: fd7d68a65822e4a44a9ef78850e64cfc,
     type: 3}
   DungeonCharacterPack: {fileID: 100040, guid: b69174d668ba02d44b14a084b217670a, type: 3}
