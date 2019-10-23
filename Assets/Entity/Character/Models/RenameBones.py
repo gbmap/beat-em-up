@@ -61,6 +61,7 @@ boneMapping = {
     "RightToe_End": "Toes_R"
 }
 
+bpy.data.objects['Armature'].name = "Root"
 rig = bpy.data.armatures[0]
 rig.name = "Root"
 

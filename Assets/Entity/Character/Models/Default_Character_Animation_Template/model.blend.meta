@@ -369,6 +369,9 @@ ModelImporter:
   - first:
       74: 6158632641460223327
     second: Armature|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: -4791504522942941401
+    second: Armature|Armature|mixamo.com|Layer0
   externalObjects: {}
   materials:
     importMaterials: 1
