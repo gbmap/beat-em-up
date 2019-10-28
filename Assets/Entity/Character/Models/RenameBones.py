@@ -1,4 +1,3 @@
-
 import bpy
 
 boneMapping = {
@@ -51,7 +50,7 @@ boneMapping = {
     "LeftUpLeg": "UpperLeg_L",
     "LeftLeg": "LowerLeg_L",
     "LeftFoot": "Ankle_L",
-    "LeftToeBase": "Ball_L",
+    "LeftToeBase": "Ball_L", 
     "LeftToe_End": "Toes_L",
     
     "RightUpLeg": "UpperLeg_R",
