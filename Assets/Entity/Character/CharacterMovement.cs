@@ -27,7 +27,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField]
     private float raycastDistance = 0.2f;
 
-    
+    public System.Action OnJump;
 
     public bool IsOnAir
     {
@@ -124,6 +124,7 @@ public class CharacterMovement : MonoBehaviour
 
         //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         _rigidbody.velocity = _rigidbody.velocity + Vector3.up * jumpForce;
+        OnJump?.Invoke();
     }
 
     private void OnDrawGizmos()

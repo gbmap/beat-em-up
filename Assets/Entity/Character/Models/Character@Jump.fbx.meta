@@ -1,26 +1,20 @@
 fileFormatVersion: 2
-guid: 3576a08751031504f81000bf1d965b83
+guid: 389fabd5b61a0cc4795c4a2ae62711e5
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Idle
+    second: Jump
   - first:
-      74: -5405653242291790180
-    second: Take 001 (1)
+      74: -241419335246309312
+    second: JumpAir
   - first:
-      74: 4854180139978558704
-    second: Take 001 (2)
+      74: 2104999889037103153
+    second: JumpDown
   - first:
-      74: 1389121407789637250
-    second: Walk
-  - first:
-      74: -675725769811534066
-    second: Punch1
-  - first:
-      74: -3756621861071241072
-    second: Punch2
+      74: 5680536079155966043
+    second: JumpReachGround
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -40,8 +34,8 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
-    importConstraints: 1
-    animationCompression: 0
+    importConstraints: 0
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -50,69 +44,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Walk
+      name: Jump
       takeName: Take 001
       internalID: 0
-      firstFrame: 1
-      lastFrame: 25
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Idle
-      takeName: Take 001
-      internalID: 0
-      firstFrame: 33
-      lastFrame: 54
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 1
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Punch1
-      takeName: Take 001
-      internalID: 0
-      firstFrame: 54
-      lastFrame: 64
+      firstFrame: 210
+      lastFrame: 225
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -137,11 +73,69 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Punch2
+      name: JumpAir
       takeName: Take 001
       internalID: 0
-      firstFrame: 65
-      lastFrame: 77
+      firstFrame: 231
+      lastFrame: 232
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: JumpDown
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 235
+      lastFrame: 236
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: JumpReachGround
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 238
+      lastFrame: 244
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -201,26 +195,9 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  referencedClips:
-  - b846d3ef68387c542afa5bfe220d0a6d
-  - db126b4d2589e3e46bbd9ca5905d3631
-  - 6dac3b50213157249a87c4703b7d8b15
-  - 8738dc41021239746935f2846bf39d50
-  - 1e11d0c2ab27183468339dca6ee15f74
-  - fcd2557f92126e4429232574dee759a7
-  - 5429a0b2c8fdde844a7a0cc1a638fa73
-  - 389fabd5b61a0cc4795c4a2ae62711e5
-  - e42eb73b89be19c489dc907369094965
-  - 6918f165d8594c54b9e504f1428000c8
-  - 4ebce1b1a3ea63b4e9dbb86ccabad2c4
-  - 7d5188dfd91670a48bcb37711a6ecb98
-  - 8c3398b35f6a6c3478d56f0ac4a62d6f
-  - 6a04eb2ce24763d48a13a33298677781
-  - 6f840ca7ac4713c4e8e9391014d62518
-  - ba919a914eacfb042a077c0c96e0ffbe
-  - ff724ec2500222d4caac2a769d83d56a
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
+  copyAvatar: 1
   humanDescription:
     serializedVersion: 3
     human:
@@ -1033,7 +1010,8 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 3576a08751031504f81000bf1d965b83,
+    type: 3}
   animationType: 3
   humanoidOversampling: 1
   additionalBone: 0

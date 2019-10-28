@@ -18,6 +18,7 @@ public class CharacterAnimator : MonoBehaviour
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
     int _speedYHash = Animator.StringToHash("SpeedY");
+    int _jumpTriggerHash = Animator.StringToHash("Jump");
 
     // ===== COMBAT
     int _weakAttackHash = Animator.StringToHash("WeakAttack");
@@ -53,6 +54,8 @@ public class CharacterAnimator : MonoBehaviour
         _charHealth.OnDamaged += OnCharacterDamagedCallback;
         _charHealth.OnGetUp += OnGetUpCallback;
 
+        _charMovement.OnJump += OnJumpCallback;
+
         // Isso aqui tá bugando pq a Unity não garante que o OnEnable vai ser chamado antes do Awake pra componentes diferentes.
         // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
         //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
@@ -71,6 +74,19 @@ public class CharacterAnimator : MonoBehaviour
         _charCombat.OnCharacterAttack -= OnCharacterAttackCallback;
 
         _charHealth.OnDamaged -= OnCharacterDamagedCallback;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        animator.SetBool(_movingHash, _charMovement.direction.sqrMagnitude > 0.15f);
+        animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
+        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.velocity.y, -1f, 1f));
+
+        if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
+        {
+            animator.speed = 1f;
+        }
     }
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
@@ -121,17 +137,9 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnJumpCallback()
     {
-        animator.SetBool(_movingHash, _charMovement.direction.sqrMagnitude > 0.15f);
-        animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
-        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.velocity.y, -1f, 1f));
-
-        if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
-        {
-            animator.speed = 1f;
-        }
+        animator.SetTrigger(_jumpTriggerHash);
     }
 
     public void Equip(ItemData item)
