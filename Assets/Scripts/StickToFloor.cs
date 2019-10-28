@@ -8,7 +8,7 @@ public class StickToFloor : MonoBehaviour
     {
         // manter hud no chão
         RaycastHit hitInfo;
-        Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, out hitInfo);
+        Physics.Raycast(transform.position + Vector3.up * 0.2f, Vector3.down, out hitInfo);
         transform.position = hitInfo.point + Vector3.up * 0.001f; // previnir flickering    
     }
 }
