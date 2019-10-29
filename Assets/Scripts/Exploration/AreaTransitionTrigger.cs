@@ -5,20 +5,15 @@ namespace Catacumba.Exploration
 {
     public class AreaTransitionTrigger : MonoBehaviour
     {
-        [SerializeField] private int _destinationMapIndex = -1;
+        [SerializeField] private Area destinationArea;
         
         private void OnTriggerEnter(Collider other)
         {
             // If player enters trigger
-            if (_destinationMapIndex != -1 && other.CompareTag("Player"))
+            if (destinationArea != null && other.CompareTag("Player"))
             {
-                TransitionToMap(_destinationMapIndex);
+                ScenarioManager.Instance.TransitionToArea(destinationArea, other.gameObject);
             }
-        }
-
-        private void TransitionToMap(int mapIndex)
-        {
-            ScenarioManager.Instance.TransitionToMap(mapIndex);
         }
     }
 }

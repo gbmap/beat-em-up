@@ -1,35 +1,75 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
     public class ScenarioManager : Singleton<ScenarioManager>
     {
-        [SerializeField] private List<GameObject> _maps;
-        private int _currentActiveMap;
+        [SerializeField] private GameObject fadeCamera;
+        [SerializeField] private Area firstArea;
+        
+        private List<Area> areas;
+        private Area currentActiveArea;
+        private GameObject currentCharacter;
 
         private void Awake()
         {
-            _maps = new List<GameObject>();
-            
-            // Get child maps
-            foreach (Transform map in transform)
+            areas = new List<Area>();
+
+            // Get child areas
+            foreach (var area in GetComponentsInChildren<Area>())
             {
-                _maps.Add(map.gameObject);
+                areas.Add(area);
             }
         }
-        
-        public void TransitionToMap(int mapIndex)
+
+        private void Start()
         {
-            // Hide current map
-            if (mapIndex >= 0 && _maps.Count > mapIndex)
-            {
-                _maps[_currentActiveMap].SetActive(false);
-            }
+            InitializeFirstArea();
+        }
+
+        private void InitializeFirstArea()
+        {
+            currentActiveArea = firstArea;
             
-            // Show new map
-            _maps[_currentActiveMap = mapIndex].SetActive(true);
+            // TODO: Do fade in and move player to new area
+        }
+
+        public void TransitionToArea(Area area, GameObject character)
+        {
+            StartCoroutine(FadeTransition(area, character));
+        }
+
+        private IEnumerator FadeTransition(Area area, GameObject character)
+        {
+            // Enable fade camera
+            fadeCamera.SetActive(true);
+            
+            yield return new WaitForSeconds(1f);
+            
+            // Hide current area
+            currentActiveArea?.gameObject.SetActive(false);
+            
+            currentActiveArea = area;
+            currentCharacter = character;
+            
+            // Move player to new area
+            MovePlayerToNewArea(currentCharacter);
+            
+            // Show new area
+            currentActiveArea.gameObject.SetActive(true);
+            
+            // Disable fade camera
+            fadeCamera.SetActive(false);
+        }
+
+        private void MovePlayerToNewArea(GameObject character)
+        {
+            // Move character to new are
+            character.transform.position = currentActiveArea.PlayerSpawnPoint.position;
         }
     }
 }
