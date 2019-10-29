@@ -1,0 +1,464 @@
+fileFormatVersion: 2
+guid: 27d4bf833968b91468e136532dd642e8
+ModelImporter:
+  serializedVersion: 26
+  internalIDToNameTable:
+  - first:
+      74: -1499380046552286983
+    second: IK_R_Leg|Armature|Take 001|BaseLayer.001
+  - first:
+      74: -4010197867096667883
+    second: IK_R_Leg|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: 6341945443425643510
+    second: IK_R_Leg|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: -4791845604647273725
+    second: IK_R_Leg|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: 9100753883679588464
+    second: IK_R_Leg|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: -4302377502281510338
+    second: IK_R_Leg|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: -4018438329022729924
+    second: IK_R_Leg|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: 3390713983678464125
+    second: IK_R_Leg|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: 189831188125988321
+    second: IK_R_Leg|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: 8863980345568334828
+    second: IK_R_Leg|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: 5604223634711000195
+    second: IK_R_Leg|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: -2404038258889435630
+    second: IK_R_Leg|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: 8741908098601240600
+    second: IK_R_Leg|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: -7408235553713103399
+    second: IK_R_Leg|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: -6524859910120052440
+    second: IK_R_Leg|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: -991547735457694633
+    second: IK_R_Leg|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: -3559618380901870110
+    second: IK_R_Leg|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: 3305388492297337708
+    second: IK_R_Leg|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: -5902611142113756088
+    second: IK_R_Leg|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: -4551464557107520184
+    second: IK_R_Leg|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: -481136760300451382
+    second: IK_L_Leg|Armature|Take 001|BaseLayer.001
+  - first:
+      74: 3021099742206651500
+    second: IK_L_Leg|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: 2940946584415038859
+    second: IK_L_Leg|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: -4116428676345276326
+    second: IK_L_Leg|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: -3636821951069172815
+    second: IK_L_Leg|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: 7746256265541899062
+    second: IK_L_Leg|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: 6070881332407760970
+    second: IK_L_Leg|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: 7973538308166142213
+    second: IK_L_Leg|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: 2588251164777540025
+    second: IK_L_Leg|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: 3661598964687339096
+    second: IK_L_Leg|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: -8419983783791366122
+    second: IK_L_Leg|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: 809511451677492672
+    second: IK_L_Leg|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: -2504243329885996813
+    second: IK_L_Leg|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: 9028723885999177541
+    second: IK_L_Leg|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: 6569318531005748360
+    second: IK_L_Leg|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: 6247975604016873989
+    second: IK_L_Leg|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: -7631925651361221162
+    second: IK_L_Leg|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: -3421584892451096165
+    second: IK_L_Leg|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: -8014412658165192165
+    second: IK_L_Leg|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: -4742464486019452208
+    second: IK_L_Leg|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: 3657439478882459757
+    second: IK_Arm_L|Armature|Take 001|BaseLayer.001
+  - first:
+      74: -4335231400327423454
+    second: IK_Arm_L|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: 2332286798608632223
+    second: IK_Arm_L|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: 7321880604786974269
+    second: IK_Arm_L|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: 8021874000999487626
+    second: IK_Arm_L|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: 4777193218933812145
+    second: IK_Arm_L|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: 8197501947618519750
+    second: IK_Arm_L|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: 6274557861781026598
+    second: IK_Arm_L|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: 6258723867917446998
+    second: IK_Arm_L|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: 5419816787452778366
+    second: IK_Arm_L|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: -8689148202943200013
+    second: IK_Arm_L|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: -5974748336261474107
+    second: IK_Arm_L|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: 1442841429974324949
+    second: IK_Arm_L|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: 7725878260235585315
+    second: IK_Arm_L|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: -7711262575568441725
+    second: IK_Arm_L|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: -7191557713821977223
+    second: IK_Arm_L|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: -5614744347854215493
+    second: IK_Arm_L|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: -4011881414841518973
+    second: IK_Arm_L|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: 6776770296535879836
+    second: IK_Arm_L|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: 1130678096819832258
+    second: IK_Arm_L|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: -1600148776222045504
+    second: IK_Arm_R|Armature|Take 001|BaseLayer.001
+  - first:
+      74: 8708625960085724770
+    second: IK_Arm_R|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: -8381192590862892701
+    second: IK_Arm_R|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: -4147783848683334172
+    second: IK_Arm_R|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: -5484690505376763583
+    second: IK_Arm_R|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: 4390455902304165852
+    second: IK_Arm_R|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: -6275744809473761449
+    second: IK_Arm_R|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: 3513116862186969603
+    second: IK_Arm_R|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: 237137189528834826
+    second: IK_Arm_R|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: 6062105261865589001
+    second: IK_Arm_R|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: -3798049215289702016
+    second: IK_Arm_R|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: 2372402854949511221
+    second: IK_Arm_R|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: 5638810464170739959
+    second: IK_Arm_R|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: 2290771867440028442
+    second: IK_Arm_R|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: 1730412639989840868
+    second: IK_Arm_R|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: -3687931248337164247
+    second: IK_Arm_R|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: 7736466692927055174
+    second: IK_Arm_R|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: 8862504500114395341
+    second: IK_Arm_R|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: 3177705345340642778
+    second: IK_Arm_R|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: 5024244369802604690
+    second: IK_Arm_R|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: 3812033399310830627
+    second: CTRL_Root|Armature|Take 001|BaseLayer.001
+  - first:
+      74: 7268422322237973501
+    second: CTRL_Root|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: -8043806262035635799
+    second: CTRL_Root|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: -8610268844410573115
+    second: CTRL_Root|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: -82349299352566191
+    second: CTRL_Root|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: 7451325111661275036
+    second: CTRL_Root|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: -8588530079640748257
+    second: CTRL_Root|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: -627177482476613699
+    second: CTRL_Root|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: -5729516250227465034
+    second: CTRL_Root|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: -8094309484560720418
+    second: CTRL_Root|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: 866088681735691072
+    second: CTRL_Root|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: 5922737814187020023
+    second: CTRL_Root|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: 7379929267592657916
+    second: CTRL_Root|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: -1211356099422193820
+    second: CTRL_Root|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: -6185349030943613039
+    second: CTRL_Root|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: 7234066904420348073
+    second: CTRL_Root|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: -8252731587858421782
+    second: CTRL_Root|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: 2429051201549180940
+    second: CTRL_Root|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: -189584987405993685
+    second: CTRL_Root|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: 5720158443054206160
+    second: CTRL_Root|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: -1676495014900090165
+    second: Armature|Armature.001|Take 001|BaseLayer
+  - first:
+      74: 4781951162920444690
+    second: Armature|ArmatureAction
+  - first:
+      74: 6965887883897901302
+    second: Armature|Armature|Take 001|BaseLayer.001
+  - first:
+      74: -8991530130813693038
+    second: Armature|CTRL_Foot_L|Take 001|BaseLayer
+  - first:
+      74: -6906581307003377353
+    second: Armature|CTRL_Foot_R|Take 001|BaseLayer
+  - first:
+      74: 1539502857043501895
+    second: Armature|CTRL_Hand_L|Take 001|BaseLayer
+  - first:
+      74: 2764155686406820175
+    second: Armature|CTRL_Hand_R|Take 001|BaseLayer
+  - first:
+      74: -7621434459694881039
+    second: Armature|CTRL_Head|Take 001|BaseLayer
+  - first:
+      74: 7036261213578510743
+    second: Armature|CTRL_Hips|Take 001|BaseLayer
+  - first:
+      74: 6945190014157071616
+    second: Armature|CTRL_Neck|Take 001|BaseLayer
+  - first:
+      74: -9181884936544364839
+    second: Armature|CTRL_Root|Take 001|BaseLayer
+  - first:
+      74: -7864213700304000809
+    second: Armature|CTRL_Spine1|Take 001|BaseLayer
+  - first:
+      74: 6083223062863015591
+    second: Armature|CTRL_Spine2|Take 001|BaseLayer
+  - first:
+      74: -3529716870096749489
+    second: Armature|CTRL_Spine3|Take 001|BaseLayer
+  - first:
+      74: -7355983189986160452
+    second: Armature|IK_Arm_L|Take 001|BaseLayer
+  - first:
+      74: -5397185185343533090
+    second: Armature|IK_Arm_R|Take 001|BaseLayer
+  - first:
+      74: 7277560616393777722
+    second: Armature|IK_L_Leg|Take 001|BaseLayer
+  - first:
+      74: 2791269381776148313
+    second: Armature|IK_R_Leg|Take 001|BaseLayer
+  - first:
+      74: 631555599457110671
+    second: Armature|PV_Elbow_L|Take 001|BaseLayer
+  - first:
+      74: -9068278184306169803
+    second: Armature|PV_Elbow_R|Take 001|BaseLayer
+  - first:
+      74: 900681449436504917
+    second: Armature|PV_Knee_L|Take 001|BaseLayer
+  - first:
+      74: 6158632641460223327
+    second: Armature|PV_Knee_R|Take 001|BaseLayer
+  - first:
+      74: -4791504522942941401
+    second: Armature|Armature|mixamo.com|Layer0
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

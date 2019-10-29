@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /**
   *
@@ -20,6 +21,8 @@ public class TCharAttributes<T>
     public T Strength;
     public T Dexterity;
     public T Magic;
+
+
 
     public T GetAttr(EAttribute attr)
     {
@@ -107,40 +110,72 @@ public enum EInventorySlot
     Weapon
 }
 
-public class Inventory : Dictionary<EInventorySlot, Item>
+[Serializable]
+public class Inventory
 {
+    [SerializeField]
+    private int[] inventory;
+
+    public Inventory()
+    {
+        inventory = new int[((EInventorySlot[])Enum.GetValues(typeof(EInventorySlot))).Length];
+    }
+
+    public ItemStats this[EInventorySlot slot]
+    {
+        get => ItemManager.Instance.GetItem( inventory[(int)slot] );
+        set => inventory[(int)slot] = value.Id;
+    }
+
     public CharAttributesI GetTotalAttributes()
     {
         CharAttributesI t = new CharAttributesI();
-
-        var values = (EInventorySlot[])Enum.GetValues(typeof(EInventorySlot));
-        foreach (var v in values)
+       
+        foreach (var v in inventory)
         {
-            if (!this.ContainsKey(v)) continue;
-            t.Add(this[v].Attributes);
+            if (inventory[v] == 0) continue;
+            t.Add(ItemManager.Instance.GetItem(inventory[v]).Attributes);
         }
 
         return t;
-    } 
+    }
 
     public CharAttributesF GetTotalDamageScaling()
     {
         CharAttributesF t = new CharAttributesF();
 
-        var values = (EInventorySlot[])Enum.GetValues(typeof(EInventorySlot));
-        foreach (var v in values)
+        foreach (var v in inventory)
         {
-            if (!this.ContainsKey(v)) continue;
-            t.Add(this[v].DamageScaling);
+            if (inventory[v] == 0) continue;
+            t.Add(ItemManager.Instance.GetItem(inventory[v]).DamageScaling);
         }
 
         return t;
     }
 }
 
-public class Item
+public enum EItemType
+{
+    Equip,
+    Consumable
+}
+
+public enum EItemRarity
+{
+    Common,
+    Uncommon,
+    Rare,
+    Legendary
+}
+
+[Serializable]
+public class ItemStats
 {
     public int Id;
+    public EItemType ItemType;
+    public EItemRarity Rarity;
+    public EInventorySlot Slot;
+    public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
     public Skill Skill;
@@ -152,11 +187,6 @@ public enum EWeaponType
     Sword,
     Dagger,
     Scepter
-}
-
-public class Weapon : Item
-{
-    public EWeaponType Type;
 }
 
 #endregion
@@ -201,6 +231,7 @@ public class Skill
     // PLACEHOLDERRRRRR
 }
 
+[Serializable]
 public class CharacterStats
 {
     public System.Action<CharacterStats> OnStatsChanged = delegate { };
@@ -229,6 +260,36 @@ public class CharacterStats
     public int Mana { get; set; }
 
     public CharAttributesI Attributes;
+
+    public int Stagger
+    {
+        get { return Attributes.Vigor; }
+    }
+
+    public int Poise
+    {
+        get { return Attributes.Dexterity; }
+    }
+
+    public float PoiseChance
+    {
+        get { return CombatManager.GetPoiseChance(this); }
+    }
+
+    private float poiseBar = 1f;
+    public float PoiseBar
+    {
+        get
+        {
+            return poiseBar;
+        }
+
+        set
+        {
+            poiseBar = Mathf.Clamp01(value);
+        }
+    }
+
     public Inventory Inventory;
 
     public CharacterStats()
