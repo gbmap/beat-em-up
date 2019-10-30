@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -29,10 +30,14 @@ public class CharacterMovement : MonoBehaviour
 
     public System.Action OnJump;
 
+    NavMeshAgent navMeshAgent;
+
     public bool IsOnAir
     {
         get
         {
+            return false;
+
             // cuidado!!!! chances de hemorragia ocular!!!!11111111 
             Ray r = new Ray
             {
@@ -47,6 +52,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Awake()
     {
+        navMeshAgent = GetComponent<NavMeshAgent>();
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
 
@@ -73,7 +79,7 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_combat.IsOnCombo && !IsOnAir && !_health.IsFalling)
+        if (!_combat.IsOnCombo && !IsOnAir && !_health.IsOnGround)
         {
             var dirNorm = direction.normalized * moveSpeed;
             dirNorm.y = _rigidbody.velocity.y;
@@ -96,16 +102,18 @@ public class CharacterMovement : MonoBehaviour
 
             _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
         }
+
+        navMeshAgent.Move(_rigidbody.velocity * Time.deltaTime);
     }
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         //_speedBumpDir = -transform.forward;
-        if (attack.Knockdown && !IsOnAir)
+        /*if (attack.Knockdown && !IsOnAir)
         {
             _rigidbody.velocity = _rigidbody.velocity + (Vector3.up+ attack.Attacker.transform.forward*0.3f) * jumpForce *1.1f;
         }
-        else
+        else*/
         {
             _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f * attack.HitNumber);
             _speedBumpT = 1f;
@@ -120,6 +128,8 @@ public class CharacterMovement : MonoBehaviour
 
     public void Jump()
     {
+        return;
+
         if (IsOnAir) return;
 
         //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
