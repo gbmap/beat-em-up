@@ -9,7 +9,7 @@ public class CharacterMovement : MonoBehaviour
 
     // ==== MOVEMENT
     public Vector3 direction;
-    public Vector3 velocity { get { return _rigidbody.velocity; } }
+    public Vector3 velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : _rigidbody.velocity; } }
     public float moveSpeed = 3.0f;
 
     public float jumpForce = 1f;
@@ -32,6 +32,14 @@ public class CharacterMovement : MonoBehaviour
 
     NavMeshAgent navMeshAgent;
 
+    private enum EMovementType
+    {
+        AI,
+        Input
+    }
+
+    private EMovementType movementType;
+
     public bool IsOnAir
     {
         get
@@ -52,6 +60,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Awake()
     {
+        movementType = GetComponent<CharacterPlayerInput>() == null ? EMovementType.AI : EMovementType.Input;
         navMeshAgent = GetComponent<NavMeshAgent>();
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
@@ -103,7 +112,12 @@ public class CharacterMovement : MonoBehaviour
             _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
         }
 
-        navMeshAgent.Move(_rigidbody.velocity * Time.deltaTime);
+        if (movementType == EMovementType.Input || _speedBumpT > 0f)
+        {
+            navMeshAgent.Move(_rigidbody.velocity * Time.deltaTime);
+        }
+
+        navMeshAgent.isStopped |= _speedBumpT > 0f;
     }
 
     private void OnDamagedCallback(CharacterAttackData attack)
