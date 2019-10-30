@@ -17,11 +17,10 @@ public class HurtStateMachineBehaviour : StateMachineBehaviour
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-      /*  if (stateInfo.shortNameHash == Animator.StringToHash("StandUp"))
+        if (stateInfo.shortNameHash == Animator.StringToHash("StandUp"))
         {
             Debug.Log("GetUp");
             animator.GetComponent<CharacterHealth>().OnGetUp?.Invoke();
         }
-       */
     }
 }

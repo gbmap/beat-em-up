@@ -493,7 +493,7 @@ PrefabInstance:
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.62
+      value: 0.59
       objectReference: {fileID: 0}
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -1935,8 +1935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3053d13ab5aca424e94b13b66f9cdbe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PathUpdateThreshold: 0.5
-  NextPointUpdateThreshold: 0.25
 --- !u!1 &1334862907
 GameObject:
   m_ObjectHideFlags: 0
@@ -6755,6 +6753,11 @@ PrefabInstance:
       propertyPath: TypeId
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7427395823478885728, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_IsActive
@@ -6763,11 +6766,11 @@ PrefabInstance:
     - target: {fileID: 6927136765418665500, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_IsKinematic
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 15095382, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6927136765418665499, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}

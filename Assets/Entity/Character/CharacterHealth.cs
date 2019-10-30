@@ -7,6 +7,7 @@ public class CharacterHealth : MonoBehaviour
 {
     public System.Action<CharacterAttackData> OnDamaged;
     public System.Action OnFall;
+    public System.Action OnRecover;
     public System.Action OnGetUp;
 
     private bool _isOnFloor;
@@ -52,8 +53,7 @@ public class CharacterHealth : MonoBehaviour
             recoverTimer -= Time.deltaTime;
             if (recoverTimer < 0f)
             {
-                IsOnGround = false;
-                OnGetUp?.Invoke();
+                OnRecover?.Invoke();
             }
         }
     }
@@ -61,19 +61,20 @@ public class CharacterHealth : MonoBehaviour
     private void OnEnable()
     {
         OnFall += OnFallCallback;
-        OnGetUp += OnGetUpCallback;
+        OnGetUp += OnGetUpAnimationEnd;
     }
 
     private void OnDisable()
     {
         OnFall -= OnFallCallback;
-        OnGetUp -= OnGetUpCallback;
+        OnGetUp -= OnGetUpAnimationEnd;
     }
 
-    private void OnGetUpCallback()
+    public void OnGetUpAnimationEnd()
     {
         //_rigidbody.isKinematic = false;
         //_rigidbody.useGravity = true;
+        IsOnGround = false;
         _collider.enabled = true;
         _isOnFloor = false;
     }

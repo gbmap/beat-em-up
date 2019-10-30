@@ -8,9 +8,11 @@ public class CharacterMovement : MonoBehaviour
     CharacterCombat _combat;
 
     // ==== MOVEMENT
-    public Vector3 direction;
-    public Vector3 velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : _rigidbody.velocity; } }
-    public float moveSpeed = 3.0f;
+    public Vector3 Direction;
+    public Vector3 Velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : Direction; } }
+    private Vector3 velocity;
+
+    public float moveSpeed = 3f;
 
     public float jumpForce = 1f;
 
@@ -90,11 +92,11 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!_combat.IsOnCombo && !IsOnAir && !_health.IsOnGround)
         {
-            var dirNorm = direction.normalized * moveSpeed;
-            dirNorm.y = _rigidbody.velocity.y;
-            _rigidbody.velocity = dirNorm;
+            var dirNorm = Direction.normalized * moveSpeed;
+            dirNorm.y = velocity.y;
+            velocity = dirNorm;
 
-            if (direction.sqrMagnitude > 0.025)
+            if (Direction.sqrMagnitude > 0.025)
             {
                 dirNorm.y = 0f;
                 transform.LookAt(transform.position + dirNorm);
@@ -106,15 +108,15 @@ public class CharacterMovement : MonoBehaviour
             // applies dash on attack
             float t = 1f - _speedBumpT;
             var dir =  4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
-            //dir.y = _rigidbody.velocity.y;
-            _rigidbody.velocity = dir;
+            //dir.y = velocity.y;
+            velocity = dir;
 
             _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
         }
 
         if (movementType == EMovementType.Input || _speedBumpT > 0f)
         {
-            navMeshAgent.Move(_rigidbody.velocity * Time.deltaTime);
+            navMeshAgent.Move(velocity * Time.deltaTime);
         }
 
         navMeshAgent.isStopped |= _speedBumpT > 0f;
@@ -125,7 +127,7 @@ public class CharacterMovement : MonoBehaviour
         //_speedBumpDir = -transform.forward;
         /*if (attack.Knockdown && !IsOnAir)
         {
-            _rigidbody.velocity = _rigidbody.velocity + (Vector3.up+ attack.Attacker.transform.forward*0.3f) * jumpForce *1.1f;
+            velocity = velocity + (Vector3.up+ attack.Attacker.transform.forward*0.3f) * jumpForce *1.1f;
         }
         else*/
         {
@@ -147,7 +149,7 @@ public class CharacterMovement : MonoBehaviour
         if (IsOnAir) return;
 
         //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        _rigidbody.velocity = _rigidbody.velocity + Vector3.up * jumpForce;
+        velocity = velocity + Vector3.up * jumpForce;
         OnJump?.Invoke();
     }
 

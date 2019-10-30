@@ -39,7 +39,7 @@ public class CharacterPlayerInput : MonoBehaviour
             Camera.main.transform.right * _rewiredPlayer.GetAxis("HorizontalMovement");
         cFwd.y = 0;
 
-        movement.direction = cFwd;
+        movement.Direction = cFwd;
 
         if (_rewiredPlayer.GetButtonUp("Jump"))
         {

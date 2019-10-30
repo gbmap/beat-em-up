@@ -52,7 +52,7 @@ public class CharacterAnimator : MonoBehaviour
         _charCombat.OnCharacterAttack += OnCharacterAttackCallback;
 
         _charHealth.OnDamaged += OnCharacterDamagedCallback;
-        _charHealth.OnGetUp += OnGetUpCallback;
+        _charHealth.OnRecover += OnRecoverCallback;
 
         _charMovement.OnJump += OnJumpCallback;
 
@@ -60,6 +60,8 @@ public class CharacterAnimator : MonoBehaviour
         // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
         //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
+
+    
 
     private void OnDisable()
     {
@@ -74,14 +76,17 @@ public class CharacterAnimator : MonoBehaviour
         _charCombat.OnCharacterAttack -= OnCharacterAttackCallback;
 
         _charHealth.OnDamaged -= OnCharacterDamagedCallback;
+        _charHealth.OnRecover -= OnRecoverCallback;
+
+        _charMovement.OnJump -= OnJumpCallback;
     }
 
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(_movingHash, _charMovement.velocity.sqrMagnitude > 0.15f);
+        animator.SetBool(_movingHash, _charMovement.Velocity.sqrMagnitude > 0.15f);
         animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
-        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.velocity.y, -1f, 1f));
+        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.Velocity.y, -1f, 1f));
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
         {
@@ -117,7 +122,7 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    private void OnGetUpCallback()
+    private void OnRecoverCallback()
     {
         animator.SetTrigger(_recoverHash);
     }
