@@ -9,7 +9,7 @@ public class CharacterMovement : MonoBehaviour
 
     // ==== MOVEMENT
     public Vector3 direction;
-    public Vector3 velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : _rigidbody.velocity; } }
+    public Vector3 velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : direction; } }
     public float moveSpeed = 3.0f;
 
     public float jumpForce = 1f;
