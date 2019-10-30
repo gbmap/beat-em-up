@@ -105,6 +105,22 @@ public class CharacterManagerConfig : ScriptableObject
     public CharacterPrefabConfig[] CharacterPrefabs;
 
     public RuntimeAnimatorController CharacterAnimator;
+    public AnimatorOverrideController DaggerOverrideController;
+    public AnimatorOverrideController SwordOverrideController;
+    public AnimatorOverrideController ScepterOverrideController;
+
+    public RuntimeAnimatorController GetRuntimeAnimatorController(EWeaponType type)
+    {
+        switch (type)
+        {
+            case EWeaponType.Dagger: return DaggerOverrideController;
+            case EWeaponType.Sword: return SwordOverrideController;
+            case EWeaponType.Scepter: return ScepterOverrideController;
+            case EWeaponType.Fists: return CharacterAnimator;
+            default: return CharacterAnimator;
+        }
+    }
+
     public GameObject AdventureCharacterPack;
     public GameObject DungeonCharacterPack;
     public GameObject FantasyRivalsCharacterPack;
@@ -181,6 +197,16 @@ public class CharacterManagerConfig : ScriptableObject
         packInstance.transform.localPosition = Vector3.zero;
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
+
+        CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
+        if (characterModelInfo != null)
+        {
+            instance.GetComponent<CharacterAnimator>().HandTransform = characterModelInfo.HandBone;
+        }
+        else
+        {
+            Debug.LogError(string.Format("No hand transform found in model: {0}", packInstance.name));
+        }
 
         yield return null;
 

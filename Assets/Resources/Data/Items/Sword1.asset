@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
+  m_Name: Sword1
+  m_EditorClassIdentifier: 
+  Name: Espada Boladona
+  Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,
+    seria decorada por um bon\xE9 aba reta virado pro lado."
+  Prefab: {fileID: 181534, guid: 13af847dfa6dbe844ba4b7c902f98f67, type: 3}
+  Stats:
+    Id: 0
+    ItemType: 0
+    Rarity: 3
+    Slot: 5
+    WeaponType: 1
+    Attributes:
+      Vigor: 10
+      Strength: 10
+      Dexterity: 10
+      Magic: 10
+    DamageScaling:
+      Vigor: 0.1
+      Strength: 0.1
+      Dexterity: 0.1
+      Magic: 0.1
