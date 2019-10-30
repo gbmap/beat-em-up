@@ -12,7 +12,7 @@ public class CharacterAIMovementInput : MonoBehaviour
     NavMeshAgent navMeshAgent;
 
     CharacterHealth characterHealth;
-
+    CharacterCombat characterCombat;
 
     private enum EMovementStatus
     {
@@ -27,6 +27,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         characterHealth = GetComponent<CharacterHealth>();
+        characterCombat = GetComponent<CharacterCombat>();
 
         UpdateTarget();
     }
@@ -36,6 +37,11 @@ public class CharacterAIMovementInput : MonoBehaviour
         //navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         navMeshAgent.SetDestination(target.transform.position);
         navMeshAgent.isStopped = Vector3.Distance(transform.position, navMeshAgent.destination) < 2f || characterHealth.IsOnGround;
+        
+        if (Vector3.Distance(target.transform.position, transform.position) <= 1f)
+        {
+            characterCombat.RequestAttack(EAttackType.Weak);
+        }
     }
     
     void UpdateTarget()
