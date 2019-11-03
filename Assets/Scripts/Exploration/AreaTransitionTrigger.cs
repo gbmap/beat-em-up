@@ -5,9 +5,9 @@ namespace Catacumba.Exploration
 {
     public class AreaTransitionTrigger : MonoBehaviour
     {
-        [SerializeField] private Area destinationArea;
+        [SerializeField] Area destinationArea;
         
-        private void OnTriggerEnter(Collider other)
+        void OnTriggerEnter(Collider other)
         {
             // If player enters trigger
             if (destinationArea != null && other.CompareTag("Player"))
