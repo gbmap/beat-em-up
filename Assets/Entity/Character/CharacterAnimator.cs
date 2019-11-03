@@ -79,7 +79,7 @@ public class CharacterAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(_movingHash, _charMovement.direction.sqrMagnitude > 0.15f);
+        animator.SetBool(_movingHash, _charMovement.velocity.sqrMagnitude > 0.15f);
         animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
         animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.velocity.y, -1f, 1f));
 
