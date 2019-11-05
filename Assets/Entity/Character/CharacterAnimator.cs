@@ -61,8 +61,6 @@ public class CharacterAnimator : MonoBehaviour
         //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
 
-    
-
     private void OnDisable()
     {
         var attackSM = animator.GetBehaviour<AttackStateMachineBehaviour>();
@@ -100,6 +98,9 @@ public class CharacterAnimator : MonoBehaviour
         {
             return;
         }
+
+        animator.ResetTrigger(_weakAttackHash);
+        animator.ResetTrigger(_strongAttackHash);
 
         animator.SetInteger(_damagedNHits, attack.HitNumber);
         animator.SetTrigger(attack.Knockdown ? _knockdownHash : _damagedHash);

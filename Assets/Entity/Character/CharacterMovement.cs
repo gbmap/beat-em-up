@@ -118,12 +118,19 @@ public class CharacterMovement : MonoBehaviour
         {
             navMeshAgent.Move(velocity * Time.deltaTime);
         }
+    }
 
-        navMeshAgent.isStopped |= _speedBumpT > 0f;
+    private void LateUpdate()
+    {
+        if (movementType == EMovementType.AI)
+        {
+            navMeshAgent.isStopped |= _speedBumpT > 0f;
+        }
     }
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
+        
         //_speedBumpDir = -transform.forward;
         /*if (attack.Knockdown && !IsOnAir)
         {

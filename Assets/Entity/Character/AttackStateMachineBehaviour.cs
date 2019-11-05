@@ -40,14 +40,12 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
     override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        Debug.Log("Enter");
         OnComboStarted?.Invoke();
     }
 
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        Debug.Log("Exit");
         OnComboEnded?.Invoke();
     }
 }
