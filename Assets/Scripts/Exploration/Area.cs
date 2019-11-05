@@ -7,6 +7,10 @@ namespace Catacumba.Exploration
     public class Area : MonoBehaviour
     {
         [SerializeField] Transform playerSpawnPoint;
+        [SerializeField] Vector3 cameraPathOffset;
+        [SerializeField] Transform firstArea;
+        [SerializeField] Transform lastArea;
+        
         CinemachineVirtualCamera virtualCamera;
         CinemachinePath cinemachinePath;
         NavMeshSurface navMeshSurface;
@@ -35,7 +39,13 @@ namespace Catacumba.Exploration
 
         void GenerateCameraPath()
         {
+            var firstWaypoint = new CinemachinePath.Waypoint();
+            var lastWaypoint = new CinemachinePath.Waypoint();
+
+            firstWaypoint.position = firstArea.position + cameraPathOffset;
+            lastWaypoint.position = lastArea.position + cameraPathOffset;
             
+            cinemachinePath.m_Waypoints = new [] {firstWaypoint, lastWaypoint};
         }
     }
 }
