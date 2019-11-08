@@ -4,9 +4,11 @@ using UnityEngine.AI;
 
 public class CharacterAIMovementInput : MonoBehaviour
 {
-    [Header("Follow State")]
-    public float SightRange = 5f;
+    private static int nAttackers = 0;
+    private static int MaxAttackers = 1;
+
     private GameObject target;
+    private float lastDistance;
 
     [Header("Attack State")]
     public float DistanceToAttack = 1.5f;
@@ -31,9 +33,13 @@ public class CharacterAIMovementInput : MonoBehaviour
     private float lastCombo;
     
     [Header("Wander State")]
+    public float SightRange = 5f;
     public float WanderRadius = 1f;
     public float SleepTime = 2f;
     private float lastPathChange;
+
+    [Header("Orbit State")]
+    public float OrbitRadius = 6f;
 
     private NavMeshAgent navMeshAgent;
 
@@ -43,8 +49,8 @@ public class CharacterAIMovementInput : MonoBehaviour
     private enum EMovementStatus
     {
         Wandering,
-        FollowingEnemy,
-        Attacking
+        Attacking,
+        Orbiting,
     }
 
     private EMovementStatus movementStatus;
@@ -53,14 +59,22 @@ public class CharacterAIMovementInput : MonoBehaviour
         get { return movementStatus; }
         set
         {
+            if (value == movementStatus) return;
+
             var animator = GetComponent<Animator>();
             animator.ResetTrigger("WeakAttack");
             animator.ResetTrigger("StrongAttack");
+
+            if (movementStatus == EMovementStatus.Attacking && value != movementStatus)
+            {
+                nAttackers--;
+            }
 
             movementStatus = value;
             switch (movementStatus)
             {
                 case EMovementStatus.Attacking:
+                    nAttackers++;
                     lastAttack = Time.time;
                     comboLength = Random.Range(1, MaxComboHits);
                     return;
@@ -75,29 +89,33 @@ public class CharacterAIMovementInput : MonoBehaviour
         characterHealth = GetComponent<CharacterHealth>();
         characterCombat = GetComponent<CharacterCombat>();
 
+        MovementStatus = EMovementStatus.Orbiting;
+
         UpdateTarget();
     }
 
     private void Update()
     {
-        float distanceToTarget = Vector3.Distance(transform.position, navMeshAgent.destination);
         if (target == null)
         {
             MovementStatus = EMovementStatus.Wandering;
         }
 
+        float distanceToTarget = target != null ? Vector3.Distance(transform.position, target.transform.position) : float.MaxValue;
         switch (MovementStatus)
         {
-            case EMovementStatus.FollowingEnemy:
-                Follow(target.transform, distanceToTarget);
-                break;
             case EMovementStatus.Attacking:
-                Attack(distanceToTarget);
+                AttackState(target.transform, distanceToTarget);
                 break;
             case EMovementStatus.Wandering:
-                Wander(distanceToTarget);
+                WanderState(distanceToTarget);
+                break;
+            case EMovementStatus.Orbiting:
+                OrbitState(distanceToTarget);
                 break;
         }
+
+        lastDistance = distanceToTarget;
     }
     
     void UpdateTarget()
@@ -106,61 +124,92 @@ public class CharacterAIMovementInput : MonoBehaviour
         target = players.OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();
     }
 
-    void Follow(Transform target, float distanceToTarget)
+    void AttackState(Transform target, float distanceToTarget)
     {
-        navMeshAgent.isStopped = characterHealth.IsOnGround;
-        navMeshAgent.SetDestination(target.position);
+        if (nAttackers > MaxAttackers)
+        {
+            MovementStatus = EMovementStatus.Orbiting;
+            return;
+        }
+        
         if (distanceToTarget <= DistanceToAttack)
         {
-            MovementStatus = EMovementStatus.Attacking;
-        }
-        else if (distanceToTarget >= SightRange)
-        {
-            MovementStatus = EMovementStatus.Wandering;
-        }
-    }
-
-    void Attack(float distanceToTarget)
-    {
-        navMeshAgent.isStopped = true;
-        if (distanceToTarget <= DistanceToAttack)
-        {
+            navMeshAgent.isStopped = true;
             if (Time.time > lastAttack + AttackCooldown && Time.time > lastCombo + ComboCooldown)
             {
                 var attackType = combo[(currentAttackIndex++) % comboLength];
                 characterCombat.RequestAttack(attackType);
                 lastAttack = Time.time;
 
-                if (currentAttackIndex == MaxComboHits-1)
+                if (currentAttackIndex == MaxComboHits - 1)
                 {
                     currentAttackIndex = 0;
                     lastCombo = Time.time;
                 }
             }
         }
+        else if (distanceToTarget >= SightRange)
+        {
+            MovementStatus = EMovementStatus.Wandering;
+        }
         else
         {
-            currentAttackIndex = 0;
-            MovementStatus = distanceToTarget >= SightRange ? EMovementStatus.Wandering : EMovementStatus.FollowingEnemy;
+            navMeshAgent.isStopped = characterHealth.IsOnGround;
+            navMeshAgent.SetDestination(target.position);
         }
     }
 
-    void Wander(float distanceToTarget)
+    void WanderState(float distanceToTarget)
     {
         if (distanceToTarget < SightRange)
         {
-            MovementStatus = EMovementStatus.FollowingEnemy;
+            MovementStatus = EMovementStatus.Orbiting;
             return;
         }
         
         navMeshAgent.isStopped = false;
-        if (navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+        if (!navMeshAgent.hasPath || navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
         {
             if (Time.time > lastPathChange + SleepTime)
             {
-                navMeshAgent.SetDestination(Random.insideUnitSphere * WanderRadius);
+                navMeshAgent.SetDestination(transform.position + Random.insideUnitSphere * WanderRadius);
                 lastPathChange = Time.time;
             }
+        }
+    }
+
+    void OrbitState(float distanceToTarget)
+    {
+        if (nAttackers < MaxAttackers)
+        {
+            MovementStatus = EMovementStatus.Attacking;
+            return;
+        }
+
+        if (!navMeshAgent.hasPath || 
+            navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete ||
+            distanceToTarget != lastDistance)
+        {
+            if (Time.time > lastPathChange + SleepTime)
+            {
+                float angle = gameObject.GetInstanceID() % 360f;
+                Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                navMeshAgent.SetDestination(target.transform.position + offset * OrbitRadius);
+                lastPathChange = Time.time;
+            }
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (navMeshAgent == null || !navMeshAgent.hasPath) return;
+
+        var path = navMeshAgent.path;
+        for (int i = 1; i < path.corners.Length; i++)
+        {
+            var a = path.corners[i - 1];
+            var b = path.corners[i];
+            Gizmos.DrawLine(a, b);
         }
     }
 }
