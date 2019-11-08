@@ -117,7 +117,15 @@ public class CharacterAIMovementInput : MonoBehaviour
 
         lastDistance = distanceToTarget;
     }
-    
+
+    private void OnDisable()
+    {
+        if (MovementStatus == EMovementStatus.Attacking)
+        {
+            nAttackers--;
+        }
+    }
+
     void UpdateTarget()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
