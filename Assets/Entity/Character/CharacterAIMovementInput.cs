@@ -4,8 +4,8 @@ using UnityEngine.AI;
 
 public class CharacterAIMovementInput : MonoBehaviour
 {
-    private static int nAttackers = 0;
-    private static int MaxAttackers = 1;
+    /*private static int nAttackers = 0;
+    private static int MaxAttackers = 1;*/
 
     private GameObject target;
     private float lastDistance;
@@ -67,14 +67,16 @@ public class CharacterAIMovementInput : MonoBehaviour
 
             if (movementStatus == EMovementStatus.Attacking && value != movementStatus)
             {
-                nAttackers--;
+                AIManager.Instance.DecreaseAttackers(target);
+                //nAttackers--;
             }
 
             movementStatus = value;
             switch (movementStatus)
             {
                 case EMovementStatus.Attacking:
-                    nAttackers++;
+                    AIManager.Instance.IncreaseAttackers(target);
+                    //nAttackers++;
                     lastAttack = Time.time;
                     comboLength = Random.Range(1, MaxComboHits);
                     return;
@@ -122,19 +124,25 @@ public class CharacterAIMovementInput : MonoBehaviour
     {
         if (MovementStatus == EMovementStatus.Attacking)
         {
-            nAttackers--;
+            AIManager.Instance.DecreaseAttackers(target);
+            //nAttackers--;
         }
     }
 
     void UpdateTarget()
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        target = players.OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();
+        /*GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        target = players.OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();*/
+        if (target != null)
+        {
+            AIManager.Instance.ClearTarget(target);
+        }
+        target = AIManager.Instance.GetTarget(gameObject);
     }
 
     void AttackState(Transform target, float distanceToTarget)
     {
-        if (nAttackers > MaxAttackers)
+        if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject))
         {
             MovementStatus = EMovementStatus.Orbiting;
             return;
@@ -188,7 +196,7 @@ public class CharacterAIMovementInput : MonoBehaviour
 
     void OrbitState(float distanceToTarget)
     {
-        if (nAttackers < MaxAttackers)
+        if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) < AIManager.Instance.GetMaxAttackers(target.gameObject))
         {
             MovementStatus = EMovementStatus.Attacking;
             return;
