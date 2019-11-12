@@ -21,7 +21,6 @@ public class CharacterHealth : MonoBehaviour
 
     private float lastHit;
     private CharacterData characterData;
-    private CharacterMovement characterMovement;
 
     // hora q caiu no chão do Knockdown
     private float recoverTimer;
@@ -34,7 +33,6 @@ public class CharacterHealth : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
         characterData = GetComponent<CharacterData>();
-        characterMovement = GetComponent<CharacterMovement>();
 
         UpdateHealthQuad(1f, 1f);
     }
@@ -48,7 +46,7 @@ public class CharacterHealth : MonoBehaviour
         }
 
         // timer pra se recuperar
-        if (IsOnGround && !characterMovement.IsOnAir && recoverTimer > 0f)
+        if (IsOnGround && recoverTimer > 0f)
         {
             recoverTimer -= Time.deltaTime;
             if (recoverTimer < 0f)

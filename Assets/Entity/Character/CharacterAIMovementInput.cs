@@ -39,7 +39,7 @@ public class CharacterAIMovementInput : MonoBehaviour
     private float lastPathChange;
 
     [Header("Orbit State")]
-    public float OrbitRadius = 6f;
+    public float OrbitRadius = 2f;
 
     private NavMeshAgent navMeshAgent;
 
@@ -206,7 +206,7 @@ public class CharacterAIMovementInput : MonoBehaviour
             navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete ||
             distanceToTarget != lastDistance)
         {
-            if (Time.time > lastPathChange + SleepTime)
+            //if (Time.time > lastPathChange + SleepTime)
             {
                 float angle = gameObject.GetInstanceID() % 360f;
                 Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));

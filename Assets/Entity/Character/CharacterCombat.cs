@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,16 +14,41 @@ public class CharacterCombat : MonoBehaviour
     public System.Action OnComboStarted;
     public System.Action OnComboEnded;
 
+    private CharacterHealth health;
+
+    private Vector3 attackColliderBasePosition
+    {
+        get { return transform.position + transform.forward*0.75f + Vector3.up; }
+    }
+
+    private Vector3 attackColliderSize
+    {
+        get { return Vector3.one * 0.5f + Vector3.right * 0.5f; }
+    }
+
+    private float lastAttack;
+
+    private void Awake()
+    {
+        health = GetComponent<CharacterHealth>();
+    }
+
     private void OnEnable()
     {
         OnComboStarted += OnComboStartedCallback;
         OnComboEnded += OnComboEndedCallback;
-    }
 
+        health.OnFall += OnFallCallback;
+        health.OnDamaged += OnDamagedCallback;
+    }
+    
     private void OnDisable()
     {
         OnComboStarted -= OnComboStartedCallback;
         OnComboEnded -= OnComboEndedCallback;
+
+        health.OnFall -= OnFallCallback;
+        health.OnDamaged -= OnDamagedCallback;
     }
 
     public void RequestAttack(EAttackType type)
@@ -44,6 +70,16 @@ public class CharacterCombat : MonoBehaviour
         _nComboHits = 0;
     }
 
+    private void OnFallCallback()
+    {
+        OnComboEnded?.Invoke();
+    }
+
+    private void OnDamagedCallback(CharacterAttackData obj)
+    {
+        OnComboEnded?.Invoke();
+    }
+
     /*
     *  CHAMADO PELO ANIMATOR!!!1111
     */
@@ -55,9 +91,9 @@ public class CharacterCombat : MonoBehaviour
     private void Attack(CharacterAttackData attack)
     {
         Collider[] colliders = Physics.OverlapBox(
-            transform.position + transform.forward + Vector3.up, 
-            Vector3.one*0.5f, 
-            Quaternion.identity, 
+            attackColliderBasePosition,
+            attackColliderSize, 
+            transform.rotation, 
             1 << LayerMask.NameToLayer("Entities")
         );
 
@@ -70,6 +106,18 @@ public class CharacterCombat : MonoBehaviour
         }
 
         OnCharacterAttack?.Invoke(attack);
+
+        lastAttack = Time.time;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Time.time < lastAttack + 1f)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
+            Gizmos.DrawWireCube(Vector3.zero, attackColliderSize);
+        }
     }
 
 }

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
-
 public class AIManager : Singleton<AIManager>
 {
     private class TargetInfo

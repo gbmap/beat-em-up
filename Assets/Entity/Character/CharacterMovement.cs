@@ -21,12 +21,6 @@ public class CharacterMovement : MonoBehaviour
     private float _speedBumpT;
     private Vector3 _speedBumpDir;
 
-    private CapsuleCollider capsuleCollider;
-    public CapsuleCollider Collider
-    {
-        get { return capsuleCollider; }
-    }
-
     [SerializeField]
     private float raycastDistance = 0.2f;
 
@@ -68,8 +62,6 @@ public class CharacterMovement : MonoBehaviour
         _health = GetComponent<CharacterHealth>();
 
         _health.OnDamaged += OnDamagedCallback;
-
-        capsuleCollider = GetComponent<CapsuleCollider>();
     }
 
     void Start()
