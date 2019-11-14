@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -51,6 +52,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         Wandering,
         Attacking,
         Orbiting,
+        OrbitAttack,
     }
 
     private EMovementStatus movementStatus;
@@ -74,11 +76,15 @@ public class CharacterAIMovementInput : MonoBehaviour
             movementStatus = value;
             switch (movementStatus)
             {
+                case EMovementStatus.OrbitAttack:
                 case EMovementStatus.Attacking:
-                    AIManager.Instance.IncreaseAttackers(target);
+                    if (movementStatus == EMovementStatus.Attacking)
+                    {
+                        AIManager.Instance.IncreaseAttackers(target);
+                    }
                     //nAttackers++;
                     lastAttack = Time.time;
-                    comboLength = Random.Range(1, MaxComboHits);
+                    comboLength = UnityEngine.Random.Range(1, MaxComboHits);
                     return;
             }
         }
@@ -115,17 +121,34 @@ public class CharacterAIMovementInput : MonoBehaviour
             case EMovementStatus.Orbiting:
                 OrbitState(distanceToTarget);
                 break;
+            case EMovementStatus.OrbitAttack:
+                OrbitAttackState(target.transform, distanceToTarget);
+                break;
         }
 
         lastDistance = distanceToTarget;
     }
 
+    private void OnEnable()
+    {
+        characterHealth.OnDamaged += OnDamagedCallback;
+    }
+
     private void OnDisable()
     {
+        characterHealth.OnDamaged -= OnDamagedCallback;
         if (MovementStatus == EMovementStatus.Attacking)
         {
             AIManager.Instance.DecreaseAttackers(target);
             //nAttackers--;
+        }
+    }
+
+    private void OnDamagedCallback(CharacterAttackData obj)
+    {
+        if (MovementStatus == EMovementStatus.Orbiting)
+        {
+            MovementStatus = EMovementStatus.OrbitAttack;
         }
     }
 
@@ -140,7 +163,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         target = AIManager.Instance.GetTarget(gameObject);
     }
 
-    void AttackState(Transform target, float distanceToTarget)
+    void AttackState(Transform target, float distanceToTarget, bool orbitReaction = false)
     {
         if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject))
         {
@@ -159,8 +182,15 @@ public class CharacterAIMovementInput : MonoBehaviour
 
                 if (currentAttackIndex == MaxComboHits - 1)
                 {
-                    currentAttackIndex = 0;
-                    lastCombo = Time.time;
+                    if (orbitReaction)
+                    {
+                        MovementStatus = EMovementStatus.Orbiting;
+                    }
+                    else
+                    {
+                        currentAttackIndex = 0;
+                        lastCombo = Time.time;
+                    }
                 }
             }
         }
@@ -188,7 +218,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         {
             if (Time.time > lastPathChange + SleepTime)
             {
-                navMeshAgent.SetDestination(transform.position + Random.insideUnitSphere * WanderRadius);
+                navMeshAgent.SetDestination(transform.position + UnityEngine.Random.insideUnitSphere * WanderRadius);
                 lastPathChange = Time.time;
             }
         }
@@ -214,6 +244,11 @@ public class CharacterAIMovementInput : MonoBehaviour
                 lastPathChange = Time.time;
             }
         }
+    }
+
+    void OrbitAttackState(Transform target, float distanceToTarget)
+    {
+        AttackState(target, distanceToTarget, true);
     }
 
     private void OnDrawGizmos()
