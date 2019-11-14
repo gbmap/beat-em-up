@@ -202,12 +202,12 @@ public class CharacterAIMovementInput : MonoBehaviour
             return;
         }
 
-        if (!navMeshAgent.hasPath || 
-            navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete ||
-            distanceToTarget != lastDistance)
+        if (distanceToTarget != lastDistance)
         {
             //if (Time.time > lastPathChange + SleepTime)
             {
+                //navMeshAgent.isStopped = characterHealth.IsOnGround;
+                navMeshAgent.isStopped = characterHealth.IsOnGround;
                 float angle = gameObject.GetInstanceID() % 360f;
                 Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
                 navMeshAgent.SetDestination(target.transform.position + offset * OrbitRadius);
