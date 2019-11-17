@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+public enum ECharacterBrainType
+{
+    AI,
+    Input
+}
+
 [Serializable]
 public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
+    public ECharacterBrainType BrainType;
     private List<ItemData> itemsInRange = new List<ItemData>();
 
     void Awake()
     {
+        BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
         if (InitData)
         {
             Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID(), DataInit);

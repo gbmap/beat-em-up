@@ -6,10 +6,11 @@ public class CharacterMovement : MonoBehaviour
     // === REFS
     CharacterHealth _health;
     CharacterCombat _combat;
+    CharacterData data;
 
     // ==== MOVEMENT
     public Vector3 Direction;
-    public Vector3 Velocity { get { return movementType == EMovementType.AI ? navMeshAgent.velocity : Direction; } }
+    public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? navMeshAgent.velocity : Direction; } }
     private Vector3 velocity;
 
     public float moveSpeed = 3f;
@@ -28,13 +29,13 @@ public class CharacterMovement : MonoBehaviour
 
     NavMeshAgent navMeshAgent;
 
-    private enum EMovementType
+    private ECharacterBrainType brainType
     {
-        AI,
-        Input
+        get
+        {
+            return data.BrainType;
+        }
     }
-
-    private EMovementType movementType;
 
     public bool IsOnAir
     {
@@ -56,7 +57,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void Awake()
     {
-        movementType = GetComponent<CharacterPlayerInput>() == null ? EMovementType.AI : EMovementType.Input;
+        data = GetComponent<CharacterData>();
+        //movementType = GetComponent<CharacterPlayerInput>() == null ? ECharacterBrainType.AI : ECharacterBrainType.Input;
         navMeshAgent = GetComponent<NavMeshAgent>();
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
@@ -106,7 +108,7 @@ public class CharacterMovement : MonoBehaviour
             _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
         }
 
-        if (movementType == EMovementType.Input || _speedBumpT > 0f)
+        if (brainType == ECharacterBrainType.Input || _speedBumpT > 0f)
         {
             navMeshAgent.Move(velocity * Time.deltaTime);
         }
@@ -114,7 +116,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (movementType == EMovementType.AI)
+        if (brainType == ECharacterBrainType.AI)
         {
             navMeshAgent.isStopped |= _speedBumpT > 0f;
         }

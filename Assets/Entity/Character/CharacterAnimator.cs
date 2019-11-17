@@ -14,6 +14,11 @@ public class CharacterAnimator : MonoBehaviour
     CharacterCombat _charCombat;
     CharacterHealth _charHealth;
 
+    private float AnimatorDefaultSpeed
+    {
+        get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
+    }
+
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
@@ -40,6 +45,8 @@ public class CharacterAnimator : MonoBehaviour
         _charMovement = GetComponent<CharacterMovement>();
         _charHealth = GetComponent<CharacterHealth>();
         _charCombat = GetComponent<CharacterCombat>();
+
+        animator.speed = AnimatorDefaultSpeed;
     }
 
     private void OnEnable()
@@ -88,7 +95,7 @@ public class CharacterAnimator : MonoBehaviour
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
         {
-            animator.speed = 1f;
+            animator.speed = AnimatorDefaultSpeed;
         }
     }
 
