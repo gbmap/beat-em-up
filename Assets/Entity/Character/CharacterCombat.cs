@@ -14,6 +14,7 @@ public class CharacterCombat : MonoBehaviour
     public System.Action OnComboStarted;
     public System.Action OnComboEnded;
 
+    private CharacterData data;
     private CharacterHealth health;
 
     private Vector3 attackColliderBasePosition
@@ -23,14 +24,20 @@ public class CharacterCombat : MonoBehaviour
 
     private Vector3 attackColliderSize
     {
-        get { return Vector3.one * 0.5f + Vector3.right * 0.5f; }
+        get { return (Vector3.one * 0.5f + Vector3.right * 0.5f) * (1f+((float)data.Stats.GetAttributeTotal(EAttribute.Strength)) / CharacterStats.MaxAttributeLevel); }
     }
 
-    private float lastAttack;
+    private Vector3 GetAttackColliderSize(EAttackType type)
+    {
+        return attackColliderSize * (type == EAttackType.Weak ? 1f : 1.1f);
+    }
+
+    private CharacterAttackData lastAttackData;
 
     private void Awake()
     {
         health = GetComponent<CharacterHealth>();
+        data = GetComponent<CharacterData>();
     }
 
     private void OnEnable()
@@ -85,14 +92,14 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
-        Attack(new CharacterAttackData { Type = type, Attacker = gameObject, HitNumber = ++_nComboHits });
+        Attack(new CharacterAttackData { Type = type, Attacker = gameObject, HitNumber = ++_nComboHits, Time = Time.time });
     }
 
     private void Attack(CharacterAttackData attack)
     {
         Collider[] colliders = Physics.OverlapBox(
             attackColliderBasePosition,
-            attackColliderSize, 
+            GetAttackColliderSize(attack.Type), 
             transform.rotation, 
             1 << LayerMask.NameToLayer("Entities")
         );
@@ -107,16 +114,18 @@ public class CharacterCombat : MonoBehaviour
 
         OnCharacterAttack?.Invoke(attack);
 
-        lastAttack = Time.time;
+        lastAttackData = attack;
     }
 
     private void OnDrawGizmos()
     {
-        if (Time.time < lastAttack + 1f)
+        if (!Application.isPlaying) return;
+
+        if (Time.time < lastAttackData.Time + 1f)
         {
             Gizmos.color = Color.red;
             Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
-            Gizmos.DrawWireCube(Vector3.zero, attackColliderSize);
+            Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(lastAttackData.Type));
         }
     }
 

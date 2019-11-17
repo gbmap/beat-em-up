@@ -8,6 +8,7 @@ public enum EAttackType
 
 public struct CharacterAttackData
 {
+    public float Time;
     public EAttackType Type;
     public GameObject Attacker;
     public CharacterStats AttackerStats;

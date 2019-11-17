@@ -234,6 +234,8 @@ public class Skill
 [Serializable]
 public class CharacterStats
 {
+    public const int MaxAttributeLevel = 256;
+
     public System.Action<CharacterStats> OnStatsChanged = delegate { };
 
     public int Level { get; set; }
@@ -260,6 +262,17 @@ public class CharacterStats
     public int Mana { get; set; }
 
     public CharAttributesI Attributes;
+    public int GetAttributeTotal(EAttribute attribute)
+    {
+        switch (attribute)
+        {
+            case EAttribute.Dexterity: return (Attributes.Dexterity + Inventory.GetTotalAttributes().Dexterity);
+            case EAttribute.Magic: return (Attributes.Magic + Inventory.GetTotalAttributes().Magic);
+            case EAttribute.Strength: return (Attributes.Strength + Inventory.GetTotalAttributes().Strength);
+            case EAttribute.Vigor: return (Attributes.Vigor + Inventory.GetTotalAttributes().Vigor);
+            default: throw new NotImplementedException("Requested attributed not implemented!");
+        }
+    }
 
     public int Stagger
     {

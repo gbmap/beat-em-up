@@ -180,7 +180,7 @@ public class CharacterAIMovementInput : MonoBehaviour
                 characterCombat.RequestAttack(attackType);
                 lastAttack = Time.time;
 
-                if (currentAttackIndex == MaxComboHits - 1)
+                if (currentAttackIndex >= comboLength - 1)
                 {
                     if (orbitReaction)
                     {
