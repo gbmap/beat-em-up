@@ -91,9 +91,6 @@ public class CharacterMovement : MonoBehaviour
             var dirNorm = dir * MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.85f : 1f);
             dirNorm.y = velocity.y;
 
-
-
-
             velocity = dirNorm * rollSpeed;
             if (Direction.sqrMagnitude > 0.025)
             {

@@ -41,6 +41,8 @@ public class CharacterAIMovementInput : MonoBehaviour
 
     [Header("Orbit State")]
     public float OrbitRadius = 2f;
+    public float DiceRollCooldown = 2f;
+    private float lastAttackRoll;
 
     private NavMeshAgent navMeshAgent;
 
@@ -76,6 +78,9 @@ public class CharacterAIMovementInput : MonoBehaviour
             movementStatus = value;
             switch (movementStatus)
             {
+                case EMovementStatus.Orbiting:
+                    lastAttackRoll = Time.time;
+                    break;
                 case EMovementStatus.OrbitAttack:
                 case EMovementStatus.Attacking:
                     if (movementStatus == EMovementStatus.Attacking)
@@ -173,15 +178,12 @@ public class CharacterAIMovementInput : MonoBehaviour
             navMeshAgent.isStopped = true;
             if (Time.time > lastAttack + AttackCooldown && Time.time > lastCombo + ComboCooldown)
             {
-                var attackType = combo[(currentAttackIndex++) % comboLength];
-                characterCombat.RequestAttack(attackType);
-                lastAttack = Time.time;
-
                 if (currentAttackIndex >= comboLength - 1)
                 {
                     if (orbitReaction)
                     {
                         MovementStatus = EMovementStatus.Orbiting;
+                        return;
                     }
                     else
                     {
@@ -189,6 +191,10 @@ public class CharacterAIMovementInput : MonoBehaviour
                         lastCombo = Time.time;
                     }
                 }
+
+                var attackType = combo[(currentAttackIndex++) % comboLength];
+                characterCombat.RequestAttack(attackType);
+                lastAttack = Time.time;
             }
         }
         else if (distanceToTarget >= SightRange)
@@ -239,6 +245,17 @@ public class CharacterAIMovementInput : MonoBehaviour
                 lastPathChange = Time.time;
             }
         }
+
+        if (Time.time > lastAttackRoll + DiceRollCooldown)
+        {
+            if (UnityEngine.Random.value > 0.75)
+            {
+                MovementStatus = EMovementStatus.OrbitAttack;
+                return;
+            }
+
+            lastAttackRoll = Time.time;
+        }
     }
 
     void OrbitAttackState(Transform target, float distanceToTarget)
@@ -257,5 +274,19 @@ public class CharacterAIMovementInput : MonoBehaviour
             var b = path.corners[i];
             Gizmos.DrawLine(a, b);
         }
+    }
+
+    private void OnGUI()
+    {
+        if (!Application.isEditor) return;
+
+        Vector3 posW = transform.position;
+        //posW.y = -posW.y;
+
+        Vector2 pos = Camera.main.WorldToScreenPoint(posW);
+
+        Rect r = new Rect(pos, Vector2.one * 100f);
+        r.y = Screen.height - pos.y;
+        GUI.Label(r, "State: " + MovementStatus);
     }
 }

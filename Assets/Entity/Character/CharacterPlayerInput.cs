@@ -29,7 +29,7 @@ public class CharacterPlayerInput : MonoBehaviour
     float[] lastPress = { 0f, 0f };
     float[] lastDoublePress = { 0f, 0f };
 
-    float doublePressTime = 0.25f;
+    float doublePressTime = 0.2f;
 
     // Start is called before the first frame update
     void Awake()
