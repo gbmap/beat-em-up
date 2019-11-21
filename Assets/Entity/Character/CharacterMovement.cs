@@ -9,23 +9,25 @@ public class CharacterMovement : MonoBehaviour
     CharacterData data;
 
     // ==== MOVEMENT
+    [HideInInspector]
     public Vector3 Direction;
     public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? navMeshAgent.velocity : Direction; } }
     private Vector3 velocity;
 
-    public float moveSpeed = 3f;
-
-    public float jumpForce = 1f;
+    public float MoveSpeed = 3f;
 
     private Rigidbody _rigidbody;
 
     private float _speedBumpT;
     private Vector3 _speedBumpDir;
 
-    [SerializeField]
-    private float raycastDistance = 0.2f;
-
     public System.Action OnJump;
+    public System.Action OnRoll;
+
+
+    private bool isRolling;
+    private float rollSpeedT;
+    private Vector3 rollDirection;
 
     NavMeshAgent navMeshAgent;
 
@@ -42,23 +44,12 @@ public class CharacterMovement : MonoBehaviour
         get
         {
             return false;
-
-            // cuidado!!!! chances de hemorragia ocular!!!!11111111 
-            Ray r = new Ray
-            {
-                origin = transform.position + Vector3.up * 0.05f, // remove as chances do raycast começar dentro do collider do chão
-                direction = Vector3.down
-            };
-
-            string[] world = { "Level", "Entities" };
-            return !Physics.Raycast(r, raycastDistance, LayerMask.GetMask(world), QueryTriggerInteraction.Ignore);
         }
     }
 
     private void Awake()
     {
         data = GetComponent<CharacterData>();
-        //movementType = GetComponent<CharacterPlayerInput>() == null ? ECharacterBrainType.AI : ECharacterBrainType.Input;
         navMeshAgent = GetComponent<NavMeshAgent>();
         _combat = GetComponent<CharacterCombat>();
         _health = GetComponent<CharacterHealth>();
@@ -69,6 +60,7 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        navMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
     }
 
     private void OnEnable()
@@ -86,10 +78,23 @@ public class CharacterMovement : MonoBehaviour
     {
         if (!_combat.IsOnCombo && !IsOnAir && !_health.IsOnGround)
         {
-            var dirNorm = Direction.normalized * moveSpeed;
-            dirNorm.y = velocity.y;
-            velocity = dirNorm;
+            float rollSpeed = 1f + Mathf.Clamp01(Mathf.Pow(rollSpeedT, 1f/3));
 
+            var dir = Direction.normalized;
+            if (isRolling)
+            {
+                float a = Vector3.Dot(dir, rollDirection);
+                dir = Vector3.Lerp(rollDirection, dir, Mathf.Max(0f, a));
+                rollDirection = dir;
+            }
+
+            var dirNorm = dir * MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.85f : 1f);
+            dirNorm.y = velocity.y;
+
+
+
+
+            velocity = dirNorm * rollSpeed;
             if (Direction.sqrMagnitude > 0.025)
             {
                 dirNorm.y = 0f;
@@ -101,7 +106,7 @@ public class CharacterMovement : MonoBehaviour
         {
             // applies dash on attack
             float t = 1f - _speedBumpT;
-            var dir =  4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
+            var dir = 4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
             //dir.y = velocity.y;
             velocity = dir;
 
@@ -112,6 +117,8 @@ public class CharacterMovement : MonoBehaviour
         {
             navMeshAgent.Move(velocity * Time.deltaTime);
         }
+
+        rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime*0.8f);
     }
 
     private void LateUpdate()
@@ -124,13 +131,6 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
-        
-        //_speedBumpDir = -transform.forward;
-        /*if (attack.Knockdown && !IsOnAir)
-        {
-            velocity = velocity + (Vector3.up+ attack.Attacker.transform.forward*0.3f) * jumpForce *1.1f;
-        }
-        else*/
         {
             _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f * attack.HitNumber);
             _speedBumpT = 1f;
@@ -143,24 +143,21 @@ public class CharacterMovement : MonoBehaviour
         _speedBumpDir = transform.forward;
     }
 
-    public void Jump()
+    public void Roll()
     {
-        return;
-
-        if (IsOnAir) return;
-
-        //_rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        velocity = velocity + Vector3.up * jumpForce;
-        OnJump?.Invoke();
+        OnRoll?.Invoke();
+        rollSpeedT = 1f;
+        rollDirection = Direction;
     }
 
-    private void OnDrawGizmos()
+    public void BeginRoll()
     {
-        if (!Application.isPlaying) return;
-
-        Gizmos.color = IsOnAir ? Color.red : Color.green;
-        var origin = transform.position;
-        Gizmos.DrawLine(origin, origin + Vector3.down * raycastDistance);
+        isRolling = true;
     }
 
+    public void EndRoll()
+    {
+        isRolling = false;
+        //rollSpeedT = 0f;
+    }
 }

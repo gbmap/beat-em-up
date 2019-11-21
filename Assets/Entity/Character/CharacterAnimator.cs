@@ -10,9 +10,9 @@ public class CharacterAnimator : MonoBehaviour
     public Transform HandTransform;
 
     CharacterData _charData;
-    CharacterMovement _charMovement;
-    CharacterCombat _charCombat;
-    CharacterHealth _charHealth;
+    CharacterMovement movement;
+    CharacterCombat combat;
+    CharacterHealth health;
 
     private float AnimatorDefaultSpeed
     {
@@ -24,6 +24,7 @@ public class CharacterAnimator : MonoBehaviour
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
     int _speedYHash = Animator.StringToHash("SpeedY");
     int _jumpTriggerHash = Animator.StringToHash("Jump");
+    int _rollTriggerHash = Animator.StringToHash("Roll");
 
     // ===== COMBAT
     int _weakAttackHash = Animator.StringToHash("WeakAttack");
@@ -42,9 +43,9 @@ public class CharacterAnimator : MonoBehaviour
     void Awake()
     {
         _charData = GetComponent<CharacterData>();
-        _charMovement = GetComponent<CharacterMovement>();
-        _charHealth = GetComponent<CharacterHealth>();
-        _charCombat = GetComponent<CharacterCombat>();
+        movement = GetComponent<CharacterMovement>();
+        health = GetComponent<CharacterHealth>();
+        combat = GetComponent<CharacterCombat>();
 
         animator.speed = AnimatorDefaultSpeed;
     }
@@ -52,16 +53,16 @@ public class CharacterAnimator : MonoBehaviour
     private void OnEnable()
     {
         var attackSM = animator.GetBehaviour<AttackStateMachineBehaviour>();
-        attackSM.OnComboStarted += delegate { _charCombat.OnComboStarted?.Invoke(); };
-        attackSM.OnComboEnded += delegate { _charCombat.OnComboEnded?.Invoke(); };
+        attackSM.OnComboStarted += delegate { combat.OnComboStarted?.Invoke(); };
+        attackSM.OnComboEnded += delegate { combat.OnComboEnded?.Invoke(); };
 
-        _charCombat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
-        _charCombat.OnCharacterAttack += OnCharacterAttackCallback;
+        combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
+        combat.OnCharacterAttack += OnCharacterAttackCallback;
 
-        _charHealth.OnDamaged += OnCharacterDamagedCallback;
-        _charHealth.OnRecover += OnRecoverCallback;
+        health.OnDamaged += OnCharacterDamagedCallback;
+        health.OnRecover += OnRecoverCallback;
 
-        _charMovement.OnJump += OnJumpCallback;
+        movement.OnRoll += OnRollCallback;
 
         // Isso aqui tá bugando pq a Unity não garante que o OnEnable vai ser chamado antes do Awake pra componentes diferentes.
         // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
@@ -77,21 +78,21 @@ public class CharacterAnimator : MonoBehaviour
             attackSM.OnComboEnded = null;
         }
 
-        _charCombat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
-        _charCombat.OnCharacterAttack -= OnCharacterAttackCallback;
+        combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
+        combat.OnCharacterAttack -= OnCharacterAttackCallback;
 
-        _charHealth.OnDamaged -= OnCharacterDamagedCallback;
-        _charHealth.OnRecover -= OnRecoverCallback;
+        health.OnDamaged -= OnCharacterDamagedCallback;
+        health.OnRecover -= OnRecoverCallback;
 
-        _charMovement.OnJump -= OnJumpCallback;
+        movement.OnRoll -= OnRollCallback;
     }
 
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(_movingHash, _charMovement.Velocity.sqrMagnitude > 0.15f);
-        animator.SetBool(_isOnAirHash, _charMovement.IsOnAir);
-        animator.SetFloat(_speedYHash, Mathf.Clamp(_charMovement.Velocity.y, -1f, 1f));
+        animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.05f);
+        animator.SetBool(_isOnAirHash, movement.IsOnAir);
+        animator.SetFloat(_speedYHash, Mathf.Clamp(movement.Velocity.y, -1f, 1f));
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
         {
@@ -155,6 +156,11 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetTrigger(_jumpTriggerHash);
     }
 
+    private void OnRollCallback()
+    {
+        animator.SetTrigger(_rollTriggerHash);
+    }
+
     public void Equip(ItemData item)
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
@@ -169,6 +175,5 @@ public class CharacterAnimator : MonoBehaviour
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats.WeaponType);
             }
         }
-        
     }
 }

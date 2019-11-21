@@ -140,7 +140,6 @@ public class CharacterAIMovementInput : MonoBehaviour
         if (MovementStatus == EMovementStatus.Attacking)
         {
             AIManager.Instance.DecreaseAttackers(target);
-            //nAttackers--;
         }
     }
 
@@ -154,8 +153,6 @@ public class CharacterAIMovementInput : MonoBehaviour
 
     void UpdateTarget()
     {
-        /*GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        target = players.OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();*/
         if (target != null)
         {
             AIManager.Instance.ClearTarget(target);
@@ -165,7 +162,7 @@ public class CharacterAIMovementInput : MonoBehaviour
 
     void AttackState(Transform target, float distanceToTarget, bool orbitReaction = false)
     {
-        if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject))
+        if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject) && !orbitReaction)
         {
             MovementStatus = EMovementStatus.Orbiting;
             return;
@@ -232,11 +229,9 @@ public class CharacterAIMovementInput : MonoBehaviour
             return;
         }
 
-        if (distanceToTarget != lastDistance)
+        if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
         {
-            //if (Time.time > lastPathChange + SleepTime)
             {
-                //navMeshAgent.isStopped = characterHealth.IsOnGround;
                 navMeshAgent.isStopped = characterHealth.IsOnGround;
                 float angle = gameObject.GetInstanceID() % 360f;
                 Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));

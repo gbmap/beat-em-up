@@ -1,3 +1,4 @@
+
 import bpy
 
 boneMapping = {
@@ -50,17 +51,18 @@ boneMapping = {
     "LeftUpLeg": "UpperLeg_L",
     "LeftLeg": "LowerLeg_L",
     "LeftFoot": "Ankle_L",
-    "LeftToeBase": "Ball_L", 
+    "LeftToeBase": "Ball_L",
     "LeftToe_End": "Toes_L",
+    "LeftToe_End_end": "Toes_L",
     
     "RightUpLeg": "UpperLeg_R",
     "RightLeg": "LowerLeg_R",
     "RightFoot": "Ankle_R",
     "RightToeBase": "Ball_R",
-    "RightToe_End": "Toes_R"
+    "RightToe_End": "Toes_R",
+    "RightToe_End_end": "Toes_R"
 }
 
-bpy.data.objects['Armature'].name = "Root"
 rig = bpy.data.armatures[0]
 rig.name = "Root"
 
@@ -69,8 +71,3 @@ for bone in rig.bones:
     bone.name = bone.name.replace("mixamorig:", "")
     if bone.name in boneMapping:
         bone.name = boneMapping[bone.name]
-        
-# remover translação do modelo
-fcurves = bpy.data.actions[0].fcurves
-for i in range(3):
-    fcurves.remove(fcurves[0]) 
