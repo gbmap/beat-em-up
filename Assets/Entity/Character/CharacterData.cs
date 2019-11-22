@@ -26,6 +26,9 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID());
         }
+
+        Stats.Health = Stats.MaxHealth;
+        Stats.Mana = Stats.MaxMana;
     }
 
     private void Start()

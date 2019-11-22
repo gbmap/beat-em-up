@@ -12,6 +12,7 @@ public class ItemManagerConfig : ScriptableObject
         ScriptableObjectUtility.CreateAsset<ItemManagerConfig>();
     }
 
+    public GameObject ItemPrefab;
     public Material[] RarityMaterials;
     private Dictionary<int, ItemConfig> items;
     private Dictionary<int, ItemConfig> Items

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0db0025883659e4383bb5777e865ef3, type: 3}
   m_Name: ItemManagerConfig
   m_EditorClassIdentifier: 
+  ItemPrefab: {fileID: 953948545750414228, guid: c21f8ed8c64fb464382f6d7190091d19,
+    type: 3}
   RarityMaterials:
   - {fileID: 2100000, guid: 93ffab191d6da584a9c39fe8e5a82577, type: 2}
   - {fileID: 2100000, guid: 762f0008a17175d4cb6d62ff7601b3a4, type: 2}

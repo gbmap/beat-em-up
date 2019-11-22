@@ -46,4 +46,12 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
 
         gameObject.transform.Find("Highlight").GetComponent<MeshRenderer>().material = Config.GetRarityColor(config.Stats.Rarity);
     }
+
+    public GameObject SpawnItem(Vector3 position, int typeId)
+    {
+        ItemConfig cfg = Config.GetItemConfig(typeId);
+        var instance = GameObject.Instantiate(Config.ItemPrefab, position, Quaternion.identity);
+        instance.GetComponent<ItemData>().TypeId = typeId;
+        return instance;
+    }
 }

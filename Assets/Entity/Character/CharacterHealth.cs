@@ -9,6 +9,7 @@ public class CharacterHealth : MonoBehaviour
     public System.Action OnFall;
     public System.Action OnRecover;
     public System.Action OnGetUp;
+    public System.Action OnDeath;
 
     private bool _isOnFloor;
 
@@ -108,6 +109,14 @@ public class CharacterHealth : MonoBehaviour
         if (data.DefenderStats.Health <= 0)
         {
             // TODO: dar um funeral digno pros personagens
+            OnDeath?.Invoke();
+
+            ItemStats item = characterData.Stats.Inventory[EInventorySlot.Weapon];
+            if (item != null)
+            {
+                ItemManager.Instance.SpawnItem(transform.position, item.Id);
+            }
+
             Destroy(gameObject);
         }
         else
