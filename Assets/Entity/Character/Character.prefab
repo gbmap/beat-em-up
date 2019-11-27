@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TypeId: 0
-  InitData: 0
+  InitData: 1
   DataInit:
     Attributes:
       Vigor: 10
@@ -363,6 +363,7 @@ MonoBehaviour:
     Inventory:
       inventory: 000000000000000000000000000000000000000000000000
   Randomize: 0
+  BrainType: 0
 --- !u!114 &6927136765418665498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,9 +377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Direction: {x: 0, y: 0, z: 0}
-  moveSpeed: 1
-  jumpForce: 7.5
-  raycastDistance: 0.075
+  MoveSpeed: 3
 --- !u!114 &4779215824379891065
 MonoBehaviour:
   m_ObjectHideFlags: 0
