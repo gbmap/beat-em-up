@@ -16,6 +16,7 @@ public class CharacterCombat : MonoBehaviour
 
     private CharacterData data;
     private CharacterHealth health;
+    private CharacterMovement movement;
 
     private Vector3 attackColliderBasePosition
     {
@@ -38,6 +39,7 @@ public class CharacterCombat : MonoBehaviour
     {
         health = GetComponent<CharacterHealth>();
         data = GetComponent<CharacterData>();
+        movement = GetComponent<CharacterMovement>();
     }
 
     private void OnEnable()
@@ -47,6 +49,8 @@ public class CharacterCombat : MonoBehaviour
 
         health.OnFall += OnFallCallback;
         health.OnDamaged += OnDamagedCallback;
+
+        movement.OnRoll += OnRollCallback;
     }
     
     private void OnDisable()
@@ -56,6 +60,13 @@ public class CharacterCombat : MonoBehaviour
 
         health.OnFall -= OnFallCallback;
         health.OnDamaged -= OnDamagedCallback;
+
+        movement.OnRoll -= OnRollCallback;
+    }
+
+    private void OnRollCallback()
+    {
+        OnComboEnded?.Invoke();
     }
 
     public void RequestAttack(EAttackType type)

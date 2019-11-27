@@ -96,7 +96,7 @@ public class CharacterPlayerInput : MonoBehaviour
                 Debug.Log("Double tap");
                 lastDoublePress[axis] = Time.time;
 
-                movement.Roll();
+                movement.Roll(cFwd.normalized);
             }
 
             Debug.Log("Tap");

@@ -18,7 +18,7 @@ public class CharacterMovement : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-    private float _speedBumpT;
+    private float speedBumpT;
     private Vector3 _speedBumpDir;
 
     public System.Action OnJump;
@@ -27,6 +27,7 @@ public class CharacterMovement : MonoBehaviour
 
     private bool isRolling;
     private float rollSpeedT;
+    private float lastRoll;
     private Vector3 rollDirection;
 
     NavMeshAgent navMeshAgent;
@@ -99,18 +100,18 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (_speedBumpT > 0f)
+        if (speedBumpT > 0f)
         {
             // applies dash on attack
-            float t = 1f - _speedBumpT;
+            float t = 1f - speedBumpT;
             var dir = 4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
             //dir.y = velocity.y;
             velocity = dir;
 
-            _speedBumpT = Mathf.Max(0, _speedBumpT - Time.deltaTime * 2f);
+            speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 2f);
         }
 
-        if (brainType == ECharacterBrainType.Input || _speedBumpT > 0f)
+        if (brainType == ECharacterBrainType.Input || speedBumpT > 0f)
         {
             navMeshAgent.Move(velocity * Time.deltaTime);
         }
@@ -122,7 +123,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (brainType == ECharacterBrainType.AI)
         {
-            navMeshAgent.isStopped |= _speedBumpT > 0f;
+            navMeshAgent.isStopped |= speedBumpT > 0f;
         }
     }
 
@@ -130,21 +131,30 @@ public class CharacterMovement : MonoBehaviour
     {
         {
             _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f * attack.HitNumber);
-            _speedBumpT = 1f;
+            speedBumpT = 1f;
         }
     }
 
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
-        _speedBumpT = 1f;
+        speedBumpT = 1f;
         _speedBumpDir = transform.forward;
     }
 
-    public void Roll()
+    public void Roll(Vector3 direction)
     {
+        if (Time.time < lastRoll + 0.75f ||
+            _health.IsOnGround)
+        {
+            return;
+        }
+
         OnRoll?.Invoke();
         rollSpeedT = 1f;
-        rollDirection = Direction;
+        speedBumpT = 0f;
+        rollDirection = direction;
+        lastRoll = Time.time;
+        transform.LookAt(transform.position + direction);
     }
 
     public void BeginRoll()

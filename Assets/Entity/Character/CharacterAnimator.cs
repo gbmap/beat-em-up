@@ -158,6 +158,9 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRollCallback()
     {
+        animator.speed = AnimatorDefaultSpeed;
+        animator.ResetTrigger(_weakAttackHash);
+        animator.ResetTrigger(_strongAttackHash);
         animator.SetTrigger(_rollTriggerHash);
     }
 

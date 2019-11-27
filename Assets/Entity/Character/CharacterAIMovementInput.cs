@@ -144,7 +144,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         characterHealth.OnDamaged -= OnDamagedCallback;
         if (MovementStatus == EMovementStatus.Attacking)
         {
-            AIManager.Instance.DecreaseAttackers(target);
+            AIManager.Instance?.DecreaseAttackers(target);
         }
     }
 

@@ -17,7 +17,7 @@ MonoBehaviour:
     seria decorada por um bon\xE9 aba reta virado pro lado."
   Prefab: {fileID: 181534, guid: 13af847dfa6dbe844ba4b7c902f98f67, type: 3}
   Stats:
-    Id: 0
+    Id: 2
     ItemType: 0
     Rarity: 3
     Slot: 5

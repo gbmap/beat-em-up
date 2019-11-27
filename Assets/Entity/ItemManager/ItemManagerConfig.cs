@@ -42,11 +42,21 @@ public class ItemManagerConfig : ScriptableObject
 
     internal ItemConfig GetItemConfig(int id)
     {
-        return Items[id];
+        ItemConfig item = null;
+        if (Items.TryGetValue(id, out item))
+        {
+            return item;
+        }
+        return null;
     }
 
     public ItemStats GetItemStats(int id)
     {
-        return Items[id].Stats;
+        ItemConfig item = null;
+        if (Items.TryGetValue(id, out item))
+        {
+            return item.Stats;
+        }
+        return null;
     }
 }
