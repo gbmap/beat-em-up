@@ -33,12 +33,14 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     private void Start()
     {
+        if (!Application.isPlaying) return;
+
         if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
     }
-    
+
     private void OnDestroy()
     {
         CharacterManager.UnregisterCharacter(gameObject.GetInstanceID());

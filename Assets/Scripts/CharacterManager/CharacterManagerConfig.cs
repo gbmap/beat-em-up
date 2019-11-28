@@ -127,7 +127,7 @@ public class CharacterManagerConfig : ScriptableObject
     public GameObject KnightsCharacterPack;
     public GameObject ModularCharacterPack;
 
-    private CharacterPrefabConfig GetPrefab(ECharacterType type)
+    public CharacterPrefabConfig GetPrefab(ECharacterType type)
     {
         return CharacterPrefabs.First(x => x.type == type);
     }
@@ -231,5 +231,39 @@ public class CharacterManagerConfig : ScriptableObject
         yield return null;
 
         Destroy(packInstance.gameObject);
+    }
+
+    public void SetupCharacterEditor(GameObject instance, ECharacterType characterType)
+    {
+        GameObject packPrefab = GetPrefab(characterType).prefab;
+
+        GameObject mesh = null;
+
+        for (int i = 0; i < instance.transform.childCount; i++)
+        {
+            var child = instance.transform.GetChild(i);
+            if (child.name.Contains("Character_"))
+            {
+                mesh = child.gameObject;
+                break;
+            }
+        }
+
+        var packInstance = Instantiate(packPrefab);
+
+        Transform characterModel = null;
+
+        for (int i = 0; i < packInstance.transform.childCount; i++)
+        {
+            characterModel = packInstance.transform.GetChild(i);
+            if (characterModel.gameObject.activeSelf)
+            {
+                break;
+            }
+        }
+
+        mesh.GetComponent<SkinnedMeshRenderer>().sharedMesh = characterModel.GetComponent<SkinnedMeshRenderer>().sharedMesh;
+
+        DestroyImmediate(packInstance.gameObject);
     }
 }

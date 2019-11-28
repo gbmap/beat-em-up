@@ -12,6 +12,4 @@ public abstract class ConfigurableObject<StatsData, TypeEnum> : MonoBehaviour
     [Header("Data Initialization")]
     public bool InitData = false;
     public StatsData DataInit;
-
-    public bool Randomize = false;
 }
