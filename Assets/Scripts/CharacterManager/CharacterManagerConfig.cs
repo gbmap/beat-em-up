@@ -129,7 +129,7 @@ public class CharacterManagerConfig : ScriptableObject
 
     public CharacterPrefabConfig GetPrefab(ECharacterType type)
     {
-        return CharacterPrefabs.First(x => x.type == type);
+        return CharacterPrefabs.FirstOrDefault(x => x.type == type);
     }
 
     private bool InPack(ECharacterType type, ECharacterType packBegin, ECharacterType packEnd)
