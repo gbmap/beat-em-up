@@ -9,18 +9,38 @@ namespace Catacumba.Exploration
     {
         [SerializeField] private Transform character;
         [SerializeField] private float cameraCheckTime = 1f;
-        [SerializeField] private List<GameObject> virtualCameras;
+        [SerializeField] private GameObject firstCamera;
         
         private float timer;
         private Camera mainCamera;
         private GameObject currentActiveCamera;
+        private List<CameraPathWaypoint> cameraPathWaypoints;
 
         private void Awake()
         {
             mainCamera = Camera.main;
-            currentActiveCamera = virtualCameras[0];
+            InitializeCameras();
         }
-        
+
+        private void InitializeCameras()
+        {
+            cameraPathWaypoints = new List<CameraPathWaypoint>();
+            
+            foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
+            {
+                var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
+
+                foreach (var waypoint in path.m_Waypoints)
+                {
+                    cameraPathWaypoints.Add(new CameraPathWaypoint(
+                        vcam.gameObject,
+                        path.transform.TransformPoint(waypoint.position)));
+                }
+            }
+
+            currentActiveCamera = firstCamera;
+        }
+
         private void Update()
         {
             timer -= Time.deltaTime;
@@ -34,26 +54,38 @@ namespace Catacumba.Exploration
 
         private void CheckForNearestCamera()
         {
-            var closestCamera = virtualCameras[0];
+            var closestWaypoint = cameraPathWaypoints[0];
             var closestDistance = 200f;
             
-            foreach (var virtualCamera in virtualCameras)
+            foreach (var cpWaypoiint in cameraPathWaypoints)
             {
-                var distance = Vector3.Distance(character.position, virtualCamera.transform.position);
+                var distance = Vector3.Distance(character.position, cpWaypoiint.waypointPosition);
 
                 if (distance <= closestDistance)
                 {
                     closestDistance = distance;
-                    closestCamera = virtualCamera;
+                    closestWaypoint = cpWaypoiint;
                 }
             }
 
             // If the player moves closer to a new camera, change the camera (and path)
-            if (!closestCamera.activeSelf)
+            if (!closestWaypoint.vcam.activeSelf)
             {
-                closestCamera.SetActive(true);
+                closestWaypoint.vcam.SetActive(true);
                 currentActiveCamera.SetActive(false);
-                currentActiveCamera = closestCamera;
+                currentActiveCamera = closestWaypoint.vcam;
+            }
+        }
+
+        private struct CameraPathWaypoint
+        {
+            public Vector3 waypointPosition;
+            public GameObject vcam;
+
+            public CameraPathWaypoint(GameObject vcam, Vector3 waypointPosition)
+            {
+                this.vcam = vcam;
+                this.waypointPosition = waypointPosition;
             }
         }
     }
