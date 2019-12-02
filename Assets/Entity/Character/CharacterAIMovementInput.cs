@@ -46,6 +46,7 @@ public class CharacterAIMovementInput : MonoBehaviour
 
     private NavMeshAgent navMeshAgent;
 
+    private CharacterAnimator characterAnimator;
     private CharacterHealth characterHealth;
     private CharacterCombat characterCombat;
 
@@ -65,9 +66,7 @@ public class CharacterAIMovementInput : MonoBehaviour
         {
             if (value == movementStatus) return;
 
-            var animator = GetComponent<Animator>();
-            animator.ResetTrigger("WeakAttack");
-            animator.ResetTrigger("StrongAttack");
+            characterAnimator.ResetAttackTrigger();
 
             if (movementStatus == EMovementStatus.Attacking && value != movementStatus)
             {
@@ -99,6 +98,7 @@ public class CharacterAIMovementInput : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
 
+        characterAnimator = GetComponent<CharacterAnimator>();
         characterHealth = GetComponent<CharacterHealth>();
         characterCombat = GetComponent<CharacterCombat>();
 

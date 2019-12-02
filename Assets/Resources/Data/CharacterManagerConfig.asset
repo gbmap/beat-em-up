@@ -51,9 +51,65 @@ MonoBehaviour:
     prefab: {fileID: 1033247876357254, guid: b2739774a07ffdb459c1bd60e3ef4f10, type: 3}
   - type: 21
     prefab: {fileID: 1473157611212552, guid: 2250a4a4fc528684c85ba955eb992ec6, type: 3}
+  - type: 13
+    prefab: {fileID: 1293356793197548, guid: 0d42bc61d684259409d481c6f5dd5d5c, type: 3}
+  - type: 24
+    prefab: {fileID: 142034, guid: b81ba67e44b1b174d9ef4491f146ee35, type: 3}
+  - type: 25
+    prefab: {fileID: 172062, guid: 7320372aefdc71442a2cf8b68a738f3b, type: 3}
+  - type: 26
+    prefab: {fileID: 121250, guid: a62e0ab0f0837ca48adf4710699a7e91, type: 3}
+  - type: 27
+    prefab: {fileID: 196394, guid: aa03ca6a3953ccc4397f5f35d2aa0a6d, type: 3}
+  - type: 28
+    prefab: {fileID: 189836, guid: cca9b8b9bbb59ce409c11aea054f6a9d, type: 3}
+  - type: 31
+    prefab: {fileID: 111886, guid: 10b8f8b81a78d2b488d260466a8883d3, type: 3}
+  - type: 32
+    prefab: {fileID: 179034, guid: a680ac69aa15dce4ca3d34bc515f671d, type: 3}
+  - type: 33
+    prefab: {fileID: 150176, guid: 4b94a93fa70935041b61d500fb573a22, type: 3}
+  - type: 34
+    prefab: {fileID: 106386, guid: 46f578172acf555439ea7037b277bd58, type: 3}
+  - type: 35
+    prefab: {fileID: 198702, guid: 156f67e924f48da4990472c91c068932, type: 3}
+  - type: 38
+    prefab: {fileID: 127002, guid: 99cdb7462838a6342bd2288456e75888, type: 3}
+  - type: 39
+    prefab: {fileID: 136988, guid: 5eb5272116a5d0548840121eb9bb813d, type: 3}
+  - type: 40
+    prefab: {fileID: 124030, guid: d48e97c38730e6d4a8a87d44d568bc50, type: 3}
+  - type: 41
+    prefab: {fileID: 114438, guid: 2ef59bc5d753ebe4490b708befe65999, type: 3}
+  - type: 42
+    prefab: {fileID: 194332, guid: 70ad07d06832dba42a3bb244ab822fd1, type: 3}
+  - type: 43
+    prefab: {fileID: 173802, guid: 388fa61abd880a549864058f895c8045, type: 3}
+  - type: 44
+    prefab: {fileID: 165754, guid: 9a6b87430c6b2684aa9c1d4616d38a60, type: 3}
+  - type: 45
+    prefab: {fileID: 112422, guid: 8cd752dc36d412b4bba2efd06775153a, type: 3}
+  - type: 46
+    prefab: {fileID: 131680, guid: 11ffba29df14c054aa5a2695b18e9f59, type: 3}
+  - type: 47
+    prefab: {fileID: 162860, guid: 880858dfd9b1e784e89d45242bf78d2b, type: 3}
+  - type: 48
+    prefab: {fileID: 140808, guid: 10f9cee6cfdd7df43a5d805acd44763f, type: 3}
+  - type: 49
+    prefab: {fileID: 128260, guid: 616cc160fcb3b124b8e0fc587258594b, type: 3}
+  - type: 50
+    prefab: {fileID: 142548, guid: 659981ab97d9bb64990767ef5f931f7c, type: 3}
+  - type: 51
+    prefab: {fileID: 171076, guid: 2ea27af6ead886c4d93bb53d28c6c25b, type: 3}
+  - type: 52
+    prefab: {fileID: 192428, guid: c26833473ce06df4ba5631fd7a4b98bc, type: 3}
+  - type: 53
+    prefab: {fileID: 102810, guid: b0297681c8568974da8dc86f4cdc853c, type: 3}
   CharacterAnimator: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  DaggerOverrideController: {fileID: 0}
   SwordOverrideController: {fileID: 22100000, guid: e69c0dbd0a3e46041907978de6c90454,
     type: 2}
+  ScepterOverrideController: {fileID: 0}
   AdventureCharacterPack: {fileID: 100018, guid: fd7d68a65822e4a44a9ef78850e64cfc,
     type: 3}
   DungeonCharacterPack: {fileID: 100040, guid: b69174d668ba02d44b14a084b217670a, type: 3}

@@ -179,4 +179,26 @@ public class CharacterAnimator : MonoBehaviour
             }
         }
     }
+
+    public void ResetAttackTrigger()
+    {
+        animator.ResetTrigger("WeakAttack");
+        animator.ResetTrigger("StrongAttack");
+    }
+
+    // gambiarra 
+    public void RefreshAnimator()
+    {
+        Avatar avatar = animator.avatar;
+        RuntimeAnimatorController controller = animator.runtimeAnimatorController;
+        RefreshAnimator(avatar, controller);
+    }
+
+    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller)
+    {
+        DestroyImmediate(animator);
+        animator = gameObject.AddComponent<Animator>();
+        animator.avatar = avatar;
+        animator.runtimeAnimatorController = controller;
+    }
 }

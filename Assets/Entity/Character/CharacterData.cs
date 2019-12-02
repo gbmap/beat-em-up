@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -15,6 +16,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public ECharacterBrainType BrainType;
     private List<ItemData> itemsInRange = new List<ItemData>();
 
+    ECharacterType lastCharacterType;
+
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
@@ -29,6 +32,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
         Stats.Health = Stats.MaxHealth;
         Stats.Mana = Stats.MaxMana;
+
+        lastCharacterType = TypeId;
     }
 
     private void Start()
@@ -38,6 +43,43 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
+        }
+    }
+
+    private void Update()
+    {
+        if (TypeId != lastCharacterType && TypeId != ECharacterType.None)
+        {
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
+        }
+
+        lastCharacterType = TypeId;
+    }
+
+    public System.Collections.IEnumerator Test_AllCharacters()
+    {
+        var values = Enum.GetValues(typeof(ECharacterType));
+        foreach (ECharacterType type in values)
+        {
+            ECharacterType[] skip = {
+                ECharacterType.AdventurePackBegin,
+                ECharacterType.AdventurePackEnd,
+                ECharacterType.None,
+                ECharacterType.DungeonPackBegin,
+                ECharacterType.DungeonPackEnd,
+                ECharacterType.FantasyRivalsBegin,
+                ECharacterType.FantasyRivalsEnd,
+                ECharacterType.KnightsBegin,
+                ECharacterType.KnightsEnd,
+            };
+
+            if (skip.Contains(type))
+            {
+                continue;
+            }
+
+            yield return StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, type));
+            yield return new WaitForSeconds(2f);
         }
     }
 

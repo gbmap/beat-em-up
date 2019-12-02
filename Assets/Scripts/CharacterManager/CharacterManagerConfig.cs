@@ -178,7 +178,13 @@ public class CharacterManagerConfig : ScriptableObject
 
     public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)
     {
-        GameObject packPrefab = GetPrefab(characterType).prefab;
+        var pack = GetPrefab(characterType);
+        if (pack == null)
+        {
+            Debug.LogError("Couldn't find model for character type:" + characterType.ToString());
+            pack = GetPrefab(ECharacterType.Dwarf);
+        }
+        GameObject packPrefab = pack.prefab;
         
         // REMOVE MODELO ATUAL
         for (int i = 0; i < instance.transform.childCount; i++)
@@ -199,13 +205,14 @@ public class CharacterManagerConfig : ScriptableObject
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
 
         CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
+        if (characterModelInfo == null)
+        {
+            characterModelInfo = instance.AddComponent<CharacterModelInfo>();
+        }
+
         if (characterModelInfo != null)
         {
             instance.GetComponent<CharacterAnimator>().HandTransform = characterModelInfo.HandBone;
-        }
-        else
-        {
-            Debug.LogError(string.Format("No hand transform found in model: {0}", packInstance.name));
         }
 
         yield return null;
@@ -226,44 +233,11 @@ public class CharacterManagerConfig : ScriptableObject
         yield return null;
 
         // ATUALIZA O AVATAR DO ANIMATOR
-        instance.GetComponent<Animator>().avatar = prefabAvatar;
+        var animator = instance.GetComponent<CharacterAnimator>();
+        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController);
 
         yield return null;
 
         Destroy(packInstance.gameObject);
-    }
-
-    public void SetupCharacterEditor(GameObject instance, ECharacterType characterType)
-    {
-        GameObject packPrefab = GetPrefab(characterType).prefab;
-
-        GameObject mesh = null;
-
-        for (int i = 0; i < instance.transform.childCount; i++)
-        {
-            var child = instance.transform.GetChild(i);
-            if (child.name.Contains("Character_"))
-            {
-                mesh = child.gameObject;
-                break;
-            }
-        }
-
-        var packInstance = Instantiate(packPrefab);
-
-        Transform characterModel = null;
-
-        for (int i = 0; i < packInstance.transform.childCount; i++)
-        {
-            characterModel = packInstance.transform.GetChild(i);
-            if (characterModel.gameObject.activeSelf)
-            {
-                break;
-            }
-        }
-
-        mesh.GetComponent<SkinnedMeshRenderer>().sharedMesh = characterModel.GetComponent<SkinnedMeshRenderer>().sharedMesh;
-
-        DestroyImmediate(packInstance.gameObject);
     }
 }
