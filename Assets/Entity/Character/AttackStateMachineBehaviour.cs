@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class AttackStateMachineBehaviour : StateMachineBehaviour
 {
-    public System.Action OnComboEnded;
-    public System.Action OnComboStarted;
-
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     //{
@@ -40,13 +37,12 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
     override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        OnComboStarted?.Invoke();
+        animator.GetComponent<CharacterCombat>().OnComboStarted?.Invoke();
     }
 
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        
-        OnComboEnded?.Invoke();
+        animator.GetComponent<CharacterCombat>().OnComboEnded?.Invoke();
     }
 }

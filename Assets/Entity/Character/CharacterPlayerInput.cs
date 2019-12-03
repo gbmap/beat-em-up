@@ -122,12 +122,6 @@ public class CharacterPlayerInput : MonoBehaviour
         return absAxis > absLastAxis || Mathf.Approximately(absAxis + absLastAxis, 2f);
     }
 
-    private void OnGUI()
-    {
-        GUILayout.TextArea("horizontal: " + isPressing[0] + " vertical: " + isPressing[1]);
-        GUILayout.TextArea("horizontal: " + isPressingCache[0] + " vertical: " + isPressingCache[1]);
-    }
-
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

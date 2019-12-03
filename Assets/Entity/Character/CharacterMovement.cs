@@ -4,8 +4,8 @@ using UnityEngine.AI;
 public class CharacterMovement : MonoBehaviour
 {
     // === REFS
-    CharacterHealth _health;
-    CharacterCombat _combat;
+    CharacterHealth health;
+    CharacterCombat combat;
     CharacterData data;
 
     // ==== MOVEMENT
@@ -40,22 +40,14 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public bool IsOnAir
-    {
-        get
-        {
-            return false;
-        }
-    }
-
     private void Awake()
     {
         data = GetComponent<CharacterData>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        _combat = GetComponent<CharacterCombat>();
-        _health = GetComponent<CharacterHealth>();
+        combat = GetComponent<CharacterCombat>();
+        health = GetComponent<CharacterHealth>();
 
-        _health.OnDamaged += OnDamagedCallback;
+        health.OnDamaged += OnDamagedCallback;
     }
 
     void Start()
@@ -66,18 +58,18 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        _combat.OnCharacterAttack += OnCharacterAttackCallback;
+        combat.OnCharacterAttack += OnCharacterAttackCallback;
     }
 
     private void OnDisable()
     {
-        _combat.OnCharacterAttack -= OnCharacterAttackCallback;
+        combat.OnCharacterAttack -= OnCharacterAttackCallback;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!_combat.IsOnCombo && !IsOnAir && !_health.IsOnGround)
+        if (!combat.IsOnCombo && !health.IsOnGround)
         {
             float rollSpeed = 1f + Mathf.Clamp01(Mathf.Pow(rollSpeedT, 1f/3));
 
@@ -123,7 +115,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (brainType == ECharacterBrainType.AI)
         {
-            navMeshAgent.isStopped |= speedBumpT > 0f;
+            navMeshAgent.isStopped |= speedBumpT > 0f || health.IsOnGround;
         }
     }
 
@@ -144,7 +136,7 @@ public class CharacterMovement : MonoBehaviour
     public void Roll(Vector3 direction)
     {
         if (Time.time < lastRoll + 0.75f ||
-            _health.IsOnGround)
+            health.IsOnGround)
         {
             return;
         }
@@ -167,4 +159,15 @@ public class CharacterMovement : MonoBehaviour
         isRolling = false;
         //rollSpeedT = 0f;
     }
+
+#if UNITY_EDITOR
+    private void OnGUI()
+    {
+        if (data.BrainType != ECharacterBrainType.Input)
+            return;
+
+        Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
+        GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo);
+    }
+#endif
 }

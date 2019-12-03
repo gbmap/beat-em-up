@@ -276,17 +276,14 @@ public class CharacterAIMovementInput : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     private void OnGUI()
     {
         if (!Application.isEditor) return;
 
-        Vector3 posW = transform.position;
-        //posW.y = -posW.y;
-
-        Vector2 pos = Camera.main.WorldToScreenPoint(posW);
-
-        Rect r = new Rect(pos, Vector2.one * 100f);
-        r.y = Screen.height - pos.y;
+        Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
         GUI.Label(r, "State: " + MovementStatus);
     }
+#endif
+
 }

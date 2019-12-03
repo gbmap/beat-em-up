@@ -8,7 +8,7 @@ public class CharacterModelInfo : MonoBehaviour
 
     string fingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L/Hand_L/Finger_01";
 
-    private void Awake()
+    private void Start()
     {
         if (HandBone == null)
         {

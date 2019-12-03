@@ -52,10 +52,6 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnEnable()
     {
-        var attackSM = animator.GetBehaviour<AttackStateMachineBehaviour>();
-        attackSM.OnComboStarted += delegate { combat.OnComboStarted?.Invoke(); };
-        attackSM.OnComboEnded += delegate { combat.OnComboEnded?.Invoke(); };
-
         combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
         combat.OnCharacterAttack += OnCharacterAttackCallback;
 
@@ -71,13 +67,6 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnDisable()
     {
-        var attackSM = animator.GetBehaviour<AttackStateMachineBehaviour>();
-        if (attackSM != null)
-        {
-            attackSM.OnComboStarted = null;
-            attackSM.OnComboEnded = null;
-        }
-
         combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
 
@@ -91,7 +80,6 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.05f);
-        animator.SetBool(_isOnAirHash, movement.IsOnAir);
         animator.SetFloat(_speedYHash, Mathf.Clamp(movement.Velocity.y, -1f, 1f));
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + .35f)
@@ -196,6 +184,11 @@ public class CharacterAnimator : MonoBehaviour
 
     public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller)
     {
+        if (avatar == null)
+        {
+            avatar = animator.avatar;
+        }
+
         DestroyImmediate(animator);
         animator = gameObject.AddComponent<Animator>();
         animator.avatar = avatar;

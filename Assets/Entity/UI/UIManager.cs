@@ -33,4 +33,16 @@ public class UIManager : Singleton<UIManager> // TODO: trocar isso aqui por um C
     {
         labels[item.GetInstanceID()].SetActive(v);
     }
+
+    public static Rect WorldSpaceGUI(Vector3 worldPosition, Vector2 size)
+    {
+        Vector3 posW = worldPosition;
+        //posW.y = -posW.y;
+
+        Vector2 pos = Camera.main.WorldToScreenPoint(posW);
+
+        Rect r = new Rect(pos, size);
+        r.y = Screen.height - pos.y;
+        return r;
+    }
 }

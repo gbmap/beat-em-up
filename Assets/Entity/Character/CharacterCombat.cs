@@ -79,11 +79,13 @@ public class CharacterCombat : MonoBehaviour
     */
     private void OnComboStartedCallback()
     {
+        Debug.Log("Combo ended.");
         IsOnCombo = true;
     }
 
     private void OnComboEndedCallback()
     {
+        Debug.Log("Combo ended.");
         IsOnCombo = false;
         _nComboHits = 0;
     }
