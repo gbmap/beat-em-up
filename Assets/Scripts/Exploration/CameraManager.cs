@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
@@ -19,7 +20,8 @@ namespace Catacumba.Exploration
         private void Awake()
         {
             mainCamera = Camera.main;
-            InitializeCameras();
+            currentActiveCamera = firstCamera;
+//            InitializeCameras();
         }
 
         private void InitializeCameras()
@@ -43,13 +45,20 @@ namespace Catacumba.Exploration
 
         private void Update()
         {
-            timer -= Time.deltaTime;
+//            timer -= Time.deltaTime;
+//
+//            if (timer <= 0f)
+//            {
+//                CheckForNearestCamera();
+//                timer = cameraCheckTime;
+//            }
+        }
 
-            if (timer <= 0f)
-            {
-                CheckForNearestCamera();
-                timer = cameraCheckTime;
-            }
+        public void ChangeCamera(GameObject newCamera)
+        {
+            currentActiveCamera.SetActive(false);
+            currentActiveCamera = newCamera;
+            currentActiveCamera.SetActive(true);
         }
 
         private void CheckForNearestCamera()
