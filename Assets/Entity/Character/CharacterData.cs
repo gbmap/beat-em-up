@@ -77,6 +77,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
                 ECharacterType.FantasyRivalsEnd,
                 ECharacterType.KnightsBegin,
                 ECharacterType.KnightsEnd,
+                ECharacterType.ModularCharacter
             };
 
             if (skip.Contains(type))
