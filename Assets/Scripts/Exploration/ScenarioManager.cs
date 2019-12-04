@@ -1,35 +1,87 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
     public class ScenarioManager : Singleton<ScenarioManager>
     {
-        [SerializeField] private List<GameObject> _maps;
-        private int _currentActiveMap;
-
-        private void Awake()
+        [SerializeField] GameObject fadeCamera;
+        [SerializeField] Area firstArea;
+        [SerializeField] GameObject currentCharacter;
+        
+        List<Area> areas;
+        Area currentActiveArea;
+        Transform transform;
+        
+        public void TransitionToArea(Area area, GameObject character)
         {
-            _maps = new List<GameObject>();
-            
-            // Get child maps
-            foreach (Transform map in transform)
-            {
-                _maps.Add(map.gameObject);
-            }
+            StartCoroutine(FadeTransition(area, character));
         }
         
-        public void TransitionToMap(int mapIndex)
+        void Awake()
         {
-            // Hide current map
-            if (mapIndex >= 0 && _maps.Count > mapIndex)
+            areas = new List<Area>();
+
+            // Get child areas
+            foreach (var area in GetComponentsInChildren<Area>())
             {
-                _maps[_currentActiveMap].SetActive(false);
+                areas.Add(area);
             }
+
+            transform = GetComponent<Transform>();
+        }
+
+        void Start()
+        {
+            StartCoroutine(FadeTransition(firstArea, currentCharacter));
+        }
+
+        IEnumerator FadeTransition(Area area, GameObject character)
+        {
+            // Enable fade camera
+            fadeCamera.transform.position = character.transform.position;
+            fadeCamera.transform.LookAt(character.transform);
+            fadeCamera.SetActive(true);
             
-            // Show new map
-            _maps[_currentActiveMap = mapIndex].SetActive(true);
+            yield return new WaitForSeconds(1f);
+            
+            // Hide current area
+            currentActiveArea?.gameObject.SetActive(false);
+            
+            currentActiveArea = area;
+            currentCharacter = character;
+
+            // Show new area
+            currentActiveArea.gameObject.SetActive(true);
+
+            // Move player to new area
+            MovePlayerToNewArea(currentCharacter);
+            
+            fadeCamera.transform.position = currentActiveArea.VirtualCamera.gameObject.transform.position;
+            fadeCamera.transform.rotation = currentActiveArea.VirtualCamera.gameObject.transform.rotation;
+
+            // Disable fade camera
+            currentActiveArea.VirtualCamera.gameObject.SetActive(true);
+            fadeCamera.SetActive(false);
+        }
+
+        void MovePlayerToNewArea(GameObject character)
+        {
+            // Move character to new are
+            var agent = character.GetComponent<NavMeshAgent>();
+
+            agent.isStopped = true;
+            agent.enabled = false;
+            
+            character.transform.position = currentActiveArea.PlayerSpawnPoint.position;
+            currentActiveArea.SetCharacter(character);
+            
+            agent.enabled = true;
+            agent.isStopped = false;
         }
     }
 }
