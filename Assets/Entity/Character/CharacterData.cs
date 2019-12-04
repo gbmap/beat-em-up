@@ -18,6 +18,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     ECharacterType lastCharacterType;
 
+    public GameObject CharacterModelOverride;
+
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
@@ -40,7 +42,11 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     {
         if (!Application.isPlaying) return;
 
-        if (TypeId != ECharacterType.None)
+        if (CharacterModelOverride != null)
+        {
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(CharacterModelOverride, TypeId));
+        }
+        else if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }

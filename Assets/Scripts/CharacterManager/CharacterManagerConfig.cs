@@ -176,16 +176,10 @@ public class CharacterManagerConfig : ScriptableObject
         }
     }
 
-    public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)
+    public IEnumerator SetupCharacter(GameObject instance, GameObject model)
     {
-        var pack = GetPrefab(characterType);
-        if (pack == null)
-        {
-            Debug.LogError("Couldn't find model for character type:" + characterType.ToString());
-            pack = GetPrefab(ECharacterType.Dwarf);
-        }
-        GameObject packPrefab = pack.prefab;
-        
+        GameObject packPrefab = model;
+
         // REMOVE MODELO ATUAL
         for (int i = 0; i < instance.transform.childCount; i++)
         {
@@ -239,5 +233,16 @@ public class CharacterManagerConfig : ScriptableObject
         yield return null;
 
         Destroy(packInstance.gameObject);
+    }
+
+    public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)
+    {
+        var pack = GetPrefab(characterType);
+        if (pack == null)
+        {
+            Debug.LogError("Couldn't find model for character type:" + characterType.ToString());
+            pack = GetPrefab(ECharacterType.Dwarf);
+        }
+        yield return SetupCharacter(instance, pack.prefab);
     }
 }
