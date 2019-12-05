@@ -14,4 +14,5 @@ public class ItemConfig : ScriptableObject
     public GameObject Prefab;
 
     public ItemStats Stats;
+    public AnimatorOverrideController AnimationOverride;
 }

@@ -109,6 +109,17 @@ public class CharacterManagerConfig : ScriptableObject
     public AnimatorOverrideController SwordOverrideController;
     public AnimatorOverrideController ScepterOverrideController;
 
+    public RuntimeAnimatorController GetRuntimeAnimatorController(ItemStats item)
+    {
+        ItemConfig cfg = ItemManager.Instance.GetItemConfig(item.Id);
+
+        if (cfg.AnimationOverride != null)
+        {
+            return cfg.AnimationOverride;
+        }
+        return GetRuntimeAnimatorController(cfg.Stats.WeaponType);
+    }
+
     public RuntimeAnimatorController GetRuntimeAnimatorController(EWeaponType type)
     {
         switch (type)

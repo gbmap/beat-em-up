@@ -163,7 +163,7 @@ public class CharacterAnimator : MonoBehaviour
         {
             if (item.Stats.Slot == EInventorySlot.Weapon)
             {
-                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats.WeaponType);
+                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats);
             }
         }
     }
