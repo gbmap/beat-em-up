@@ -66,6 +66,10 @@ boneMapping = {
 rig = bpy.data.armatures[0]
 rig.name = "Root"
 
+for obj in bpy.context.selected_objects:
+    if obj.name == "Armature":
+        obj.name = "Root"
+
 # renomear bones
 for bone in rig.bones:
     bone.name = bone.name.replace("mixamorig:", "")
