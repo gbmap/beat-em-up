@@ -210,4 +210,10 @@ public class CharacterAnimator : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
     }
+
+    private void OnGUI()
+    {
+        Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
+        GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+    }
 }

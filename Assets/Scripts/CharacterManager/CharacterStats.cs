@@ -152,6 +152,16 @@ public class Inventory
 
         return t;
     }
+
+    public void UnEquip(EInventorySlot slot)
+    {
+        inventory[(int)slot] = 0;
+    }
+
+    public bool HasEquip(EInventorySlot slot)
+    {
+        return inventory[(int)slot] != 0;
+    }
 }
 
 public enum EItemType

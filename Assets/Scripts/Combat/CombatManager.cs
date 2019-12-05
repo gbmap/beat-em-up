@@ -87,7 +87,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             damage = (int)(damage * 0.9f);
         }
 
-        defender.PoiseBar -= ((float)damage) / defender.Poise;
+        // TODO: poise bar legítimo
+        defender.PoiseBar -= (defender.Poise*0.4f) / defender.Poise;
 
         // vê se derrubou o BONECO
         attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0);

@@ -86,10 +86,6 @@ public class CharacterHealth : MonoBehaviour
         //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
-
-
-        characterData.UnEquip(EInventorySlot.Weapon);
-        
     }
 
     public void TakeDamage(CharacterAttackData data)
@@ -109,6 +105,11 @@ public class CharacterHealth : MonoBehaviour
         _fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
         UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth, data.DefenderStats.PoiseBar);
+
+        if (data.Knockdown)
+        {
+            characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
+        }
 
         if (data.DefenderStats.Health <= 0)
         {

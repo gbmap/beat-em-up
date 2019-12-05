@@ -139,6 +139,11 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     public void UnEquip(EInventorySlot slot)
     {
+        UnEquip(slot, Vector3.zero);
+    }
+
+    public void UnEquip(EInventorySlot slot, Vector3 dropDir)
+    {
         if (slot != EInventorySlot.Weapon)
         {
             return;
@@ -153,7 +158,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         ItemStats item = Stats.Inventory[EInventorySlot.Weapon];
         if (item != null)
         {
-            ItemManager.Instance.SpawnItem(transform.position, item.Id);
+            GameObject itemObj = ItemManager.Instance.SpawnItem(transform.position, item.Id);
+            itemObj.GetComponent<ItemData>().Push(dropDir);
         }
 
         CharacterManager.Instance.UnEquip(this, slot);
