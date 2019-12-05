@@ -86,6 +86,10 @@ public class CharacterHealth : MonoBehaviour
         //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
+
+
+        characterData.UnEquip(EInventorySlot.Weapon);
+        
     }
 
     public void TakeDamage(CharacterAttackData data)
@@ -111,11 +115,6 @@ public class CharacterHealth : MonoBehaviour
             // TODO: dar um funeral digno pros personagens
             OnDeath?.Invoke();
 
-            ItemStats item = characterData.Stats.Inventory[EInventorySlot.Weapon];
-            if (item != null)
-            {
-                ItemManager.Instance.SpawnItem(transform.position, item.Id);
-            }
 
             Destroy(gameObject);
         }
