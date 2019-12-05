@@ -60,11 +60,10 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
     public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward)
     {
         var dmgScaling = attacker.Inventory.GetTotalDamageScaling();
-        var inventoryAttributes = attacker.Inventory.GetTotalAttributes();
 
-        float str = (attacker.Attributes.Strength + inventoryAttributes.Strength) * (1f + dmgScaling.Strength);
-        float dex = (attacker.Attributes.Dexterity + inventoryAttributes.Dexterity) * dmgScaling.Dexterity;
-        float mag = (attacker.Attributes.Magic + inventoryAttributes.Magic) * dmgScaling.Magic;
+        float str = (attacker.GetAttributeTotal(EAttribute.Strength)) * (1f + dmgScaling.Strength);
+        float dex = (attacker.GetAttributeTotal(EAttribute.Dexterity)) * dmgScaling.Dexterity;
+        float mag = (attacker.GetAttributeTotal(EAttribute.Magic)) * dmgScaling.Magic;
         float crit = Random.value < GetCritChance(attacker) ? GetCritFactor(attacker) : 1f;
 
         float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
