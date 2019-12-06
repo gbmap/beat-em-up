@@ -136,4 +136,32 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         Destroy(item.gameObject);
         return true;
     }
+
+    public void UnEquip(EInventorySlot slot)
+    {
+        UnEquip(slot, Vector3.zero);
+    }
+
+    public void UnEquip(EInventorySlot slot, Vector3 dropDir)
+    {
+        if (slot != EInventorySlot.Weapon)
+        {
+            return;
+        }
+
+        var animator = GetComponent<CharacterAnimator>();
+        if (animator)
+        {
+            animator.UnEquip(slot);
+        }
+
+        ItemStats item = Stats.Inventory[EInventorySlot.Weapon];
+        if (item != null)
+        {
+            GameObject itemObj = ItemManager.Instance.SpawnItem(transform.position, item.Id);
+            itemObj.GetComponent<ItemData>().Push(dropDir);
+        }
+
+        CharacterManager.Instance.UnEquip(this, slot);
+    }
 }

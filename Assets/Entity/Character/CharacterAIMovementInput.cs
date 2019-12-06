@@ -178,7 +178,7 @@ public class CharacterAIMovementInput : MonoBehaviour
             navMeshAgent.isStopped = true;
             if (Time.time > lastAttack + AttackCooldown && Time.time > lastCombo + ComboCooldown)
             {
-                if (currentAttackIndex >= comboLength - 1)
+                if (currentAttackIndex > comboLength - 1)
                 {
                     if (orbitReaction)
                     {

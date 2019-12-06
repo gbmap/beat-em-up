@@ -30,6 +30,8 @@ public class CharacterAnimator : MonoBehaviour
     int _weakAttackHash = Animator.StringToHash("WeakAttack");
     int _strongAttackHash = Animator.StringToHash("StrongAttack");
 
+    GameObject equippedWeapon;
+
     // ====== HEALTH
     int _damagedHash = Animator.StringToHash("Damaged");
     int _knockdownHash = Animator.StringToHash("Knockdown");
@@ -155,6 +157,7 @@ public class CharacterAnimator : MonoBehaviour
     public void Equip(ItemData item)
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
+        equippedWeapon = model.gameObject;
         model.transform.parent = HandTransform;
         model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
@@ -165,6 +168,19 @@ public class CharacterAnimator : MonoBehaviour
             {
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats);
             }
+        }
+    }
+
+    public void UnEquip(EInventorySlot slot)
+    {
+        if (slot != EInventorySlot.Weapon)
+        {
+            return;
+        }
+
+        if (equippedWeapon != null)
+        {
+            Destroy(equippedWeapon);
         }
     }
 
@@ -193,5 +209,11 @@ public class CharacterAnimator : MonoBehaviour
         animator = gameObject.AddComponent<Animator>();
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
+    }
+
+    private void OnGUI()
+    {
+        Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
+        GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
     }
 }

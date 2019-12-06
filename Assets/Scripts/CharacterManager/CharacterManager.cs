@@ -41,4 +41,17 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
         character.Stats.Inventory[item.Stats.Slot] = item.Stats;
         return true;
     }
+
+    public bool UnEquip(CharacterData character, EInventorySlot slot)
+    {
+        CharacterStats stats = CharacterStats[character.gameObject.GetInstanceID()];
+        if (!stats.Inventory.HasEquip(slot))
+        {
+            return false;
+        }
+
+        stats.Inventory.UnEquip(slot);
+
+        return true;
+    }
 }

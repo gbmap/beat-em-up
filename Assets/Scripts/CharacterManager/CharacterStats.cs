@@ -146,11 +146,21 @@ public class Inventory
 
         foreach (var v in inventory)
         {
-            if (inventory[v] == 0) continue;
-            t.Add(ItemManager.Instance.GetItem(inventory[v]).DamageScaling);
+            if (v == 0) continue;
+            t.Add(ItemManager.Instance.GetItem(v).DamageScaling);
         }
 
         return t;
+    }
+
+    public void UnEquip(EInventorySlot slot)
+    {
+        inventory[(int)slot] = 0;
+    }
+
+    public bool HasEquip(EInventorySlot slot)
+    {
+        return inventory[(int)slot] != 0;
     }
 }
 

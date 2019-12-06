@@ -106,16 +106,16 @@ public class CharacterHealth : MonoBehaviour
 
         UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth, data.DefenderStats.PoiseBar);
 
+        if (data.Knockdown)
+        {
+            characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
+        }
+
         if (data.DefenderStats.Health <= 0)
         {
             // TODO: dar um funeral digno pros personagens
             OnDeath?.Invoke();
 
-            ItemStats item = characterData.Stats.Inventory[EInventorySlot.Weapon];
-            if (item != null)
-            {
-                ItemManager.Instance.SpawnItem(transform.position, item.Id);
-            }
 
             Destroy(gameObject);
         }
