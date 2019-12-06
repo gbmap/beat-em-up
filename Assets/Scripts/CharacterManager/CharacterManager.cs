@@ -9,11 +9,6 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
 
     private static Dictionary<int, CharacterStats> CharacterStats = new Dictionary<int, CharacterStats>();
 
-    public static CharacterStats RegisterCharacter(int instanceId)
-    {
-        return RegisterCharacter(instanceId, new CharacterStats());
-    }
-
     public static CharacterStats RegisterCharacter(int instanceId, CharacterStats stats)
     {
         CharacterStats[instanceId] = stats;

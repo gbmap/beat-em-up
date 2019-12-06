@@ -23,14 +23,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
-        if (InitData)
-        {
-            Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID(), DataInit);
-        }
-        else
-        {
-            Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID());
-        }
+        Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID(), DataInit);
 
         Stats.Health = Stats.MaxHealth;
         Stats.Mana = Stats.MaxMana;
