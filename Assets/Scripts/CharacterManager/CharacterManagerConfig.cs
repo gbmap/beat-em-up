@@ -215,11 +215,6 @@ public class CharacterManagerConfig : ScriptableObject
             characterModelInfo = instance.AddComponent<CharacterModelInfo>();
         }
 
-        if (characterModelInfo != null)
-        {
-            instance.GetComponent<CharacterAnimator>().HandTransform = characterModelInfo.HandBone;
-        }
-
         yield return null;
 
         Transform characterModel = null;

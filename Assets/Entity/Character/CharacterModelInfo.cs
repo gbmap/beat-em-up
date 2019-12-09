@@ -2,24 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class CharacterModelInfo : MonoBehaviour
 {
-    private Transform handBone;
-    public Transform HandBone
+    public class TransformBone
     {
-        get
+        private GameObject obj;
+        private string path;
+
+        private Transform bone;
+        public Transform Bone
         {
-            return handBone ?? (handBone = transform.Find(fingerPath));
+            get { return bone ?? (bone = obj.transform.Find(path)); }
+        }
+
+        public TransformBone(GameObject obj, string bonePath)
+        {
+            this.obj = obj;
+            path = bonePath;
+            bone = obj.transform.Find(bonePath);
         }
     }
 
+
+    public TransformBone HandBone;
+    public TransformBone HipsBone;
+
     string fingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L/Hand_L/Finger_01";
+    string hipsPath = "Root/Hips";
 
     private void Start()
     {
-        if (handBone == null)
-        {
-            handBone = transform.Find(fingerPath);
-        }
+        HandBone = new TransformBone(gameObject, fingerPath);
+        HipsBone = new TransformBone(gameObject, hipsPath);
     }
 }

@@ -17,10 +17,11 @@ public class CharacterCombat : MonoBehaviour
     private CharacterData data;
     private CharacterHealth health;
     private CharacterMovement movement;
+    private CharacterAnimator animator;
 
     private Vector3 attackColliderBasePosition
     {
-        get { return transform.position + transform.forward*0.75f + Vector3.up; }
+        get { return animator.RealCharacterPosition + transform.forward*0.75f + Vector3.up; }
     }
 
     private Vector3 attackColliderSize
@@ -40,6 +41,9 @@ public class CharacterCombat : MonoBehaviour
         health = GetComponent<CharacterHealth>();
         data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
+        animator = GetComponent<CharacterAnimator>();
+
+        lastAttackData.Time = float.NegativeInfinity;
     }
 
     private void OnEnable()

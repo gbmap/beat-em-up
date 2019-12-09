@@ -7,12 +7,21 @@ using UnityEngine;
 public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
-    public Transform HandTransform;
+
+    public Vector3 RealCharacterPosition {
+        get
+        {
+            Vector3 delta = modelInfo.HipsBone.Bone.position - transform.position;
+            delta.y = 0f;
+            return transform.position + delta;
+        }
+    }
 
     CharacterData _charData;
     CharacterMovement movement;
     CharacterCombat combat;
     CharacterHealth health;
+    CharacterModelInfo modelInfo;
 
     private float AnimatorDefaultSpeed
     {
@@ -48,6 +57,7 @@ public class CharacterAnimator : MonoBehaviour
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
+        modelInfo = GetComponentInChildren<CharacterModelInfo>();
 
         animator.speed = AnimatorDefaultSpeed;
     }
@@ -88,6 +98,11 @@ public class CharacterAnimator : MonoBehaviour
         {
             animator.speed = AnimatorDefaultSpeed;
         }
+
+#if UNITY_EDITOR
+        CheckDebugInput();
+#endif
+
     }
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
@@ -158,7 +173,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
         equippedWeapon = model.gameObject;
-        model.transform.parent = HandTransform;
+        model.transform.parent = modelInfo.HandBone.Bone;
         model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
@@ -209,6 +224,7 @@ public class CharacterAnimator : MonoBehaviour
         animator = gameObject.AddComponent<Animator>();
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
+        modelInfo = GetComponentInChildren<CharacterModelInfo>();
     }
 
     public void SetRootMotion(bool v)
@@ -216,9 +232,46 @@ public class CharacterAnimator : MonoBehaviour
         animator.applyRootMotion = v;
     }
 
+    public void UpdatePosition()
+    {
+        Vector3 hipsPosition = modelInfo.HipsBone.Bone.position - transform.position;
+        hipsPosition.y = 0f;
+        transform.position += hipsPosition;
+    }
+
+#if UNITY_EDITOR
+
     private void OnGUI()
     {
         Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
         GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
     }
+
+    private bool showDeltaHips = false;
+
+    private void OnDrawGizmosSelected()
+    {
+        if (showDeltaHips)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(transform.position, modelInfo.HipsBone.Bone.position);
+
+            Vector3 hipsDelta = modelInfo.HipsBone.Bone.position - transform.position;
+            hipsDelta.y = 0f;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, transform.position + hipsDelta);
+        }
+    }
+
+    private void CheckDebugInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            showDeltaHips = !showDeltaHips;
+        }
+    }
+
+#endif
+
 }
