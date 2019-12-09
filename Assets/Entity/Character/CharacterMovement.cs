@@ -69,7 +69,21 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!combat.IsOnCombo && !health.IsOnGround)
+        bool canMove = !combat.IsOnCombo && !health.IsOnGround;
+        bool isBeingMoved = speedBumpT > 0f;
+
+        if (isBeingMoved)
+        {
+            // applies dash on attack
+            float t = 1f - speedBumpT;
+            var dir = 4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
+            //dir.y = velocity.y;
+            velocity = dir;
+
+            speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 2f);
+        }
+
+        else if (canMove)
         {
             float rollSpeed = 1f + Mathf.Clamp01(Mathf.Pow(rollSpeedT, 1f/3));
 
@@ -92,16 +106,12 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (speedBumpT > 0f)
+        else // fix 
         {
-            // applies dash on attack
-            float t = 1f - speedBumpT;
-            var dir = 4f * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
-            //dir.y = velocity.y;
-            velocity = dir;
-
-            speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 2f);
+            velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * 1.5f);
         }
+
+        
 
         if (brainType == ECharacterBrainType.Input || speedBumpT > 0f)
         {
@@ -166,8 +176,9 @@ public class CharacterMovement : MonoBehaviour
         if (data.BrainType != ECharacterBrainType.Input)
             return;
 
-        Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
-        GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo);
+        Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
+        GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo +
+                     "\nspeedBumpT: " + speedBumpT);
     }
 #endif
 }

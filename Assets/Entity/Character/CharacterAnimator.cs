@@ -211,6 +211,11 @@ public class CharacterAnimator : MonoBehaviour
         animator.runtimeAnimatorController = controller;
     }
 
+    public void SetRootMotion(bool v)
+    {
+        animator.applyRootMotion = v;
+    }
+
     private void OnGUI()
     {
         Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
