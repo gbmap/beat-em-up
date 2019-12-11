@@ -209,12 +209,6 @@ public class CharacterManagerConfig : ScriptableObject
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
 
-        CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
-        if (characterModelInfo == null)
-        {
-            characterModelInfo = instance.AddComponent<CharacterModelInfo>();
-        }
-
         yield return null;
 
         Transform characterModel = null;
@@ -235,6 +229,14 @@ public class CharacterManagerConfig : ScriptableObject
         // ATUALIZA O AVATAR DO ANIMATOR
         var animator = instance.GetComponent<CharacterAnimator>();
         animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController);
+
+        yield return null;
+
+        CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
+        if (characterModelInfo == null)
+        {
+            characterModelInfo = instance.AddComponent<CharacterModelInfo>();
+        }
 
         yield return null;
 

@@ -43,6 +43,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
+        else
+        {
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ECharacterType.HeroKnightFemale));
+        }
     }
 
     private void Update()

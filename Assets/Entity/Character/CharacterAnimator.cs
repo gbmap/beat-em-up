@@ -11,7 +11,7 @@ public class CharacterAnimator : MonoBehaviour
     public Vector3 RealCharacterPosition {
         get
         {
-            Vector3 delta = modelInfo.HipsBone.Bone.position - transform.position;
+            Vector3 delta = ModelInfo.HipsBone.Bone.position - transform.position;
             delta.y = 0f;
             return transform.position + delta;
         }
@@ -22,6 +22,11 @@ public class CharacterAnimator : MonoBehaviour
     CharacterCombat combat;
     CharacterHealth health;
     CharacterModelInfo modelInfo;
+    CharacterModelInfo ModelInfo
+    {
+        get { return modelInfo ?? (modelInfo = GetComponentInChildren<CharacterModelInfo>()); }
+    }
+    
 
     private float AnimatorDefaultSpeed
     {
@@ -57,7 +62,7 @@ public class CharacterAnimator : MonoBehaviour
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
-        modelInfo = GetComponentInChildren<CharacterModelInfo>();
+        modelInfo = GetComponent<CharacterModelInfo>();
 
         animator.speed = AnimatorDefaultSpeed;
     }
@@ -173,7 +178,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
         equippedWeapon = model.gameObject;
-        model.transform.parent = modelInfo.HandBone.Bone;
+        model.transform.parent = ModelInfo.HandBone.Bone;
         model.transform.localPosition = Vector3.zero;
         model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
@@ -234,7 +239,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public void UpdatePosition()
     {
-        Vector3 hipsPosition = modelInfo.HipsBone.Bone.position - transform.position;
+        Vector3 hipsPosition = ModelInfo.HipsBone.Bone.position - transform.position;
         hipsPosition.y = 0f;
         transform.position += hipsPosition;
     }
@@ -254,9 +259,9 @@ public class CharacterAnimator : MonoBehaviour
         if (showDeltaHips)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(transform.position, modelInfo.HipsBone.Bone.position);
+            Gizmos.DrawLine(transform.position, ModelInfo.HipsBone.Bone.position);
 
-            Vector3 hipsDelta = modelInfo.HipsBone.Bone.position - transform.position;
+            Vector3 hipsDelta = ModelInfo.HipsBone.Bone.position - transform.position;
             hipsDelta.y = 0f;
 
             Gizmos.color = Color.red;

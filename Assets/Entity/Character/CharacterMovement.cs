@@ -24,7 +24,6 @@ public class CharacterMovement : MonoBehaviour
     public System.Action OnJump;
     public System.Action OnRoll;
 
-
     private bool isRolling;
     private float rollSpeedT;
     private float lastRoll;
@@ -108,10 +107,8 @@ public class CharacterMovement : MonoBehaviour
 
         else // fix 
         {
-            velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * 1.5f);
+            velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * 2f);
         }
-
-        
 
         if (brainType == ECharacterBrainType.Input || speedBumpT > 0f)
         {
