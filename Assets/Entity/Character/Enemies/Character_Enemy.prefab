@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3053d13ab5aca424e94b13b66f9cdbe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistanceToAttack: 1.5
-  AttackCooldown: 0.15
-  MaxComboHits: 5
-  ComboCooldown: 4
   SightRange: 5
   WanderRadius: 1
   SleepTime: 2
+  AttackStateConfig:
+    DistanceToAttack: 1.5
+    AttackCooldown: 0.5
+    ComboCooldown: 2
+    SightRange: 10
+    MaxComboHits: 5
   OrbitRadius: 2
   DiceRollCooldown: 2
 --- !u!1001 &3773363730220257599
@@ -36,7 +38,7 @@ PrefabInstance:
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
