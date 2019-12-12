@@ -98,7 +98,7 @@ public class CharacterMovement : MonoBehaviour
             dirNorm.y = velocity.y;
 
             velocity = dirNorm * rollSpeed;
-            if (Direction.sqrMagnitude > 0.025)
+            if (Direction.sqrMagnitude > 0f)
             {
                 dirNorm.y = 0f;
                 transform.LookAt(transform.position + dirNorm);

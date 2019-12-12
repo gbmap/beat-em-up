@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: 
   Description: 
-  Prefab: {fileID: 0}
+  Prefab: {fileID: 1771434417843094, guid: b1e7f002c4ce7814298c1203ebffafbd, type: 3}
   Stats:
-    Id: 0
+    Id: 3
     ItemType: 0
     Rarity: 0
-    Slot: 0
-    WeaponType: 0
+    Slot: 5
+    WeaponType: 1
     Attributes:
       Vigor: 0
       Strength: 0

@@ -133,16 +133,22 @@ namespace Catacumba.Character.AI
             AIManager.Instance.DecreaseAttackers(target.gameObject);
         }
 
-        public void OnEnter(Transform target)
+        public void OnEnter(Transform target, bool orbitReaction = false)
         {
-            AIManager.Instance.IncreaseAttackers(target.gameObject);
+            if (!orbitReaction)
+            {
+                AIManager.Instance.IncreaseAttackers(target.gameObject);
+            }
             lastAttack = Time.time;
             comboLength = UnityEngine.Random.Range(1, Cfg.MaxComboHits);
         }
 
         public int Update(Transform target, bool orbitReaction = false)
         {
-            if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject) && !orbitReaction)
+            int nAttackers = AIManager.Instance.GetNumberOfAttackers(target.gameObject);
+            int maxAttackers = AIManager.Instance.GetMaxAttackers(target.gameObject);
+
+            if (nAttackers > maxAttackers && !orbitReaction)
             {
                 return RES_TOO_MANY_ATTACKERS;
             }

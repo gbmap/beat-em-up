@@ -67,11 +67,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -8009597759114663435, guid: 2632ece4a494ff3429739c868f948495,
-        type: 3}
-      propertyPath: AttackStateConfig.DistanceToAttack
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: TypeId

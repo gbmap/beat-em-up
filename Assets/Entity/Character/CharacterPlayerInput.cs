@@ -72,6 +72,12 @@ public class CharacterPlayerInput : MonoBehaviour
             characterData.Interact();
         }
 
+        if (_rewiredPlayer.GetButtonDown("Dodge"))
+        {
+            movement.Roll(cFwd.normalized);
+        }
+
+        /*
         lastHorizontalAxis = horizontalAxis;
         lastVerticalAxis = verticalAxis;
 
@@ -102,6 +108,7 @@ public class CharacterPlayerInput : MonoBehaviour
             Debug.Log("Tap");
             lastPress[axis] = Time.time;
         }
+        */
     }
 
     bool AxisTappedDown(bool[] axis, bool[] axisCache)

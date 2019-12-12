@@ -59,7 +59,7 @@ namespace Catacumba.Character.AI
                         break;
                     case EBrawlerAIStates.OrbitAttack:
                     case EBrawlerAIStates.Attack:
-                        attackState.OnEnter(target.transform);
+                        attackState.OnEnter(target.transform, movementStatus == EBrawlerAIStates.OrbitAttack);
                         return;
                 }
             }
