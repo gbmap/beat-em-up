@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
-  m_Name: New ItemConfig
+  m_Name: BigOrkClub
   m_EditorClassIdentifier: 
   Name: 
   Description: 
@@ -31,3 +31,4 @@ MonoBehaviour:
       Strength: 0
       Dexterity: 0
       Magic: 0
+  AnimationOverride: {fileID: 0}
