@@ -133,8 +133,8 @@ public class Inventory
        
         foreach (var v in inventory)
         {
-            if (inventory[v] == 0) continue;
-            t.Add(ItemManager.Instance.GetItem(inventory[v]).Attributes);
+            if (v == 0) continue;
+            t.Add(ItemManager.Instance.GetItem(v).Attributes);
         }
 
         return t;
