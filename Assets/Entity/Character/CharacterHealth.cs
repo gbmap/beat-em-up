@@ -23,6 +23,11 @@ public class CharacterHealth : MonoBehaviour
     private float lastHit;
     private CharacterData characterData;
 
+    public float Health
+    {
+        get { return characterData.Stats.Health; }
+    }
+
     // hora q caiu no chão do Knockdown
     private float recoverTimer;
     private float recoverCooldown = 2f;

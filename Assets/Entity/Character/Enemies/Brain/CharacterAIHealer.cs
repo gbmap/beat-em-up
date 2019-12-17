@@ -4,11 +4,25 @@ using UnityEngine.AI;
 
 namespace Catacumba.Character.AI
 {
-    /*
-    public class CharacterAIHealer : CharacterAIBase
+    public class CharacterAIHealer : MonoBehaviour
     {
         private CharacterHealth[] allies;
         private NavMeshAgent navMeshAgent;
+
+        [Header("Wander State")]
+        public WanderStateConfig WanderStateConfig;
+
+        [Header("Attack State")]
+        public AttackStateConfig AttackStateConfig;
+
+        [Header("Orbit State")]
+        public OrbitStateConfig OrbitStateConfig;
+
+        private WanderState wanderState;
+        private AttackState attackState;
+        private OrbitState orbitState;
+
+        float lastDamageCheck;
 
         private enum EMovementStatus
         {
@@ -20,40 +34,28 @@ namespace Catacumba.Character.AI
         private void Awake()
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
+
         }
 
-        // Start is called before the first frame update
         void Start()
         {
-
+            allies = UpdateAllies();
         }
 
-        // Update is called once per frame
         void Update()
         {
-
-        }
-
-        void WanderState()
-        {
-            navMeshAgent.isStopped = false;
-            if (!navMeshAgent.hasPath || navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+            if (Time.time > lastDamageCheck + 1f)
             {
-                if (Time.time > lastPathChange + SleepTime)
-                {
-                    navMeshAgent.SetDestination(transform.position + UnityEngine.Random.insideUnitSphere * WanderRadius);
-                    lastPathChange = Time.time;
-                }
+                CharacterHealth mostDamagedAlly = allies.OrderBy(c => c.Health).First();
             }
         }
 
-        void UpdateAllies()
+        CharacterHealth[] UpdateAllies()
         {
             GameObject[] allAllies = GameObject.FindGameObjectsWithTag("Enemy");
-            allies = allAllies.Select(g => g.GetComponent<CharacterHealth>())
+            return allAllies.Select(g => g.GetComponent<CharacterHealth>())
                 .Where(ally => Vector3.Distance(transform.position, ally.transform.position) < 30f)
                 .ToArray();
         }
     }
-    */
 }

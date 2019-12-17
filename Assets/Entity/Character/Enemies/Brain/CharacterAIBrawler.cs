@@ -39,35 +39,33 @@ namespace Catacumba.Character.AI
             get { return movementStatus; }
             set
             {
-                if (value == movementStatus) return;
-
                 characterAnimator.ResetAttackTrigger();
 
-                if (movementStatus == EBrawlerAIStates.Attack && value != movementStatus)
+                if (currentState != null)
                 {
-                    if (target != null)
-                    {
-                        attackState.OnExit(target.transform);
-                    }
+                    currentState.OnExit();
                 }
 
                 movementStatus = value;
                 switch (movementStatus)
                 {
+                    case EBrawlerAIStates.Wander:
+                        currentState = new WanderState(gameObject, WanderStateConfig);
+                        break;
                     case EBrawlerAIStates.Orbit:
-                        orbitState.OnEnter();
+                        currentState = new OrbitState(gameObject, OrbitStateConfig, target.transform);
                         break;
                     case EBrawlerAIStates.OrbitAttack:
                     case EBrawlerAIStates.Attack:
-                        attackState.OnEnter(target.transform, movementStatus == EBrawlerAIStates.OrbitAttack);
-                        return;
+                        currentState = new AttackState(gameObject, AttackStateConfig, target.transform, movementStatus == EBrawlerAIStates.OrbitAttack);
+                        break;
                 }
+
+                currentState.OnEnter();
             }
         }
 
-        private AttackState attackState;
-        private WanderState wanderState;
-        private OrbitState orbitState;
+        private BaseState currentState;
 
         private void Awake()
         {
@@ -77,40 +75,21 @@ namespace Catacumba.Character.AI
             characterHealth = GetComponent<CharacterHealth>();
             characterCombat = GetComponent<CharacterCombat>();
 
-            attackState = new AttackState(gameObject, AttackStateConfig);
-            wanderState = new WanderState(gameObject, WanderStateConfig);
-            orbitState = new OrbitState(gameObject, OrbitStateConfig);
-
-            MovementStatus = EBrawlerAIStates.Orbit;
-
-            UpdateTarget();
+            MovementStatus = EBrawlerAIStates.Wander;
         }
 
         private void Update()
         {
-            if (target == null)
+            if (target == null && MovementStatus != EBrawlerAIStates.Wander)
             {
                 MovementStatus = EBrawlerAIStates.Wander;
             }
 
-            float distanceToTarget = target != null ? Vector3.Distance(transform.position, target.transform.position) : float.MaxValue;
-            switch (MovementStatus)
+            if (currentState != null)
             {
-                case EBrawlerAIStates.Attack:
-                    AttackStateUpdate(target.transform, distanceToTarget);
-                    break;
-                case EBrawlerAIStates.Wander:
-                    WanderStateUpdate(distanceToTarget);
-                    break;
-                case EBrawlerAIStates.Orbit:
-                    OrbitStateUpdate(distanceToTarget);
-                    break;
-                case EBrawlerAIStates.OrbitAttack:
-                    OrbitAttackState(target.transform, distanceToTarget);
-                    break;
+                StateResult result = currentState.Update();
+                HandleStateResult(MovementStatus, result);
             }
-
-            lastDistance = distanceToTarget;
         }
 
         private void OnEnable()
@@ -135,137 +114,41 @@ namespace Catacumba.Character.AI
             }
         }
 
-        void UpdateTarget()
+        public void HandleStateResult(EBrawlerAIStates state, StateResult result)
         {
-            if (target != null)
+            switch (state)
             {
-                AIManager.Instance.ClearTarget(target);
-            }
-            target = AIManager.Instance.GetTarget(gameObject);
-        }
-
-        void AttackStateUpdate(Transform target, float distanceToTarget, bool orbitReaction = false)
-        {
-            int result = attackState.Update(target, orbitReaction);
-            if (result == AttackState.RES_TOO_MANY_ATTACKERS ||
-                result == AttackState.RES_ORBIT_REACTION_COMBO_END)
-            {
-                MovementStatus = EBrawlerAIStates.Orbit;
-            }
-            else if (result == AttackState.RES_OUT_OF_SIGHT)
-            {
-                MovementStatus = EBrawlerAIStates.Wander;
-            }
-            /*if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) > AIManager.Instance.GetMaxAttackers(target.gameObject) && !orbitReaction)
-            {
-                MovementStatus = EBrawlerAIStates.Orbit;
-                return;
-            }
-
-            if (distanceToTarget <= DistanceToAttack)
-            {
-                navMeshAgent.isStopped = true;
-                if (Time.time > lastAttack + AttackCooldown && Time.time > lastCombo + ComboCooldown)
-                {
-                    if (currentAttackIndex > comboLength - 1)
+                case EBrawlerAIStates.OrbitAttack:
+                case EBrawlerAIStates.Attack:
+                    if (result.code == AttackState.RES_TOO_MANY_ATTACKERS ||
+                        result.code == AttackState.RES_ORBIT_REACTION_COMBO_END)
                     {
-                        if (orbitReaction)
-                        {
-                            MovementStatus = EBrawlerAIStates.Orbit;
-                            return;
-                        }
-                        else
-                        {
-                            currentAttackIndex = 0;
-                            lastCombo = Time.time;
-                        }
+                        MovementStatus = EBrawlerAIStates.Orbit;
                     }
-
-                    var attackType = combo[(currentAttackIndex++) % comboLength];
-                    characterCombat.RequestAttack(attackType);
-                    lastAttack = Time.time;
-                }
+                    else if (result.code == AttackState.RES_OUT_OF_SIGHT)
+                    {
+                        MovementStatus = EBrawlerAIStates.Wander;
+                    }
+                    break;
+                case EBrawlerAIStates.Orbit:
+                    if (result.code == OrbitState.RES_NOT_ENOUGH_ATTACKERS)
+                    {
+                        MovementStatus = EBrawlerAIStates.Attack;
+                    }
+                    else if (result.code == OrbitState.RES_ORBIT_ATTACK)
+                    {
+                        MovementStatus = EBrawlerAIStates.OrbitAttack;
+                    }
+                    break;
+                
+                case EBrawlerAIStates.Wander:
+                    if (result.code == WanderState.RES_ENEMY_IN_SIGHT)
+                    {
+                        target = (result.data[0] as Transform).gameObject;
+                        MovementStatus = EBrawlerAIStates.Orbit;
+                    }
+                    break;
             }
-            else if (distanceToTarget >= SightRange)
-            {
-                MovementStatus = EBrawlerAIStates.Wander;
-            }
-            else
-            {
-                navMeshAgent.isStopped = characterHealth.IsOnGround;
-                navMeshAgent.SetDestination(target.position);
-            }*/
-        }
-
-        void WanderStateUpdate(float distanceToTarget)
-        {
-            int result = wanderState.Update(target.transform);
-            if (result == WanderState.RES_ENEMY_IN_SIGHT)
-            {
-                MovementStatus = EBrawlerAIStates.Orbit;
-            }
-            /*
-            if (distanceToTarget < SightRange)
-            {
-                MovementStatus = EBrawlerAIStates.Orbit;
-                return;
-            }
-
-            navMeshAgent.isStopped = false;
-            if (!navMeshAgent.hasPath || navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
-            {
-                if (Time.time > lastPathChange + SleepTime)
-                {
-                    navMeshAgent.SetDestination(transform.position + UnityEngine.Random.insideUnitSphere * WanderRadius);
-                    lastPathChange = Time.time;
-                }
-            }*/
-        }
-
-        void OrbitStateUpdate(float distanceToTarget)
-        {
-            /*if (AIManager.Instance.GetNumberOfAttackers(target.gameObject) < AIManager.Instance.GetMaxAttackers(target.gameObject))
-            {
-                MovementStatus = EBrawlerAIStates.Attack;
-                return;
-            }
-
-            if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
-            {
-                {
-                    navMeshAgent.isStopped = characterHealth.IsOnGround;
-                    float angle = gameObject.GetInstanceID() % 360f;
-                    Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-                    navMeshAgent.SetDestination(target.transform.position + offset * OrbitRadius);
-                    lastPathChange = Time.time;
-                }
-            }
-
-            if (Time.time > lastAttackRoll + DiceRollCooldown)
-            {
-                if (UnityEngine.Random.value > 0.75)
-                {
-                    MovementStatus = EBrawlerAIStates.OrbitAttack;
-                    return;
-                }
-
-                lastAttackRoll = Time.time;
-            }*/
-
-            int result = orbitState.Update(target.transform);
-            if (result == OrbitState.RES_NOT_ENOUGH_ATTACKERS)
-            {
-                MovementStatus = EBrawlerAIStates.Attack;
-            }
-            else if (result == OrbitState.RES_ORBIT_ATTACK)
-            {
-                MovementStatus = EBrawlerAIStates.OrbitAttack;
-            }
-        }
-
-        void OrbitAttackState(Transform target, float distanceToTarget)
-        {
-            AttackStateUpdate(target, distanceToTarget, true);
         }
 
         private void OnDrawGizmos()

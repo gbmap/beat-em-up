@@ -103,4 +103,9 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
                CharacterManager.GetCharacterStats(defender.GetInstanceID()),
                ref attackData);
     }
+
+    public static void Heal(CharacterStats healer, CharacterStats healed)
+    {
+        healed.Health += (int)(healer.GetAttributeTotal(EAttribute.Magic) * 0.5f);
+    }
 }
