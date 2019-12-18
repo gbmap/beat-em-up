@@ -44,7 +44,8 @@ namespace Catacumba.Character.AI
             characterHealth.OnDamaged -= OnDamagedCallback;
             if (CurrentAIState == EBrawlerAIStates.Attack)
             {
-                AIManager.Instance?.DecreaseAttackers(target);
+                AttackState attackState = currentState as AttackState;
+                AIManager.Instance?.DecreaseAttackers(attackState.Target);
             }
         }
 
