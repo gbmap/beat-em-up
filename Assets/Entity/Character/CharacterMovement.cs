@@ -90,8 +90,9 @@ public class CharacterMovement : MonoBehaviour
             if (isRolling)
             {
                 float a = Vector3.Dot(dir, rollDirection);
-                dir = Vector3.Lerp(rollDirection, dir, Mathf.Max(0f, a));
+                dir = Vector3.Lerp(dir, rollDirection, Mathf.Max(0.9f, a));
                 rollDirection = dir;
+                //dir = rollDirection;
             }
 
             var dirNorm = dir * MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.85f : 1f);

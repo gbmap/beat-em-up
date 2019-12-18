@@ -353,7 +353,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TypeId: 0
-  InitData: 1
   DataInit:
     Attributes:
       Vigor: 10
@@ -405,7 +404,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5463593265913646897}
-  HandTransform: {fileID: 6710643987341954856}
 --- !u!114 &2839161661665923376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -430,7 +428,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 14
   avoidancePriority: 50
   m_AngularSpeed: 220
   m_StoppingDistance: 0
