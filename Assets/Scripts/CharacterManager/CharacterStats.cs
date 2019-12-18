@@ -261,6 +261,11 @@ public class CharacterStats
 
     public int Health { get; set; }
 
+    public float HealthNormalized
+    {
+        get { return ((float)Health / MaxHealth); }
+    }
+
     public int MaxMana
     {
         get

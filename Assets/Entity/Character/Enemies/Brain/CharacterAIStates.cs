@@ -169,9 +169,9 @@ namespace Catacumba.Character.AI
         };
         private int comboLength;
 
-        public AttackState(GameObject gameObject, 
-                          AttackStateConfig config, 
-                          GameObject target, 
+        public AttackState(GameObject gameObject,
+                          AttackStateConfig config,
+                          GameObject target,
                           bool orbitReaction = false)
             : base(gameObject)
         {
@@ -200,12 +200,15 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
-            int nAttackers = AIManager.Instance.GetNumberOfAttackers(Target.gameObject);
-            int maxAttackers = AIManager.Instance.GetMaxAttackers(Target.gameObject);
-
-            if (nAttackers > maxAttackers && !orbitReaction)
+            if (!orbitReaction)
             {
-                return new StateResult(RES_TOO_MANY_ATTACKERS, Target);
+                int nAttackers = AIManager.Instance.GetNumberOfAttackers(Target.gameObject);
+                int maxAttackers = AIManager.Instance.GetMaxAttackers(Target.gameObject);
+
+                if (nAttackers > maxAttackers)
+                {
+                    return new StateResult(RES_TOO_MANY_ATTACKERS, Target);
+                }
             }
 
             float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
@@ -273,11 +276,9 @@ namespace Catacumba.Character.AI
         public GameObject Target;
 
         public const int RES_CONTINUE = 0;
-        public const int RES_NOT_ENOUGH_ATTACKERS = 1;
-        public const int RES_ORBIT_ATTACK = 2;
-        
-        private float lastDistance;
-        private float lastAttackRoll;
+        public const int RES_TARGET_IS_NULL = -1;
+
+        protected float lastDistance;
         private float lastPathChange;
 
         public OrbitState(GameObject obj, OrbitStateConfig config, GameObject target)
@@ -287,6 +288,41 @@ namespace Catacumba.Character.AI
             Target = target;
         }
 
+        public override StateResult Update()
+        {
+            if (Target == null)
+            {
+                return new StateResult(RES_TARGET_IS_NULL);
+            }
+
+            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
+
+            if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
+            {
+                navMeshAgent.isStopped = health.IsOnGround;
+                float angle = gameObject.GetInstanceID() % 360f;
+                Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+                navMeshAgent.SetDestination(Target.transform.position + offset * Cfg.OrbitRadius);
+                lastPathChange = Time.time;
+            }
+
+            lastDistance = distanceToTarget;
+            return new StateResult(RES_CONTINUE);
+        }
+
+    }
+
+    public class OrbitStateEnemy : OrbitState
+    {
+        public const int RES_NOT_ENOUGH_ATTACKERS = 1;
+        public const int RES_ORBIT_ATTACK = 2;
+
+        private float lastAttackRoll;
+
+        public OrbitStateEnemy(GameObject obj, OrbitStateConfig config, GameObject target)
+            : base(obj, config, target)
+        { }
+
         public override void OnEnter()
         {
             lastAttackRoll = Time.time;
@@ -294,23 +330,10 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
-            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
-
             if (AIManager.Instance.GetNumberOfAttackers(Target) < AIManager.Instance.GetMaxAttackers(Target))
             {
                 //MovementStatus = EBrawlerAIStates.Attack;
                 return new StateResult(RES_NOT_ENOUGH_ATTACKERS, Target);
-            }
-
-            if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
-            {
-                {
-                    navMeshAgent.isStopped = health.IsOnGround;
-                    float angle = gameObject.GetInstanceID() % 360f;
-                    Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-                    navMeshAgent.SetDestination(Target.transform.position + offset * Cfg.OrbitRadius);
-                    lastPathChange = Time.time;
-                }
             }
 
             if (Time.time > lastAttackRoll + Cfg.DiceRollCooldown)
@@ -324,10 +347,8 @@ namespace Catacumba.Character.AI
                 lastAttackRoll = Time.time;
             }
 
-            lastDistance = distanceToTarget;
-            return new StateResult(RES_CONTINUE);
+            return base.Update();
         }
-
     }
 
     #endregion

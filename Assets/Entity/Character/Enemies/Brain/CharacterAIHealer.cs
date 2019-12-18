@@ -14,33 +14,47 @@ namespace Catacumba.Character.AI
     public class CharacterAIHealer : CharacterAIBaseMachine<EHealerAIStates>
     {
         private CharacterHealth[] allies;
-
-        [Header("Wander State")]
-        public WanderStateConfig WanderStateConfig;
-
-        [Header("Orbit State")]
-        public OrbitStateConfig OrbitStateConfig;
+        private CharacterHealth MostDamagedAlly
+        {
+            get { return allies.OrderBy(c => c.Health).First(); }
+        }
 
         float lastDamageCheck;
 
         void Start()
         {
             allies = UpdateAllies();
+            SetCurrentState(EHealerAIStates.Wandering);
         }
 
         protected override void Update()
         {
             base.Update();
 
+            if (!allies.Any(ally => ally != null))
+            {
+                UpdateAllies();
+
+                if (CurrentAIState != EHealerAIStates.Wandering)
+                {
+                    SetCurrentState(EHealerAIStates.Wandering);
+                }
+            }
+
             if (Time.time > lastDamageCheck + 1f)
             {
-                CharacterHealth mostDamagedAlly = allies.OrderBy(c => c.Health).First();
+                CharacterHealth mda = MostDamagedAlly;
 
-                if (mostDamagedAlly.Health < 0.5f)
+                bool isWandering = CurrentAIState == EHealerAIStates.Wandering;
+                bool isOrbitingAlready = (CurrentAIState == EHealerAIStates.Orbiting) &&
+                                         (currentState as OrbitState).Target == mda.gameObject;
+
+                if (isWandering || !isOrbitingAlready)
                 {
-                    SetCurrentState(EHealerAIStates.Healing, mostDamagedAlly.gameObject);
+                    SetCurrentState(EHealerAIStates.Orbiting, mda.gameObject);
                 }
 
+                lastDamageCheck = Time.time;
             }
         }
 
@@ -57,12 +71,26 @@ namespace Catacumba.Character.AI
             switch (currentState)
             {
                 case EHealerAIStates.Healing: return new HealState(gameObject, HealStateConfig.DefaultConfig, data[0] as GameObject);
+                case EHealerAIStates.Orbiting: return new OrbitState(gameObject, OrbitStateConfig.DefaultConfig, data[0] as GameObject);
                 default: return new WanderState(gameObject, WanderStateConfig.DefaultConfig);
             }
         }
 
         protected override void HandleStateResult(EHealerAIStates state, StateResult result)
         {
+            switch(state)
+            {
+                case EHealerAIStates.Orbiting:
+                    if (result.code == OrbitState.RES_CONTINUE)
+                    {
+                        CharacterHealth health = (currentState as OrbitState).Target.GetComponent<CharacterHealth>();
+                        if (health.HealthNormalized < 0.8f)
+                        {
+                            SetCurrentState(EHealerAIStates.Healing, health.gameObject);
+                        }
+                    }
+                    break;
+            }
 
         }
     }

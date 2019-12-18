@@ -23,9 +23,14 @@ public class CharacterHealth : MonoBehaviour
     private float lastHit;
     private CharacterData characterData;
 
-    public float Health
+    public int Health
     {
         get { return characterData.Stats.Health; }
+    }
+
+    public float HealthNormalized
+    {
+        get { return characterData.Stats.HealthNormalized; }
     }
 
     // hora q caiu no chão do Knockdown

@@ -53,7 +53,10 @@ namespace Catacumba.Character.AI
         {
             if (CurrentAIState == EBrawlerAIStates.Orbit)
             {
-                SetCurrentState(EBrawlerAIStates.OrbitAttack, obj.Attacker);
+                if (obj.Attacker.CompareTag("Player"))
+                {
+                    SetCurrentState(EBrawlerAIStates.OrbitAttack, obj.Attacker);
+                }
             }
         }
 
@@ -64,7 +67,7 @@ namespace Catacumba.Character.AI
                 case EBrawlerAIStates.Wander:
                     return new WanderState(gameObject, WanderStateConfig);
                 case EBrawlerAIStates.Orbit:
-                    return new OrbitState(gameObject, OrbitStateConfig, data[0] as GameObject);
+                    return new OrbitStateEnemy(gameObject, OrbitStateConfig, data[0] as GameObject);
                 case EBrawlerAIStates.OrbitAttack:
                 case EBrawlerAIStates.Attack:
                     return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, newState == EBrawlerAIStates.OrbitAttack);
@@ -90,13 +93,17 @@ namespace Catacumba.Character.AI
                     }
                     break;
                 case EBrawlerAIStates.Orbit:
-                    if (result.code == OrbitState.RES_NOT_ENOUGH_ATTACKERS)
+                    switch (result.code)
                     {
-                        SetCurrentState(EBrawlerAIStates.Attack, result.data[0] as GameObject);
-                    }
-                    else if (result.code == OrbitState.RES_ORBIT_ATTACK)
-                    {
-                        SetCurrentState(EBrawlerAIStates.OrbitAttack, result.data[0] as GameObject);
+                        case OrbitStateEnemy.RES_TARGET_IS_NULL:
+                            SetCurrentState(EBrawlerAIStates.Wander);
+                            break;
+                        case OrbitStateEnemy.RES_NOT_ENOUGH_ATTACKERS:
+                            SetCurrentState(EBrawlerAIStates.Attack, result.data[0] as GameObject);
+                            break;
+                        case OrbitStateEnemy.RES_ORBIT_ATTACK:
+                            SetCurrentState(EBrawlerAIStates.OrbitAttack, result.data[0] as GameObject);
+                            break;
                     }
                     break;
                 

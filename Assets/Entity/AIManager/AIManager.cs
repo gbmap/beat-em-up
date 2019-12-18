@@ -44,7 +44,15 @@ public class AIManager : Singleton<AIManager>
 
     public int GetNumberOfAttackers(GameObject target)
     {
-        return mapTargets[target].Attackers;
+        try
+        {
+            return mapTargets[target].Attackers;
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Debug.LogError(ex.Message);
+            throw ex;
+        }
     }
 
     public void IncreaseAttackers(GameObject target)
