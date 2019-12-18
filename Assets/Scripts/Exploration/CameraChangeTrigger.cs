@@ -23,7 +23,8 @@ namespace Catacumba.Exploration
 
         private void OnTriggerEnter(Collider other)
         {
-            ChangeCamera();
+            if (other.CompareTag("Player"))
+                ChangeCamera();
         }
 
         private void ChangeCamera()
