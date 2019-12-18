@@ -17,25 +17,23 @@ namespace Catacumba.Character.AI
 
         protected BaseState currentState;
 
-        protected T currentAIState;
         protected T CurrentAIState
         {
-            get { return currentAIState; }
-            set
+            get; private set;
+        }
+
+        protected virtual void SetCurrentState(T value, params object[] data)
+        {
+            characterAnimator.ResetAttackTrigger();
+
+            if (currentState != null)
             {
-                /*if (currentAIState.Equals(value)) return;*/
-
-                characterAnimator.ResetAttackTrigger();
-
-                if (currentState != null)
-                {
-                    currentState.OnExit();
-                }
-
-                currentAIState = value;
-                currentState = CreateNewState(currentAIState, value);
-                currentState.OnEnter();
+                currentState.OnExit();
             }
+
+            currentState = CreateNewState(CurrentAIState, value, data);
+            CurrentAIState = value;
+            currentState.OnEnter();
         }
 
         protected virtual void Awake()
@@ -47,9 +45,17 @@ namespace Catacumba.Character.AI
             characterCombat = GetComponent<CharacterCombat>();
         }
 
-        protected abstract BaseState CreateNewState(T previousState, T currentState);
-        protected abstract void HandleStateResult(T state, StateResult result);
+        protected virtual void Update()
+        {
+            if (currentState != null)
+            {
+                StateResult result = currentState.Update();
+                HandleStateResult(CurrentAIState, result);
+            }
+        }
 
+        protected abstract BaseState CreateNewState(T previousState, T currentState, params object[] data);
+        protected abstract void HandleStateResult(T state, StateResult result);
 
         /*
          * DEBUGGING

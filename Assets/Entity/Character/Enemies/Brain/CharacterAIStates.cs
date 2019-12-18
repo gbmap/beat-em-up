@@ -100,7 +100,7 @@ namespace Catacumba.Character.AI
 
                 if (target != null)
                 {
-                    return new StateResult(RES_ENEMY_IN_SIGHT, target.transform);
+                    return new StateResult(RES_ENEMY_IN_SIGHT, target.gameObject);
                 }
 
                 lastEntityCheck = Time.time;
@@ -151,7 +151,7 @@ namespace Catacumba.Character.AI
         public const int RES_ORBIT_REACTION_COMBO_END = 4;
 
         public AttackStateConfig Cfg;
-        public Transform Target;
+        public GameObject Target;
         private bool orbitReaction;
 
         private float lastAttack;
@@ -169,7 +169,10 @@ namespace Catacumba.Character.AI
         };
         private int comboLength;
 
-        public AttackState(GameObject gameObject, AttackStateConfig config, Transform target, bool orbitReaction = false)
+        public AttackState(GameObject gameObject, 
+                          AttackStateConfig config, 
+                          GameObject target, 
+                          bool orbitReaction = false)
             : base(gameObject)
         {
             Cfg = config;
@@ -202,10 +205,10 @@ namespace Catacumba.Character.AI
 
             if (nAttackers > maxAttackers && !orbitReaction)
             {
-                return new StateResult(RES_TOO_MANY_ATTACKERS);
+                return new StateResult(RES_TOO_MANY_ATTACKERS, Target);
             }
 
-            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.position);
+            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
 
             if (distanceToTarget <= Cfg.DistanceToAttack)
             {
@@ -216,7 +219,7 @@ namespace Catacumba.Character.AI
                     {
                         if (orbitReaction)
                         {
-                            return new StateResult(RES_ORBIT_REACTION_COMBO_END);
+                            return new StateResult(RES_ORBIT_REACTION_COMBO_END, Target);
                         }
                         else
                         {
@@ -237,7 +240,7 @@ namespace Catacumba.Character.AI
             else
             {
                 navMeshAgent.isStopped = health.IsOnGround;
-                navMeshAgent.SetDestination(Target.position);
+                navMeshAgent.SetDestination(Target.transform.position);
             }
 
             return new StateResult(RES_CONTINUE);
@@ -267,7 +270,7 @@ namespace Catacumba.Character.AI
     public class OrbitState : BaseState
     {
         public OrbitStateConfig Cfg;
-        public Transform Target;
+        public GameObject Target;
 
         public const int RES_CONTINUE = 0;
         public const int RES_NOT_ENOUGH_ATTACKERS = 1;
@@ -277,7 +280,7 @@ namespace Catacumba.Character.AI
         private float lastAttackRoll;
         private float lastPathChange;
 
-        public OrbitState(GameObject obj, OrbitStateConfig config, Transform target)
+        public OrbitState(GameObject obj, OrbitStateConfig config, GameObject target)
             : base(obj)
         {
             Cfg = config;
@@ -291,12 +294,12 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
-            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.position);
+            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
 
-            if (AIManager.Instance.GetNumberOfAttackers(Target.gameObject) < AIManager.Instance.GetMaxAttackers(Target.gameObject))
+            if (AIManager.Instance.GetNumberOfAttackers(Target) < AIManager.Instance.GetMaxAttackers(Target))
             {
                 //MovementStatus = EBrawlerAIStates.Attack;
-                return new StateResult(RES_NOT_ENOUGH_ATTACKERS);
+                return new StateResult(RES_NOT_ENOUGH_ATTACKERS, Target);
             }
 
             if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
@@ -315,7 +318,7 @@ namespace Catacumba.Character.AI
                 if (UnityEngine.Random.value > 0.75)
                 {
                     //MovementStatus = EBrawlerAIStates.OrbitAttack;
-                    return new StateResult(RES_ORBIT_ATTACK);
+                    return new StateResult(RES_ORBIT_ATTACK, Target);
                 }
 
                 lastAttackRoll = Time.time;

@@ -31,23 +31,9 @@ namespace Catacumba.Character.AI
         {
             base.Awake();
 
-            CurrentAIState = EBrawlerAIStates.Wander;
+            SetCurrentState(EBrawlerAIStates.Wander);
         }
-
-        private void Update()
-        {
-            if (target == null && CurrentAIState != EBrawlerAIStates.Wander)
-            {
-                CurrentAIState = EBrawlerAIStates.Wander;
-            }
-
-            if (currentState != null)
-            {
-                StateResult result = currentState.Update();
-                HandleStateResult(CurrentAIState, result);
-            }
-        }
-
+ 
         private void OnEnable()
         {
             characterHealth.OnDamaged += OnDamagedCallback;
@@ -66,21 +52,21 @@ namespace Catacumba.Character.AI
         {
             if (CurrentAIState == EBrawlerAIStates.Orbit)
             {
-                CurrentAIState = EBrawlerAIStates.OrbitAttack;
+                SetCurrentState(EBrawlerAIStates.OrbitAttack, obj.Attacker);
             }
         }
 
-        protected override BaseState CreateNewState(EBrawlerAIStates previousState, EBrawlerAIStates newState)
+        protected override BaseState CreateNewState(EBrawlerAIStates previousState, EBrawlerAIStates newState, params object[] data)
         {
             switch (newState)
             {
                 case EBrawlerAIStates.Wander:
                     return new WanderState(gameObject, WanderStateConfig);
                 case EBrawlerAIStates.Orbit:
-                    return new OrbitState(gameObject, OrbitStateConfig, target.transform);
+                    return new OrbitState(gameObject, OrbitStateConfig, data[0] as GameObject);
                 case EBrawlerAIStates.OrbitAttack:
                 case EBrawlerAIStates.Attack:
-                    return new AttackState(gameObject, AttackStateConfig, target.transform, currentAIState == EBrawlerAIStates.OrbitAttack);
+                    return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, CurrentAIState == EBrawlerAIStates.OrbitAttack);
                 default:
                     return new WanderState(gameObject, WanderStateConfig);
             }
@@ -95,29 +81,28 @@ namespace Catacumba.Character.AI
                     if (result.code == AttackState.RES_TOO_MANY_ATTACKERS ||
                         result.code == AttackState.RES_ORBIT_REACTION_COMBO_END)
                     {
-                        CurrentAIState = EBrawlerAIStates.Orbit;
+                        SetCurrentState(EBrawlerAIStates.Orbit, result.data[0] as GameObject);
                     }
                     else if (result.code == AttackState.RES_OUT_OF_SIGHT)
                     {
-                        CurrentAIState = EBrawlerAIStates.Wander;
+                        SetCurrentState(EBrawlerAIStates.Wander);
                     }
                     break;
                 case EBrawlerAIStates.Orbit:
                     if (result.code == OrbitState.RES_NOT_ENOUGH_ATTACKERS)
                     {
-                        CurrentAIState = EBrawlerAIStates.Attack;
+                        SetCurrentState(EBrawlerAIStates.Attack, result.data[0] as GameObject);
                     }
                     else if (result.code == OrbitState.RES_ORBIT_ATTACK)
                     {
-                        CurrentAIState = EBrawlerAIStates.OrbitAttack;
+                        SetCurrentState(EBrawlerAIStates.OrbitAttack, result.data[0] as GameObject);
                     }
                     break;
                 
                 case EBrawlerAIStates.Wander:
                     if (result.code == WanderState.RES_ENEMY_IN_SIGHT)
                     {
-                        target = (result.data[0] as Transform).gameObject;
-                        CurrentAIState = EBrawlerAIStates.Orbit;
+                        SetCurrentState(EBrawlerAIStates.Orbit, result.data[0] as GameObject);
                     }
                     break;
             }

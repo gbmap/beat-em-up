@@ -28,11 +28,19 @@ namespace Catacumba.Character.AI
             allies = UpdateAllies();
         }
 
-        void Update()
+        protected override void Update()
         {
+            base.Update();
+
             if (Time.time > lastDamageCheck + 1f)
             {
                 CharacterHealth mostDamagedAlly = allies.OrderBy(c => c.Health).First();
+
+                if (mostDamagedAlly.Health < 0.5f)
+                {
+                    SetCurrentState(EHealerAIStates.Healing, mostDamagedAlly.gameObject);
+                }
+
             }
         }
 
@@ -44,9 +52,13 @@ namespace Catacumba.Character.AI
                 .ToArray();
         }
 
-        protected override BaseState CreateNewState(EHealerAIStates previousState, EHealerAIStates currentState)
+        protected override BaseState CreateNewState(EHealerAIStates previousState, EHealerAIStates currentState, params object[] data)
         {
-            return new WanderState(gameObject, WanderStateConfig.DefaultConfig);
+            switch (currentState)
+            {
+                case EHealerAIStates.Healing: return new HealState(gameObject, HealStateConfig.DefaultConfig, data[0] as GameObject);
+                default: return new WanderState(gameObject, WanderStateConfig.DefaultConfig);
+            }
         }
 
         protected override void HandleStateResult(EHealerAIStates state, StateResult result)
