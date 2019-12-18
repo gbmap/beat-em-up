@@ -66,7 +66,7 @@ namespace Catacumba.Character.AI
                     return new OrbitState(gameObject, OrbitStateConfig, data[0] as GameObject);
                 case EBrawlerAIStates.OrbitAttack:
                 case EBrawlerAIStates.Attack:
-                    return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, CurrentAIState == EBrawlerAIStates.OrbitAttack);
+                    return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, newState == EBrawlerAIStates.OrbitAttack);
                 default:
                     return new WanderState(gameObject, WanderStateConfig);
             }
