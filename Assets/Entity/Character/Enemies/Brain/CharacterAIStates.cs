@@ -60,6 +60,14 @@ namespace Catacumba.Character.AI
         public float SightRange = 10f;
         public float SleepTime = 5f;
         public float WanderRadius = 5f;
+
+        public static WanderStateConfig DefaultConfig
+        {
+            get
+            {
+                return new WanderStateConfig();
+            }
+        }
     }
 
     public class WanderState : BaseState
@@ -124,6 +132,14 @@ namespace Catacumba.Character.AI
         public float ComboCooldown = 2f;
         public float SightRange = 10f;
         public int MaxComboHits = 5;
+
+        public static AttackStateConfig DefaultConfig
+        {
+            get
+            {
+                return new AttackStateConfig();
+            }
+        }
     }
 
     public class AttackState : BaseState
@@ -238,6 +254,14 @@ namespace Catacumba.Character.AI
     {
         public float OrbitRadius = 3f;
         public float DiceRollCooldown = 2f;
+
+        public static OrbitStateConfig DefaultConfig
+        {
+            get
+            {
+                return new OrbitStateConfig();
+            }
+        }
     }
 
     public class OrbitState : BaseState
@@ -316,6 +340,14 @@ namespace Catacumba.Character.AI
         public float MinHealDistance = 4f;
         public float HealCastTime = 1f;
         public float HealCooldown = 3f;
+
+        public static HealStateConfig DefaultConfig
+        {
+            get
+            {
+                return new HealStateConfig();
+            }
+        }
     }
 
     public class HealState : BaseState

@@ -4,38 +4,24 @@ using UnityEngine.AI;
 
 namespace Catacumba.Character.AI
 {
-    public class CharacterAIHealer : MonoBehaviour
+    public enum EHealerAIStates
+    {
+        Wandering,
+        Orbiting,
+        Healing,
+    }
+
+    public class CharacterAIHealer : CharacterAIBaseMachine<EHealerAIStates>
     {
         private CharacterHealth[] allies;
-        private NavMeshAgent navMeshAgent;
 
         [Header("Wander State")]
         public WanderStateConfig WanderStateConfig;
 
-        [Header("Attack State")]
-        public AttackStateConfig AttackStateConfig;
-
         [Header("Orbit State")]
         public OrbitStateConfig OrbitStateConfig;
 
-        private WanderState wanderState;
-        private AttackState attackState;
-        private OrbitState orbitState;
-
         float lastDamageCheck;
-
-        private enum EMovementStatus
-        {
-            Wandering,
-            Avoiding,
-            Healing,
-        }
-
-        private void Awake()
-        {
-            navMeshAgent = GetComponent<NavMeshAgent>();
-
-        }
 
         void Start()
         {
@@ -56,6 +42,16 @@ namespace Catacumba.Character.AI
             return allAllies.Select(g => g.GetComponent<CharacterHealth>())
                 .Where(ally => Vector3.Distance(transform.position, ally.transform.position) < 30f)
                 .ToArray();
+        }
+
+        protected override BaseState CreateNewState(EHealerAIStates previousState, EHealerAIStates currentState)
+        {
+            return new WanderState(gameObject, WanderStateConfig.DefaultConfig);
+        }
+
+        protected override void HandleStateResult(EHealerAIStates state, StateResult result)
+        {
+
         }
     }
 }
