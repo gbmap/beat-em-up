@@ -8,7 +8,8 @@ public class CharacterAnimationImporter : AssetPostprocessor
 
     void OnPreprocessModel()
     {
-        if (!assetPath.Contains("Character@"))
+        if (!assetPath.Contains("Character@") &&
+            !assetPath.Contains("Assets/Entity/Character/Animations/FBX"))
         {
             return;
         }
