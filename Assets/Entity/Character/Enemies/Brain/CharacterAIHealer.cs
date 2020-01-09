@@ -13,6 +13,8 @@ namespace Catacumba.Character.AI
 
     public class CharacterAIHealer : CharacterAIBaseMachine<EHealerAIStates>
     {
+        public HealStateConfig HealConfig;
+
         private CharacterHealth[] allies;
         private CharacterHealth MostDamagedAlly
         {
@@ -48,8 +50,9 @@ namespace Catacumba.Character.AI
                 bool isWandering = CurrentAIState == EHealerAIStates.Wandering;
                 bool isOrbitingAlready = (CurrentAIState == EHealerAIStates.Orbiting) &&
                                          (currentState as OrbitState).Target == mda.gameObject;
+                bool isHealing = CurrentAIState == EHealerAIStates.Healing;
 
-                if (isWandering || !isOrbitingAlready)
+                if (( isWandering || !isOrbitingAlready) && !isHealing)
                 {
                     SetCurrentState(EHealerAIStates.Orbiting, mda.gameObject);
                 }
@@ -62,7 +65,8 @@ namespace Catacumba.Character.AI
         {
             GameObject[] allAllies = GameObject.FindGameObjectsWithTag("Enemy");
             return allAllies.Select(g => g.GetComponent<CharacterHealth>())
-                .Where(ally => Vector3.Distance(transform.position, ally.transform.position) < 30f)
+                .Where(ally => Vector3.Distance(transform.position, ally.transform.position) < 30f && ally != gameObject)
+                .Append(gameObject.GetComponent<CharacterHealth>())
                 .ToArray();
         }
 
@@ -88,6 +92,12 @@ namespace Catacumba.Character.AI
                         {
                             SetCurrentState(EHealerAIStates.Healing, health.gameObject);
                         }
+                    }
+                    break;
+                case EHealerAIStates.Healing:
+                    if (result.code == HealState.RES_HEALED)
+                    {
+                        SetCurrentState(EHealerAIStates.Wandering);
                     }
                     break;
             }

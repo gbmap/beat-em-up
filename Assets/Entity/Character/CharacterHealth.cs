@@ -71,12 +71,19 @@ public class CharacterHealth : MonoBehaviour
     {
         OnFall += OnFallCallback;
         OnGetUp += OnGetUpAnimationEnd;
+        characterData.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
 
     private void OnDisable()
     {
         OnFall -= OnFallCallback;
         OnGetUp -= OnGetUpAnimationEnd;
+        characterData.Stats.OnStatsChanged -= OnStatsChangedCallback;
+    }
+
+    private void OnStatsChangedCallback(CharacterStats stats)
+    {
+        UpdateHealthQuad(stats.HealthNormalized, stats.PoiseBar);
     }
 
     public void OnGetUpAnimationEnd()
@@ -114,7 +121,7 @@ public class CharacterHealth : MonoBehaviour
         _fx.ImpactHit(transform.position + Vector3.up);
         _fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
-        UpdateHealthQuad(((float)data.DefenderStats.Health) / data.DefenderStats.MaxHealth, data.DefenderStats.PoiseBar);
+        UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
         if (data.Knockdown)
         {

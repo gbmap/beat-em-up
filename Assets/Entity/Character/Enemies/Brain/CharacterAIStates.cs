@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -47,6 +48,16 @@ namespace Catacumba.Character.AI
         }
 
         public virtual void OnExit()
+        {
+
+        }
+
+        public virtual void OnDebugDrawGizmos()
+        {
+
+        }
+
+        public virtual void OnGUI()
         {
 
         }
@@ -377,9 +388,11 @@ namespace Catacumba.Character.AI
     public class HealState : BaseState
     {
         public const int RES_CONTINUE = 0;
-        public const int RES_HEALED = 1;
+        public const int RES_HEALING = 1;
+        public const int RES_HEALED = 2;
 
         public GameObject Target;
+        private CharacterHealth characterHealth;
 
         private HealStateConfig Cfg;
 
@@ -389,17 +402,38 @@ namespace Catacumba.Character.AI
             get; private set;
         }
 
+        bool isHealing = false;
+
         public HealState(GameObject gameObject, HealStateConfig cfg, GameObject target) 
             : base(gameObject)
         {
             Cfg = cfg;
             Target = target;
+
+            characterHealth = gameObject.GetComponent<CharacterHealth>();
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            characterHealth.OnDamaged += OnDamagedCallback;
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            characterHealth.OnDamaged -= OnDamagedCallback;
+        }
+
+        private void OnDamagedCallback(CharacterAttackData obj)
+        {
+            healCastT = 0f;
         }
 
         public override StateResult Update()
         {
             float d = Vector3.Distance(gameObject.transform.position, Target.transform.position);
-            if (d > Cfg.MinHealDistance)
+            if (d > Cfg.MinHealDistance && !isHealing)
             {
                 float navDistanceToTarget = Vector3.Distance(navMeshAgent.destination, Target.transform.position);
 
@@ -412,15 +446,31 @@ namespace Catacumba.Character.AI
             
             else if (Time.time > LastHeal + Cfg.HealCooldown)
             {
+                isHealing = true;
+
                 healCastT += Time.deltaTime;
                 if (healCastT >= Cfg.HealCastTime)
                 {
+                    isHealing = false;
+                    LastHeal = Time.time;
                     CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
-                    return new StateResult(RES_HEALED);
+                    return new StateResult(RES_HEALED, Target);
+                }
+                else
+                {
+                    return new StateResult(RES_HEALING, Target);
                 }
             }
 
             return new StateResult(RES_CONTINUE);
+        }
+
+        public override void OnGUI()
+        {
+            base.OnGUI();
+            Rect r = UIManager.WorldSpaceGUI(gameObject.transform.position + Vector3.down * 2f, 
+                new Vector2(100f*(healCastT/Cfg.HealCastTime), 15f));
+            GUI.Box(r, "HealingProgress");
         }
     }
 

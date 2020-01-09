@@ -73,6 +73,11 @@ namespace Catacumba.Character.AI
                 var b = path.corners[i];
                 Gizmos.DrawLine(a, b);
             }
+
+            if (currentState != null)
+            {
+                currentState.OnDebugDrawGizmos();
+            }
         }
 
 
@@ -82,6 +87,11 @@ namespace Catacumba.Character.AI
 
             Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
             GUI.Label(r, "State: " + CurrentAIState);
+
+            if (currentState != null)
+            {
+                currentState.OnGUI();
+            }
         }
 #endif
 

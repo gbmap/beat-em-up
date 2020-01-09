@@ -259,7 +259,20 @@ public class CharacterStats
         }
     }
 
-    public int Health { get; set; }
+    private int health;
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+
+        set
+        {
+            health = Mathf.Clamp(value, 0, MaxHealth);
+            OnStatsChanged?.Invoke(this);
+        }
+    }
 
     public float HealthNormalized
     {
