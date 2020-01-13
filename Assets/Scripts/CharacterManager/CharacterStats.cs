@@ -188,7 +188,7 @@ public class ItemStats
     public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
-    public Skill Skill;
+    public BaseSkill Skill;
 }
 
 public enum EWeaponType
@@ -236,7 +236,7 @@ public class CharacterSkillTree
 
 #endregion
 
-public class Skill
+public class BaseSkill
 {
     // PLACEHOLDERRRRRR
 }

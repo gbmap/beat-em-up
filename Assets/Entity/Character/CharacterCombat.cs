@@ -11,6 +11,11 @@ public class CharacterCombat : MonoBehaviour
 
     public System.Action<EAttackType> OnRequestCharacterAttack;
     public System.Action<CharacterAttackData> OnCharacterAttack;
+
+    private BaseSkill skillBeingCasted;
+    public System.Action<BaseSkill> OnRequestSkillUse;
+    public System.Action<BaseSkill> OnSkillUsed;
+
     public System.Action OnComboStarted;
     public System.Action OnComboEnded;
 
@@ -134,6 +139,23 @@ public class CharacterCombat : MonoBehaviour
         lastAttackData = attack;
     }
 
+    /*
+     * Skills
+     * */
+    public void RequestSkillUse(BaseSkill skill)
+    {
+        skillBeingCasted = skill;
+        OnRequestSkillUse?.Invoke(skill);
+    }
+
+    public void AnimSkillUsed()
+    {
+        // fazer algo com a skill sendo castada.
+        OnSkillUsed?.Invoke(skillBeingCasted);
+        skillBeingCasted = null;
+    }
+
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (!Application.isPlaying) return;
@@ -145,5 +167,6 @@ public class CharacterCombat : MonoBehaviour
             Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(lastAttackData.Type));
         }
     }
+#endif
 
 }

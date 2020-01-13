@@ -388,11 +388,13 @@ namespace Catacumba.Character.AI
     public class HealState : BaseState
     {
         public const int RES_CONTINUE = 0;
-        public const int RES_HEALING = 1;
+        public const int RES_HEALING = 1; // esperando o cast time (talvez seja desnecessário)
         public const int RES_HEALED = 2;
+        public const int RES_CASTING_HEAL = 3; // rodando a animação de heal
 
         public GameObject Target;
         private CharacterHealth characterHealth;
+        private CharacterCombat characterCombat;
 
         private HealStateConfig Cfg;
 
@@ -403,6 +405,7 @@ namespace Catacumba.Character.AI
         }
 
         bool isHealing = false;
+        bool isCasting = false;
 
         public HealState(GameObject gameObject, HealStateConfig cfg, GameObject target) 
             : base(gameObject)
@@ -411,23 +414,34 @@ namespace Catacumba.Character.AI
             Target = target;
 
             characterHealth = gameObject.GetComponent<CharacterHealth>();
+            characterCombat = gameObject.GetComponent<CharacterCombat>();
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
             characterHealth.OnDamaged += OnDamagedCallback;
+            characterCombat.OnSkillUsed += OnSkillUsedCallback;
         }
 
         public override void OnExit()
         {
             base.OnExit();
             characterHealth.OnDamaged -= OnDamagedCallback;
+            characterCombat.OnSkillUsed -= OnSkillUsedCallback;
         }
 
         private void OnDamagedCallback(CharacterAttackData obj)
         {
             healCastT = 0f;
+        }
+
+        private void OnSkillUsedCallback(BaseSkill skill)
+        {
+            isHealing = false;
+            isCasting = false;
+            LastHeal = Time.time;
+            CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
         }
 
         public override StateResult Update()
@@ -451,15 +465,31 @@ namespace Catacumba.Character.AI
                 healCastT += Time.deltaTime;
                 if (healCastT >= Cfg.HealCastTime)
                 {
-                    isHealing = false;
-                    LastHeal = Time.time;
-                    CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
-                    return new StateResult(RES_HEALED, Target);
+                    // terminou o cast time
+                    if (!isCasting)
+                    {
+                        combat.RequestSkillUse(new BaseSkill());
+                        isCasting = true;
+                    }
+
+                    // esperando a animação de cast
+                    else
+                    {
+                        return new StateResult(RES_CASTING_HEAL, Target);
+                    }
                 }
+
+                // esperando o cast time
                 else
                 {
                     return new StateResult(RES_HEALING, Target);
                 }
+            }
+
+            else if (healCastT >= Cfg.HealCastTime && !isHealing && !isCasting)
+            {
+                healCastT = 0f;
+                return new StateResult(RES_HEALED, Target);
             }
 
             return new StateResult(RES_CONTINUE);

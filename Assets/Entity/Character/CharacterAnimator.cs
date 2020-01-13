@@ -47,10 +47,11 @@ public class CharacterAnimator : MonoBehaviour
     GameObject equippedWeapon;
 
     // ====== HEALTH
-    int _damagedHash = Animator.StringToHash("Damaged");
-    int _knockdownHash = Animator.StringToHash("Knockdown");
-    int _damagedNHits = Animator.StringToHash("DamagedHits");
-    int _recoverHash = Animator.StringToHash("Recovered");
+    int damagedHash = Animator.StringToHash("Damaged");
+    int knockdownHash = Animator.StringToHash("Knockdown");
+    int damagedNHitsHash = Animator.StringToHash("DamagedHits");
+    int recoverHash = Animator.StringToHash("Recovered");
+    int castSkillHash = Animator.StringToHash("Cast");
 
     // Animator speed reset timer
     float _timeSpeedReset;
@@ -70,6 +71,7 @@ public class CharacterAnimator : MonoBehaviour
     private void OnEnable()
     {
         combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
+        combat.OnRequestSkillUse += OnRequestSkillUseCallback;
         combat.OnCharacterAttack += OnCharacterAttackCallback;
 
         health.OnDamaged += OnCharacterDamagedCallback;
@@ -120,8 +122,8 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger(_weakAttackHash);
         animator.ResetTrigger(_strongAttackHash);
 
-        animator.SetInteger(_damagedNHits, attack.HitNumber);
-        animator.SetTrigger(attack.Knockdown ? _knockdownHash : _damagedHash);
+        animator.SetInteger(damagedNHitsHash, attack.HitNumber);
+        animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
 
         _timeSpeedReset = Time.time;
         animator.speed = 0f;
@@ -130,6 +132,11 @@ public class CharacterAnimator : MonoBehaviour
     private void OnRequestCharacterAttackCallback(EAttackType type)
     {
         animator.SetTrigger(type == EAttackType.Weak ? _weakAttackHash : _strongAttackHash);
+    }
+
+    private void OnRequestSkillUseCallback(BaseSkill obj)
+    {
+        animator.SetTrigger(castSkillHash);
     }
 
     private void OnCharacterAttackCallback(CharacterAttackData attack)
@@ -143,7 +150,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRecoverCallback()
     {
-        animator.SetTrigger(_recoverHash);
+        animator.SetTrigger(recoverHash);
     }
 
     private void OnStatsChangedCallback(CharacterStats stats)
