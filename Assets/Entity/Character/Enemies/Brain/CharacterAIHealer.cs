@@ -99,6 +99,11 @@ namespace Catacumba.Character.AI
                     {
                         SetCurrentState(EHealerAIStates.Wandering);
                     }
+
+                    if (result.code == HealState.RES_TARGET_IS_DEAD)
+                    {
+                        SetCurrentState(EHealerAIStates.Wandering);
+                    }
                     break;
             }
 

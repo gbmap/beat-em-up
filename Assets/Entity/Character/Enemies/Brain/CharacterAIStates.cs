@@ -391,6 +391,7 @@ namespace Catacumba.Character.AI
         public const int RES_HEALING = 1; // esperando o cast time (talvez seja desnecessário)
         public const int RES_HEALED = 2;
         public const int RES_CASTING_HEAL = 3; // rodando a animação de heal
+        public const int RES_TARGET_IS_DEAD = 4;
 
         public GameObject Target;
         private CharacterHealth characterHealth;
@@ -434,6 +435,7 @@ namespace Catacumba.Character.AI
         private void OnDamagedCallback(CharacterAttackData obj)
         {
             healCastT = 0f;
+            isCasting = false;
         }
 
         private void OnSkillUsedCallback(BaseSkill skill)
@@ -446,6 +448,11 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
+            if (Target == null)
+            {
+                return new StateResult(RES_TARGET_IS_DEAD);
+            }
+
             float d = Vector3.Distance(gameObject.transform.position, Target.transform.position);
             if (d > Cfg.MinHealDistance && !isHealing)
             {
@@ -466,7 +473,7 @@ namespace Catacumba.Character.AI
                 if (healCastT >= Cfg.HealCastTime)
                 {
                     // terminou o cast time
-                    if (!isCasting)
+                    if (!isCasting && !combat.IsOnCombo && !health.IsOnGround)
                     {
                         combat.RequestSkillUse(new BaseSkill());
                         isCasting = true;
