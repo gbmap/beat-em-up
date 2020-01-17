@@ -18,7 +18,15 @@ namespace Catacumba.Character.AI
         private CharacterHealth[] allies;
         private CharacterHealth MostDamagedAlly
         {
-            get { return allies.OrderBy(c => c.Health).First(); }
+            get {
+                allies = allies.Where(c => c != null).ToArray();
+                if (allies.Length == 0)
+                {
+                    allies = UpdateAllies();
+                }
+
+                return allies.OrderBy(c => c.Health).First();
+            }
         }
 
         float lastDamageCheck;
