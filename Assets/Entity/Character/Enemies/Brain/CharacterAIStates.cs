@@ -199,14 +199,18 @@ namespace Catacumba.Character.AI
             }
             lastAttack = Time.time;
             comboLength = UnityEngine.Random.Range(1, Cfg.MaxComboHits);
-        }
 
+            health.OnDamaged += OnDamagedCallback;
+        }
+        
         public override void OnExit()
         {
             if (!orbitReaction)
             {
                 AIManager.Instance.DecreaseAttackers(Target.gameObject);
             }
+
+            health.OnDamaged -= OnDamagedCallback;
         }
 
         public override StateResult Update()
@@ -258,6 +262,11 @@ namespace Catacumba.Character.AI
             }
 
             return new StateResult(RES_CONTINUE);
+        }
+
+        private void OnDamagedCallback(CharacterAttackData obj)
+        {
+            lastAttack = Time.time;
         }
 
     }
