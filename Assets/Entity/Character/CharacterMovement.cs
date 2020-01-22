@@ -130,7 +130,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         {
-            _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.15f * attack.HitNumber);
+            _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.2f * attack.HitNumber);
             speedBumpT = 1f;
         }
     }
@@ -138,7 +138,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
         speedBumpT = 1f;
-        _speedBumpDir = transform.forward;
+        _speedBumpDir = transform.forward * 1.2f;
     }
 
     public void Roll(Vector3 direction)
