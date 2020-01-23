@@ -33,6 +33,22 @@ public class CharacterAnimator : MonoBehaviour
         get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
+    private Material[] Material
+    {
+        get; set;
+    }
+
+    private float hitEffectFactor;
+    private float HitEffectFactor
+    {
+        get { return hitEffectFactor; }
+        set
+        {
+            hitEffectFactor = value;
+            Array.ForEach(Material, m => m.SetFloat("_HitFactor", value));
+        }
+    }
+
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
@@ -106,10 +122,14 @@ public class CharacterAnimator : MonoBehaviour
             animator.speed = AnimatorDefaultSpeed;
         }
 
+        if (!Mathf.Approximately(HitEffectFactor, 0f))
+        {
+            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
+        }
+
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
-
     }
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
@@ -124,6 +144,8 @@ public class CharacterAnimator : MonoBehaviour
 
         animator.SetInteger(damagedNHitsHash, attack.HitNumber);
         animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
+
+        HitEffectFactor = 1f;
 
         _timeSpeedReset = Time.time;
         animator.speed = 0f;
@@ -237,6 +259,14 @@ public class CharacterAnimator : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
+
+        List<Material> materials = new List<Material>();
+        foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>())
+        {
+            materials.Add(r.material);
+        }
+
+        Material = materials.ToArray();
     }
 
     public void SetRootMotion(bool v)

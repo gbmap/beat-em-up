@@ -13,8 +13,6 @@ public class CharacterHealth : MonoBehaviour
 
     private bool _isOnFloor;
 
-    FX _fx;
-
     private Rigidbody _rigidbody;
     private Collider _collider;
 
@@ -40,7 +38,6 @@ public class CharacterHealth : MonoBehaviour
 
     private void Awake()
     {
-        _fx = FindObjectOfType<FX>();
         _rigidbody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
         characterData = GetComponent<CharacterData>();
@@ -118,8 +115,10 @@ public class CharacterHealth : MonoBehaviour
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
 
-        _fx.ImpactHit(transform.position + Vector3.up);
-        _fx.DamageLabel(transform.position + Vector3.up, data.Damage);
+        var fx = FX.Instance;
+        fx.ImpactHit(transform.position + Vector3.up);
+        fx.ImpactBlood(transform.position + Vector3.up);
+        fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 

@@ -126,7 +126,7 @@ public class CharacterCombat : MonoBehaviour
             1 << LayerMask.NameToLayer("Entities")
         );
 
-        if (colliders.Length > 0)
+        if (colliders.Length > 1)
         {
             SoundManager.Instance.PlayHit(transform.position);
         }

@@ -234,6 +234,7 @@ Material:
     - _HeightPoMAmplitude: 2
     - _HeightTessAmplitude: 2
     - _HeightTessCenter: 0.5
+    - _HitFactor: 0
     - _IncludeIndirectLighting: 1
     - _InvTilingScale: 1
     - _Ior: 1

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FX : MonoBehaviour
+public class FX : Singleton<FX>
 {
     public ParticleSystem ParticleImpactHit;
+    public ParticleSystem ParticleImpactBlood;
 
     public GameObject PrefabDamageLabel;
 
@@ -21,8 +22,19 @@ public class FX : MonoBehaviour
         ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
         {
             position = position,
+            rotation = Random.value * 360f
         };
         ParticleImpactHit.Emit(emitParams, 1);
+    }
+
+    public void ImpactBlood(Vector3 position)
+    {
+        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
+        {
+            position = position,
+            
+        };
+        ParticleImpactBlood.Emit(emitParams, 100);
     }
 
     public void DamageLabel(Vector3 worldPosition, int damage)
