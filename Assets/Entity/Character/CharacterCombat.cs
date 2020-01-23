@@ -126,6 +126,11 @@ public class CharacterCombat : MonoBehaviour
             1 << LayerMask.NameToLayer("Entities")
         );
 
+        if (colliders.Length > 0)
+        {
+            SoundManager.Instance.PlayHit(transform.position);
+        }
+
         foreach (var c in colliders)
         {
             if (c.gameObject == gameObject) continue;
@@ -153,6 +158,11 @@ public class CharacterCombat : MonoBehaviour
         // fazer algo com a skill sendo castada.
         OnSkillUsed?.Invoke(skillBeingCasted);
         skillBeingCasted = null;
+    }
+
+    public void AnimPlayWoosh()
+    {
+        SoundManager.Instance.PlayWoosh(transform.position);
     }
 
 #if UNITY_EDITOR
