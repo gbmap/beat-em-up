@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class CharacterMovement : MonoBehaviour
@@ -13,6 +14,8 @@ public class CharacterMovement : MonoBehaviour
     public Vector3 Direction;
     public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? navMeshAgent.velocity : Direction; } }
     private Vector3 velocity;
+
+    private Vector3 forward;
 
     public float MoveSpeed = 3f;
 
@@ -58,11 +61,13 @@ public class CharacterMovement : MonoBehaviour
     private void OnEnable()
     {
         combat.OnCharacterAttack += OnCharacterAttackCallback;
+        combat.OnRequestCharacterAttack += OnCharacterRequestAttackCallback;
     }
 
     private void OnDisable()
     {
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
+        combat.OnRequestCharacterAttack -= OnCharacterRequestAttackCallback;
     }
 
     // Update is called once per frame
@@ -95,19 +100,23 @@ public class CharacterMovement : MonoBehaviour
             if (isRolling)
             {
                 float a = Vector3.Dot(dir, rollDirection);
-                dir = Vector3.Lerp(dir, rollDirection, Mathf.Max(0.9f, a));
+                dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
                 rollDirection = dir;
                 //dir = rollDirection;
             }
 
+            // escalar direção c a velocidade
             var dirNorm = dir * MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.85f : 1f);
-            dirNorm.y = velocity.y;
+            forward = Vector3.Slerp(forward, dirNorm, 0.5f*Time.deltaTime*30f).normalized;
 
+            //dirNorm.y = velocity.y;
+
+            // aplicar roll speed
             velocity = dirNorm * rollSpeed;
             if (Direction.sqrMagnitude > 0f)
             {
                 dirNorm.y = 0f;
-                transform.LookAt(transform.position + dirNorm);
+                transform.LookAt(transform.position + forward);
             }
         }
 
@@ -146,6 +155,11 @@ public class CharacterMovement : MonoBehaviour
         _speedBumpDir = transform.forward * 1.2f;
     }
 
+    private void OnCharacterRequestAttackCallback(EAttackType obj)
+    {
+        forward = Direction.normalized;
+    }
+
     public void Roll(Vector3 direction)
     {
         if (Time.time < lastRoll + 0.75f ||
@@ -158,6 +172,7 @@ public class CharacterMovement : MonoBehaviour
         rollSpeedT = 1f;
         speedBumpT = 0f;
         rollDirection = direction;
+        forward = rollDirection;
         lastRoll = Time.time;
         transform.LookAt(transform.position + direction);
     }
