@@ -84,7 +84,12 @@ public class CharacterMovement : MonoBehaviour
 
         else if (canMove)
         {
-            float rollSpeed = 1f + Mathf.Clamp01(Mathf.Pow(rollSpeedT, 1f/3));
+            //float rollSpeed = 1f + Mathf.Clamp01(1f-Mathf.Pow((1f-rollSpeedT), 3f));
+            // x * (1 - x) * 4
+            float rollSpeed = 1f + Mathf.Clamp01(rollSpeedT * (1f - rollSpeedT) * 4f);
+            // x*(1-x)*(1-x)/0.15
+            //float rollSpeed = 1f + Mathf.Clamp01(rollSpeedT * (1f-rollSpeedT)*(1f-rollSpeedT) / 0.15f );
+
 
             var dir = Direction.normalized;
             if (isRolling)
@@ -116,7 +121,7 @@ public class CharacterMovement : MonoBehaviour
             navMeshAgent.Move(velocity * Time.deltaTime);
         }
 
-        rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime*0.8f);
+        rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime);
     }
 
     private void LateUpdate()
@@ -176,7 +181,8 @@ public class CharacterMovement : MonoBehaviour
 
         Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
         GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo +
-                     "\nspeedBumpT: " + speedBumpT);
+                     "\nspeedBumpT: " + speedBumpT +
+                     "\nrollSpeedT: " + rollSpeedT);
     }
 #endif
 }
