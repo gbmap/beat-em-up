@@ -229,6 +229,7 @@ public class CharacterAnimator : MonoBehaviour
 
         if (equippedWeapon != null)
         {
+            animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
             Destroy(equippedWeapon);
         }
     }

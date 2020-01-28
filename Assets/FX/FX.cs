@@ -29,12 +29,8 @@ public class FX : Singleton<FX>
 
     public void ImpactBlood(Vector3 position)
     {
-        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
-        {
-            position = position,
-            
-        };
-        ParticleImpactBlood.Emit(emitParams, 100);
+        ParticleImpactBlood.transform.position = position;
+        ParticleImpactBlood.Emit(100);
     }
 
     public void DamageLabel(Vector3 worldPosition, int damage)
