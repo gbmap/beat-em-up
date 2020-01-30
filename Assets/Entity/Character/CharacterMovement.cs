@@ -34,6 +34,9 @@ public class CharacterMovement : MonoBehaviour
 
     NavMeshAgent navMeshAgent;
 
+    [Header("Dash when attacks")]
+    public float SpeedBumpForce = 0.9f;
+
     private ECharacterBrainType brainType
     {
         get
@@ -99,9 +102,16 @@ public class CharacterMovement : MonoBehaviour
             var dir = Direction.normalized;
             if (isRolling)
             {
-                float a = Vector3.Dot(dir, rollDirection);
-                dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
-                rollDirection = dir;
+                if (Direction.sqrMagnitude < 1f)
+                {
+
+                }
+                else
+                {
+                    float a = Vector3.Dot(dir, rollDirection);
+                    dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
+                    rollDirection = dir;
+                }
                 //dir = rollDirection;
             }
 
@@ -144,7 +154,9 @@ public class CharacterMovement : MonoBehaviour
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         {
-            _speedBumpDir = attack.Attacker.transform.forward * (1f + 0.2f * attack.HitNumber);
+            
+
+            _speedBumpDir = attack.Attacker.transform.forward * (SpeedBumpForce * (1f+Convert.ToSingle(attack.Knockdown)*2f));
             speedBumpT = 1f;
         }
     }
@@ -152,7 +164,7 @@ public class CharacterMovement : MonoBehaviour
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
         speedBumpT = 1f;
-        _speedBumpDir = transform.forward * 1.2f;
+        _speedBumpDir = transform.forward * SpeedBumpForce;
     }
 
     private void OnCharacterRequestAttackCallback(EAttackType obj)

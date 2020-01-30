@@ -13,9 +13,10 @@ public class CombatManagerConfig : ScriptableObject
 
     [Header("Weapon Animator Overrides")]
     public RuntimeAnimatorController DefaultController;
-    public AnimatorOverrideController SwordController;
+    public AnimatorOverrideController TwoHandedSword;
     public AnimatorOverrideController DaggerController;
     public AnimatorOverrideController ScepterController;
+    public AnimatorOverrideController SwordAndShieldController;
 
     public RuntimeAnimatorController WeaponTypeToController(EWeaponType type)
     {
@@ -23,7 +24,8 @@ public class CombatManagerConfig : ScriptableObject
         {
             case EWeaponType.Dagger: return DaggerController;
             case EWeaponType.Scepter: return ScepterController;
-            case EWeaponType.Sword: return SwordController;
+            case EWeaponType.Sword: return SwordAndShieldController;
+            case EWeaponType.TwoHandedSword: return TwoHandedSword;
             default: return DefaultController;
         }
     }

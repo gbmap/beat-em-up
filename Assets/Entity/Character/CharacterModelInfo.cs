@@ -26,15 +26,18 @@ public class CharacterModelInfo : MonoBehaviour
     }
 
 
-    public TransformBone HandBone;
+    public TransformBone LeftHandBone;
+    public TransformBone RightHandBone;
     public TransformBone HipsBone;
 
-    string fingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L/Hand_L/Finger_01";
+    string leftFingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_L/Shoulder_L/Elbow_L/Hand_L/Finger_01";
+    string rightFingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_R/Shoulder_R/Elbow_R/Hand_R/Finger_01 1";
     string hipsPath = "Root/Hips";
 
     private void Start()
     {
-        HandBone = new TransformBone(gameObject, fingerPath);
+        LeftHandBone = new TransformBone(gameObject, leftFingerPath);
+        RightHandBone = new TransformBone(gameObject, rightFingerPath);
         HipsBone = new TransformBone(gameObject, hipsPath);
     }
 }

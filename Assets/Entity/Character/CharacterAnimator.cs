@@ -49,6 +49,9 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
+    [Header("Freeze")] 
+    public float AnimationFreezeFrameTime = 0.15f;
+
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
@@ -117,7 +120,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f);
         animator.SetFloat(_speedYHash, Mathf.Clamp(movement.Velocity.y, -1f, 1f));
 
-        if (animator.speed < 1f && Time.time > _timeSpeedReset + .3f)
+        if (animator.speed < 1f && Time.time > _timeSpeedReset + AnimationFreezeFrameTime)
         {
             animator.speed = AnimatorDefaultSpeed;
         }
@@ -207,9 +210,44 @@ public class CharacterAnimator : MonoBehaviour
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
         equippedWeapon = model.gameObject;
-        model.transform.parent = ModelInfo.HandBone.Bone;
-        model.transform.localPosition = Vector3.zero;
-        model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+
+        Transform handBone = null;
+        Quaternion rotation = Quaternion.identity;
+        Vector3 position = Vector3.zero;
+
+        if (item.Stats.ItemType == EItemType.Equip && item.Stats.Slot == EInventorySlot.Weapon)
+        {
+            if (item.Stats.WeaponType == EWeaponType.Scepter)
+            {
+                handBone = ModelInfo.RightHandBone.Bone;
+                rotation = Quaternion.Euler(-90f, 0f, 0f);
+                position = new Vector3(0.03f, 0.03f, -0.62f);
+            }
+            else if (item.Stats.WeaponType == EWeaponType.TwoHandedSword)
+            {
+                handBone = ModelInfo.LeftHandBone.Bone;
+                rotation = Quaternion.Euler(-221f, -96f, -101f);
+                position = new Vector3(-0.032f, -0.09f, 0.14f);
+            }
+            else if (item.Stats.WeaponType == EWeaponType.Sword)
+            {
+                handBone = ModelInfo.RightHandBone.Bone;
+                rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
+                position = new Vector3(-0.017f, 0.12f, 0.072f);
+            }
+
+            else
+            {
+                handBone = ModelInfo.LeftHandBone.Bone;
+                rotation = Quaternion.Euler(90f, 0f, 0f);
+            }
+        }
+
+        model.transform.SetParent(handBone, false);
+        //model.transform.parent = handBone;
+        model.transform.localRotation = rotation;
+        model.transform.localPosition = position;
+        //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
         if (item.Stats.ItemType == EItemType.Equip)
         {
@@ -286,8 +324,8 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnGUI()
     {
-        Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
-        GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        //Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
+        //GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
     }
 
     private bool showDeltaHips = false;

@@ -196,7 +196,8 @@ public enum EWeaponType
     Fists,
     Sword,
     Dagger,
-    Scepter
+    Scepter,
+    TwoHandedSword
 }
 
 #endregion

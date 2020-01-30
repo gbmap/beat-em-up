@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
-  m_Name: Sword1
+  m_Name: Sword3
   m_EditorClassIdentifier: 
   Name: Espada Boladona
   Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,
     seria decorada por um bon\xE9 aba reta virado pro lado."
-  Prefab: {fileID: 155340, guid: e6138525164fc714a9e749b7608ec9b3, type: 3}
+  Prefab: {fileID: 128030, guid: 3e567880dba875d4fbc7834ca7f5b289, type: 3}
   Stats:
-    Id: 2
+    Id: 5
     ItemType: 0
     Rarity: 3
     Slot: 5
-    WeaponType: 4
+    WeaponType: 3
     Attributes:
       Vigor: 10
       Strength: 10
