@@ -19,6 +19,7 @@ public struct CharacterAttackData
 
     public bool Poised;
     public bool Knockdown;
+    public bool CancelAnimation;
 }
 
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>

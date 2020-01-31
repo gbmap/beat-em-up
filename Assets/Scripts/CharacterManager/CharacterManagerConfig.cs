@@ -242,6 +242,23 @@ public class CharacterManagerConfig : ScriptableObject
 
         yield return null;
 
+        Transform lhb = characterModelInfo.LeftHandBone.Bone;
+        Transform rhb = characterModelInfo.RightHandBone.Bone;
+
+        GameObject weaponHolder = new GameObject("WeaponHolder");
+        weaponHolder.transform.SetParent(lhb);
+        weaponHolder.transform.localPosition = Vector3.zero;
+        weaponHolder.transform.localRotation = Quaternion.identity;
+        weaponHolder.transform.localScale = Vector3.one;
+
+        weaponHolder = new GameObject("WeaponHolder");
+        weaponHolder.transform.SetParent(rhb);
+        weaponHolder.transform.localPosition = Vector3.zero;
+        weaponHolder.transform.localRotation = Quaternion.identity;
+        weaponHolder.transform.localScale = Vector3.one;
+
+        yield return null;
+
         Destroy(packInstance.gameObject);
     }
 

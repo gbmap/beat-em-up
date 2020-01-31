@@ -122,7 +122,7 @@ public class CharacterHealth : MonoBehaviour
 
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
-        if (data.Knockdown)
+        if (data.Knockdown && data.CancelAnimation)
         {
             characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
         }

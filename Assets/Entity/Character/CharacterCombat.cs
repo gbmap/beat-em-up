@@ -24,6 +24,8 @@ public class CharacterCombat : MonoBehaviour
     private CharacterMovement movement;
     private CharacterAnimator animator;
 
+    public bool IsOnHeavyAttack;
+
     private Vector3 attackColliderBasePosition
     {
         get { return animator.RealCharacterPosition + transform.forward*0.75f + Vector3.up; }
@@ -114,7 +116,14 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
-        Attack(new CharacterAttackData { Type = type, Attacker = gameObject, HitNumber = ++_nComboHits, Time = Time.time });
+        Attack(new CharacterAttackData
+            {
+                Type = type,
+                Attacker = gameObject,
+                HitNumber = ++_nComboHits,
+                Time = Time.time
+            }
+        );
     }
 
     private void Attack(CharacterAttackData attack)
@@ -131,11 +140,17 @@ public class CharacterCombat : MonoBehaviour
             SoundManager.Instance.PlayHit(transform.position);
         }
 
+        
+
+
         foreach (var c in colliders)
         {
             if (c.gameObject == gameObject) continue;
             attack.Defender = c.gameObject;
             CombatManager.Attack(gameObject, c.gameObject, ref attack);
+
+            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack && attack.Type == EAttackType.Strong;
+
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
 

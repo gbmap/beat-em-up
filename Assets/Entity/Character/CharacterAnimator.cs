@@ -142,14 +142,17 @@ public class CharacterAnimator : MonoBehaviour
             return;
         }
 
+
         animator.ResetTrigger(_weakAttackHash);
         animator.ResetTrigger(_strongAttackHash);
 
-        animator.SetInteger(damagedNHitsHash, attack.HitNumber);
-        animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
+        if (attack.CancelAnimation)
+        {
+            animator.SetInteger(damagedNHitsHash, attack.HitNumber);
+            animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
+        }
 
         HitEffectFactor = 1f;
-
         _timeSpeedReset = Time.time;
         animator.speed = 0f;
     }
@@ -219,26 +222,26 @@ public class CharacterAnimator : MonoBehaviour
         {
             if (item.Stats.WeaponType == EWeaponType.Scepter)
             {
-                handBone = ModelInfo.RightHandBone.Bone;
+                handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-90f, 0f, 0f);
                 position = new Vector3(0.03f, 0.03f, -0.62f);
             }
             else if (item.Stats.WeaponType == EWeaponType.TwoHandedSword)
             {
-                handBone = ModelInfo.LeftHandBone.Bone;
-                rotation = Quaternion.Euler(-221f, -96f, -101f);
-                position = new Vector3(-0.032f, -0.09f, 0.14f);
+                handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
+                rotation = Quaternion.Euler(-131f, -81f, -111f);
+                position = new Vector3(-0.055f, -0.025f, 0.346f);
             }
             else if (item.Stats.WeaponType == EWeaponType.Sword)
             {
-                handBone = ModelInfo.RightHandBone.Bone;
+                handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
                 position = new Vector3(-0.017f, 0.12f, 0.072f);
             }
 
             else
             {
-                handBone = ModelInfo.LeftHandBone.Bone;
+                handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(90f, 0f, 0f);
             }
         }

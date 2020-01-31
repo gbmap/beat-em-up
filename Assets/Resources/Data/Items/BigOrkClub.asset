@@ -20,7 +20,7 @@ MonoBehaviour:
     ItemType: 0
     Rarity: 0
     Slot: 5
-    WeaponType: 1
+    WeaponType: 4
     Attributes:
       Vigor: 0
       Strength: 0

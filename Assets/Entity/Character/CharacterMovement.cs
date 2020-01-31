@@ -153,9 +153,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
+        if (attack.CancelAnimation)
         {
-            
-
             _speedBumpDir = attack.Attacker.transform.forward * (SpeedBumpForce * (1f+Convert.ToSingle(attack.Knockdown)*2f));
             speedBumpT = 1f;
         }

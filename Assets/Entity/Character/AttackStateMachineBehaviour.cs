@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AttackStateMachineBehaviour : StateMachineBehaviour
@@ -7,11 +8,22 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     int hashWeakAttack = Animator.StringToHash("WeakAttack");
     int hashStrongAttack = Animator.StringToHash("StrongAttack");
 
+    int[] heavyAttackHashes = {
+        Animator.StringToHash("H"),
+        Animator.StringToHash("H 0"),
+        Animator.StringToHash("H 1")
+    };
+
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.ResetTrigger(hashWeakAttack);
         animator.ResetTrigger(hashStrongAttack);
+
+        if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
+        {
+            animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = true;
+        }
     }
 
     // OnStateUpdate is called before OnStateUpdate is called on any state inside this state machine
@@ -21,10 +33,10 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     //}
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-     
-    //}
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = false;
+    }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
     //override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

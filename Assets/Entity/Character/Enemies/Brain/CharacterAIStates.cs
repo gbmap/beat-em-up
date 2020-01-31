@@ -264,9 +264,16 @@ namespace Catacumba.Character.AI
             return new StateResult(RES_CONTINUE);
         }
 
-        private void OnDamagedCallback(CharacterAttackData obj)
+        private void OnDamagedCallback(CharacterAttackData attackData)
         {
-            lastAttack = Time.time;
+            if (attackData.Type == EAttackType.Strong)
+            {
+                lastAttack = Time.time + 0.2f;
+            }
+            else
+            {
+                lastAttack = Time.time;
+            }
         }
 
     }
