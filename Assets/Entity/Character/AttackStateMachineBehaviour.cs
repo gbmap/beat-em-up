@@ -60,5 +60,8 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
         animator.GetComponent<CharacterCombat>().OnComboEnded?.Invoke();
+
+        animator.ResetTrigger(hashWeakAttack);
+        animator.ResetTrigger(hashStrongAttack);
     }
 }

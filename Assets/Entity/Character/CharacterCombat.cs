@@ -140,16 +140,14 @@ public class CharacterCombat : MonoBehaviour
             SoundManager.Instance.PlayHit(transform.position);
         }
 
-        
-
-
         foreach (var c in colliders)
         {
             if (c.gameObject == gameObject) continue;
             attack.Defender = c.gameObject;
             CombatManager.Attack(gameObject, c.gameObject, ref attack);
 
-            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack && attack.Type == EAttackType.Strong;
+            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack;
+            attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
