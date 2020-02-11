@@ -363,6 +363,7 @@ MonoBehaviour:
       inventory: 000000000000000000000000000000000000000000000000
   BrainType: 0
   CharacterModelOverride: {fileID: 0}
+  StartingItems: []
 --- !u!114 &6927136765418665498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,6 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsOnCombo: 0
+  IsOnHeavyAttack: 0
 --- !u!195 &15095382
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2419,7 +2421,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6927136765445453997}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 109fb4b820af9e645a938c417ffc54cb, type: 3}
   m_Name: 

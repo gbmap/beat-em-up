@@ -106,11 +106,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 463048b7caf7c4d4baa7bd38302e56fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Id: 0
-  InitData: 0
+  TypeId: 0
   DataInit:
     Id: 0
+    ItemType: 0
     Rarity: 0
+    Slot: 0
+    WeaponType: 0
     Attributes:
       Vigor: 0
       Strength: 0
@@ -121,7 +123,7 @@ MonoBehaviour:
       Strength: 0
       Dexterity: 0
       Magic: 0
-  Randomize: 0
+  InstanceId: 0
 --- !u!1 &1827767492928332021
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +135,6 @@ GameObject:
   - component: {fileID: 3415262919060215903}
   - component: {fileID: 4921191819630296534}
   - component: {fileID: 7809965273097324794}
-  - component: {fileID: 7738916985752700617}
   m_Layer: 10
   m_Name: Highlight
   m_TagString: Untagged
@@ -201,18 +202,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &7738916985752700617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1827767492928332021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109fb4b820af9e645a938c417ffc54cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7388946129263844472
 GameObject:
   m_ObjectHideFlags: 0

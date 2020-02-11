@@ -495,6 +495,8 @@ namespace Catacumba.Character.AI
                     // esperando a animação de cast
                     else
                     {
+                        gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+                        navMeshAgent.isStopped = true;
                         return new StateResult(RES_CASTING_HEAL, Target);
                     }
                 }
@@ -502,6 +504,8 @@ namespace Catacumba.Character.AI
                 // esperando o cast time
                 else
                 {
+                    gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+                    navMeshAgent.isStopped = true;
                     return new StateResult(RES_HEALING, Target);
                 }
             }
@@ -550,8 +554,12 @@ namespace Catacumba.Character.AI
             }
             else if (Vector3.Distance(gameObject.transform.position, targetItem.transform.position) < 0.5f)
             {
-                data.Equip(targetItem);
-                return new StateResult(RES_ITEM_EQUIPPED, targetItem);
+                if (data.Interact())
+                {
+                    return new StateResult(RES_ITEM_EQUIPPED, targetItem);
+                }
+                else
+                    return new StateResult(RES_ITEM_DESTROYED);
             }
             else
             {
@@ -560,6 +568,7 @@ namespace Catacumba.Character.AI
                     navMeshAgent.SetDestination(targetItem.transform.position);
                 }
 
+                navMeshAgent.isStopped = false;
                 return new StateResult(RES_CONTINUE);
             }
 

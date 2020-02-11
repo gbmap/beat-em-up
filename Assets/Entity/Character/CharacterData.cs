@@ -119,7 +119,19 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public bool Interact()
     {
         if (itemsInRange.Count == 0) return false;
+
         var item = itemsInRange[0];
+        while (item == null)
+        { 
+            itemsInRange.RemoveAt(0);
+
+            if (itemsInRange.Count == 0)
+            {
+                return false;
+            }
+
+            item = itemsInRange[0];
+        }
 
         bool r = Equip(item);
 

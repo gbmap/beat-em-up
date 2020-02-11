@@ -49,7 +49,7 @@ namespace Catacumba.Character.AI
 
         protected virtual void Update()
         {
-            if (currentState != null)
+            if (currentState != null && !characterHealth.IsOnGround)
             {
                 StateResult result = currentState.Update();
                 HandleStateResult(CurrentAIState, result);

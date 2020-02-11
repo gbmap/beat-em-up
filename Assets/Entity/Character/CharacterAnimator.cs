@@ -211,8 +211,12 @@ public class CharacterAnimator : MonoBehaviour
 
     public void Equip(ItemData item)
     {
-        var model = item.transform.Find("ModelRoot").GetChild(0);
-        Equip(model.gameObject, item.Stats);
+        Transform modelRoot = item.transform.Find("ModelRoot");
+        if (modelRoot.childCount > 0)
+        {
+            var model = modelRoot.GetChild(0);
+            Equip(model.gameObject, item.Stats);
+        }
     }
 
     public void Equip(ItemConfig cfg)
