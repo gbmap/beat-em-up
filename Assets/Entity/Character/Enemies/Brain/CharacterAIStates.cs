@@ -410,8 +410,7 @@ namespace Catacumba.Character.AI
         public const int RES_TARGET_IS_DEAD = 4;
 
         public GameObject Target;
-        private CharacterHealth characterHealth;
-        private CharacterCombat characterCombat;
+      
 
         private HealStateConfig Cfg;
 
@@ -430,22 +429,20 @@ namespace Catacumba.Character.AI
             Cfg = cfg;
             Target = target;
 
-            characterHealth = gameObject.GetComponent<CharacterHealth>();
-            characterCombat = gameObject.GetComponent<CharacterCombat>();
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            characterHealth.OnDamaged += OnDamagedCallback;
-            characterCombat.OnSkillUsed += OnSkillUsedCallback;
+            health.OnDamaged += OnDamagedCallback;
+            combat.OnSkillUsed += OnSkillUsedCallback;
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            characterHealth.OnDamaged -= OnDamagedCallback;
-            characterCombat.OnSkillUsed -= OnSkillUsedCallback;
+            health.OnDamaged -= OnDamagedCallback;
+            combat.OnSkillUsed -= OnSkillUsedCallback;
         }
 
         private void OnDamagedCallback(CharacterAttackData obj)
@@ -526,6 +523,50 @@ namespace Catacumba.Character.AI
             GUI.Box(r, "HealingProgress");
         }
     }
+
+    #endregion
+
+    #region EQUIP_ITEM_STATE
+
+    public class EquipItemState : BaseState
+    {
+        public const int RES_CONTINUE = 0;
+        public const int RES_ITEM_DESTROYED = 1;
+        public const int RES_ITEM_EQUIPPED = 2;
+        public const int RES_CANCEL = 3;
+
+        private ItemData targetItem;
+
+        public EquipItemState(GameObject gameObject, ItemData targetItem) : base(gameObject)
+        {
+            this.targetItem = targetItem;
+        }
+
+        public override StateResult Update()
+        {
+            if (targetItem == null)
+            {
+                return new StateResult(RES_ITEM_DESTROYED);
+            }
+            else if (Vector3.Distance(gameObject.transform.position, targetItem.transform.position) < 0.5f)
+            {
+                data.Equip(targetItem);
+                return new StateResult(RES_ITEM_EQUIPPED, targetItem);
+            }
+            else
+            {
+                if (Vector3.Distance(navMeshAgent.destination, targetItem.transform.position) > 0.5f)
+                {
+                    navMeshAgent.SetDestination(targetItem.transform.position);
+                }
+
+                return new StateResult(RES_CONTINUE);
+            }
+
+
+        }
+    }
+
 
     #endregion
 

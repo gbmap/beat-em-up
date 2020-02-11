@@ -15,6 +15,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
     public ECharacterBrainType BrainType;
     private List<ItemData> itemsInRange = new List<ItemData>();
+    public List<ItemData> ItemsInRange { get { return itemsInRange; } }
 
     ECharacterType lastCharacterType;
 

@@ -22,7 +22,7 @@ public class ItemBehaviour : MonoBehaviour
 
     private bool ValidCollision(Collider other, bool enterExit)
     {
-        return other.CompareTag("Player") && (playersSelecting.Contains(other.gameObject) ^ enterExit);
+        return (playersSelecting.Contains(other.gameObject) ^ enterExit);
     }
 
     private void SetHighlight(bool v)
@@ -38,7 +38,7 @@ public class ItemBehaviour : MonoBehaviour
             other.GetComponent<CharacterData>().OnItemInRange(GetComponent<ItemData>());
         }
 
-        UpdateVisuals(true);
+        UpdateVisuals(other.CompareTag("Player"));
     }
 
     private void OnTriggerExit(Collider other)

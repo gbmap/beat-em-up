@@ -14,6 +14,7 @@ namespace Catacumba.Character.AI
         protected CharacterAnimator characterAnimator;
         protected CharacterHealth characterHealth;
         protected CharacterCombat characterCombat;
+        protected CharacterData characterData;
 
         protected BaseState currentState;
 
@@ -43,6 +44,7 @@ namespace Catacumba.Character.AI
             characterAnimator = GetComponent<CharacterAnimator>();
             characterHealth = GetComponent<CharacterHealth>();
             characterCombat = GetComponent<CharacterCombat>();
+            characterData = GetComponent<CharacterData>();
         }
 
         protected virtual void Update()
