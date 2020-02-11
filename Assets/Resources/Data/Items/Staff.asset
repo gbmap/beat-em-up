@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
-  m_Name: Sword3
+  m_Name: Staff
   m_EditorClassIdentifier: 
   Name: Espada Boladona
   Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,

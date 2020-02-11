@@ -260,6 +260,8 @@ public class CharacterManagerConfig : ScriptableObject
         yield return null;
 
         Destroy(packInstance.gameObject);
+
+        yield return EquipInventory(instance, instance.GetComponent<CharacterData>().StartingItems);
     }
 
     public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)
@@ -271,5 +273,15 @@ public class CharacterManagerConfig : ScriptableObject
             pack = GetPrefab(ECharacterType.Dwarf);
         }
         yield return SetupCharacter(instance, pack.prefab);
+    }
+
+    public IEnumerator EquipInventory(GameObject instance, ItemConfig[] items)
+    {
+        CharacterData d = instance.GetComponent<CharacterData>();
+        for (int i = 0; i < items.Length; i++)
+        {
+            d.Equip(items[i]);
+        }
+        yield return null;
     }
 }

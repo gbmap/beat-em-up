@@ -212,27 +212,38 @@ public class CharacterAnimator : MonoBehaviour
     public void Equip(ItemData item)
     {
         var model = item.transform.Find("ModelRoot").GetChild(0);
+        Equip(model.gameObject, item.Stats);
+    }
+
+    public void Equip(ItemConfig cfg)
+    {
+        Equip(Instantiate(cfg.Prefab), cfg.Stats);
+    }
+
+    public void Equip(GameObject model, ItemStats item)
+    {
+       
         equippedWeapon = model.gameObject;
 
         Transform handBone = null;
         Quaternion rotation = Quaternion.identity;
         Vector3 position = Vector3.zero;
 
-        if (item.Stats.ItemType == EItemType.Equip && item.Stats.Slot == EInventorySlot.Weapon)
+        if (item.ItemType == EItemType.Equip && item.Slot == EInventorySlot.Weapon)
         {
-            if (item.Stats.WeaponType == EWeaponType.Scepter)
+            if (item.WeaponType == EWeaponType.Scepter)
             {
                 handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-90f, 0f, 0f);
                 position = new Vector3(0.03f, 0.03f, -0.62f);
             }
-            else if (item.Stats.WeaponType == EWeaponType.TwoHandedSword)
+            else if (item.WeaponType == EWeaponType.TwoHandedSword)
             {
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-131f, -81f, -111f);
                 position = new Vector3(-0.055f, -0.025f, 0.346f);
             }
-            else if (item.Stats.WeaponType == EWeaponType.Sword)
+            else if (item.WeaponType == EWeaponType.Sword)
             {
                 handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
@@ -246,17 +257,17 @@ public class CharacterAnimator : MonoBehaviour
             }
         }
 
-        model.transform.SetParent(handBone, false);
+        model.transform.SetParent(handBone, true);
         //model.transform.parent = handBone;
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
-        if (item.Stats.ItemType == EItemType.Equip)
+        if (item.ItemType == EItemType.Equip)
         {
-            if (item.Stats.Slot == EInventorySlot.Weapon)
+            if (item.Slot == EInventorySlot.Weapon)
             {
-                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats);
+                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
             }
         }
     }

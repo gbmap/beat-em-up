@@ -102,16 +102,14 @@ public class CharacterMovement : MonoBehaviour
             var dir = Direction.normalized;
             if (isRolling)
             {
-                if (Direction.sqrMagnitude < 1f)
-                {
+                
 
-                }
-                else
-                {
-                    float a = Vector3.Dot(dir, rollDirection);
-                    dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
+                float a = Vector3.Dot(dir, rollDirection);
+                dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
+
+                if (dir.sqrMagnitude >= .9f)
                     rollDirection = dir;
-                }
+
                 //dir = rollDirection;
             }
 
@@ -208,7 +206,9 @@ public class CharacterMovement : MonoBehaviour
         Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
         GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo +
                      "\nspeedBumpT: " + speedBumpT +
-                     "\nrollSpeedT: " + rollSpeedT);
+                     "\nrollSpeedT: " + rollSpeedT +
+                     "\nrollDir: " + rollDirection +
+                     "\nmoveDir: " + Direction);
     }
 #endif
 }
