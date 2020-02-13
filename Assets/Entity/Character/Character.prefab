@@ -356,9 +356,9 @@ MonoBehaviour:
   DataInit:
     Attributes:
       Vigor: 10
-      Strength: 10
-      Dexterity: 10
-      Magic: 10
+      Strength: 1
+      Dexterity: 1
+      Magic: 1
     Inventory:
       inventory: 000000000000000000000000000000000000000000000000
   BrainType: 0

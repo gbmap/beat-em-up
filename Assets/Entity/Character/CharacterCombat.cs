@@ -38,7 +38,7 @@ public class CharacterCombat : MonoBehaviour
 
     private Vector3 GetAttackColliderSize(EAttackType type)
     {
-        return attackColliderSize * (type == EAttackType.Weak ? 1f : 1.1f);
+        return attackColliderSize * (type == EAttackType.Weak ? 1.5f : 2.5f);
     }
 
     private CharacterAttackData lastAttackData;
