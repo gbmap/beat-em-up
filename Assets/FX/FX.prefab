@@ -47,6 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ParticleImpactHit: {fileID: 5839188116052965997}
   ParticleImpactBlood: {fileID: 5839188114756180144}
+  HealEffect: {fileID: 3966796859737663747, guid: 6f965556120f5f349a222d106579ddde,
+    type: 3}
   PrefabDamageLabel: {fileID: 2069182790612280980, guid: 460daa9d30ba23f41abc86d549426182,
     type: 3}
 --- !u!1001 &3362847840946006079

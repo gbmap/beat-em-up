@@ -230,7 +230,7 @@ public class CharacterManagerConfig : ScriptableObject
 
         // ATUALIZA O AVATAR DO ANIMATOR
         var animator = instance.GetComponent<CharacterAnimator>();
-        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController);
+        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController, animator.animator.applyRootMotion);
 
         yield return null;
 

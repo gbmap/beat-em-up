@@ -75,6 +75,8 @@ public class CharacterAnimator : MonoBehaviour
     // Animator speed reset timer
     float _timeSpeedReset;
 
+    #region MONOBEHAVIOUR
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -118,7 +120,6 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f);
-        animator.SetFloat(_speedYHash, Mathf.Clamp(movement.Velocity.y, -1f, 1f));
 
         if (animator.speed < 1f && Time.time > _timeSpeedReset + AnimationFreezeFrameTime)
         {
@@ -134,6 +135,10 @@ public class CharacterAnimator : MonoBehaviour
         CheckDebugInput();
 #endif
     }
+
+    #endregion
+
+    #region CALLBACKS
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
@@ -153,8 +158,7 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         HitEffectFactor = 1f;
-        _timeSpeedReset = Time.time;
-        animator.speed = 0f;
+        //FreezeAnimator();
     }
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
@@ -171,8 +175,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         if (attack.Defender != null)
         {
-            _timeSpeedReset = Time.time;
-            animator.speed = 0f;
+            FreezeAnimator();
         }
     }
 
@@ -208,6 +211,8 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger(_strongAttackHash);
         animator.SetTrigger(_rollTriggerHash);
     }
+
+    #endregion
 
     public void Equip(ItemData item)
     {
@@ -296,15 +301,22 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger("StrongAttack");
     }
 
+    public void FreezeAnimator()
+    {
+        _timeSpeedReset = Time.time;
+        animator.speed = 0f;
+    }
+
     // gambiarra 
     public void RefreshAnimator()
     {
         Avatar avatar = animator.avatar;
         RuntimeAnimatorController controller = animator.runtimeAnimatorController;
-        RefreshAnimator(avatar, controller);
+        bool rootMotion = animator.applyRootMotion;
+        RefreshAnimator(avatar, controller, rootMotion);
     }
 
-    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller)
+    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller, bool rootMotion)
     {
         if (avatar == null)
         {

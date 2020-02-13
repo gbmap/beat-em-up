@@ -11,7 +11,7 @@ public class StickToFloor : MonoBehaviour
         Physics.Raycast(transform.position + Vector3.up * 0.2f, Vector3.down, out hitInfo);
         transform.position = hitInfo.point + Vector3.up * 0.001f; // previnir flickering    */
         if (transform.parent == null) return;
-        transform.localRotation = Quaternion.Euler(90f, -transform.parent.rotation.y, 0f);
+        transform.rotation = Quaternion.Euler(90f, -transform.parent.rotation.y, 0f);
 
     }
 }

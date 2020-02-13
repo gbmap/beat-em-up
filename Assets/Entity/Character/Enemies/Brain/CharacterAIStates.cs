@@ -456,6 +456,7 @@ namespace Catacumba.Character.AI
             isHealing = false;
             isCasting = false;
             LastHeal = Time.time;
+            FX.Instance.EmitHealEffect(Target);
             CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
         }
 

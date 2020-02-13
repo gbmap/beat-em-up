@@ -7,6 +7,7 @@ public class FX : Singleton<FX>
 {
     public ParticleSystem ParticleImpactHit;
     public ParticleSystem ParticleImpactBlood;
+    public GameObject HealEffect;
 
     public GameObject PrefabDamageLabel;
 
@@ -42,4 +43,13 @@ public class FX : Singleton<FX>
         label.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(worldPosition);
         label.GetComponent<Text>().text = damage.ToString();
     }
+
+    public void EmitHealEffect(GameObject target)
+    {
+        var obj = Instantiate(HealEffect.gameObject, Vector3.zero, Quaternion.identity, target.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+        obj.transform.localScale = Vector3.one;
+    }
+
 }

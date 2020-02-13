@@ -58,7 +58,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         return (c.Attributes.Magic+c.Inventory.GetTotalAttributes().Magic) * 19;
     }
 
-    public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward)
+    public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward, EAttackType attackType)
     {
         var dmgScaling = attacker.Inventory.GetTotalDamageScaling();
 
@@ -69,7 +69,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
-        return Mathf.FloorToInt((str + dex + mag) * crit * backstab);
+        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?1:2);
     }
 
     public static void Attack(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
@@ -78,7 +78,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         attackData.DefenderStats = defender;
 
         // calcula dano cru
-        int damage = GetDamage(attacker, defender, attackData.Attacker.transform.forward, attackData.Defender.transform.forward);
+        int damage = GetDamage(attacker, defender, attackData.Attacker.transform.forward, attackData.Defender.transform.forward, attackData.Type);
 
         // rola o dado pra poise
         attackData.Poised = Random.value < defender.PoiseChance;

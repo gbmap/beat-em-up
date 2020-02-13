@@ -106,9 +106,12 @@ public class CharacterCombat : MonoBehaviour
         OnComboEnded?.Invoke();
     }
 
-    private void OnDamagedCallback(CharacterAttackData obj)
+    private void OnDamagedCallback(CharacterAttackData msg)
     {
-        OnComboEnded?.Invoke();
+        if (msg.CancelAnimation)
+        {
+            OnComboEnded?.Invoke();
+        }
     }
 
     /*
@@ -175,6 +178,7 @@ public class CharacterCombat : MonoBehaviour
 
     public void AnimPlayWoosh()
     {
+        movement.ApplySpeedBump(transform.forward, movement.SpeedBumpForce, EAttackType.Weak);
         SoundManager.Instance.PlayWoosh(transform.position);
     }
 
