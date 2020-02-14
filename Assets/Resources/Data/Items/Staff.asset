@@ -23,10 +23,10 @@ MonoBehaviour:
     Slot: 5
     WeaponType: 3
     Attributes:
-      Vigor: 10
-      Strength: 10
-      Dexterity: 10
-      Magic: 10
+      Vigor: 1
+      Strength: 1
+      Dexterity: 1
+      Magic: 1
     DamageScaling:
       Vigor: 0.1
       Strength: 0.1

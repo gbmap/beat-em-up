@@ -145,6 +145,11 @@ public class CharacterCombat : MonoBehaviour
 
         foreach (var c in colliders)
         {
+            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
+            {
+                continue;
+            }
+
             if (c.gameObject == gameObject) continue;
             attack.Defender = c.gameObject;
             CombatManager.Attack(gameObject, c.gameObject, ref attack);

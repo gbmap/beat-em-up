@@ -50,6 +50,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ECharacterType.HeroKnightFemale));
         }
+
+        lastCharacterType = TypeId;
     }
 
     private void Update()

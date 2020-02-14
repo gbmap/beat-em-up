@@ -29,6 +29,11 @@ public class CharacterMovement : MonoBehaviour
     public System.Action OnRoll;
 
     private bool isRolling;
+    public bool IsRolling
+    {
+        get { return isRolling; }
+    }
+
     private float rollSpeedT;
     private float lastRoll;
     private Vector3 rollDirection;
@@ -213,7 +218,7 @@ public class CharacterMovement : MonoBehaviour
     
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
-       
+        ApplySpeedBump(transform.forward, SpeedBumpForce, attack.Type);
     }
 
     private void OnCharacterRequestAttackCallback(EAttackType obj)
