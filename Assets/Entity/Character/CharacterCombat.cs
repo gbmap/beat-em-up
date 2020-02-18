@@ -119,22 +119,16 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
-        Attack(new CharacterAttackData
-            {
-                Type = type,
-                Attacker = gameObject,
-                HitNumber = ++_nComboHits,
-                Time = Time.time
-            }
-        );
+        Attack(new CharacterAttackData(type, gameObject, ++_nComboHits));
     }
 
     private void Attack(CharacterAttackData attack)
     {
+        /*
         Collider[] colliders = Physics.OverlapBox(
             attackColliderBasePosition,
-            GetAttackColliderSize(attack.Type), 
-            transform.rotation, 
+            GetAttackColliderSize(attack.Type),
+            transform.rotation,
             1 << LayerMask.NameToLayer("Entities")
         );
 
@@ -158,7 +152,8 @@ public class CharacterCombat : MonoBehaviour
             attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
-        }
+        }*/
+        CombatManager.Attack(ref attack, attackColliderBasePosition, GetAttackColliderSize(attack.Type), transform.rotation);
 
         OnCharacterAttack?.Invoke(attack);
 

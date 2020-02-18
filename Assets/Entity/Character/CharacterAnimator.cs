@@ -26,14 +26,13 @@ public class CharacterAnimator : MonoBehaviour
     {
         get { return modelInfo ?? (modelInfo = GetComponentInChildren<CharacterModelInfo>()); }
     }
-    
 
     private float AnimatorDefaultSpeed
     {
         get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
-    private Material[] Material
+    private Material[] Materials
     {
         get; set;
     }
@@ -45,12 +44,15 @@ public class CharacterAnimator : MonoBehaviour
         set
         {
             hitEffectFactor = value;
-            Array.ForEach(Material, m => m.SetFloat("_HitFactor", value));
+            if (Materials == null) return;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Material m = Materials[i];
+                if (m == null) continue;
+                m.SetFloat("_HitFactor", value);
+            }
         }
     }
-
-    [Header("Freeze")] 
-    public float AnimationFreezeFrameTime = 0.15f;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -72,8 +74,9 @@ public class CharacterAnimator : MonoBehaviour
     int recoverHash = Animator.StringToHash("Recovered");
     int castSkillHash = Animator.StringToHash("Cast");
 
-    // Animator speed reset timer
-    float _timeSpeedReset;
+    // ============ EVENTS
+    public System.Action<Animator> OnRefreshAnimator;
+
 
     #region MONOBEHAVIOUR
 
@@ -120,11 +123,6 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f);
-
-        if (animator.speed < 1f && Time.time > _timeSpeedReset + AnimationFreezeFrameTime)
-        {
-            animator.speed = AnimatorDefaultSpeed;
-        }
 
         if (!Mathf.Approximately(HitEffectFactor, 0f))
         {
@@ -303,8 +301,7 @@ public class CharacterAnimator : MonoBehaviour
 
     public void FreezeAnimator()
     {
-        _timeSpeedReset = Time.time;
-        animator.speed = 0f;
+        GetComponent<FreezeAnimator>().Freeze();
     }
 
     // gambiarra 
@@ -329,13 +326,20 @@ public class CharacterAnimator : MonoBehaviour
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
 
+        RefreshMaterials();
+
+        OnRefreshAnimator?.Invoke(animator);
+    }
+
+    void RefreshMaterials()
+    {
         List<Material> materials = new List<Material>();
         foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>())
         {
             materials.Add(r.material);
         }
 
-        Material = materials.ToArray();
+        Materials = materials.ToArray();
     }
 
     public void SetRootMotion(bool v)

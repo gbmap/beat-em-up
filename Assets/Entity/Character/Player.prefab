@@ -361,7 +361,7 @@ PrefabInstance:
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_Name
-      value: Character
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -1177,6 +1177,11 @@ PrefabInstance:
         type: 3}
       propertyPath: moveSpeed
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: SpeedBumpForce
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6927136765418665499, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
