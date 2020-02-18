@@ -196,6 +196,7 @@ public class CharacterMovement : MonoBehaviour
 
     public void ApplySpeedBump(Vector3 direction, float force, EAttackType attackType = EAttackType.Weak)
     {
+        //transform.LookAt(transform.position + direction);
         speedBumpT = 1f;
         _speedBumpDir = direction.normalized * force * (attackType == EAttackType.Weak?1f:1.5f);
     }
@@ -212,13 +213,13 @@ public class CharacterMovement : MonoBehaviour
     {
         if (attack.CancelAnimation || attack.Knockdown)
         {
-            ApplySpeedBump(attack.Attacker.transform.forward, SpeedBumpForce, attack.Type);
+            ApplySpeedBump(attack.Attacker.transform.forward, attack.Type == EAttackType.Weak ? SpeedBumpForce : SpeedBumpForce*5f, attack.Type);
         }
     }
     
     private void OnCharacterAttackCallback(CharacterAttackData attack)
     {
-        ApplySpeedBump(transform.forward, SpeedBumpForce, attack.Type);
+        //ApplySpeedBump(transform.forward, SpeedBumpForce, attack.Type);
     }
 
     private void OnCharacterRequestAttackCallback(EAttackType obj)
