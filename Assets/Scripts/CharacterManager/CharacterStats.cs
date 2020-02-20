@@ -188,7 +188,7 @@ public class ItemStats
     public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
-    public BaseSkill Skill;
+    public BaseSkill[] Skills;
 }
 
 public enum EWeaponType
@@ -237,10 +237,12 @@ public class CharacterSkillTree
 
 #endregion
 
+[System.Serializable]
 public class BaseSkill
 {
-    // PLACEHOLDERRRRRR
+    public GameObject Prefab;
 }
+
 
 [Serializable]
 public class CharacterStats

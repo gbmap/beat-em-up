@@ -12,7 +12,7 @@ public class CharacterMovement : MonoBehaviour
     // ==== MOVEMENT
     [HideInInspector]
     public Vector3 Direction;
-    public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? navMeshAgent.velocity : CalculateVelocity(Direction.normalized); } }
+    public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? NavMeshAgent.velocity : CalculateVelocity(Direction.normalized); } }
     /*private Vector3 velocity;*/
 
     private Vector3 forward;
@@ -38,11 +38,53 @@ public class CharacterMovement : MonoBehaviour
     private float lastRoll;
     private Vector3 rollDirection;
 
-    NavMeshAgent navMeshAgent;
+    bool canMove
+    {
+        get
+        {
+            return !combat.IsOnCombo &&
+                !health.IsOnGround &&
+                !isBeingMoved &&
+                Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.75f : 0.25f));
+        }
+    }
+    bool isBeingMoved { get { return speedBumpT > 0f; } }
+
+    #region INTERFACE WITH NAVMESH
+
+    public NavMeshAgent NavMeshAgent
+    {
+        get; private set;
+    }
+
+    public bool IsAgentStopped
+    {
+        get { return NavMeshAgent.isStopped; }
+        set { NavMeshAgent.isStopped = !canMove || value; }
+    }
+
+    public NavMeshPathStatus PathStatus
+    {
+        get { return NavMeshAgent.pathStatus; }
+    }
+
+    public Vector3 Destination
+    {
+        get { return NavMeshAgent.destination; }
+    }
+
+    public bool HasPath { get { return NavMeshAgent.hasPath; } }
+
+    public bool SetDestination(Vector3 pos)
+    {
+        return NavMeshAgent.SetDestination(pos);
+    }
+
+    #endregion
+
 
     [Header("Dash when attacks")]
     public float SpeedBumpForce = 0.9f;
-
     
     private const float speedBumpScale = 7f;
 
@@ -57,7 +99,7 @@ public class CharacterMovement : MonoBehaviour
     private void Awake()
     {
         data = GetComponent<CharacterData>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
+        NavMeshAgent = GetComponent<NavMeshAgent>();
         combat = GetComponent<CharacterCombat>();
         health = GetComponent<CharacterHealth>();
 
@@ -67,7 +109,7 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        navMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+        NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
     }
 
     private void OnEnable()
@@ -94,7 +136,7 @@ public class CharacterMovement : MonoBehaviour
         Vector3 velocity = CalculateVelocity(Direction.normalized);
 
         Vector3 bumpDirection = CalculateSpeedBump();
-        navMeshAgent.Move((velocity + bumpDirection) * Time.deltaTime);
+        NavMeshAgent.Move((velocity + bumpDirection) * Time.deltaTime);
 
 
         forward = CalculateLookDir(velocity, forward);
@@ -128,8 +170,7 @@ public class CharacterMovement : MonoBehaviour
 
     void Move_Old()
     {
-        bool canMove = !combat.IsOnCombo && !health.IsOnGround;
-        bool isBeingMoved = speedBumpT > 0f;
+      
         Vector3 velocity = Vector3.zero;
 
         if (isBeingMoved)
@@ -155,14 +196,14 @@ public class CharacterMovement : MonoBehaviour
             var dir = Direction.normalized;
             if (isRolling)
             {
+                //dir = rollDirection;
+                /*float a = Vector3.Dot(dir, rollDirection);*/
+                float a = 1f - rollSpeedT;
+                a = a * a * a * a;
+                dir = Vector3.Slerp(rollDirection, dir, a);
 
-
-                float a = Vector3.Dot(dir, rollDirection);
-                dir = Vector3.Slerp(dir, rollDirection, Mathf.Max(0.9f, a));
-
-                if (dir.sqrMagnitude >= .9f)
-                    rollDirection = dir;
-
+                /*if (dir.sqrMagnitude >= .9f)
+                    rollDirection = dir;*/
                 //dir = rollDirection;
             }
 
@@ -188,33 +229,38 @@ public class CharacterMovement : MonoBehaviour
 
         if ((brainType == ECharacterBrainType.Input || speedBumpT > 0f))
         {
-            navMeshAgent.Move(velocity * Time.deltaTime);
+            NavMeshAgent.Move(velocity * Time.deltaTime);
         }
 
         rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime);
     }
 
-    public void ApplySpeedBump(Vector3 direction, float force, EAttackType attackType = EAttackType.Weak)
+    public void ApplySpeedBump(Vector3 direction, float force)
     {
         //transform.LookAt(transform.position + direction);
         speedBumpT = 1f;
-        _speedBumpDir = direction.normalized * force * (attackType == EAttackType.Weak?1f:1.5f);
+        _speedBumpDir = direction.normalized * force;
     }
 
-    private void LateUpdate()
+    /*private void LateUpdate()
     {
         if (brainType == ECharacterBrainType.AI)
         {
-            navMeshAgent.isStopped |= speedBumpT > 0f || health.IsOnGround;
+            NavMeshAgent.isStopped |= speedBumpT > 0f || health.IsOnGround;
         }
-    }
+    }*/
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         if (attack.CancelAnimation || attack.Knockdown)
         {
-            ApplySpeedBump(attack.Attacker.transform.forward, attack.Type == EAttackType.Weak ? SpeedBumpForce : SpeedBumpForce*5f, attack.Type);
+            ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
         }
+    }
+
+    public float GetSpeedBumpForce(CharacterAttackData attack)
+    {
+        return ((float)attack.Damage / 25) * (attack.Type == EAttackType.Weak ? 1f : 5f);
     }
     
     private void OnCharacterAttackCallback(CharacterAttackData attack)
@@ -234,6 +280,12 @@ public class CharacterMovement : MonoBehaviour
         {
             return;
         }
+
+        if (direction.sqrMagnitude < 0.01f)
+        {
+            direction = transform.forward;
+        }
+
 
         OnRoll?.Invoke();
         rollSpeedT = 1f;

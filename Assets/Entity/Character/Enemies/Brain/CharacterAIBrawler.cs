@@ -41,12 +41,12 @@ namespace Catacumba.Character.AI
  
         private void OnEnable()
         {
-            characterHealth.OnDamaged += OnDamagedCallback;
+            health.OnDamaged += OnDamagedCallback;
         }
 
         private void OnDisable()
         {
-            characterHealth.OnDamaged -= OnDamagedCallback;
+            health.OnDamaged -= OnDamagedCallback;
             if (CurrentAIState == EBrawlerAIStates.Attack)
             {
                 AttackState attackState = currentState as AttackState;
@@ -70,7 +70,7 @@ namespace Catacumba.Character.AI
                     for (int i = 0; i < items.Length; i++)
                     {
                         ItemData item = items[i];
-                        if (!characterData.Stats.Inventory.HasEquip(item.Stats.Slot))
+                        if (!data.Stats.Inventory.HasEquip(item.Stats.Slot))
                         {
                             SetCurrentState(EBrawlerAIStates.EquipItem, item);
                         }

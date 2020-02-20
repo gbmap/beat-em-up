@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
   m_Name: Staff
   m_EditorClassIdentifier: 
-  Name: Espada Boladona
-  Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,
-    seria decorada por um bon\xE9 aba reta virado pro lado."
+  Name: Staff Loko de Pedra
+  Description: 
   Prefab: {fileID: 128030, guid: 3e567880dba875d4fbc7834ca7f5b289, type: 3}
   Stats:
     Id: 5
@@ -32,4 +31,8 @@ MonoBehaviour:
       Strength: 0.1
       Dexterity: 0.1
       Magic: 0.1
+    Skills:
+    - Prefab: {fileID: 0}
+    - Prefab: {fileID: 8536732081532398348, guid: 5ca37ea395301f84e8ef9163d2147783,
+        type: 3}
   AnimationOverride: {fileID: 0}

@@ -73,7 +73,7 @@ namespace Catacumba.Effects.Skills.RockLine
         {
             if (T != lastT && T > 0.5f && T < 1.0f)
             {
-                CharacterAttackData ad = new CharacterAttackData(EAttackType.Strong, gameObject);
+                CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject);
                 Bounds b = GetBounds();
                 CombatManager.Attack(ref ad, b.center, b.extents, transform.rotation);
                 OnAttack?.Invoke(ad);

@@ -41,16 +41,27 @@ public class CharacterCombat : MonoBehaviour
         return attackColliderSize * (type == EAttackType.Weak ? 1.5f : 2.5f);
     }
 
-    private CharacterAttackData lastAttackData;
+    public CharacterAttackData LastAttackData
+    {
+        get; private set;
+    }
+
+    public CharacterAttackData LastDamageData
+    {
+        get; private set;
+    }
 
     private void Awake()
     {
+        LastDamageData = new CharacterAttackData
+        {
+            Time = float.NegativeInfinity
+        };
+
         health = GetComponent<CharacterHealth>();
         data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         animator = GetComponent<CharacterAnimator>();
-
-        lastAttackData.Time = float.NegativeInfinity;
     }
 
     private void OnEnable()
@@ -112,6 +123,8 @@ public class CharacterCombat : MonoBehaviour
         {
             OnComboEnded?.Invoke();
         }
+
+        LastDamageData = msg;
     }
 
     /*
@@ -157,12 +170,19 @@ public class CharacterCombat : MonoBehaviour
 
         OnCharacterAttack?.Invoke(attack);
 
-        lastAttackData = attack;
+        LastAttackData = attack;
     }
 
     /*
      * Skills
      * */
+    public void AnimUseWeaponSkill(int index)
+    {
+        ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
+        BaseSkill skill = weapon.Skills[index];
+        Instantiate(skill.Prefab, transform.position + transform.forward * 1.5f, transform.rotation);
+    }
+
     public void RequestSkillUse(BaseSkill skill)
     {
         skillBeingCasted = skill;
@@ -180,7 +200,7 @@ public class CharacterCombat : MonoBehaviour
     {
         Vector3 dir = movement.Direction;
 
-        movement.ApplySpeedBump(dir, movement.SpeedBumpForce*0.5f, EAttackType.Weak);
+        movement.ApplySpeedBump(dir, movement.SpeedBumpForce*0.5f);
         SoundManager.Instance.PlayWoosh(transform.position);
     }
 
@@ -189,11 +209,11 @@ public class CharacterCombat : MonoBehaviour
     {
         if (!Application.isPlaying) return;
 
-        if (Time.time < lastAttackData.Time + 1f)
+        if (Time.time < LastAttackData.Time + 1f)
         {
             Gizmos.color = Color.red;
             Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
-            Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(lastAttackData.Type));
+            Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type));
         }
     }
 #endif

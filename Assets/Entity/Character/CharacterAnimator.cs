@@ -22,7 +22,7 @@ public class CharacterAnimator : MonoBehaviour
     CharacterCombat combat;
     CharacterHealth health;
     CharacterModelInfo modelInfo;
-    CharacterModelInfo ModelInfo
+    public CharacterModelInfo ModelInfo
     {
         get { return modelInfo ?? (modelInfo = GetComponentInChildren<CharacterModelInfo>()); }
     }
