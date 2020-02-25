@@ -16,7 +16,7 @@ MonoBehaviour:
   - {fileID: 114375464177707528}
   - {fileID: 114252324386167986}
   - {fileID: 114519825960210478}
-  - {fileID: 608471407701693514}
+  - {fileID: 9051023839405949601}
 --- !u!114 &114252324386167986
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1419,7 +1419,7 @@ MonoBehaviour:
   opacity:
     overrideState: 0
     value: 1
---- !u!114 &608471407701693514
+--- !u!114 &9051023839405949601
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1434,13 +1434,13 @@ MonoBehaviour:
   active: 1
   enabled:
     overrideState: 1
-    value: 0
+    value: 1
   Magnitude:
-    overrideState: 1
+    overrideState: 0
     value: 1
   DownScaleFactor:
     overrideState: 0
     value: 0
   DebugView:
-    overrideState: 1
+    overrideState: 0
     value: 0
