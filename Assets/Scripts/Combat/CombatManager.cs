@@ -106,7 +106,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         if (attacker == null)
         {
             // TODO: remover isso aqui
-            damage = 10;
+            damage = attackData.Damage;
         }
         else
         {
@@ -136,7 +136,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
     public static void Attack(ref CharacterAttackData attack,
         Vector3 colliderPos, 
         Vector3 colliderSize, 
-        Quaternion colliderRot)
+        Quaternion colliderRot, 
+        int damage = 0)
     {
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 
@@ -167,8 +168,6 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
     }
-
-
 
     public static void Heal(CharacterStats healer, CharacterStats healed)
     {

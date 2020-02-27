@@ -17,6 +17,8 @@ namespace Catacumba.Entity.World.Traps
 
         public ObjectPosAnim Animation;
 
+        bool attackCheck;
+
         private void Awake()
         {
             Animation.InitiatePositions(
@@ -27,18 +29,36 @@ namespace Catacumba.Entity.World.Traps
 
         private void Update()
         {
+            // set T diferente do alvo, lerpa pra posição alvo
             if (!Mathf.Approximately(T, targetT))
             {
                 Animation.Sample(T);
                 T = Mathf.Clamp01(T +  Mathf.Sign(targetT - T) * Time.deltaTime * (targetT == 1f?ASpeed:BSpeed));
             }
+            // T == targetT
             else
             {
+                // se não atacou ainda, ataca
+                if (!attackCheck)
+                {
+                    CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject)
+                    {
+                        Damage = 100
+                    };
+                    Bounds b = Animation.obj.GetComponent<MeshRenderer>().bounds;
+                    CombatManager.Attack(ref ad, b.center, b.extents, transform.rotation);
+                    attackCheck = true;
+                }
+
+                // se ja esperou o suficiente, reseta timer e flag de attack check
                 if (timer >= SleepTime)
                 {
                     targetT = targetT == 1f ? 0f : 1f;
+                    attackCheck = false;
                     timer = 0f;
                 }
+                
+                // incrementa timer
                 timer += Time.deltaTime;
             }
         }

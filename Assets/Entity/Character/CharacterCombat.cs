@@ -209,12 +209,16 @@ public class CharacterCombat : MonoBehaviour
     {
         if (!Application.isPlaying) return;
 
-        if (Time.time < LastAttackData.Time + 1f)
+        try
         {
-            Gizmos.color = Color.red;
-            Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
-            Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type));
+            if (Time.time < LastAttackData.Time + 1f)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
+                Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type));
+            }
         }
+        catch { }
     }
 #endif
 
