@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Catacumba.Effects.Skills.RockLine
 {
     [System.Serializable]
-    public class RockObjectAnim
+    public class ObjectPosAnim
     {
         [HideInInspector]
         public Vector3 posA, posB;
@@ -16,15 +16,14 @@ namespace Catacumba.Effects.Skills.RockLine
         public void Sample(float t)
         {
             if (obj == null) return;
-            obj.transform.localPosition = Vector3.Lerp(posA, posB, curve.Evaluate(t));
+            obj.transform.localPosition = Vector3.LerpUnclamped(posA, posB, curve.Evaluate(t));
         }
 
-        public void InitiatePositions()
+        public void InitiatePositions(Vector3 positionA, Vector3 positionB)
         {
             if (obj == null) return;
-
-            posA = Vector3.up * obj.GetComponent<MeshRenderer>().bounds.extents.y * -2f;
-            posB = Vector3.zero;
+            posA = positionA;
+            posB = positionB;
         }
     }
 
@@ -37,21 +36,20 @@ namespace Catacumba.Effects.Skills.RockLine
 
         //public GameObject rock;
         //public RockObjectAnim rockFrames;
-        public RockObjectAnim rock;
-        public RockObjectAnim littleRocks;
-        public RockObjectAnim sand;
+        public ObjectPosAnim rock;
+        public ObjectPosAnim littleRocks;
+        public ObjectPosAnim sand;
 
         private float lastAttackCheck;
 
         public System.Action<CharacterAttackData> OnAttack;
 
-
         // Start is called before the first frame update
         void OnEnable()
         {
-            rock.InitiatePositions();
-            littleRocks.InitiatePositions();
-            sand.InitiatePositions();
+            rock.InitiatePositions(Vector3.up * rock.obj.GetComponent<MeshRenderer>().bounds.extents.y * -2f, Vector3.zero);
+            littleRocks.InitiatePositions(Vector3.up * littleRocks.obj.GetComponent<MeshRenderer>().bounds.extents.y * -2f, Vector3.zero);
+            sand.InitiatePositions(Vector3.up * sand.obj.GetComponent<MeshRenderer>().bounds.extents.y * -2f, Vector3.zero);
         }
 
         // Update is called once per frame
