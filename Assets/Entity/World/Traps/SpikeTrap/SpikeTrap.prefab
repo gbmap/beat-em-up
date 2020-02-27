@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6814210719653589875}
   - component: {fileID: 2497078229954034553}
-  - component: {fileID: 5707695624027291409}
-  m_Layer: 0
+  - component: {fileID: 1449488806}
+  m_Layer: 11
   m_Name: SpikeTrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
---- !u!114 &5707695624027291409
+--- !u!114 &1449488806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,12 +96,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3997975772853923653}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OverrideArea: 1
+  m_Size: {x: 4, y: 3, z: 4}
+  m_Center: {x: 0, y: 1, z: 0}
   m_Area: 3
-  m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
 --- !u!1001 &1249304351871954540
 PrefabInstance:
@@ -174,6 +174,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: spike_trap_spikes
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 9ca353ab4177d444380baf7296ccf4e5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ca353ab4177d444380baf7296ccf4e5, type: 3}
@@ -255,7 +260,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 78af7ed06094a264788c8c93460e61b3, type: 2}
+      objectReference: {fileID: -631096440604402165, guid: dce8be646ec6fb2459c53587807008bb,
+        type: 3}
     - target: {fileID: -1504981713932161579, guid: 958c49b94bcdcac4fb72ec9757d1739c,
         type: 3}
       propertyPath: m_CastShadows
@@ -265,6 +271,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: spike_trap_base
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 958c49b94bcdcac4fb72ec9757d1739c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 958c49b94bcdcac4fb72ec9757d1739c,
+        type: 3}
+      propertyPath: m_NavMeshLayer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 958c49b94bcdcac4fb72ec9757d1739c, type: 3}
