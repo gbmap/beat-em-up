@@ -116,8 +116,11 @@ public class CharacterHealth : MonoBehaviour
         transform.LookAt(lookAt);
 
         var fx = FX.Instance;
-        fx.ImpactHit(transform.position + Vector3.up);
-        fx.ImpactBlood(transform.position + Vector3.up);
+        fx.ImpactHit(transform.position + Vector3.up*1.1f + UnityEngine.Random.insideUnitSphere * 0.6f, 
+            data.Type
+        );
+
+        //fx.ImpactBlood(transform.position + Vector3.up);
         fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
