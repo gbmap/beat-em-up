@@ -14,6 +14,7 @@ namespace Catacumba.Exploration
         
         private float timer;
         private Camera mainCamera;
+        private CinemachineImpulseSource _impulseSource;
         private GameObject currentActiveCamera;
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
@@ -21,6 +22,7 @@ namespace Catacumba.Exploration
         {
             mainCamera = Camera.main;
             currentActiveCamera = firstCamera;
+            _impulseSource = GetComponent<CinemachineImpulseSource>();
 //            InitializeCameras();
         }
 
@@ -59,6 +61,11 @@ namespace Catacumba.Exploration
             currentActiveCamera.SetActive(false);
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
+        }
+
+        public void Shake()
+        {
+            _impulseSource.GenerateImpulse();
         }
 
         private void CheckForNearestCamera()

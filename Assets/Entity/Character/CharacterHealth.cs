@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Catacumba.Exploration;
 using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour
@@ -100,6 +101,9 @@ public class CharacterHealth : MonoBehaviour
         //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
+        
+        // Shake camera
+        CameraManager.Instance.Shake();
     }
 
     public void TakeDamage(CharacterAttackData data)
