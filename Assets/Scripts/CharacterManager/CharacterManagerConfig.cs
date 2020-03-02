@@ -189,7 +189,7 @@ public class CharacterManagerConfig : ScriptableObject
         }
     }
 
-    public IEnumerator SetupCharacter(GameObject instance, GameObject model)
+    public static IEnumerator SetupCharacter(GameObject instance, GameObject model)
     {
         GameObject packPrefab = model;
 
@@ -204,21 +204,31 @@ public class CharacterManagerConfig : ScriptableObject
             }
         }
 
-        // MOVE O PACK PRA BAIXO DO ANIMATOR
-        var packInstance = Instantiate(packPrefab);
-        packInstance.transform.parent = instance.transform;
-        packInstance.transform.localPosition = Vector3.zero;
-
-        Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
 
         yield return null;
 
+        // MOVE O PACK PRA BAIXO DO ANIMATOR
+        var packInstance = Instantiate(packPrefab);
+        /*packInstance.transform.parent = instance.transform;
+        packInstance.transform.localPosition = Vector3.zero;*/
+
+        Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
         Transform characterModel = null;
 
+
+        string children = string.Empty;
         // MOVE A INSTÂNCIA (primeira criança ativa) PRA BAIXO DO ANIMATOR
+
+
+        var root = packInstance.transform.Find("Root");
+        root.parent = instance.transform;
+        root.localPosition = Vector3.zero;
+
         for (int i = 0; i < packInstance.transform.childCount; i++)
         {
             characterModel = packInstance.transform.GetChild(i);
+            children += characterModel.name + "\n";
+
             if (characterModel.gameObject.activeSelf)
             {
                 characterModel.parent = instance.transform;
@@ -226,15 +236,19 @@ public class CharacterManagerConfig : ScriptableObject
             }
         }
 
+        Debug.Log(children);
+
+        Destroy(packInstance);
+
         yield return null;
 
         // ATUALIZA O AVATAR DO ANIMATOR
         var animator = instance.GetComponent<CharacterAnimator>();
-        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController);
+        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController, animator.animator.applyRootMotion);
 
         yield return null;
 
-        CharacterModelInfo characterModelInfo = packInstance.GetComponent<CharacterModelInfo>();
+        CharacterModelInfo characterModelInfo = instance.GetComponent<CharacterModelInfo>();
         if (characterModelInfo == null)
         {
             characterModelInfo = instance.AddComponent<CharacterModelInfo>();
@@ -259,7 +273,9 @@ public class CharacterManagerConfig : ScriptableObject
 
         yield return null;
 
-        Destroy(packInstance.gameObject);
+        
+
+        yield return EquipInventory(instance, instance.GetComponent<CharacterData>().StartingItems);
     }
 
     public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)
@@ -271,5 +287,16 @@ public class CharacterManagerConfig : ScriptableObject
             pack = GetPrefab(ECharacterType.Dwarf);
         }
         yield return SetupCharacter(instance, pack.prefab);
+    }
+
+    public static IEnumerator EquipInventory(GameObject instance, ItemConfig[] items)
+    {
+        CharacterData d = instance.GetComponent<CharacterData>();
+        for (int i = 0; i < items.Length; i++)
+        {
+            if (items[i] == null) continue;
+            d.Equip(items[i]);
+        }
+        yield return null;
     }
 }

@@ -9,11 +9,11 @@ namespace Catacumba.Character.AI
 {
     public abstract class CharacterAIBaseMachine<T> : MonoBehaviour where T : System.Enum
     {
-        protected NavMeshAgent navMeshAgent;
-
-        protected CharacterAnimator characterAnimator;
-        protected CharacterHealth characterHealth;
-        protected CharacterCombat characterCombat;
+        protected CharacterAnimator animator;
+        protected CharacterHealth health;
+        protected CharacterCombat combat;
+        protected CharacterData data;
+        protected CharacterMovement movement;
 
         protected BaseState currentState;
 
@@ -24,7 +24,7 @@ namespace Catacumba.Character.AI
 
         protected virtual void SetCurrentState(T value, params object[] data)
         {
-            characterAnimator.ResetAttackTrigger();
+            animator.ResetAttackTrigger();
 
             if (currentState != null)
             {
@@ -38,16 +38,16 @@ namespace Catacumba.Character.AI
 
         protected virtual void Awake()
         {
-            navMeshAgent = GetComponent<NavMeshAgent>();
-
-            characterAnimator = GetComponent<CharacterAnimator>();
-            characterHealth = GetComponent<CharacterHealth>();
-            characterCombat = GetComponent<CharacterCombat>();
+            animator = GetComponent<CharacterAnimator>();
+            health = GetComponent<CharacterHealth>();
+            combat = GetComponent<CharacterCombat>();
+            data = GetComponent<CharacterData>();
+            movement = GetComponent<CharacterMovement>();
         }
 
         protected virtual void Update()
         {
-            if (currentState != null)
+            if (currentState != null && !health.IsOnGround)
             {
                 StateResult result = currentState.Update();
                 HandleStateResult(CurrentAIState, result);
@@ -64,9 +64,9 @@ namespace Catacumba.Character.AI
 
         protected virtual void OnDrawGizmos()
         {
-            if (navMeshAgent == null || !navMeshAgent.hasPath) return;
+            if (movement == null || !movement.HasPath) return;
 
-            var path = navMeshAgent.path;
+            var path = movement.NavMeshAgent.path;
             for (int i = 1; i < path.corners.Length; i++)
             {
                 var a = path.corners[i - 1];

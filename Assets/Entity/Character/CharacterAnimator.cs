@@ -22,18 +22,17 @@ public class CharacterAnimator : MonoBehaviour
     CharacterCombat combat;
     CharacterHealth health;
     CharacterModelInfo modelInfo;
-    CharacterModelInfo ModelInfo
+    public CharacterModelInfo ModelInfo
     {
         get { return modelInfo ?? (modelInfo = GetComponentInChildren<CharacterModelInfo>()); }
     }
-    
 
     private float AnimatorDefaultSpeed
     {
         get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
-    private Material[] Material
+    private Material[] Materials
     {
         get; set;
     }
@@ -45,12 +44,15 @@ public class CharacterAnimator : MonoBehaviour
         set
         {
             hitEffectFactor = value;
-            Array.ForEach(Material, m => m.SetFloat("_HitFactor", value));
+            if (Materials == null) return;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Material m = Materials[i];
+                if (m == null) continue;
+                m.SetFloat("_HitFactor", value);
+            }
         }
     }
-
-    [Header("Freeze")] 
-    public float AnimationFreezeFrameTime = 0.15f;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -72,8 +74,11 @@ public class CharacterAnimator : MonoBehaviour
     int recoverHash = Animator.StringToHash("Recovered");
     int castSkillHash = Animator.StringToHash("Cast");
 
-    // Animator speed reset timer
-    float _timeSpeedReset;
+    // ============ EVENTS
+    public System.Action<Animator> OnRefreshAnimator;
+
+
+    #region MONOBEHAVIOUR
 
     // Start is called before the first frame update
     void Awake()
@@ -118,12 +123,6 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f);
-        animator.SetFloat(_speedYHash, Mathf.Clamp(movement.Velocity.y, -1f, 1f));
-
-        if (animator.speed < 1f && Time.time > _timeSpeedReset + AnimationFreezeFrameTime)
-        {
-            animator.speed = AnimatorDefaultSpeed;
-        }
 
         if (!Mathf.Approximately(HitEffectFactor, 0f))
         {
@@ -134,6 +133,10 @@ public class CharacterAnimator : MonoBehaviour
         CheckDebugInput();
 #endif
     }
+
+    #endregion
+
+    #region CALLBACKS
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
@@ -153,8 +156,7 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         HitEffectFactor = 1f;
-        _timeSpeedReset = Time.time;
-        animator.speed = 0f;
+        //FreezeAnimator();
     }
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
@@ -171,8 +173,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         if (attack.Defender != null)
         {
-            _timeSpeedReset = Time.time;
-            animator.speed = 0f;
+            FreezeAnimator();
         }
     }
 
@@ -209,30 +210,47 @@ public class CharacterAnimator : MonoBehaviour
         animator.SetTrigger(_rollTriggerHash);
     }
 
+    #endregion
+
     public void Equip(ItemData item)
     {
-        var model = item.transform.Find("ModelRoot").GetChild(0);
+        Transform modelRoot = item.transform.Find("ModelRoot");
+        if (modelRoot.childCount > 0)
+        {
+            var model = modelRoot.GetChild(0);
+            Equip(model.gameObject, item.Stats);
+        }
+    }
+
+    public void Equip(ItemConfig cfg)
+    {
+        Equip(Instantiate(cfg.Prefab), cfg.Stats);
+    }
+
+    public void Equip(GameObject model, ItemStats item)
+    {
+       
         equippedWeapon = model.gameObject;
 
         Transform handBone = null;
         Quaternion rotation = Quaternion.identity;
         Vector3 position = Vector3.zero;
 
-        if (item.Stats.ItemType == EItemType.Equip && item.Stats.Slot == EInventorySlot.Weapon)
+        if (item.ItemType == EItemType.Equip && item.Slot == EInventorySlot.Weapon)
         {
-            if (item.Stats.WeaponType == EWeaponType.Scepter)
+            if (item.WeaponType == EWeaponType.Scepter)
             {
                 handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-90f, 0f, 0f);
                 position = new Vector3(0.03f, 0.03f, -0.62f);
             }
-            else if (item.Stats.WeaponType == EWeaponType.TwoHandedSword)
+            else if (item.WeaponType == EWeaponType.TwoHandedSword)
             {
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-131f, -81f, -111f);
                 position = new Vector3(-0.055f, -0.025f, 0.346f);
             }
-            else if (item.Stats.WeaponType == EWeaponType.Sword)
+            else if (item.WeaponType == EWeaponType.Sword)
             {
                 handBone = ModelInfo.RightHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
@@ -246,17 +264,17 @@ public class CharacterAnimator : MonoBehaviour
             }
         }
 
-        model.transform.SetParent(handBone, false);
+        model.transform.SetParent(handBone, true);
         //model.transform.parent = handBone;
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
-        if (item.Stats.ItemType == EItemType.Equip)
+        if (item.ItemType == EItemType.Equip)
         {
-            if (item.Stats.Slot == EInventorySlot.Weapon)
+            if (item.Slot == EInventorySlot.Weapon)
             {
-                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item.Stats);
+                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
             }
         }
     }
@@ -281,15 +299,21 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger("StrongAttack");
     }
 
+    public void FreezeAnimator()
+    {
+        GetComponent<FreezeAnimator>().Freeze();
+    }
+
     // gambiarra 
     public void RefreshAnimator()
     {
         Avatar avatar = animator.avatar;
         RuntimeAnimatorController controller = animator.runtimeAnimatorController;
-        RefreshAnimator(avatar, controller);
+        bool rootMotion = animator.applyRootMotion;
+        RefreshAnimator(avatar, controller, rootMotion);
     }
 
-    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller)
+    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller, bool rootMotion)
     {
         if (avatar == null)
         {
@@ -302,13 +326,20 @@ public class CharacterAnimator : MonoBehaviour
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
 
+        RefreshMaterials();
+
+        OnRefreshAnimator?.Invoke(animator);
+    }
+
+    void RefreshMaterials()
+    {
         List<Material> materials = new List<Material>();
         foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>())
         {
             materials.Add(r.material);
         }
 
-        Material = materials.ToArray();
+        Materials = materials.ToArray();
     }
 
     public void SetRootMotion(bool v)

@@ -22,12 +22,13 @@ MonoBehaviour:
     Slot: 5
     WeaponType: 1
     Attributes:
-      Vigor: 5
-      Strength: 5
-      Dexterity: 5
-      Magic: 5
+      Vigor: 1
+      Strength: 1
+      Dexterity: 1
+      Magic: 1
     DamageScaling:
       Vigor: 0.1
       Strength: 0.1
       Dexterity: 0.1
       Magic: 0.1
+  AnimationOverride: {fileID: 0}

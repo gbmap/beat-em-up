@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class FX : Singleton<FX>
 {
     public ParticleSystem ParticleImpactHit;
+    public ParticleSystem ParticleImpactHitSmall;
+
     public ParticleSystem ParticleImpactBlood;
+    public GameObject HealEffect;
 
     public GameObject PrefabDamageLabel;
 
@@ -17,14 +20,23 @@ public class FX : Singleton<FX>
         canvas = FindObjectOfType<Canvas>();
     }
 
-    public void ImpactHit(Vector3 position)
+    public void ImpactHit(Vector3 position, EAttackType attackType = EAttackType.Weak)
     {
         ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
         {
             position = position,
             rotation = Random.value * 360f
         };
-        ParticleImpactHit.Emit(emitParams, 1);
+
+        switch (attackType)
+        {
+            case EAttackType.Weak:
+                ParticleImpactHitSmall.Emit(emitParams, 1);
+                break;
+            case EAttackType.Strong:
+                ParticleImpactHit.Emit(emitParams, 1);
+                break;
+        }
     }
 
     public void ImpactBlood(Vector3 position)
@@ -42,4 +54,13 @@ public class FX : Singleton<FX>
         label.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(worldPosition);
         label.GetComponent<Text>().text = damage.ToString();
     }
+
+    public void EmitHealEffect(GameObject target)
+    {
+        var obj = Instantiate(HealEffect.gameObject, Vector3.zero, Quaternion.identity, target.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+        obj.transform.localScale = Vector3.one;
+    }
+
 }

@@ -104,7 +104,7 @@ MonoBehaviour:
   - type: 52
     prefab: {fileID: 1624536181693422, guid: 807c1226359007646905397056134019, type: 3}
   - type: 53
-    prefab: {fileID: 1877307886535162, guid: fda5edc93819a5946901f75bc534ac54, type: 3}
+    prefab: {fileID: 102810, guid: b0297681c8568974da8dc86f4cdc853c, type: 3}
   CharacterAnimator: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
   DaggerOverrideController: {fileID: 22100000, guid: 2706458cdb705804f8ce6ecbb63edea8,
     type: 2}

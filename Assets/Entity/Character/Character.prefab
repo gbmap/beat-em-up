@@ -262,6 +262,7 @@ GameObject:
   - component: {fileID: 6927136765418665499}
   - component: {fileID: 2839161661665923376}
   - component: {fileID: 15095382}
+  - component: {fileID: 7704632705183311460}
   m_Layer: 10
   m_Name: Character
   m_TagString: Player
@@ -356,13 +357,14 @@ MonoBehaviour:
   DataInit:
     Attributes:
       Vigor: 10
-      Strength: 10
-      Dexterity: 10
-      Magic: 10
+      Strength: 1
+      Dexterity: 1
+      Magic: 1
     Inventory:
       inventory: 000000000000000000000000000000000000000000000000
   BrainType: 0
   CharacterModelOverride: {fileID: 0}
+  StartingItems: []
 --- !u!114 &6927136765418665498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,7 +379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Direction: {x: 0, y: 0, z: 0}
   MoveSpeed: 4
-  SpeedBumpForce: 0.9
+  SpeedBumpForce: 0.5
 --- !u!114 &4779215824379891065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -405,7 +407,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5463593265913646897}
-  AnimationFreezeFrameTime: 0.15
 --- !u!114 &2839161661665923376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,6 +420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsOnCombo: 0
+  IsOnHeavyAttack: 0
 --- !u!195 &15095382
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -441,6 +443,19 @@ NavMeshAgent:
   m_BaseOffset: 0.1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &7704632705183311460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370166557560115288}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2795b459a0b1584fba3d8b6b1a78255, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimationFreezeFrameTime: 0.1
 --- !u!1 &1451224119635318036
 GameObject:
   m_ObjectHideFlags: 0
@@ -2419,7 +2434,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6927136765445453997}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 109fb4b820af9e645a938c417ffc54cb, type: 3}
   m_Name: 

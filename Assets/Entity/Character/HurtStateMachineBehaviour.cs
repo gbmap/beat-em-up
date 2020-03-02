@@ -13,6 +13,10 @@ public class HurtStateMachineBehaviour : StateMachineBehaviour
             Debug.Log("Fall");
             animator.GetComponent<CharacterHealth>().OnFall?.Invoke();
         }
+        else
+        {
+            animator.GetComponent<CharacterAnimator>().FreezeAnimator();
+        }
     }
 
     // OnStateExit is called before OnStateExit is called on any state inside this state machine

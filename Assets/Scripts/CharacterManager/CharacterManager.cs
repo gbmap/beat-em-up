@@ -31,9 +31,14 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
         yield return Config.SetupCharacter(instance, type);
     }
 
-    public bool Interact(CharacterData character, ItemData item)
+    public IEnumerator SetupCharacter(CharacterData data)
     {
-        character.Stats.Inventory[item.Stats.Slot] = item.Stats;
+        yield return Config.SetupCharacter(data.gameObject, data.TypeId);
+    }
+
+    public bool Interact(CharacterData character, ItemStats item)
+    {
+        character.Stats.Inventory[item.Slot] = item;
         return true;
     }
 

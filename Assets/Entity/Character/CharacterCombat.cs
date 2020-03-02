@@ -38,19 +38,30 @@ public class CharacterCombat : MonoBehaviour
 
     private Vector3 GetAttackColliderSize(EAttackType type)
     {
-        return attackColliderSize * (type == EAttackType.Weak ? 1f : 1.1f);
+        return attackColliderSize * (type == EAttackType.Weak ? 1.5f : 2.5f);
     }
 
-    private CharacterAttackData lastAttackData;
+    public CharacterAttackData LastAttackData
+    {
+        get; private set;
+    }
+
+    public CharacterAttackData LastDamageData
+    {
+        get; private set;
+    }
 
     private void Awake()
     {
+        LastDamageData = new CharacterAttackData
+        {
+            Time = float.NegativeInfinity
+        };
+
         health = GetComponent<CharacterHealth>();
         data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         animator = GetComponent<CharacterAnimator>();
-
-        lastAttackData.Time = float.NegativeInfinity;
     }
 
     private void OnEnable()
@@ -106,9 +117,14 @@ public class CharacterCombat : MonoBehaviour
         OnComboEnded?.Invoke();
     }
 
-    private void OnDamagedCallback(CharacterAttackData obj)
+    private void OnDamagedCallback(CharacterAttackData msg)
     {
-        OnComboEnded?.Invoke();
+        if (msg.CancelAnimation)
+        {
+            OnComboEnded?.Invoke();
+        }
+
+        LastDamageData = msg;
     }
 
     /*
@@ -116,22 +132,16 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
-        Attack(new CharacterAttackData
-            {
-                Type = type,
-                Attacker = gameObject,
-                HitNumber = ++_nComboHits,
-                Time = Time.time
-            }
-        );
+        Attack(new CharacterAttackData(type, gameObject, ++_nComboHits));
     }
 
     private void Attack(CharacterAttackData attack)
     {
+        /*
         Collider[] colliders = Physics.OverlapBox(
             attackColliderBasePosition,
-            GetAttackColliderSize(attack.Type), 
-            transform.rotation, 
+            GetAttackColliderSize(attack.Type),
+            transform.rotation,
             1 << LayerMask.NameToLayer("Entities")
         );
 
@@ -142,6 +152,11 @@ public class CharacterCombat : MonoBehaviour
 
         foreach (var c in colliders)
         {
+            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
+            {
+                continue;
+            }
+
             if (c.gameObject == gameObject) continue;
             attack.Defender = c.gameObject;
             CombatManager.Attack(gameObject, c.gameObject, ref attack);
@@ -150,16 +165,24 @@ public class CharacterCombat : MonoBehaviour
             attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
-        }
+        }*/
+        CombatManager.Attack(ref attack, attackColliderBasePosition, GetAttackColliderSize(attack.Type), transform.rotation);
 
         OnCharacterAttack?.Invoke(attack);
 
-        lastAttackData = attack;
+        LastAttackData = attack;
     }
 
     /*
      * Skills
      * */
+    public void AnimUseWeaponSkill(int index)
+    {
+        ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
+        BaseSkill skill = weapon.Skills[index];
+        Instantiate(skill.Prefab, transform.position + transform.forward * 1.5f, transform.rotation);
+    }
+
     public void RequestSkillUse(BaseSkill skill)
     {
         skillBeingCasted = skill;
@@ -175,6 +198,9 @@ public class CharacterCombat : MonoBehaviour
 
     public void AnimPlayWoosh()
     {
+        Vector3 dir = movement.Direction;
+
+        movement.ApplySpeedBump(dir, movement.SpeedBumpForce*0.5f);
         SoundManager.Instance.PlayWoosh(transform.position);
     }
 
@@ -183,12 +209,16 @@ public class CharacterCombat : MonoBehaviour
     {
         if (!Application.isPlaying) return;
 
-        if (Time.time < lastAttackData.Time + 1f)
+        try
         {
-            Gizmos.color = Color.red;
-            Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
-            Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(lastAttackData.Type));
+            if (Time.time < LastAttackData.Time + 1f)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
+                Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type));
+            }
         }
+        catch { }
     }
 #endif
 

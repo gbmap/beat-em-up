@@ -396,7 +396,7 @@ MonoBehaviour:
         _modifierKey2: 0
         _modifierKey3: 0
       - _actionCategoryId: 0
-        _actionId: 5
+        _actionId: 7
         _elementType: 1
         _elementIdentifierId: 6
         _axisRange: 0
@@ -667,7 +667,7 @@ MonoBehaviour:
         _modifierKey2: 0
         _modifierKey3: 0
       - _actionCategoryId: 0
-        _actionId: 5
+        _actionId: 7
         _elementType: 1
         _elementIdentifierId: 6
         _axisRange: 0
@@ -905,7 +905,7 @@ MonoBehaviour:
         _modifierKey2: 0
         _modifierKey3: 0
       - _actionCategoryId: 0
-        _actionId: 5
+        _actionId: 7
         _elementType: 1
         _elementIdentifierId: 6
         _axisRange: 0
@@ -1215,7 +1215,7 @@ MonoBehaviour:
     actionCategoryIdCounter: 1
     inputBehaviorIdCounter: 1
     mapCategoryIdCounter: 1
-    joystickLayoutIdCounter: 1
+    joystickLayoutIdCounter: 2
     keyboardLayoutIdCounter: 1
     mouseLayoutIdCounter: 1
     customControllerLayoutIdCounter: 1

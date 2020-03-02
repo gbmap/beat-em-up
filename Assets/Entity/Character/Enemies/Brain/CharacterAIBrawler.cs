@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,6 +12,7 @@ namespace Catacumba.Character.AI
         Attack,
         Orbit,
         OrbitAttack,
+        EquipItem
     }
 
     public class CharacterAIBrawler : CharacterAIBaseMachine<EBrawlerAIStates>
@@ -27,6 +29,9 @@ namespace Catacumba.Character.AI
         [Header("Orbit State")]
         public OrbitStateConfig OrbitStateConfig;
 
+        private float itemCheckTime = 1.0f;
+        private float lastItemCheck;
+
         protected override void Awake()
         {
             base.Awake();
@@ -36,16 +41,42 @@ namespace Catacumba.Character.AI
  
         private void OnEnable()
         {
-            characterHealth.OnDamaged += OnDamagedCallback;
+            health.OnDamaged += OnDamagedCallback;
         }
 
         private void OnDisable()
         {
-            characterHealth.OnDamaged -= OnDamagedCallback;
+            health.OnDamaged -= OnDamagedCallback;
             if (CurrentAIState == EBrawlerAIStates.Attack)
             {
                 AttackState attackState = currentState as AttackState;
                 AIManager.Instance?.DecreaseAttackers(attackState.Target);
+            }
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+
+            if (Time.time > lastItemCheck + itemCheckTime)
+            {
+                /* OTIMIZAR ISSO AQUI >>>>EVENTUALMENTE<<<< */
+                ItemData[] items = FindObjectsOfType<ItemData>().Where(item => Vector3.Distance(gameObject.transform.position, item.transform.position) < 5.0f).ToArray();
+                //List<ItemData> itemsInRange = characterData.ItemsInRange;
+
+                if (items.Length > 0 && CurrentAIState != EBrawlerAIStates.EquipItem)
+                {
+                    for (int i = 0; i < items.Length; i++)
+                    {
+                        ItemData item = items[i];
+                        if (!data.Stats.Inventory.HasEquip(item.Stats.Slot))
+                        {
+                            SetCurrentState(EBrawlerAIStates.EquipItem, item);
+                        }
+                    }
+                }
+                lastItemCheck = Time.time;
             }
         }
 
@@ -71,6 +102,8 @@ namespace Catacumba.Character.AI
                 case EBrawlerAIStates.OrbitAttack:
                 case EBrawlerAIStates.Attack:
                     return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, newState == EBrawlerAIStates.OrbitAttack);
+                case EBrawlerAIStates.EquipItem:
+                    return new EquipItemState(gameObject, data[0] as ItemData);
                 default:
                     return new WanderState(gameObject, WanderStateConfig);
             }
@@ -111,6 +144,12 @@ namespace Catacumba.Character.AI
                     if (result.code == WanderState.RES_ENEMY_IN_SIGHT)
                     {
                         SetCurrentState(EBrawlerAIStates.Orbit, result.data[0] as GameObject);
+                    }
+                    break;
+                case EBrawlerAIStates.EquipItem:
+                    if (result.code != EquipItemState.RES_CONTINUE)
+                    {
+                        SetCurrentState(EBrawlerAIStates.Wander);
                     }
                     break;
             }

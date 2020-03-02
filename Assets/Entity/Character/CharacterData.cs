@@ -15,10 +15,13 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
     public ECharacterBrainType BrainType;
     private List<ItemData> itemsInRange = new List<ItemData>();
+    public List<ItemData> ItemsInRange { get { return itemsInRange; } }
 
     ECharacterType lastCharacterType;
 
     public GameObject CharacterModelOverride;
+
+    public ItemConfig[] StartingItems;
 
     void Awake()
     {
@@ -47,6 +50,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ECharacterType.HeroKnightFemale));
         }
+
+        lastCharacterType = TypeId;
     }
 
     private void Update()
@@ -116,10 +121,38 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public bool Interact()
     {
         if (itemsInRange.Count == 0) return false;
+
         var item = itemsInRange[0];
+        while (item == null)
+        { 
+            itemsInRange.RemoveAt(0);
 
-        if (!CharacterManager.Instance.Interact(this, item)) return false;
+            if (itemsInRange.Count == 0)
+            {
+                return false;
+            }
 
+            item = itemsInRange[0];
+        }
+
+        bool r = Equip(item);
+
+        if (r)
+        {
+            OnItemOutOfRange(item);
+            Destroy(item.gameObject);
+        }
+        return r;
+    }
+
+    public bool Equip(ItemData item)
+    {
+        if (Stats.Inventory.HasEquip(item.Stats.Slot))
+        {
+            UnEquip(item.Stats.Slot);
+        }
+
+        if (!CharacterManager.Instance.Interact(this, item.Stats)) return false;
         if (item.Stats.ItemType == EItemType.Equip)
         {
             var animator = GetComponent<CharacterAnimator>();
@@ -128,9 +161,25 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
                 animator.Equip(item);
             }
         }
+        return true;
+    }
 
-        OnItemOutOfRange(item);
-        Destroy(item.gameObject);
+    public bool Equip(ItemConfig itemConfig)
+    {
+        if (Stats.Inventory.HasEquip(itemConfig.Stats.Slot))
+        {
+            UnEquip(itemConfig.Stats.Slot);
+        }
+
+        if (!CharacterManager.Instance.Interact(this, itemConfig.Stats)) return false;
+        if (itemConfig.Stats.ItemType == EItemType.Equip)
+        {
+            var animator = GetComponent<CharacterAnimator>();
+            if (animator)
+            {
+                animator.Equip(itemConfig);
+            }
+        }
         return true;
     }
 

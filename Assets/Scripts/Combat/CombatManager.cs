@@ -8,6 +8,22 @@ public enum EAttackType
 
 public struct CharacterAttackData
 {
+    public CharacterAttackData(EAttackType type, GameObject attacker, int hitNumber = 0)
+    {
+        Type = type;
+        Attacker = attacker;
+
+        Time = UnityEngine.Time.time;
+        AttackerStats = null;
+        Defender = null;
+        DefenderStats = null;
+        Damage = 0;
+        HitNumber = hitNumber;
+        Poised = false;
+        Knockdown = false;
+        CancelAnimation = false;
+    }
+
     public float Time;
     public EAttackType Type;
     public GameObject Attacker;
@@ -58,7 +74,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         return (c.Attributes.Magic+c.Inventory.GetTotalAttributes().Magic) * 19;
     }
 
-    public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward)
+    public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward, EAttackType attackType)
     {
         var dmgScaling = attacker.Inventory.GetTotalDamageScaling();
 
@@ -69,16 +85,33 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
-        return Mathf.FloorToInt((str + dex + mag) * crit * backstab);
+        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?1:4);
     }
 
-    public static void Attack(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
+
+    public static void CalculateAttackStats(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
+    {
+        CalculateAttackStats(CharacterManager.GetCharacterStats(attacker.GetInstanceID()),
+               CharacterManager.GetCharacterStats(defender.GetInstanceID()),
+               ref attackData);
+    }
+
+    public static void CalculateAttackStats(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
     {
         attackData.AttackerStats = attacker;
         attackData.DefenderStats = defender;
 
         // calcula dano cru
-        int damage = GetDamage(attacker, defender, attackData.Attacker.transform.forward, attackData.Defender.transform.forward);
+        int damage = 0;
+        if (attacker == null)
+        {
+            // TODO: remover isso aqui
+            damage = attackData.Damage;
+        }
+        else
+        {
+            damage = GetDamage(attacker, defender, attackData.Attacker.transform.forward, attackData.Defender.transform.forward, attackData.Type);
+        }
 
         // rola o dado pra poise
         attackData.Poised = Random.value < defender.PoiseChance;
@@ -88,21 +121,52 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         }
 
         // TODO: poise bar legítimo
-        defender.PoiseBar -= (defender.Poise*0.4f) / defender.Poise;
+        defender.PoiseBar -= (defender.Poise*0.1f) / defender.Poise;
 
         // vê se derrubou o BONECO
         attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0);
 
+        // reduz vida
         defender.Health -= damage;
 
+        // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
     }
 
-    public static void Attack(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
+    public static void Attack(ref CharacterAttackData attack,
+        Vector3 colliderPos, 
+        Vector3 colliderSize, 
+        Quaternion colliderRot, 
+        int damage = 0)
     {
-        Attack(CharacterManager.GetCharacterStats(attacker.GetInstanceID()),
-               CharacterManager.GetCharacterStats(defender.GetInstanceID()),
-               ref attackData);
+        Collider[] colliders = Physics.OverlapBox(
+            colliderPos, 
+            colliderSize, 
+            colliderRot, 
+            1 << LayerMask.NameToLayer("Entities")
+        );
+
+        if (colliders.Length > 1)
+        {
+            SoundManager.Instance.PlayHit(colliderPos);
+        }
+
+        foreach (var c in colliders)
+        {
+            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
+            {
+                continue;
+            }
+
+            if (c.gameObject == attack.Attacker) continue;
+            attack.Defender = c.gameObject;
+            CalculateAttackStats(attack.Attacker, c.gameObject, ref attack);
+
+            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack;
+            attack.CancelAnimation |= attack.Type == EAttackType.Strong;
+
+            c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
+        }
     }
 
     public static void Heal(CharacterStats healer, CharacterStats healed)

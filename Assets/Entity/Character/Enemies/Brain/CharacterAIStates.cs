@@ -26,7 +26,8 @@ namespace Catacumba.Character.AI
         protected CharacterData data;
         protected CharacterHealth health;
         protected CharacterCombat combat;
-        protected NavMeshAgent navMeshAgent;
+        protected CharacterMovement movement;
+        protected CharacterAnimator animator;
 
         public BaseState(GameObject gameObject)
         {
@@ -34,7 +35,8 @@ namespace Catacumba.Character.AI
             data = gameObject.GetComponent<CharacterData>();
             health = gameObject.GetComponent<CharacterHealth>();
             combat = gameObject.GetComponent<CharacterCombat>();
-            navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
+            movement = gameObject.GetComponent<CharacterMovement>();
+            animator = gameObject.GetComponent<CharacterAnimator>();
         }
 
         public virtual StateResult Update()
@@ -95,10 +97,7 @@ namespace Catacumba.Character.AI
             : base(gameObject)
         {
             Cfg = config;
-            health = gameObject.GetComponent<CharacterHealth>();
-            combat = gameObject.GetComponent<CharacterCombat>();
-            navMeshAgent = gameObject.GetComponent<NavMeshAgent>();
-
+           
             lastPathChange = float.MinValue;
         }
 
@@ -117,12 +116,12 @@ namespace Catacumba.Character.AI
                 lastEntityCheck = Time.time;
             }
 
-            navMeshAgent.isStopped = false;
-            if (!navMeshAgent.hasPath || navMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+            //movement.IsAgentStopped = false;
+            if (!movement.HasPath || movement.PathStatus == NavMeshPathStatus.PathComplete)
             {
                 if (Time.time > lastPathChange + Cfg.SleepTime)
                 {
-                    navMeshAgent.SetDestination(gameObject.transform.position + UnityEngine.Random.insideUnitSphere * Cfg.WanderRadius);
+                    movement.SetDestination(gameObject.transform.position + UnityEngine.Random.insideUnitSphere * Cfg.WanderRadius);
                     lastPathChange = Time.time;
                 }
             }
@@ -230,7 +229,7 @@ namespace Catacumba.Character.AI
 
             if (distanceToTarget <= Cfg.DistanceToAttack)
             {
-                navMeshAgent.isStopped = true;
+                movement.IsAgentStopped = true;
                 if (Time.time > lastAttack + Cfg.AttackCooldown && Time.time > lastCombo + Cfg.ComboCooldown)
                 {
                     if (currentAttackIndex > comboLength - 1)
@@ -257,8 +256,8 @@ namespace Catacumba.Character.AI
             }
             else
             {
-                navMeshAgent.isStopped = health.IsOnGround;
-                navMeshAgent.SetDestination(Target.transform.position);
+                movement.IsAgentStopped = false;
+                movement.SetDestination(Target.transform.position);
             }
 
             return new StateResult(RES_CONTINUE);
@@ -326,10 +325,10 @@ namespace Catacumba.Character.AI
 
             if (Mathf.Abs(distanceToTarget - lastDistance) > 0.025f)
             {
-                navMeshAgent.isStopped = health.IsOnGround;
+                //movement.IsAgentStopped = health.IsOnGround;
                 float angle = gameObject.GetInstanceID() % 360f;
                 Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-                navMeshAgent.SetDestination(Target.transform.position + offset * Cfg.OrbitRadius);
+                movement.SetDestination(Target.transform.position + offset * Cfg.OrbitRadius);
                 lastPathChange = Time.time;
             }
 
@@ -410,8 +409,7 @@ namespace Catacumba.Character.AI
         public const int RES_TARGET_IS_DEAD = 4;
 
         public GameObject Target;
-        private CharacterHealth characterHealth;
-        private CharacterCombat characterCombat;
+      
 
         private HealStateConfig Cfg;
 
@@ -430,22 +428,20 @@ namespace Catacumba.Character.AI
             Cfg = cfg;
             Target = target;
 
-            characterHealth = gameObject.GetComponent<CharacterHealth>();
-            characterCombat = gameObject.GetComponent<CharacterCombat>();
         }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            characterHealth.OnDamaged += OnDamagedCallback;
-            characterCombat.OnSkillUsed += OnSkillUsedCallback;
+            health.OnDamaged += OnDamagedCallback;
+            combat.OnSkillUsed += OnSkillUsedCallback;
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            characterHealth.OnDamaged -= OnDamagedCallback;
-            characterCombat.OnSkillUsed -= OnSkillUsedCallback;
+            health.OnDamaged -= OnDamagedCallback;
+            combat.OnSkillUsed -= OnSkillUsedCallback;
         }
 
         private void OnDamagedCallback(CharacterAttackData obj)
@@ -459,6 +455,8 @@ namespace Catacumba.Character.AI
             isHealing = false;
             isCasting = false;
             LastHeal = Time.time;
+            FX.Instance.EmitHealEffect(Target);
+            
             CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
         }
 
@@ -472,12 +470,12 @@ namespace Catacumba.Character.AI
             float d = Vector3.Distance(gameObject.transform.position, Target.transform.position);
             if (d > Cfg.MinHealDistance && !isHealing)
             {
-                float navDistanceToTarget = Vector3.Distance(navMeshAgent.destination, Target.transform.position);
+                float navDistanceToTarget = Vector3.Distance(movement.Destination, Target.transform.position);
 
                 if (navDistanceToTarget > Cfg.MinHealDistance)
                 {
                     Vector3 targetPosition = (gameObject.transform.position - Target.transform.position).normalized * Cfg.MinHealDistance;
-                    navMeshAgent.SetDestination(targetPosition);
+                    movement.SetDestination(targetPosition);
                 }
             }
             
@@ -491,6 +489,9 @@ namespace Catacumba.Character.AI
                     // terminou o cast time
                     if (!isCasting && !combat.IsOnCombo && !health.IsOnGround)
                     {
+                        movement.IsAgentStopped = false;
+                        FX.Instance.EmitHealEffect(animator.ModelInfo.LeftHandBone.Bone.gameObject);
+                        FX.Instance.EmitHealEffect(animator.ModelInfo.RightHandBone.Bone.gameObject);
                         combat.RequestSkillUse(new BaseSkill());
                         isCasting = true;
                     }
@@ -498,6 +499,8 @@ namespace Catacumba.Character.AI
                     // esperando a animação de cast
                     else
                     {
+                        gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+                        movement.IsAgentStopped = true;
                         return new StateResult(RES_CASTING_HEAL, Target);
                     }
                 }
@@ -505,6 +508,8 @@ namespace Catacumba.Character.AI
                 // esperando o cast time
                 else
                 {
+                    gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+                    movement.IsAgentStopped = true;
                     return new StateResult(RES_HEALING, Target);
                 }
             }
@@ -526,6 +531,55 @@ namespace Catacumba.Character.AI
             GUI.Box(r, "HealingProgress");
         }
     }
+
+    #endregion
+
+    #region EQUIP_ITEM_STATE
+
+    public class EquipItemState : BaseState
+    {
+        public const int RES_CONTINUE = 0;
+        public const int RES_ITEM_DESTROYED = 1;
+        public const int RES_ITEM_EQUIPPED = 2;
+        public const int RES_CANCEL = 3;
+
+        private ItemData targetItem;
+
+        public EquipItemState(GameObject gameObject, ItemData targetItem) : base(gameObject)
+        {
+            this.targetItem = targetItem;
+        }
+
+        public override StateResult Update()
+        {
+            if (targetItem == null)
+            {
+                return new StateResult(RES_ITEM_DESTROYED);
+            }
+            else if (Vector3.Distance(gameObject.transform.position, targetItem.transform.position) < 0.5f)
+            {
+                if (data.Interact())
+                {
+                    return new StateResult(RES_ITEM_EQUIPPED, targetItem);
+                }
+                else
+                    return new StateResult(RES_ITEM_DESTROYED);
+            }
+            else
+            {
+                if (Vector3.Distance(movement.Destination, targetItem.transform.position) > 0.5f)
+                {
+                    movement.SetDestination(targetItem.transform.position);
+                }
+
+                movement.IsAgentStopped = false;
+                return new StateResult(RES_CONTINUE);
+            }
+
+
+        }
+    }
+
 
     #endregion
 
