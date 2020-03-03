@@ -26,23 +26,23 @@ namespace Catacumba.Exploration
 //            InitializeCameras();
         }
 
-        private void InitializeCameras()
+        public void Initialize()
         {
             cameraPathWaypoints = new List<CameraPathWaypoint>();
             
-            foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
-            {
-                var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
+            // foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
+            // {
+            //     var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
+            //
+            //     foreach (var waypoint in path.m_Waypoints)
+            //     {
+            //         cameraPathWaypoints.Add(new CameraPathWaypoint(
+            //             vcam.gameObject,
+            //             path.transform.TransformPoint(waypoint.position)));
+            //     }
+            // }
 
-                foreach (var waypoint in path.m_Waypoints)
-                {
-                    cameraPathWaypoints.Add(new CameraPathWaypoint(
-                        vcam.gameObject,
-                        path.transform.TransformPoint(waypoint.position)));
-                }
-            }
-
-            currentActiveCamera = firstCamera;
+            currentActiveCamera.SetActive(true);
         }
 
         private void Update()
