@@ -136,8 +136,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
     public static void Attack(ref CharacterAttackData attack,
         Vector3 colliderPos, 
         Vector3 colliderSize, 
-        Quaternion colliderRot, 
-        int damage = 0)
+        Quaternion colliderRot)
     {
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 

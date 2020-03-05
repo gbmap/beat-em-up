@@ -10,6 +10,89 @@ public enum ECharacterBrainType
     Input
 }
 
+
+public enum ECharacterType
+{
+    None,
+    FantasyRivalsBegin,
+
+    BarbarianGiant,
+    Dwarf,
+    AncientWarrior,
+    AncientQueen,
+    DarkElf,
+    EvilGod,
+    ForestGuardian,
+    ForestWitch,
+    Medusa,
+    Mystic,
+    SpiritDemon,
+    BigOrk,
+    ElementalGolem,
+    FortGolem,
+    MechanicalGolem,
+    MutantGuy,
+    PigButcher,
+    RedDemon,
+    Slayer,
+    Troll,
+
+
+    FantasyRivalsEnd,
+    // ==============================
+
+    KnightsBegin,
+
+    Knight1,
+    Knight2,
+    Knight3,
+    Soldier1,
+    Soldier2,
+
+    KnightsEnd,
+
+    // ==============================
+
+    AdventurePackBegin,
+
+    Knight4,
+    Peasant,
+    Shopkeeper,
+    Viking,
+    Warrior,
+
+    AdventurePackEnd,
+
+    // ==============================
+
+    DungeonPackBegin,
+
+    Ghost1,
+    Ghost2,
+    GoblinFemale,
+    GoblinMale,
+    GoblinShaman,
+    GoblinWarChief,
+    GoblinWarriorFemale,
+    GoblinWarriorMale,
+    HeroKnightFemale,
+    HeroKnightMale,
+    RockGolem,
+    SkeletonKnight,
+    SkeletonSlave,
+    SkeletonSoldier1,
+    SkeletonSoldier2,
+    TormentedSoul,
+
+
+    DungeonPackEnd,
+
+    // ==============================
+
+
+    ModularCharacter
+}
+
 [Serializable]
 public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {

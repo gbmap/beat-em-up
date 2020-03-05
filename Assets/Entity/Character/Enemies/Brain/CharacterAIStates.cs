@@ -116,7 +116,7 @@ namespace Catacumba.Character.AI
                 lastEntityCheck = Time.time;
             }
 
-            //movement.IsAgentStopped = false;
+            movement.IsAgentStopped = false;
             if (!movement.HasPath || movement.PathStatus == NavMeshPathStatus.PathComplete)
             {
                 if (Time.time > lastPathChange + Cfg.SleepTime)
@@ -256,9 +256,15 @@ namespace Catacumba.Character.AI
             }
             else
             {
-                movement.IsAgentStopped = false;
-                movement.SetDestination(Target.transform.position);
+                if (Vector3.Distance(movement.Destination, Target.transform.position) > 0.75f)
+                {
+                    movement.SetDestination(Target.transform.position);
+                    movement.IsAgentStopped = false;
+                }
+
             }
+
+            gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
 
             return new StateResult(RES_CONTINUE);
         }
@@ -333,6 +339,9 @@ namespace Catacumba.Character.AI
             }
 
             lastDistance = distanceToTarget;
+
+            gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+
             return new StateResult(RES_CONTINUE);
         }
 
@@ -372,6 +381,8 @@ namespace Catacumba.Character.AI
 
                 lastAttackRoll = Time.time;
             }
+
+            
 
             return base.Update();
         }

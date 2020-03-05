@@ -1,15 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CombatManagerConfig : ScriptableObject
 {
+    /*
     [MenuItem("Assets/Create/CombatManagerConfig")]
     public static void CreateAsset()
     {
         ScriptableObjectUtility.CreateAsset<CombatManagerConfig>();
     }
+    */
 
     [Header("Weapon Animator Overrides")]
     public RuntimeAnimatorController DefaultController;

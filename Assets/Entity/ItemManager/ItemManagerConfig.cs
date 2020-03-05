@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 
 public class ItemManagerConfig : ScriptableObject
 {
-    [MenuItem("Assets/Create/Item/ItemManagerConfig")]
+    /*[MenuItem("Assets/Create/Item/ItemManagerConfig")]
     public static void CreateAsset()
     {
         ScriptableObjectUtility.CreateAsset<ItemManagerConfig>();
-    }
+    }*/
 
     public GameObject ItemPrefab;
     public Material[] RarityMaterials;

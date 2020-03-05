@@ -2,90 +2,7 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
-
-public enum ECharacterType
-{
-    None,
-    FantasyRivalsBegin,
-
-    BarbarianGiant,
-    Dwarf,
-    AncientWarrior,
-    AncientQueen,
-    DarkElf,
-    EvilGod,
-    ForestGuardian,
-    ForestWitch,
-    Medusa,
-    Mystic,
-    SpiritDemon,
-    BigOrk,
-    ElementalGolem,
-    FortGolem,
-    MechanicalGolem,
-    MutantGuy,
-    PigButcher,
-    RedDemon,
-    Slayer,
-    Troll,
-
-
-    FantasyRivalsEnd,
-    // ==============================
-
-    KnightsBegin,
-
-    Knight1,
-    Knight2,
-    Knight3,
-    Soldier1,
-    Soldier2,
-
-    KnightsEnd,
-
-    // ==============================
-
-    AdventurePackBegin,
-
-    Knight4,
-    Peasant,
-    Shopkeeper,
-    Viking,
-    Warrior,
-
-    AdventurePackEnd,
-
-    // ==============================
-
-    DungeonPackBegin,
-
-    Ghost1,
-    Ghost2,
-    GoblinFemale,
-    GoblinMale,
-    GoblinShaman,
-    GoblinWarChief,
-    GoblinWarriorFemale,
-    GoblinWarriorMale,
-    HeroKnightFemale,
-    HeroKnightMale,
-    RockGolem,
-    SkeletonKnight,
-    SkeletonSlave,
-    SkeletonSoldier1,
-    SkeletonSoldier2,
-    TormentedSoul,
-
-
-    DungeonPackEnd,
-
-    // ==============================
-
-
-    ModularCharacter
-}
 
 [Serializable]
 public class CharacterPrefabConfig
@@ -96,11 +13,11 @@ public class CharacterPrefabConfig
 
 public class CharacterManagerConfig : ScriptableObject
 {
-    [MenuItem("Assets/Create/CharacterManagerConfig")]
+    /*[MenuItem("Assets/Create/CharacterManagerConfig")]
     public static void CreateAsset()
     {
         ScriptableObjectUtility.CreateAsset<CharacterManagerConfig>();
-    }
+    }*/
 
     public CharacterPrefabConfig[] CharacterPrefabs;
 

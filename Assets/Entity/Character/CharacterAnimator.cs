@@ -122,7 +122,7 @@ public class CharacterAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f);
+        animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
 
         if (!Mathf.Approximately(HitEffectFactor, 0f))
         {

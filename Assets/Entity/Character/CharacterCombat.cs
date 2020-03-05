@@ -198,7 +198,7 @@ public class CharacterCombat : MonoBehaviour
 
     public void AnimPlayWoosh()
     {
-        Vector3 dir = movement.Direction;
+        Vector3 dir = movement.transform.forward;
 
         movement.ApplySpeedBump(dir, movement.SpeedBumpForce*0.5f);
         SoundManager.Instance.PlayWoosh(transform.position);

@@ -69,10 +69,12 @@ namespace Catacumba.Character.AI
             var path = movement.NavMeshAgent.path;
             for (int i = 1; i < path.corners.Length; i++)
             {
-                var a = path.corners[i - 1];
                 var b = path.corners[i];
-                Gizmos.DrawLine(a, b);
+                Gizmos.DrawWireSphere(b, 0.2f);
             }
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(transform.position, transform.position + movement.Velocity);
 
             if (currentState != null)
             {

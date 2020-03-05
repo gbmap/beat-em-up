@@ -38,14 +38,15 @@ public class CharacterMovement : MonoBehaviour
     private float lastRoll;
     private Vector3 rollDirection;
 
-    bool canMove
+    public bool CanMove
     {
         get
         {
             return !combat.IsOnCombo &&
                 !health.IsOnGround &&
+                !health.IsBeingDamaged &&
                 !isBeingMoved &&
-                Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.75f : 0.25f));
+                Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f));
         }
     }
     bool isBeingMoved { get { return speedBumpT > 0f; } }
@@ -57,10 +58,14 @@ public class CharacterMovement : MonoBehaviour
         get; private set;
     }
 
+    private bool isAgentStopped;
     public bool IsAgentStopped
     {
-        get { return NavMeshAgent.isStopped; }
-        set { NavMeshAgent.isStopped = !canMove || value; }
+        get { return !CanMove || isAgentStopped; }
+        set
+        {
+            isAgentStopped = value;
+        }
     }
 
     public NavMeshPathStatus PathStatus
@@ -129,6 +134,13 @@ public class CharacterMovement : MonoBehaviour
     {
         //Move1();
         Move_Old();
+
+#if UNITY_EDITOR
+        if (Input.GetKeyUp(KeyCode.F4))
+        {
+            showDebug = !showDebug;
+        }
+#endif
     }
 
     void Move1()
@@ -137,7 +149,6 @@ public class CharacterMovement : MonoBehaviour
 
         Vector3 bumpDirection = CalculateSpeedBump();
         NavMeshAgent.Move((velocity + bumpDirection) * Time.deltaTime);
-
 
         forward = CalculateLookDir(velocity, forward);
         transform.LookAt(transform.position + forward);
@@ -167,7 +178,6 @@ public class CharacterMovement : MonoBehaviour
         return dir;
     }
 
-
     void Move_Old()
     {
       
@@ -184,7 +194,7 @@ public class CharacterMovement : MonoBehaviour
             speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 5f);
         }
 
-        else if (canMove)
+        else if (CanMove)
         {
             //float rollSpeed = 1f + Mathf.Clamp01(1f-Mathf.Pow((1f-rollSpeedT), 3f));
             // x * (1 - x) * 4
@@ -233,6 +243,8 @@ public class CharacterMovement : MonoBehaviour
         }
 
         rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime);
+
+        NavMeshAgent.isStopped = IsAgentStopped;
     }
 
     public void ApplySpeedBump(Vector3 direction, float force)
@@ -252,7 +264,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
-        if (attack.CancelAnimation || attack.Knockdown)
+        if (/*attack.CancelAnimation || attack.Knockdown*/ true)
         {
             ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
         }
@@ -308,10 +320,17 @@ public class CharacterMovement : MonoBehaviour
     }
 
 #if UNITY_EDITOR
+
+    private bool showDebug = false;
+
     private void OnGUI()
     {
-        if (data.BrainType != ECharacterBrainType.Input)
-            return;
+        
+
+        if (!showDebug) return;
+
+        /*if (data.BrainType != ECharacterBrainType.Input)
+            return;*/
 
         Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
         GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo +
@@ -319,7 +338,14 @@ public class CharacterMovement : MonoBehaviour
                      "\nrollSpeedT: " + rollSpeedT +
                      "\nrollDir: " + rollDirection +
                      "\nmoveDir: " + Direction +
-                     "\nvelocity: " + CalculateVelocity(Direction.normalized));
+                     "\nvelocity: " + CalculateVelocity(Direction.normalized) +
+                     "\ncanMove: " + CanMove);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + _speedBumpDir);
     }
 #endif
 }

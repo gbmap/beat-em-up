@@ -34,7 +34,9 @@ public class CharacterHealth : MonoBehaviour
     // hora q caiu no chão do Knockdown
     private float recoverTimer;
     private float recoverCooldown = 2f;
+
     public bool IsOnGround;
+    public bool IsBeingDamaged; // rolando animação de dano
 
     private void Awake()
     {
