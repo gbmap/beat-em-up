@@ -54,6 +54,8 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
+    public ParticleSystem DashParticles;
+
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
@@ -113,6 +115,7 @@ public class CharacterAnimator : MonoBehaviour
         combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
 
+
         health.OnDamaged -= OnCharacterDamagedCallback;
         health.OnRecover -= OnRecoverCallback;
 
@@ -129,9 +132,64 @@ public class CharacterAnimator : MonoBehaviour
             HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
         }
 
+        UpdateSmokeEmission();
+
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
+    }
+
+    private void UpdateSmokeEmission()
+    {
+        var emission = DashParticles.emission;
+        emission.enabled = movement.IsRolling || combat.IsOnCombo || movement.IsBeingMoved;
+
+        if (!emission.enabled) return;
+
+        if (movement.IsRolling || combat.IsOnCombo)
+        {
+            DashParticles.transform.rotation = Quaternion.LookRotation(-transform.forward);
+        }
+        else if (movement.IsBeingMoved)
+        {
+            DashParticles.transform.rotation = Quaternion.LookRotation(-movement.SpeedBumpDir);
+        }
+
+        var main = DashParticles.main;
+        ParticleSystem.MinMaxCurve sz = DashParticles.main.startSize;
+        if (movement.IsRolling)
+        {
+            main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
+            main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2f);
+            emission.rateOverDistanceMultiplier = 2f;
+            
+        }
+        else
+        {
+            main.startSize = new ParticleSystem.MinMaxCurve(1, 2);
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
+            emission.rateOverDistanceMultiplier = 5f;
+        }
+        
+    }
+
+    private void EmitSmokeRadius()
+    {
+        if (!DashParticles) return;
+
+        int range = UnityEngine.Random.Range(15, 20);
+        for (int i = 0; i < range; i++)
+        {
+            Vector3 vel = UnityEngine.Random.insideUnitSphere;
+            vel.y = 0f;
+            vel.Normalize();
+            vel *= 13f;
+            DashParticles.Emit(new ParticleSystem.EmitParams
+            {
+                startSize = UnityEngine.Random.Range(2, 4),
+                velocity = vel
+            }, 1);
+        }
     }
 
     #endregion
@@ -144,7 +202,6 @@ public class CharacterAnimator : MonoBehaviour
         {
             return;
         }
-
 
         animator.ResetTrigger(_weakAttackHash);
         animator.ResetTrigger(_strongAttackHash);
@@ -209,7 +266,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger(_strongAttackHash);
         animator.SetTrigger(_rollTriggerHash);
     }
-
+    
     #endregion
 
     public void Equip(ItemData item)
@@ -353,7 +410,7 @@ public class CharacterAnimator : MonoBehaviour
         hipsPosition.y = 0f;
         transform.position += hipsPosition;
     }
-
+    
 #if UNITY_EDITOR
 
     private void OnGUI()

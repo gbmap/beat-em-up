@@ -101,7 +101,7 @@ public class CharacterCombat : MonoBehaviour
     */
     private void OnComboStartedCallback()
     {
-        Debug.Log("Combo ended.");
+        Debug.Log("Combo started.");
         IsOnCombo = true;
     }
 
@@ -137,35 +137,6 @@ public class CharacterCombat : MonoBehaviour
 
     private void Attack(CharacterAttackData attack)
     {
-        /*
-        Collider[] colliders = Physics.OverlapBox(
-            attackColliderBasePosition,
-            GetAttackColliderSize(attack.Type),
-            transform.rotation,
-            1 << LayerMask.NameToLayer("Entities")
-        );
-
-        if (colliders.Length > 1)
-        {
-            SoundManager.Instance.PlayHit(transform.position);
-        }
-
-        foreach (var c in colliders)
-        {
-            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
-            {
-                continue;
-            }
-
-            if (c.gameObject == gameObject) continue;
-            attack.Defender = c.gameObject;
-            CombatManager.Attack(gameObject, c.gameObject, ref attack);
-
-            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack;
-            attack.CancelAnimation |= attack.Type == EAttackType.Strong;
-
-            c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
-        }*/
         CombatManager.Attack(ref attack, attackColliderBasePosition, GetAttackColliderSize(attack.Type), transform.rotation);
 
         OnCharacterAttack?.Invoke(attack);
@@ -200,7 +171,7 @@ public class CharacterCombat : MonoBehaviour
     {
         Vector3 dir = movement.transform.forward;
 
-        movement.ApplySpeedBump(dir, movement.SpeedBumpForce*0.5f);
+        movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
         SoundManager.Instance.PlayWoosh(transform.position);
     }
 

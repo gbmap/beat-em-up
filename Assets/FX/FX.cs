@@ -20,23 +20,35 @@ public class FX : Singleton<FX>
         canvas = FindObjectOfType<Canvas>();
     }
 
-    public void ImpactHit(Vector3 position, EAttackType attackType = EAttackType.Weak)
+    public void ImpactHit(Vector3 position, Vector3 direction, EAttackType attackType)
     {
         ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
         {
             position = position,
-            rotation = Random.value * 360f
+            velocity = Vector3.up
         };
+
+        ParticleSystem ps = null;
 
         switch (attackType)
         {
             case EAttackType.Weak:
-                ParticleImpactHitSmall.Emit(emitParams, 1);
+                ps = ParticleImpactHitSmall;
                 break;
             case EAttackType.Strong:
-                ParticleImpactHit.Emit(emitParams, 1);
+                ps = ParticleImpactHit;
                 break;
         }
+
+        ps.Emit(emitParams, 1);
+    }
+
+    public void ImpactHit(CharacterAttackData data)
+    {
+        Vector3 pos = data.Defender.transform.position + Vector3.up * 1.1f + UnityEngine.Random.insideUnitSphere * 0.25f;
+        Vector3 dir = (data.Attacker.transform.position - data.Defender.transform.position).normalized;
+
+        ImpactHit(pos, dir, data.Type);
     }
 
     public void ImpactBlood(Vector3 position)

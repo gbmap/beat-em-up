@@ -24,9 +24,14 @@ public class CharacterMovement : MonoBehaviour
 
     private float speedBumpT;
     private Vector3 _speedBumpDir;
+    public Vector3 SpeedBumpDir
+    {
+        get { return _speedBumpDir; }
+    }
 
     public System.Action OnJump;
     public System.Action OnRoll;
+    public System.Action OnRollEnded;
 
     private bool isRolling;
     public bool IsRolling
@@ -45,11 +50,11 @@ public class CharacterMovement : MonoBehaviour
             return !combat.IsOnCombo &&
                 !health.IsOnGround &&
                 !health.IsBeingDamaged &&
-                !isBeingMoved &&
+                !IsBeingMoved &&
                 Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f));
         }
     }
-    bool isBeingMoved { get { return speedBumpT > 0f; } }
+    public bool IsBeingMoved { get { return speedBumpT > 0f; } }
 
     #region INTERFACE WITH NAVMESH
 
@@ -183,7 +188,7 @@ public class CharacterMovement : MonoBehaviour
       
         Vector3 velocity = Vector3.zero;
 
-        if (isBeingMoved)
+        if (IsBeingMoved)
         {
             // applies dash on attack
             float t = 1f - speedBumpT;
@@ -243,6 +248,10 @@ public class CharacterMovement : MonoBehaviour
         }
 
         rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime);
+        if (Mathf.Approximately(rollSpeedT, 0f))
+        {
+            OnRollEnded?.Invoke();
+        }
 
         NavMeshAgent.isStopped = IsAgentStopped;
     }
@@ -272,7 +281,10 @@ public class CharacterMovement : MonoBehaviour
 
     public float GetSpeedBumpForce(CharacterAttackData attack)
     {
-        return ((float)attack.Damage / 25) * (attack.Type == EAttackType.Weak ? 1f : 5f);
+        float modifier = (attack.Type == EAttackType.Weak ? 1f : 5f);
+        modifier = attack.Knockdown ? 15f : modifier;
+
+        return ((float)attack.Damage / 25) * modifier;
     }
     
     private void OnCharacterAttackCallback(CharacterAttackData attack)
