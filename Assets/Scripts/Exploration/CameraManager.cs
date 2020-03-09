@@ -14,6 +14,7 @@ namespace Catacumba.Exploration
         
         private float timer;
         private Camera mainCamera;
+        private CinemachineImpulseSource _impulseSource;
         private GameObject currentActiveCamera;
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
@@ -21,26 +22,27 @@ namespace Catacumba.Exploration
         {
             mainCamera = Camera.main;
             currentActiveCamera = firstCamera;
+            _impulseSource = GetComponent<CinemachineImpulseSource>();
 //            InitializeCameras();
         }
 
-        private void InitializeCameras()
+        public void Initialize()
         {
             cameraPathWaypoints = new List<CameraPathWaypoint>();
             
-            foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
-            {
-                var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
+            // foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
+            // {
+            //     var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
+            //
+            //     foreach (var waypoint in path.m_Waypoints)
+            //     {
+            //         cameraPathWaypoints.Add(new CameraPathWaypoint(
+            //             vcam.gameObject,
+            //             path.transform.TransformPoint(waypoint.position)));
+            //     }
+            // }
 
-                foreach (var waypoint in path.m_Waypoints)
-                {
-                    cameraPathWaypoints.Add(new CameraPathWaypoint(
-                        vcam.gameObject,
-                        path.transform.TransformPoint(waypoint.position)));
-                }
-            }
-
-            currentActiveCamera = firstCamera;
+            currentActiveCamera.SetActive(true);
         }
 
         private void Update()
@@ -59,6 +61,11 @@ namespace Catacumba.Exploration
             currentActiveCamera.SetActive(false);
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
+        }
+
+        public void Shake()
+        {
+            _impulseSource.GenerateImpulse();
         }
 
         private void CheckForNearestCamera()
