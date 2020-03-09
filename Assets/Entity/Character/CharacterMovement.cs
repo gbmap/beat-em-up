@@ -279,7 +279,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public float GetSpeedBumpForce(CharacterAttackData attack)
+    public static float GetSpeedBumpForce(CharacterAttackData attack)
     {
         float modifier = (attack.Type == EAttackType.Weak ? 1f : 5f);
         modifier = attack.Knockdown ? 15f : modifier;

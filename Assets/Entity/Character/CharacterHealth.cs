@@ -118,10 +118,8 @@ public class CharacterHealth : MonoBehaviour
         transform.LookAt(lookAt);
 
         var fx = FX.Instance;
-        fx.ImpactHit(data);
-
+        //fx.ImpactHit(data);
         //fx.ImpactBlood(transform.position + Vector3.up);
-        fx.DamageLabel(transform.position + Vector3.up, data.Damage);
 
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
@@ -134,8 +132,6 @@ public class CharacterHealth : MonoBehaviour
         {
             // TODO: dar um funeral digno pros personagens
             OnDeath?.Invoke();
-
-
             Destroy(gameObject);
         }
         else
