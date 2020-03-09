@@ -2762,13 +2762,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1687258581}
-  m_LocalRotation: {x: -0.009843606, y: -0.97006106, z: 0.2392567, w: -0.0405087}
-  m_LocalPosition: {x: -3.4951658, y: 8.252212, z: 8.231054}
+  m_LocalRotation: {x: 0.008153075, y: 0.97912335, z: -0.19894442, w: 0.04089306}
+  m_LocalPosition: {x: -3.4951658, y: 5.9, z: 6.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 35.81, y: 184.84, z: 0}
+  m_LocalEulerAnglesHint: {x: 22.97, y: 175.21301, z: -0.019000001}
 --- !u!114 &1687258586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4385,8 +4385,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6230304480474694960, guid: f2350def65b4d19428110ca2929a5f34,
         type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 0
+      propertyPath: UVModule.frameOverTime.maxCurve.m_Curve.Array.data[0].weightedMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230304480474694960, guid: f2350def65b4d19428110ca2929a5f34,
+        type: 3}
+      propertyPath: UVModule.frameOverTime.maxCurve.m_Curve.Array.data[0].outWeight
+      value: 0.7493606
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230304480474694960, guid: f2350def65b4d19428110ca2929a5f34,
+        type: 3}
+      propertyPath: UVModule.frameOverTime.maxCurve.m_Curve.Array.data[0].inSlope
+      value: 0.0085543
+      objectReference: {fileID: 0}
+    - target: {fileID: 6230304480474694960, guid: f2350def65b4d19428110ca2929a5f34,
+        type: 3}
+      propertyPath: UVModule.frameOverTime.maxCurve.m_Curve.Array.data[0].outSlope
+      value: 0.0085543
       objectReference: {fileID: 0}
     - target: {fileID: 6230304480474694962, guid: f2350def65b4d19428110ca2929a5f34,
         type: 3}

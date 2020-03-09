@@ -8659,7 +8659,7 @@ ParticleSystem:
     - serializedVersion: 3
       emitter: {fileID: 1552017817943005313}
       type: 0
-      properties: 0
+      properties: 1
       emitProbability: 1
   LightsModule:
     enabled: 0
@@ -9103,20 +9103,20 @@ ParticleSystem:
         - serializedVersion: 3
           time: 0
           value: 1
-          inSlope: -0.03926346
-          outSlope: -0.03926346
+          inSlope: 0
+          outSlope: 0
           tangentMode: 0
           weightedMode: 2
           inWeight: 0
-          outWeight: 0.2721088
+          outWeight: 0.63573253
         - serializedVersion: 3
-          time: 0.35509646
+          time: 0.7
           value: 0
-          inSlope: -0.043175578
-          outSlope: -0.043175578
+          inSlope: 0
+          outSlope: 0
           tangentMode: 0
           weightedMode: 0
-          inWeight: 0.24744911
+          inWeight: 0.13043481
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -15466,7 +15466,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 13
+        scalar: 15
         minScalar: 30
         maxCurve:
           serializedVersion: 2

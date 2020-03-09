@@ -46,9 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 048af258b4e1dcc44beb1792abf101d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParticleImpactHit: {fileID: 0}
-  ParticleImpactHitSmall: {fileID: 3444612235790468412}
-  ParticleImpactBlood: {fileID: 5839188114756180144}
   HealEffect: {fileID: 3966796859737663747, guid: 6f965556120f5f349a222d106579ddde,
     type: 3}
   PrefabDamageLabel: {fileID: 2069182790612280980, guid: 460daa9d30ba23f41abc86d549426182,
@@ -128,12 +125,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1882024325709907992}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &3444612235790468412 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3878711662271008036, guid: 489702f12e5d0ea4aba16a7970f6ab7b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1882024325709907992}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3362847840946006079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -209,12 +200,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3362847840946006079}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &5839188114756180144 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 9197417981095653519, guid: 018a4c0c5c556a74d8fbae20c73e9d33,
-    type: 3}
-  m_PrefabInstance: {fileID: 3362847840946006079}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7180302817065437204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -242,11 +227,6 @@ PrefabInstance:
       propertyPath: InitialModule.startSize.scalar
       value: 8
       objectReference: {fileID: 0}
-    - target: {fileID: 3878711662271008037, guid: 489702f12e5d0ea4aba16a7970f6ab7b,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: d10865b0adf9bbf44b4dd89d1086c65c, type: 2}
     - target: {fileID: 3878711662271008038, guid: 489702f12e5d0ea4aba16a7970f6ab7b,
         type: 3}
       propertyPath: m_LocalPosition.x
