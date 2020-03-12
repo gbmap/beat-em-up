@@ -426,7 +426,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ConstantMin: 3
+    m_ConstantMin: 4
     m_ConstantMax: 6
   WeakHitStartColor:
     m_Mode: 2
@@ -505,7 +505,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ConstantMin: 5
+    m_ConstantMin: 6
     m_ConstantMax: 8
   StrongHitStartColor:
     m_Mode: 2

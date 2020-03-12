@@ -121,10 +121,6 @@ public class CharacterHealth : MonoBehaviour
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
 
-        var fx = FX.Instance;
-        //fx.ImpactHit(data);
-        //fx.ImpactBlood(transform.position + Vector3.up);
-
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
         if (data.Knockdown && data.CancelAnimation)
@@ -146,17 +142,23 @@ public class CharacterHealth : MonoBehaviour
 
     private void UpdateHealthQuad(float healthPercentage, float poiseBar)
     {
+        if (!HealthQuad) return;
+
         UpdateHealth(healthPercentage);
         UpdatePoise(poiseBar);
     }
 
     private void UpdateHealth(float healthPercentage)
     {
+        if (!HealthQuad) return;
+
         HealthQuad.material.SetFloat("_Health", healthPercentage);
     }
 
     private void UpdatePoise(float poiseBar)
     {
+        if (!HealthQuad) return;
+
         HealthQuad.material.SetFloat("_Poise", poiseBar);
     }
 }

@@ -22,8 +22,6 @@ public class TCharAttributes<T>
     public T Dexterity;
     public T Magic;
 
-
-
     public T GetAttr(EAttribute attr)
     {
         switch (attr)

@@ -221,6 +221,16 @@ public class CharacterAnimator : MonoBehaviour
         ParticlesHit.Emit(1);
     }
 
+    public void ToggleWeaponTrailVisibility()
+    {
+        var pss = equippedWeapon.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in pss)
+        {
+            var emission = ps.emission;
+            emission.enabled = !emission.enabled;
+        }
+    }
+
     #endregion
 
     #region CALLBACKS

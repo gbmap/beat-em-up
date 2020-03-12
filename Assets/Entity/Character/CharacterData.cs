@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using static UnityEngine.ParticleSystem;
 
 public enum ECharacterBrainType
 {
@@ -96,20 +96,37 @@ public enum ECharacterType
 [Serializable]
 public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
-    public ECharacterBrainType BrainType;
-    private List<ItemData> itemsInRange = new List<ItemData>();
+    [Space]
+    [Header("Stats")]
+    public MinMaxCurve VigorCurve;
+    public MinMaxCurve StrengthCurve;
+    public MinMaxCurve DexterityCurve;
+    public MinMaxCurve MagicCurve;
+
+    [Space]
+    [Header("Model")]
+    public GameObject[] CharacterModelOverride;
+
+    [Space]
+    [Header("Inventory")]
+    public ItemConfig[] StartingItems;
+    public ECharacterBrainType BrainType { get; private set; }
+
     public List<ItemData> ItemsInRange { get { return itemsInRange; } }
+    private List<ItemData> itemsInRange = new List<ItemData>();
 
     ECharacterType lastCharacterType;
-
-    public GameObject CharacterModelOverride;
-
-    public ItemConfig[] StartingItems;
 
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
-        Stats = CharacterManager.RegisterCharacter(gameObject.GetInstanceID(), DataInit);
+
+        // setup attribs
+        Stats = new CharacterStats();
+        Stats.Attributes.Vigor = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
+        Stats.Attributes.Strength = Mathf.RoundToInt(StrengthCurve.Evaluate(UnityEngine.Random.value));
+        Stats.Attributes.Dexterity = Mathf.RoundToInt(DexterityCurve.Evaluate(UnityEngine.Random.value));
+        Stats.Attributes.Magic = Mathf.RoundToInt(MagicCurve.Evaluate(UnityEngine.Random.value));
 
         Stats.Health = Stats.MaxHealth;
         Stats.Mana = Stats.MaxMana;
@@ -121,17 +138,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     {
         if (!Application.isPlaying) return;
 
-        if (CharacterModelOverride != null)
+        if (CharacterModelOverride.Length > 0)
         {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(CharacterModelOverride, TypeId));
-        }
-        else if (TypeId != ECharacterType.None)
-        {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
-        }
-        else
-        {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ECharacterType.HeroKnightFemale));
+            var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch ));
         }
 
         lastCharacterType = TypeId;
@@ -173,11 +183,6 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
             yield return StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, type));
             yield return new WaitForSeconds(2f);
         }
-    }
-
-    private void OnDestroy()
-    {
-        CharacterManager.UnregisterCharacter(gameObject.GetInstanceID());
     }
 
     private bool ValidItem(ItemData item, bool enterExit)

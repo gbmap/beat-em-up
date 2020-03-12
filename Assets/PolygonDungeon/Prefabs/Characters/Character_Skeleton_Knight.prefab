@@ -1200,7 +1200,6 @@ GameObject:
   m_Component:
   - component: {fileID: 439278}
   - component: {fileID: 9581944}
-  - component: {fileID: 11103382}
   m_Layer: 0
   m_Name: Character_Skeleton_Knight
   m_TagString: Untagged
@@ -1258,21 +1257,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!111 &11103382
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 128260}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &130074
 GameObject:
   m_ObjectHideFlags: 0
