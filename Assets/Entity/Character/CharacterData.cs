@@ -130,8 +130,6 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
         Stats.Health = Stats.MaxHealth;
         Stats.Mana = Stats.MaxMana;
-
-        lastCharacterType = TypeId;
     }
 
     private void Start()
@@ -143,18 +141,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
             var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch ));
         }
-
-        lastCharacterType = TypeId;
-    }
-
-    private void Update()
-    {
-        if (TypeId != lastCharacterType && TypeId != ECharacterType.None)
+        else
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
-
-        lastCharacterType = TypeId;
     }
 
     public System.Collections.IEnumerator Test_AllCharacters()

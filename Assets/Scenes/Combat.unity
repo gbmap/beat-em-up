@@ -187,6 +187,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Goblin_Brawler (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 78da42eb4b283534cbc1fabb4db47562,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78da42eb4b283534cbc1fabb4db47562, type: 3}
 --- !u!1001 &14507289
@@ -423,6 +428,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_Skeleton (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34873556028b1eb429b46d8a8ea650c8, type: 3}
@@ -721,6 +731,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Skeleton (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34873556028b1eb429b46d8a8ea650c8, type: 3}
 --- !u!1001 &391695042
@@ -958,6 +973,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Goblin_Brawler (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 78da42eb4b283534cbc1fabb4db47562,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78da42eb4b283534cbc1fabb4db47562, type: 3}
 --- !u!1 &537836640
@@ -1041,7 +1061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &652706709
 Transform:
   m_ObjectHideFlags: 0
@@ -1270,6 +1290,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_Skeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34873556028b1eb429b46d8a8ea650c8, type: 3}
@@ -4530,6 +4555,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Goblin_Brawler (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 78da42eb4b283534cbc1fabb4db47562,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78da42eb4b283534cbc1fabb4db47562, type: 3}
 --- !u!1 &1920004990
@@ -4654,6 +4684,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_Goblin_Brawler
+      objectReference: {fileID: 0}
+    - target: {fileID: 8909700195243384949, guid: 78da42eb4b283534cbc1fabb4db47562,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78da42eb4b283534cbc1fabb4db47562, type: 3}
@@ -5032,7 +5067,12 @@ PrefabInstance:
     - target: {fileID: 539897347796906115, guid: 10e5cae364fee7748bd82572b44ec6a1,
         type: 3}
       propertyPath: StartingItems.Array.size
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 539897347796906115, guid: 10e5cae364fee7748bd82572b44ec6a1,
+        type: 3}
+      propertyPath: CharacterModelOverride.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 539897347796906115, guid: 10e5cae364fee7748bd82572b44ec6a1,
         type: 3}

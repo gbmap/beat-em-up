@@ -37,6 +37,8 @@ public class CharacterAnimator : MonoBehaviour
         get; set;
     }
 
+    private new Renderer renderer;
+
     private float hitEffectFactor;
     private float HitEffectFactor
     {
@@ -100,6 +102,7 @@ public class CharacterAnimator : MonoBehaviour
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
         modelInfo = GetComponent<CharacterModelInfo>();
+        renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
     }
@@ -125,28 +128,42 @@ public class CharacterAnimator : MonoBehaviour
         combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
 
-
         health.OnDamaged -= OnCharacterDamagedCallback;
         health.OnRecover -= OnRecoverCallback;
 
         movement.OnRoll -= OnRollCallback;
     }
-
+    
     // Update is called once per frame
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
 
-        if (!Mathf.Approximately(HitEffectFactor, 0f))
-        {
-            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
-        }
-
+        UpdateHitFactor();
         UpdateSmokeEmission();
+
+        /*if (true) // pra prevenir o LastDamageData de ser nulo.
+        {
+            UpdateDeathBlinkAnimation(true, 0f);
+        }*/
+
+        
+        if (health.IsDead) // pra prevenir o LastDamageData de ser nulo.
+        {
+            UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
+        }
 
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
+    }
+
+    private void UpdateHitFactor()
+    {
+        if (!Mathf.Approximately(HitEffectFactor, 0f))
+        {
+            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
+        }
     }
 
     private void UpdateSmokeEmission()
@@ -181,6 +198,17 @@ public class CharacterAnimator : MonoBehaviour
             emission.rateOverDistanceMultiplier = 5f;
         }
         
+    }
+
+    private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
+    {
+        if (!isDead || renderer == null) return;
+
+        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath) * 0.75f));
+        timeFactor *= timeFactor;
+        float y = Mathf.Cos(Time.time * timeFactor);
+        bool enabled = y > 0.0f;
+        renderer.enabled = enabled;
     }
 
     private void EmitSmokeRadius()
@@ -422,6 +450,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
+        renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         RefreshMaterials();
 

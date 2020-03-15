@@ -125,11 +125,11 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         // TODO: poise bar legítimo
         defender.PoiseBar -= (defender.Poise*0.1f) / defender.Poise;
 
-        // vê se derrubou o BONECO
-        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0);
-
         // reduz vida
         defender.Health -= damage;
+
+        // vê se derrubou o BONECO
+        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0) || defender.Health <= 0;
 
         // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
