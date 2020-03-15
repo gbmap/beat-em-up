@@ -8,6 +8,4 @@ public abstract class ConfigurableObject<StatsData, TypeEnum> : MonoBehaviour
 {
     public TypeEnum TypeId;
     public StatsData Stats { get; protected set; }
-
-    public StatsData DataInit;
 }

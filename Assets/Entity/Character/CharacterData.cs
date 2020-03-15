@@ -140,8 +140,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch ));
-        }
-        else
+        } 
+        else if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
