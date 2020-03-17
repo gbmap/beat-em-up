@@ -7,7 +7,8 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
     public ItemStats RegisterItemInstance(ItemData item)
     {
         UIManager.Instance.CreateItemLabel(item);
-        return GetItem(item.TypeId);
+        //return GetItem(item.TypeId);
+        return null;
     }
 
     public void UnregisterItemInstance(int instanceId)
@@ -27,10 +28,13 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
 
     internal void SetupItem(GameObject gameObject, int id)
     {
-        var modelRoot = gameObject.transform.Find("ModelRoot");
-
         var config = GetItemConfig(id);
+        SetupItem(gameObject, config);
+    }
 
+    internal void SetupItem(GameObject gameObject, ItemConfig config)
+    {
+        var modelRoot = gameObject.transform.Find("ModelRoot");
         if (modelRoot.transform.childCount > 0)
         {
             for (int i = 0; i < modelRoot.childCount; i++)
@@ -48,7 +52,7 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
     {
         ItemConfig cfg = Config.GetItemConfig(typeId);
         var instance = GameObject.Instantiate(Config.ItemPrefab, position, Quaternion.identity);
-        instance.GetComponent<ItemData>().TypeId = typeId;
+        //instance.GetComponent<ItemData>().TypeId = typeId;
         return instance;
     }
 }

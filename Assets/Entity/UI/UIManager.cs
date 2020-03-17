@@ -11,15 +11,15 @@ public class UIManager : Singleton<UIManager> // TODO: trocar isso aqui por um C
     public void CreateItemLabel(ItemData item)
     {
         var instance = Instantiate(UILabel, transform);
-        instance.GetComponent<UIItemLabel>().SetItemData(ItemManager.Instance.GetItemConfig(item.TypeId));
+        instance.GetComponent<UIItemLabel>().SetItemData(item.itemConfig);
         instance.GetComponent<UIWorldToScreen>().Target = item.transform;
         instance.SetActive(false);
-        labels.Add(item.GetInstanceID(), instance);
+        labels.Add(item.InstanceId, instance);
     }
 
     public void DestroyItemLabel(ItemData item)
     {
-        DestroyItemLabel(item.TypeId);
+        DestroyItemLabel(item.InstanceId);
     }
 
     public void DestroyItemLabel(int id)

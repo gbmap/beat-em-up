@@ -114,6 +114,7 @@ MonoBehaviour:
     type: 2}
   TwoHandedSwordController: {fileID: 22100000, guid: e69c0dbd0a3e46041907978de6c90454,
     type: 2}
+  BowController: {fileID: 22100000, guid: 6e16f21952ec2a34b9191651247f648e, type: 2}
   AdventureCharacterPack: {fileID: 100018, guid: fd7d68a65822e4a44a9ef78850e64cfc,
     type: 3}
   DungeonCharacterPack: {fileID: 100040, guid: b69174d668ba02d44b14a084b217670a, type: 3}

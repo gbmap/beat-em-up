@@ -501,8 +501,8 @@ namespace Catacumba.Character.AI
                     if (!isCasting && !combat.IsOnCombo && !health.IsOnGround)
                     {
                         movement.IsAgentStopped = false;
-                        FX.Instance.EmitHealEffect(animator.ModelInfo.LeftHandBone.Bone.gameObject);
-                        FX.Instance.EmitHealEffect(animator.ModelInfo.RightHandBone.Bone.gameObject);
+                        FX.Instance.EmitHealFlame(animator.ModelInfo.LeftHandBone.Bone.gameObject);
+                        FX.Instance.EmitHealFlame(animator.ModelInfo.RightHandBone.Bone.gameObject);
                         combat.RequestSkillUse(new BaseSkill());
                         isCasting = true;
                     }

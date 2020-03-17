@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 
-public class ItemData : ConfigurableObject<ItemStats, int>
+public class ItemData : MonoBehaviour /*ConfigurableObject<ItemStats, int>*/
 {
+    public ItemConfig itemConfig;
+    public ItemStats Stats { get { return itemConfig.Stats; } }
+
+    [HideInInspector]
     public int InstanceId;
 
     private float pushT = 0f;
@@ -21,8 +25,8 @@ public class ItemData : ConfigurableObject<ItemStats, int>
 
     private void Start()
     {
-        Stats = ItemManager.Instance.RegisterItemInstance(this);
-        ItemManager.Instance.SetupItem(gameObject, TypeId);
+        ItemManager.Instance.RegisterItemInstance(this);
+        ItemManager.Instance.SetupItem(gameObject, itemConfig);
     }
 
     private void Update()

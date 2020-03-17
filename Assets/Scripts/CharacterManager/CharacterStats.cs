@@ -195,7 +195,8 @@ public enum EWeaponType
     Sword,
     Dagger,
     Scepter,
-    TwoHandedSword
+    TwoHandedSword,
+    Bow
 }
 
 #endregion

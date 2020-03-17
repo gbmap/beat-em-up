@@ -306,22 +306,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         animator.SetTrigger(recoverHash);
     }
-
-    private void OnStatsChangedCallback(CharacterStats stats)
-    {
-        EWeaponType type = EWeaponType.Fists;
-        if (stats.Inventory[EInventorySlot.Weapon] != null && stats.Inventory[EInventorySlot.Weapon] != null)
-        {
-            //type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
-        }
-
-        var controller = CombatManager.Instance.Config.WeaponTypeToController(type);
-        if (controller != animator.runtimeAnimatorController)
-        {
-            animator.runtimeAnimatorController = controller;
-        }
-    }
-
+    
     private void OnJumpCallback()
     {
         animator.SetTrigger(_jumpTriggerHash);
@@ -381,7 +366,12 @@ public class CharacterAnimator : MonoBehaviour
                 rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
                 position = new Vector3(-0.017f, 0.12f, 0.072f);
             }
-
+            else if (item.WeaponType == EWeaponType.Bow)
+            {
+                handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
+                rotation = Quaternion.Euler(204f, 87f, 122f);
+                position = new Vector3(-0.067f, -0.067f, -0.018f);
+            }
             else
             {
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");

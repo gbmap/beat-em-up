@@ -5,7 +5,11 @@ using UnityEngine.UI;
 
 public class FX : Singleton<FX>
 {
+    [Tooltip("Used in heal targets")]
     public GameObject HealEffect;
+
+    [Tooltip("Used on the healer's hands")]
+    public GameObject HealFlame;
 
     public GameObject PrefabDamageLabel;
 
@@ -14,6 +18,14 @@ public class FX : Singleton<FX>
     private void Awake()
     {
         canvas = FindObjectOfType<Canvas>();
+    }
+
+    private void SpawnEffect(GameObject ps, GameObject target)
+    {
+        var obj = Instantiate(ps, Vector3.zero, Quaternion.identity, target.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+        obj.transform.localScale = Vector3.one;
     }
 
     public void DamageLabel(Vector3 worldPosition, int damage)
@@ -28,10 +40,12 @@ public class FX : Singleton<FX>
 
     public void EmitHealEffect(GameObject target)
     {
-        var obj = Instantiate(HealEffect.gameObject, Vector3.zero, Quaternion.identity, target.transform);
-        obj.transform.localPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
-        obj.transform.localScale = Vector3.one;
+        SpawnEffect(HealEffect, target);
+    }
+
+    public void EmitHealFlame(GameObject target)
+    {
+        SpawnEffect(HealFlame, target);
     }
 
 }

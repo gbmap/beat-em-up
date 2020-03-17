@@ -26,6 +26,7 @@ public class CharacterManagerConfig : ScriptableObject
     public AnimatorOverrideController SwordOverrideController;
     public AnimatorOverrideController ScepterOverrideController;
     public AnimatorOverrideController TwoHandedSwordController;
+    public AnimatorOverrideController BowController;
 
     public RuntimeAnimatorController GetRuntimeAnimatorController(ItemStats item)
     {
@@ -47,6 +48,7 @@ public class CharacterManagerConfig : ScriptableObject
             case EWeaponType.Scepter: return ScepterOverrideController;
             case EWeaponType.Fists: return CharacterAnimator;
             case EWeaponType.TwoHandedSword: return TwoHandedSwordController;
+            case EWeaponType.Bow: return BowController;
             default: return CharacterAnimator;
         }
     }
