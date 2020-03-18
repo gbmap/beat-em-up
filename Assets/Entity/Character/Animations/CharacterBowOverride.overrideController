@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CharacterBowOverride
+  m_Controller: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 9f05fc509e0896b42899e02a00961ff7, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 72f7ed204916bc44da5393289796fc85, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ac00411713170854d9d9785ad58390a4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 72f7ed204916bc44da5393289796fc85, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: baa1a2d5675387e46bb31730c3ea4a26, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 72f7ed204916bc44da5393289796fc85, type: 2}
+  - m_OriginalClip: {fileID: 1335679570341400972, guid: ff724ec2500222d4caac2a769d83d56a,
+      type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 5b4088329b1b23642b7522aa57a3e07c, type: 2}

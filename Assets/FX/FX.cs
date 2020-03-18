@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 public class FX : Singleton<FX>
 {
-    public ParticleSystem ParticleImpactHit;
-    public ParticleSystem ParticleImpactHitSmall;
-
-    public ParticleSystem ParticleImpactBlood;
+    [Tooltip("Used in heal targets")]
     public GameObject HealEffect;
+
+    [Tooltip("Used on the healer's hands")]
+    public GameObject HealFlame;
 
     public GameObject PrefabDamageLabel;
 
@@ -20,41 +20,12 @@ public class FX : Singleton<FX>
         canvas = FindObjectOfType<Canvas>();
     }
 
-    public void ImpactHit(Vector3 position, Vector3 direction, EAttackType attackType)
+    private void SpawnEffect(GameObject ps, GameObject target)
     {
-        ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
-        {
-            position = position,
-            velocity = Vector3.up
-        };
-
-        ParticleSystem ps = null;
-
-        switch (attackType)
-        {
-            case EAttackType.Weak:
-                ps = ParticleImpactHitSmall;
-                break;
-            case EAttackType.Strong:
-                ps = ParticleImpactHit;
-                break;
-        }
-
-        ps.Emit(emitParams, 1);
-    }
-
-    public void ImpactHit(CharacterAttackData data)
-    {
-        Vector3 pos = data.Defender.transform.position + Vector3.up * 1.1f + UnityEngine.Random.insideUnitSphere * 0.25f;
-        Vector3 dir = (data.Attacker.transform.position - data.Defender.transform.position).normalized;
-
-        ImpactHit(pos, dir, data.Type);
-    }
-
-    public void ImpactBlood(Vector3 position)
-    {
-        ParticleImpactBlood.transform.position = position;
-        ParticleImpactBlood.Emit(100);
+        var obj = Instantiate(ps, Vector3.zero, Quaternion.identity, target.transform);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+        obj.transform.localScale = Vector3.one;
     }
 
     public void DamageLabel(Vector3 worldPosition, int damage)
@@ -69,10 +40,12 @@ public class FX : Singleton<FX>
 
     public void EmitHealEffect(GameObject target)
     {
-        var obj = Instantiate(HealEffect.gameObject, Vector3.zero, Quaternion.identity, target.transform);
-        obj.transform.localPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
-        obj.transform.localScale = Vector3.one;
+        SpawnEffect(HealEffect, target);
+    }
+
+    public void EmitHealFlame(GameObject target)
+    {
+        SpawnEffect(HealFlame, target);
     }
 
 }

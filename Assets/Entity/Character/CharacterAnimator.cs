@@ -37,6 +37,8 @@ public class CharacterAnimator : MonoBehaviour
         get; set;
     }
 
+    private new Renderer renderer;
+
     private float hitEffectFactor;
     private float HitEffectFactor
     {
@@ -54,7 +56,17 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    public ParticleSystem DashParticles;
+    [Space]
+    [Header("FX Impact")]
+    public ParticleSystem ParticlesHit;
+    public ParticleSystem.MinMaxCurve WeakHitStartSize;
+    public ParticleSystem.MinMaxGradient WeakHitStartColor;
+    public ParticleSystem.MinMaxCurve StrongHitStartSize;
+    public ParticleSystem.MinMaxGradient StrongHitStartColor;
+
+    [Space]
+    [Header("FX Smoke")]
+    public ParticleSystem ParticlesSmoke;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -90,6 +102,7 @@ public class CharacterAnimator : MonoBehaviour
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
         modelInfo = GetComponent<CharacterModelInfo>();
+        renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
     }
@@ -115,48 +128,62 @@ public class CharacterAnimator : MonoBehaviour
         combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
 
-
         health.OnDamaged -= OnCharacterDamagedCallback;
         health.OnRecover -= OnRecoverCallback;
 
         movement.OnRoll -= OnRollCallback;
     }
-
+    
     // Update is called once per frame
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
 
-        if (!Mathf.Approximately(HitEffectFactor, 0f))
-        {
-            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
-        }
-
+        UpdateHitFactor();
         UpdateSmokeEmission();
+
+        /*if (true) // pra prevenir o LastDamageData de ser nulo.
+        {
+            UpdateDeathBlinkAnimation(true, 0f);
+        }*/
+
+        
+        if (health.IsDead) // pra prevenir o LastDamageData de ser nulo.
+        {
+            UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
+        }
 
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
     }
 
+    private void UpdateHitFactor()
+    {
+        if (!Mathf.Approximately(HitEffectFactor, 0f))
+        {
+            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
+        }
+    }
+
     private void UpdateSmokeEmission()
     {
-        var emission = DashParticles.emission;
+        var emission = ParticlesSmoke.emission;
         emission.enabled = movement.IsRolling || combat.IsOnCombo || movement.IsBeingMoved;
 
         if (!emission.enabled) return;
 
         if (movement.IsRolling || combat.IsOnCombo)
         {
-            DashParticles.transform.rotation = Quaternion.LookRotation(-transform.forward);
+            ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-transform.forward);
         }
         else if (movement.IsBeingMoved)
         {
-            DashParticles.transform.rotation = Quaternion.LookRotation(-movement.SpeedBumpDir);
+            ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-movement.SpeedBumpDir);
         }
 
-        var main = DashParticles.main;
-        ParticleSystem.MinMaxCurve sz = DashParticles.main.startSize;
+        var main = ParticlesSmoke.main;
+        ParticleSystem.MinMaxCurve sz = ParticlesSmoke.main.startSize;
         if (movement.IsRolling)
         {
             main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
@@ -173,9 +200,20 @@ public class CharacterAnimator : MonoBehaviour
         
     }
 
+    private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
+    {
+        if (!isDead || renderer == null) return;
+
+        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath) * 0.75f));
+        timeFactor *= timeFactor;
+        float y = Mathf.Cos(Time.time * timeFactor);
+        bool enabled = y > 0.0f;
+        renderer.enabled = enabled;
+    }
+
     private void EmitSmokeRadius()
     {
-        if (!DashParticles) return;
+        if (!ParticlesSmoke) return;
 
         int range = UnityEngine.Random.Range(15, 20);
         for (int i = 0; i < range; i++)
@@ -184,11 +222,40 @@ public class CharacterAnimator : MonoBehaviour
             vel.y = 0f;
             vel.Normalize();
             vel *= 13f;
-            DashParticles.Emit(new ParticleSystem.EmitParams
+            ParticlesSmoke.Emit(new ParticleSystem.EmitParams
             {
                 startSize = UnityEngine.Random.Range(2, 4),
                 velocity = vel
             }, 1);
+        }
+    }
+
+    private void EmitHitImpact(CharacterAttackData attack)
+    {
+        var main = ParticlesHit.main;
+
+        if (attack.Type == EAttackType.Weak)
+        {
+            main.startSize = WeakHitStartSize;
+            main.startColor = WeakHitStartColor;
+            //main.startColor = new ParticleSystem.MinMaxGradient()
+        }
+        else
+        {
+            main.startSize = StrongHitStartSize;
+            main.startColor = StrongHitStartColor;
+        }
+    
+        ParticlesHit.Emit(1);
+    }
+
+    public void ToggleWeaponTrailVisibility()
+    {
+        var pss = equippedWeapon.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in pss)
+        {
+            var emission = ps.emission;
+            emission.enabled = !emission.enabled;
         }
     }
 
@@ -213,7 +280,8 @@ public class CharacterAnimator : MonoBehaviour
         }
 
         HitEffectFactor = 1f;
-        //FreezeAnimator();
+        EmitHitImpact(attack);
+        FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
     }
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
@@ -238,22 +306,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         animator.SetTrigger(recoverHash);
     }
-
-    private void OnStatsChangedCallback(CharacterStats stats)
-    {
-        EWeaponType type = EWeaponType.Fists;
-        if (stats.Inventory[EInventorySlot.Weapon] != null && stats.Inventory[EInventorySlot.Weapon] != null)
-        {
-            //type = (stats.Inventory[EInventorySlot.Weapon] as Weapon).Type;
-        }
-
-        var controller = CombatManager.Instance.Config.WeaponTypeToController(type);
-        if (controller != animator.runtimeAnimatorController)
-        {
-            animator.runtimeAnimatorController = controller;
-        }
-    }
-
+    
     private void OnJumpCallback()
     {
         animator.SetTrigger(_jumpTriggerHash);
@@ -313,7 +366,12 @@ public class CharacterAnimator : MonoBehaviour
                 rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
                 position = new Vector3(-0.017f, 0.12f, 0.072f);
             }
-
+            else if (item.WeaponType == EWeaponType.Bow)
+            {
+                handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
+                rotation = Quaternion.Euler(204f, 87f, 122f);
+                position = new Vector3(-0.067f, -0.067f, -0.018f);
+            }
             else
             {
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
@@ -382,6 +440,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
+        renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         RefreshMaterials();
 

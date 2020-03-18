@@ -21,18 +21,22 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PolyAdventureMaterial_01
-  m_Shader: {fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 8b58b9be33d32e0408d64b72e250ba93,
+    type: 3}
   m_ShaderKeywords: _GLOSSINESS_FROM_BASE_ALPHA _SPECULAR_COLOR
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2050
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_69910EA3:
+        m_Texture: {fileID: 2800000, guid: 58ffb2344d9eb1349bb7784937c291a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 58ffb2344d9eb1349bb7784937c291a7, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -90,6 +94,7 @@ Material:
     - _Glossiness: 0.2
     - _GlossinessSource: 0
     - _GlossyReflections: 1
+    - _HitFactor: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1

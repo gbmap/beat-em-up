@@ -22,6 +22,11 @@ public struct CharacterAttackData
         Poised = false;
         Knockdown = false;
         CancelAnimation = false;
+
+        ColliderPos = Vector3.zero;
+        ColliderSz = Vector3.zero;
+        ColliderRot = Quaternion.identity;
+        
     }
 
     public float Time;
@@ -36,11 +41,19 @@ public struct CharacterAttackData
     public bool Poised;
     public bool Knockdown;
     public bool CancelAnimation;
+
+
+    public Vector3 ColliderPos;
+    public Vector3 ColliderSz;
+    public Quaternion ColliderRot;
 }
+
 
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
 {
     protected override string Path => "Data/CombatManagerConfig";
+
+    private static CharacterAttackData lastAttack;
 
     public static float GetCritFactor(CharacterStats c)
     {
@@ -91,9 +104,11 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static void CalculateAttackStats(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
     {
-        CalculateAttackStats(CharacterManager.GetCharacterStats(attacker.GetInstanceID()),
-               CharacterManager.GetCharacterStats(defender.GetInstanceID()),
-               ref attackData);
+        CalculateAttackStats(
+            attacker.GetComponent<CharacterData>()?.Stats, 
+            defender.GetComponent<CharacterData>().Stats,
+            ref attackData
+        );
     }
 
     public static void CalculateAttackStats(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
@@ -123,11 +138,11 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         // TODO: poise bar legítimo
         defender.PoiseBar -= (defender.Poise*0.1f) / defender.Poise;
 
-        // vê se derrubou o BONECO
-        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0);
-
         // reduz vida
         defender.Health -= damage;
+
+        // vê se derrubou o BONECO
+        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0) || defender.Health <= 0;
 
         // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
@@ -138,6 +153,10 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         Vector3 colliderSize, 
         Quaternion colliderRot)
     {
+        attack.ColliderPos = colliderPos;
+        attack.ColliderSz = colliderSize;
+        attack.ColliderRot = colliderRot;
+
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 
             colliderSize, 
@@ -166,10 +185,19 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
+
+        lastAttack = attack;
     }
 
     public static void Heal(CharacterStats healer, CharacterStats healed)
     {
         healed.Health += (int)(healer.GetAttributeTotal(EAttribute.Magic) * 0.5f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.matrix = Matrix4x4.TRS(lastAttack.ColliderPos, lastAttack.ColliderRot, lastAttack.ColliderSz);
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
     }
 }

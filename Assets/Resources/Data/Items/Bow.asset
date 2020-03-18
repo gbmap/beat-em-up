@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8d4d628eac40747b25ea2af0c079c5, type: 3}
-  m_Name: Sword2
+  m_Name: Bow
   m_EditorClassIdentifier: 
-  Name: Espada Boladona
-  Description: "Essa espada \xE9 t\xE3o boladona que se ela tivesse uma cabe\xE7a,
-    seria decorada por um bon\xE9 aba reta virado pro lado."
-  Prefab: {fileID: 181534, guid: 13af847dfa6dbe844ba4b7c902f98f67, type: 3}
+  Name: Arco do Iro
+  Description: "Iro, o elfo lend\xE1rio varava flecha em qualquer vacil\xE3o que cruzasse
+    seu caminho."
+  Prefab: {fileID: 6725322082494346537, guid: a3abf781048381440acf26ab65872d7e, type: 3}
   Stats:
-    Id: 4
+    Id: 6
     ItemType: 0
     Rarity: 3
     Slot: 5
-    WeaponType: 1
+    WeaponType: 5
     Attributes:
       Vigor: 1
       Strength: 1
@@ -32,4 +32,7 @@ MonoBehaviour:
       Strength: 0.1
       Dexterity: 0.1
       Magic: 0.1
+    Skills:
+    - Prefab: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
+        type: 3}
   AnimationOverride: {fileID: 0}

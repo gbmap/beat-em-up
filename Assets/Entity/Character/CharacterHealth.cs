@@ -27,6 +27,11 @@ public class CharacterHealth : MonoBehaviour
         get { return characterData.Stats.Health; }
     }
 
+    public bool IsDead
+    {
+        get { return Health <= 0; }
+    }
+
     public float HealthNormalized
     {
         get { return characterData.Stats.HealthNormalized; }
@@ -62,7 +67,15 @@ public class CharacterHealth : MonoBehaviour
             recoverTimer -= Time.deltaTime;
             if (recoverTimer < 0f)
             {
-                OnRecover?.Invoke();
+                if (IsDead)
+                {
+                    OnDeath?.Invoke();
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    OnRecover?.Invoke();
+                }
             }
         }
     }
@@ -103,6 +116,10 @@ public class CharacterHealth : MonoBehaviour
         //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
+        if (IsDead)
+        {
+            recoverTimer *= 2f;
+        }
         
         // Shake camera
         CameraManager.Instance.Shake();
@@ -121,46 +138,36 @@ public class CharacterHealth : MonoBehaviour
         lookAt.y = transform.position.y;
         transform.LookAt(lookAt);
 
-        var fx = FX.Instance;
-        fx.ImpactHit(data);
-
-        //fx.ImpactBlood(transform.position + Vector3.up);
-        fx.DamageLabel(transform.position + Vector3.up, data.Damage);
-
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
-        if (data.Knockdown && data.CancelAnimation)
+        if (data.Knockdown && data.CancelAnimation ||
+            data.DefenderStats.Health <= 0)
         {
             characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
         }
 
-        if (data.DefenderStats.Health <= 0)
-        {
-            // TODO: dar um funeral digno pros personagens
-            OnDeath?.Invoke();
-
-
-            Destroy(gameObject);
-        }
-        else
-        {
-            OnDamaged?.Invoke(data);
-        }
+        OnDamaged?.Invoke(data);
     }
 
     private void UpdateHealthQuad(float healthPercentage, float poiseBar)
     {
+        if (!HealthQuad) return;
+
         UpdateHealth(healthPercentage);
         UpdatePoise(poiseBar);
     }
 
     private void UpdateHealth(float healthPercentage)
     {
+        if (!HealthQuad) return;
+
         HealthQuad.material.SetFloat("_Health", healthPercentage);
     }
 
     private void UpdatePoise(float poiseBar)
     {
+        if (!HealthQuad) return;
+
         HealthQuad.material.SetFloat("_Poise", poiseBar);
     }
 }

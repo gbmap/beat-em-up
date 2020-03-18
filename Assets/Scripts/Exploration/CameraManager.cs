@@ -65,7 +65,10 @@ namespace Catacumba.Exploration
 
         public void Shake()
         {
-            _impulseSource.GenerateImpulse();
+            if (_impulseSource)
+            {
+                _impulseSource.GenerateImpulse();
+            }
         }
 
         private void CheckForNearestCamera()
