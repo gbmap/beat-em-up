@@ -238,7 +238,6 @@ public class CharacterAnimator : MonoBehaviour
         {
             main.startSize = WeakHitStartSize;
             main.startColor = WeakHitStartColor;
-            //main.startColor = new ParticleSystem.MinMaxGradient()
         }
         else
         {
@@ -265,7 +264,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
-        if (attack.Poised)
+        if (attack.Poised && !health.IsDead)
         {
             return;
         }
@@ -276,7 +275,7 @@ public class CharacterAnimator : MonoBehaviour
         if (attack.CancelAnimation)
         {
             animator.SetInteger(damagedNHitsHash, attack.HitNumber);
-            animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
+            animator.SetTrigger(attack.Knockdown || attack.Dead ? knockdownHash : damagedHash);
         }
 
         HitEffectFactor = 1f;
@@ -339,7 +338,6 @@ public class CharacterAnimator : MonoBehaviour
 
     public void Equip(GameObject model, ItemStats item)
     {
-       
         equippedWeapon = model.gameObject;
 
         Transform handBone = null;

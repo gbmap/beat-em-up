@@ -160,6 +160,8 @@ namespace Catacumba.Character.AI
         public const int RES_COMBO_END = 3;
         public const int RES_ORBIT_REACTION_COMBO_END = 4;
 
+        private StateResult RESULT_CONTINUE = new StateResult { code = RES_CONTINUE };
+
         public AttackStateConfig Cfg;
         public GameObject Target;
         private bool orbitReaction;
@@ -178,6 +180,28 @@ namespace Catacumba.Character.AI
             EAttackType.Strong
         };
         private int comboLength;
+
+        protected virtual bool IsInAttackPosition(float distanceToTarget)
+        {
+            bool rangedAttack = data.Stats.Inventory.HasEquip(EInventorySlot.Weapon) &&
+                   data.Stats.Inventory[EInventorySlot.Weapon].IsRanged;
+
+            if (rangedAttack)
+            {
+                float dist = Cfg.DistanceToAttack * 5f;
+                return distanceToTarget > dist - 0.75f &&
+                    distanceToTarget < dist + 0.75f;
+            }
+            else
+            {
+                return distanceToTarget <= Cfg.DistanceToAttack;
+            }
+        }
+
+        protected virtual bool IsTargetOutOfSight(float distanceToTarget)
+        {
+            return distanceToTarget >= Cfg.SightRange;
+        }
 
         public AttackState(GameObject gameObject,
                           AttackStateConfig config,
@@ -214,6 +238,34 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
+            StateResult result = CheckNumberOfAttackers();
+            if (result.code != RES_CONTINUE) return result;
+
+            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
+
+            if (IsInAttackPosition(distanceToTarget))
+            {
+                result = UpdateAttack();
+                if (result.code != RES_CONTINUE) return result;
+            }
+            /*else if (IsTargetOutOfSight(distanceToTarget))
+            {
+                return new StateResult(RES_OUT_OF_SIGHT);
+            }*/
+            else
+            {
+                UpdateDesiredDestination();
+            }
+
+            // olha pro alvo
+            gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+
+            return RESULT_CONTINUE;
+        }
+
+        // Se tem muitos atacantes nesse alvo, sair do estado.
+        protected virtual StateResult CheckNumberOfAttackers()
+        {
             if (!orbitReaction)
             {
                 int nAttackers = AIManager.Instance.GetNumberOfAttackers(Target.gameObject);
@@ -223,53 +275,67 @@ namespace Catacumba.Character.AI
                 {
                     return new StateResult(RES_TOO_MANY_ATTACKERS, Target);
                 }
+                
             }
+            return RESULT_CONTINUE;
+        }
 
-            float distanceToTarget = Vector3.Distance(gameObject.transform.position, Target.transform.position);
-
-            if (distanceToTarget <= Cfg.DistanceToAttack)
+        protected virtual StateResult UpdateAttack()
+	    {
+            movement.IsAgentStopped = true;
+            if (Time.time > lastAttack + Cfg.AttackCooldown && Time.time > lastCombo + Cfg.ComboCooldown)
             {
-                movement.IsAgentStopped = true;
-                if (Time.time > lastAttack + Cfg.AttackCooldown && Time.time > lastCombo + Cfg.ComboCooldown)
+                // se terminou o o combo....
+                if (currentAttackIndex > comboLength - 1)
                 {
-                    if (currentAttackIndex > comboLength - 1)
+                    // e tá numa reação ao ataque de alguém,
+                    if (orbitReaction)
                     {
-                        if (orbitReaction)
-                        {
-                            return new StateResult(RES_ORBIT_REACTION_COMBO_END, Target);
-                        }
-                        else
-                        {
-                            currentAttackIndex = 0;
-                            lastCombo = Time.time;
-                        }
+                        // sai desse estado
+                        return new StateResult(RES_ORBIT_REACTION_COMBO_END, Target);
                     }
 
-                    var attackType = combo[(currentAttackIndex++) % comboLength];
-                    combat.RequestAttack(attackType);
-                    lastAttack = Time.time;
+                    // se não, reseta o combo.
+                    else
+                    {
+                        currentAttackIndex = 0;
+                        lastCombo = Time.time;
+                    }
                 }
+
+                var attackType = combo[(currentAttackIndex++) % comboLength];
+                combat.RequestAttack(attackType);
+                lastAttack = Time.time;
             }
-            else if (distanceToTarget >= Cfg.SightRange)
+
+            return RESULT_CONTINUE;
+        }
+
+        protected virtual void UpdateDesiredDestination()
+        {
+            bool rangedAttack = data.Stats.Inventory.HasEquip(EInventorySlot.Weapon) &&
+                data.Stats.Inventory[EInventorySlot.Weapon].IsRanged;
+
+            Vector3 targetPosition;
+
+            if (!rangedAttack)
             {
-                return new StateResult(RES_OUT_OF_SIGHT);
+                targetPosition = Target.transform.position;
             }
             else
             {
-                if (Vector3.Distance(movement.Destination, Target.transform.position) > 0.75f)
-                {
-                    movement.SetDestination(Target.transform.position);
-                    movement.IsAgentStopped = false;
-                }
-
+                float targetDistance = Cfg.DistanceToAttack;
+                targetPosition = (gameObject.transform.position - Target.transform.position).normalized * targetDistance;
             }
 
-            gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
-
-            return new StateResult(RES_CONTINUE);
+            if (Vector3.Distance(movement.Destination, targetPosition) > 0.75f)
+            {
+                movement.SetDestination(targetPosition);
+                movement.IsAgentStopped = false;
+            }
         }
 
-        private void OnDamagedCallback(CharacterAttackData attackData)
+        protected void OnDamagedCallback(CharacterAttackData attackData)
         {
             if (attackData.Type == EAttackType.Strong)
             {
@@ -281,6 +347,29 @@ namespace Catacumba.Character.AI
             }
         }
 
+    }
+
+    public class RangedAttackState : BaseState
+    {
+        public RangedAttackState(GameObject gameObject) : base(gameObject)
+        {
+
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+        }
+  
+        public override StateResult Update()
+        {
+            return base.Update();
+        }
     }
 
     #endregion
