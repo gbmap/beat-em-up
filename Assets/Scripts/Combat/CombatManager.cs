@@ -196,6 +196,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     private void OnDrawGizmos()
     {
+        if (!Application.isPlaying || lastAttack.Time == 0f) return;
+
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(lastAttack.ColliderPos, lastAttack.ColliderRot, lastAttack.ColliderSz);
         Gizmos.DrawWireCube(Vector3.zero, Vector3.one);

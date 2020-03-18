@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 335922623}
   - component: {fileID: 335922621}
   - component: {fileID: 335922622}
+  - component: {fileID: 5701630693006442494}
   m_Layer: 0
   m_Name: Prop_Arrow
   m_TagString: Untagged
@@ -143,6 +144,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 10
   SpeedFactor: 1
+--- !u!114 &5701630693006442494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 267599377664042273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ea935b16e50214cbf4e1df81393a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Caster: {fileID: 0}
+  Offset: {x: 0, y: 1, z: 0}
+  AutomaticOffset: 0
 --- !u!1 &4355906763457055864
 GameObject:
   m_ObjectHideFlags: 0
