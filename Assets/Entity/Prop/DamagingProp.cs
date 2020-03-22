@@ -16,6 +16,10 @@ public class DamagingProp : MonoBehaviour
             Attacker = caster.gameObject
         };
         CombatManager.Attack(ref ad, transform.position, Vector3.one, transform.rotation);
+
+        var p = GetComponentsInChildren<UnparentParticleSystemOnDeath>();
+        System.Array.ForEach(p, d => d.Detach());
+
         Destroy(gameObject);
     }
 }

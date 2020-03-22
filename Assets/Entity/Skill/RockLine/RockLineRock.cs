@@ -42,6 +42,9 @@ namespace Catacumba.Effects.Skills.RockLine
 
         private float lastAttackCheck;
 
+        public ParticleSystem[] Effects;
+        private bool hasEmittedEffect;
+
         public System.Action<CharacterAttackData> OnAttack;
 
         // Start is called before the first frame update
@@ -63,6 +66,20 @@ namespace Catacumba.Effects.Skills.RockLine
             {
                 AttackCheck();
             }
+
+            if ( ((T > lastT && T >= 0.25f) ||
+                  (T < lastT && T <= 0.25f) )
+                && !hasEmittedEffect)
+            {
+                System.Array.ForEach(Effects, e => e.Emit(Random.Range(12, 17)));
+                hasEmittedEffect = true;
+            }
+
+            if (T == 0f || T == 1f)
+            {
+                hasEmittedEffect = false;
+            }
+
 
             lastT = T;
         }
