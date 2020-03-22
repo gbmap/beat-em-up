@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8536732081532398339}
   - component: {fileID: 653793427005500696}
   - component: {fileID: 6878928375001655067}
+  - component: {fileID: 7147132766548740458}
   m_Layer: 0
   m_Name: SkillRockLine
   m_TagString: Untagged
@@ -75,6 +76,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &7147132766548740458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8536732081532398348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ea935b16e50214cbf4e1df81393a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Caster: {fileID: 0}
+  Offset: {x: 0, y: 0, z: 0}
+  AutomaticOffset: 0
 --- !u!1001 &1179053614021122962
 PrefabInstance:
   m_ObjectHideFlags: 0
