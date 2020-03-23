@@ -17,7 +17,7 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    CharacterData _charData;
+    CharacterData data;
     CharacterMovement movement;
     CharacterCombat combat;
     CharacterHealth health;
@@ -29,7 +29,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private float AnimatorDefaultSpeed
     {
-        get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
+        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
     private Material[] Materials
@@ -68,6 +68,11 @@ public class CharacterAnimator : MonoBehaviour
     [Header("FX Smoke")]
     public ParticleSystem ParticlesSmoke;
 
+    [Space]
+    [Header("Slash")]
+    public ParticleSystem ParticlesSlash;
+    private Gradient defaultSlashGradient;
+
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
     int _isOnAirHash = Animator.StringToHash("IsOnAir");
@@ -97,7 +102,7 @@ public class CharacterAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        _charData = GetComponent<CharacterData>();
+        data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
@@ -105,6 +110,7 @@ public class CharacterAnimator : MonoBehaviour
         renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
+        defaultSlashGradient = ParticlesHit.colorOverLifetime.color.gradient;
     }
 
     private void OnEnable()
@@ -299,6 +305,14 @@ public class CharacterAnimator : MonoBehaviour
         {
             FreezeAnimator();
         }
+
+        if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+        {
+            ParticlesSlash.Emit(new ParticleSystem.EmitParams()
+            {
+                velocity = transform.forward
+            }, 1);
+        }
     }
 
     private void OnRecoverCallback()
@@ -327,17 +341,19 @@ public class CharacterAnimator : MonoBehaviour
         if (modelRoot.childCount > 0)
         {
             var model = modelRoot.GetChild(0);
-            Equip(model.gameObject, item.Stats);
+            Equip(model.gameObject, item.itemConfig);
         }
     }
 
     public void Equip(ItemConfig cfg)
     {
-        Equip(Instantiate(cfg.Prefab), cfg.Stats);
+        Equip(Instantiate(cfg.Prefab), cfg);
     }
 
-    public void Equip(GameObject model, ItemStats item)
+    public void Equip(GameObject model, ItemConfig itemCfg)
     {
+        var item = itemCfg.Stats;
+
         equippedWeapon = model.gameObject;
 
         Transform handBone = null;
@@ -388,6 +404,17 @@ public class CharacterAnimator : MonoBehaviour
             if (item.Slot == EInventorySlot.Weapon)
             {
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+
+                Gradient targetSlashColors = defaultSlashGradient;
+
+                // atualizar gradiente 
+                if (itemCfg.CustomSlashColors)
+                {
+                    targetSlashColors = itemCfg.SlashColors;
+                }
+
+                var col = ParticlesSlash.colorOverLifetime;
+                col.color = new ParticleSystem.MinMaxGradient(targetSlashColors);
             }
         }
     }

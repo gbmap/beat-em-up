@@ -14,4 +14,7 @@ public class ItemConfig : ScriptableObject
 
     public ItemStats Stats;
     public AnimatorOverrideController AnimationOverride;
+
+    public bool CustomSlashColors = false;
+    public Gradient SlashColors;
 }
