@@ -270,7 +270,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
-        if (attack.Poised && !health.IsDead)
+        if (attack.Poised)
         {
             return;
         }
@@ -281,7 +281,7 @@ public class CharacterAnimator : MonoBehaviour
         if (attack.CancelAnimation)
         {
             animator.SetInteger(damagedNHitsHash, attack.HitNumber);
-            animator.SetTrigger(attack.Knockdown || attack.Dead ? knockdownHash : damagedHash);
+            animator.SetTrigger( (attack.Knockdown || attack.Dead) ? knockdownHash : damagedHash);
         }
 
         HitEffectFactor = 1f;

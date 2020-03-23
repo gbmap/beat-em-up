@@ -15,7 +15,7 @@ public class CharacterHealth : MonoBehaviour
     private bool _isOnFloor;
 
     private Rigidbody _rigidbody;
-    private Collider _collider;
+    private Collider collider;
 
     public MeshRenderer HealthQuad;
 
@@ -47,7 +47,7 @@ public class CharacterHealth : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        _collider = GetComponent<Collider>();
+        collider = GetComponent<Collider>();
         characterData = GetComponent<CharacterData>();
 
         UpdateHealthQuad(1f, 1f);
@@ -104,7 +104,7 @@ public class CharacterHealth : MonoBehaviour
         //_rigidbody.isKinematic = false;
         //_rigidbody.useGravity = true;
         IsOnGround = false;
-        _collider.enabled = true;
+        collider.enabled = true;
         _isOnFloor = false;
     }
 
@@ -112,7 +112,7 @@ public class CharacterHealth : MonoBehaviour
     {
         //_rigidbody.isKinematic = true;
         //_rigidbody.useGravity = false;
-        _collider.enabled = false;
+        collider.enabled = false;
         //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
@@ -147,6 +147,11 @@ public class CharacterHealth : MonoBehaviour
         }
 
         OnDamaged?.Invoke(data);
+
+        if (IsDead)
+        {
+            collider.enabled = false;
+        }
     }
 
     private void UpdateHealthQuad(float healthPercentage, float poiseBar)
