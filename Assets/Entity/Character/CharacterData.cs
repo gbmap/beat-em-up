@@ -145,6 +145,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
         }
+        else
+        {
+            throw new Exception("No character model configured. Change Type Id to something different than None or apply a specific model to this character.");
+        }
     }
 
     public System.Collections.IEnumerator Test_AllCharacters()

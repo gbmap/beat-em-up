@@ -425,8 +425,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_ConstantMin: 0
     m_ConstantMax: 0
-  CharacterModelOverride:
-  - {fileID: 0}
+  CharacterModelOverride: []
   StartingItems: []
 --- !u!114 &6927136765418665498
 MonoBehaviour:
