@@ -71,7 +71,7 @@ public class CharacterAnimator : MonoBehaviour
     [Space]
     [Header("Slash")]
     public ParticleSystem ParticlesSlash;
-    private Gradient defaultSlashGradient;
+    public ParticleSystem.MinMaxGradient DefaultSlashGradient;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -102,6 +102,7 @@ public class CharacterAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+
         data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
@@ -110,7 +111,6 @@ public class CharacterAnimator : MonoBehaviour
         renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
-        defaultSlashGradient = ParticlesHit.colorOverLifetime.color.gradient;
     }
 
     private void OnEnable()
@@ -405,7 +405,7 @@ public class CharacterAnimator : MonoBehaviour
             {
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
 
-                Gradient targetSlashColors = defaultSlashGradient;
+                Gradient targetSlashColors = DefaultSlashGradient.gradient;
 
                 // atualizar gradiente 
                 if (itemCfg.CustomSlashColors)
