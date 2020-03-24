@@ -273,6 +273,10 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
+        var lookAt = attack.Attacker.transform.position;
+        lookAt.y = transform.position.y;
+        transform.LookAt(lookAt);
+
         if (/*attack.CancelAnimation || attack.Knockdown*/ true)
         {
             ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
@@ -282,7 +286,7 @@ public class CharacterMovement : MonoBehaviour
     public static float GetSpeedBumpForce(CharacterAttackData attack)
     {
         float modifier = (attack.Type == EAttackType.Weak ? 1f : 5f);
-        modifier = attack.Knockdown ? 15f : modifier;
+        modifier = attack.Knockdown ? 1f : modifier;
 
         return ((float)attack.Damage / 25) * modifier;
     }

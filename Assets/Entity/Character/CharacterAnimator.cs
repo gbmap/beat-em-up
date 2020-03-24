@@ -32,29 +32,7 @@ public class CharacterAnimator : MonoBehaviour
         get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
-    private Material[] Materials
-    {
-        get; set;
-    }
-
     private new Renderer renderer;
-
-    private float hitEffectFactor;
-    private float HitEffectFactor
-    {
-        get { return hitEffectFactor; }
-        set
-        {
-            hitEffectFactor = value;
-            if (Materials == null) return;
-            for (int i = 0; i < Materials.Length; i++)
-            {
-                Material m = Materials[i];
-                if (m == null) continue;
-                m.SetFloat("_HitFactor", value);
-            }
-        }
-    }
 
     [Space]
     [Header("FX Impact")]
@@ -69,9 +47,11 @@ public class CharacterAnimator : MonoBehaviour
     public ParticleSystem ParticlesSmoke;
 
     [Space]
-    [Header("Slash")]
+    [Header("FX Slash")]
     public ParticleSystem ParticlesSlash;
-    public ParticleSystem.MinMaxGradient DefaultSlashGradient;
+    public ParticleSystem.MinMaxGradient UnarmedGradient;
+    public ParticleSystem.MinMaxCurve UnarmedStartSize;
+    public float UnarmedDistanceFromCharacter = 0.7f;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -102,7 +82,6 @@ public class CharacterAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
         data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
@@ -111,6 +90,8 @@ public class CharacterAnimator : MonoBehaviour
         renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
+
+        SetupSlashParticles(null);
     }
 
     private void OnEnable()
@@ -123,10 +104,6 @@ public class CharacterAnimator : MonoBehaviour
         health.OnRecover += OnRecoverCallback;
 
         movement.OnRoll += OnRollCallback;
-
-        // Isso aqui tá bugando pq a Unity não garante que o OnEnable vai ser chamado antes do Awake pra componentes diferentes.
-        // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
-        //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
 
     private void OnDisable()
@@ -144,16 +121,9 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
-
-        UpdateHitFactor();
+        
         UpdateSmokeEmission();
 
-        /*if (true) // pra prevenir o LastDamageData de ser nulo.
-        {
-            UpdateDeathBlinkAnimation(true, 0f);
-        }*/
-
-        
         if (health.IsDead) // pra prevenir o LastDamageData de ser nulo.
         {
             UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
@@ -162,14 +132,6 @@ public class CharacterAnimator : MonoBehaviour
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
-    }
-
-    private void UpdateHitFactor()
-    {
-        if (!Mathf.Approximately(HitEffectFactor, 0f))
-        {
-            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
-        }
     }
 
     private void UpdateSmokeEmission()
@@ -283,8 +245,7 @@ public class CharacterAnimator : MonoBehaviour
             animator.SetInteger(damagedNHitsHash, attack.HitNumber);
             animator.SetTrigger( (attack.Knockdown || attack.Dead) ? knockdownHash : damagedHash);
         }
-
-        HitEffectFactor = 1f;
+        
         EmitHitImpact(attack);
         FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
     }
@@ -305,14 +266,11 @@ public class CharacterAnimator : MonoBehaviour
         {
             FreezeAnimator();
         }
-
-        if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+        
+        ParticlesSlash.Emit(new ParticleSystem.EmitParams()
         {
-            ParticlesSlash.Emit(new ParticleSystem.EmitParams()
-            {
-                velocity = transform.forward
-            }, 1);
-        }
+            velocity = transform.forward,
+        }, 1);
     }
 
     private void OnRecoverCallback()
@@ -405,18 +363,32 @@ public class CharacterAnimator : MonoBehaviour
             {
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
 
-                Gradient targetSlashColors = DefaultSlashGradient.gradient;
-
-                // atualizar gradiente 
-                if (itemCfg.CustomSlashColors)
-                {
-                    targetSlashColors = itemCfg.SlashColors;
-                }
-
-                var col = ParticlesSlash.colorOverLifetime;
-                col.color = new ParticleSystem.MinMaxGradient(targetSlashColors);
+                SetupSlashParticles(itemCfg);
             }
         }
+    }
+
+    private void SetupSlashParticles(ItemConfig itemCfg)
+    {
+        Gradient targetSlashColors = UnarmedGradient.gradient;
+        ParticleSystem.MinMaxCurve targetSize = UnarmedStartSize;
+        float distance = UnarmedDistanceFromCharacter;
+
+        if (itemCfg != null && itemCfg.CustomSlashColors)
+        {
+            // atualizar gradiente 
+            targetSize = itemCfg.StartSize;
+            distance = itemCfg.DistanceFromCharacter;
+            targetSlashColors = itemCfg.SlashColors;
+        }
+
+        var main = ParticlesSlash.main;
+        main.startSize = targetSize;
+
+        var col = ParticlesSlash.colorOverLifetime;
+        col.color = new ParticleSystem.MinMaxGradient(targetSlashColors);
+
+        ParticlesSlash.transform.localPosition = new Vector3(0f, ParticlesSlash.transform.localPosition.y, distance);
     }
 
     public void UnEquip(EInventorySlot slot)
@@ -467,20 +439,7 @@ public class CharacterAnimator : MonoBehaviour
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
         renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
-        RefreshMaterials();
-
         OnRefreshAnimator?.Invoke(animator);
-    }
-
-    void RefreshMaterials()
-    {
-        List<Material> materials = new List<Material>();
-        foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            materials.Add(r.material);
-        }
-
-        Materials = materials.ToArray();
     }
 
     public void SetRootMotion(bool v)

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Picareta
   Description: Uma picareta legal
-  Prefab: {fileID: 140132, guid: cd45bce2c92827a41b1a880ab1ad9152, type: 3}
   Stats:
     Id: 1
     ItemType: 0
@@ -32,8 +31,9 @@ MonoBehaviour:
       Dexterity: 0.1
       Magic: 0.1
     Skills: []
+  Prefab: {fileID: 140132, guid: cd45bce2c92827a41b1a880ab1ad9152, type: 3}
   AnimationOverride: {fileID: 0}
-  CustomSlashColors: 0
+  CustomSlashColors: 1
   SlashColors:
     serializedVersion: 2
     key0: {r: 1, g: 0.42438906, b: 0, a: 1}
@@ -63,3 +63,21 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
+  StartSize:
+    m_Mode: 3
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 12
+    m_ConstantMax: 17
+  DistanceFromCharacter: 1.4

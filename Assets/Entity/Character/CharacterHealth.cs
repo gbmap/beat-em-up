@@ -21,6 +21,30 @@ public class CharacterHealth : MonoBehaviour
 
     private float lastHit;
     private CharacterData characterData;
+    private CharacterAnimator characterAnimator;
+
+    /// ============ HEALTH
+    private Material[] Materials
+    {
+        get; set;
+    }
+
+    private float hitEffectFactor;
+    private float HitEffectFactor
+    {
+        get { return hitEffectFactor; }
+        set
+        {
+            hitEffectFactor = value;
+            if (Materials == null) return;
+            for (int i = 0; i < Materials.Length; i++)
+            {
+                Material m = Materials[i];
+                if (m == null) continue;
+                m.SetFloat("_HitFactor", value);
+            }
+        }
+    }
 
     public int Health
     {
@@ -49,6 +73,8 @@ public class CharacterHealth : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         collider = GetComponent<Collider>();
         characterData = GetComponent<CharacterData>();
+        characterAnimator = GetComponent<CharacterAnimator>();
+        RefreshMaterials(characterAnimator?.animator);
 
         UpdateHealthQuad(1f, 1f);
     }
@@ -78,6 +104,16 @@ public class CharacterHealth : MonoBehaviour
                 }
             }
         }
+
+        UpdateHitFactor();
+    }
+
+    private void UpdateHitFactor()
+    {
+        if (!Mathf.Approximately(HitEffectFactor, 0f))
+        {
+            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
+        }
     }
 
     private void OnEnable()
@@ -85,6 +121,11 @@ public class CharacterHealth : MonoBehaviour
         OnFall += OnFallCallback;
         OnGetUp += OnGetUpAnimationEnd;
         characterData.Stats.OnStatsChanged += OnStatsChangedCallback;
+        
+        if (characterAnimator)
+        {
+            characterAnimator.OnRefreshAnimator += RefreshMaterials;
+        }
     }
 
     private void OnDisable()
@@ -92,6 +133,11 @@ public class CharacterHealth : MonoBehaviour
         OnFall -= OnFallCallback;
         OnGetUp -= OnGetUpAnimationEnd;
         characterData.Stats.OnStatsChanged -= OnStatsChangedCallback;
+
+        if (characterAnimator)
+        {
+            characterAnimator.OnRefreshAnimator -= RefreshMaterials;
+        }
     }
 
     private void OnStatsChangedCallback(CharacterStats stats)
@@ -134,10 +180,6 @@ public class CharacterHealth : MonoBehaviour
 
         lastHit = Time.time;
 
-        var lookAt = data.Attacker.transform.position;
-        lookAt.y = transform.position.y;
-        transform.LookAt(lookAt);
-
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
 
         if (data.Knockdown && data.CancelAnimation ||
@@ -151,7 +193,14 @@ public class CharacterHealth : MonoBehaviour
         if (IsDead)
         {
             collider.enabled = false;
+
+            if (!characterAnimator)
+            {
+                Destroy(gameObject);
+            }
         }
+
+        HitEffectFactor = 1f;
     }
 
     private void UpdateHealthQuad(float healthPercentage, float poiseBar)
@@ -174,5 +223,16 @@ public class CharacterHealth : MonoBehaviour
         if (!HealthQuad) return;
 
         HealthQuad.material.SetFloat("_Poise", poiseBar);
+    }
+
+    void RefreshMaterials(Animator animator)
+    {
+        List<Material> materials = new List<Material>();
+        foreach (var r in GetComponentsInChildren<Renderer>())
+        {
+            materials.Add(r.material);
+        }
+
+        Materials = materials.ToArray();
     }
 }

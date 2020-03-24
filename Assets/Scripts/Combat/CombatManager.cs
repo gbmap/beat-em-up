@@ -174,7 +174,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         foreach (var c in colliders)
         {
-            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
+            var movement = c.gameObject.GetComponent<CharacterMovement>();
+            if (movement && movement.IsRolling)
             {
                 continue;
             }
@@ -183,7 +184,9 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             attack.Defender = c.gameObject;
             CalculateAttackStats(attack.Attacker, c.gameObject, ref attack);
 
-            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack ||
+            var combat = c.gameObject.GetComponent<CharacterCombat>();
+
+            attack.CancelAnimation = (combat && !combat.IsOnHeavyAttack) ||
                 attack.Type == EAttackType.Strong ||
                 attack.DefenderStats.Health == 0;
             //attack.CancelAnimation |= attack.Type == EAttackType.Strong;

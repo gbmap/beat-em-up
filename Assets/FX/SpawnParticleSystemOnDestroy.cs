@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpawnParticleSystemOnDestroy : MonoBehaviour
 {
@@ -9,6 +7,6 @@ public class SpawnParticleSystemOnDestroy : MonoBehaviour
     private void OnDestroy()
     {
         if (!Application.isPlaying) return;
-        Instantiate(Particles, transform.position, Quaternion.identity);
+        var particle = Instantiate(Particles, transform.position, Quaternion.identity);
     }
 }

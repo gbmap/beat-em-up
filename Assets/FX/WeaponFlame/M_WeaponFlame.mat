@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_MultipleTextureTest2
+  m_Name: M_WeaponFlame
   m_Shader: {fileID: -6465566751694194690, guid: e6df217e0f2591a41bd30215c25eabd6,
     type: 3}
   m_ShaderKeywords: 
@@ -79,7 +79,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_2607125A: 0
-    - Vector1_6379E376: 2.04
+    - Vector1_6379E376: 2
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1

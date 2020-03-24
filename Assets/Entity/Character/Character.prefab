@@ -631,7 +631,7 @@ MonoBehaviour:
     m_ColorMax: {r: 0.8962264, g: 0.2107148, b: 0, a: 1}
   ParticlesSmoke: {fileID: 4765186281954608574}
   ParticlesSlash: {fileID: 5092374889383865478}
-  DefaultSlashGradient:
+  UnarmedGradient:
     m_Mode: 1
     m_GradientMin:
       serializedVersion: 2
@@ -664,16 +664,16 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     m_GradientMax:
       serializedVersion: 2
-      key0: {r: 1, g: 0, b: 0, a: 1}
-      key1: {r: 0.517, g: 0.15907691, b: 0.37117955, a: 0}
-      key2: {r: 0.32490566, g: 0.10037735, b: 0.42, a: 0}
-      key3: {r: 0.19932206, g: 0.09467798, b: 0.294, a: 0}
-      key4: {r: 0.31395316, g: 0.15045391, b: 0.46226418, a: 0}
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 0.043137252, g: 1, b: 0.72239965, a: 0}
+      key2: {r: 0.043137252, g: 1, b: 0.526831, a: 0}
+      key3: {r: 0.20000002, g: 0.09411766, b: 0.29411766, a: 0}
+      key4: {r: 0.19932206, g: 0.09467798, b: 0.294, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 31611
-      ctime1: 43754
+      ctime0: 8867
+      ctime1: 38357
       ctime2: 55127
       ctime3: 65535
       ctime4: 65535
@@ -689,10 +689,28 @@ MonoBehaviour:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_NumColorKeys: 4
+      m_NumColorKeys: 3
       m_NumAlphaKeys: 2
     m_ColorMin: {r: 0, g: 0, b: 0, a: 0}
     m_ColorMax: {r: 0, g: 0, b: 0, a: 0}
+  UnarmedStartSize:
+    m_Mode: 3
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 5
+    m_ConstantMax: 7
+  UnarmedDistanceFromCharacter: 1.1
 --- !u!114 &2839161661665923376
 MonoBehaviour:
   m_ObjectHideFlags: 0

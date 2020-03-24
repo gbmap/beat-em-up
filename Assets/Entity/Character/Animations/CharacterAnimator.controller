@@ -492,7 +492,7 @@ AnimatorStateMachine:
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 5092856532322719490}
-    m_Position: {x: 340, y: -310, z: 0}
+    m_Position: {x: 330, y: -250, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 4150040136240245926}
     m_Position: {x: 1110, y: -540, z: 0}
@@ -2408,23 +2408,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1109 &2955920529737815396
-AnimatorTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Damaged
-    m_EventTreshold: 1
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 109443449574377053}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 1
 --- !u!1102 &3047984866483248076
 AnimatorState:
   serializedVersion: 5
@@ -3025,7 +3008,7 @@ AnimatorStateMachine:
     m_Position: {x: 470, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6512838453824077686}
-    m_Position: {x: 290, y: 200, z: 0}
+    m_Position: {x: 320, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8738994332820850941}
     m_Position: {x: 400, y: -310, z: 0}
@@ -3036,13 +3019,12 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions:
   - {fileID: 6559609163627181439}
-  - {fileID: 2955920529737815396}
   - {fileID: -6055907864979149007}
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours:
   - {fileID: 3390816303734112070}
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
-  m_EntryPosition: {x: 660, y: 0, z: 0}
+  m_EntryPosition: {x: 660, y: 30, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: -190, z: 0}
   m_DefaultState: {fileID: -5090896433115487227}
@@ -3278,7 +3260,10 @@ AnimatorTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Damaged
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5090896433115487227}
   m_Solo: 0

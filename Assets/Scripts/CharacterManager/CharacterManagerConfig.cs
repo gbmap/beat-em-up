@@ -142,6 +142,7 @@ public class CharacterManagerConfig : ScriptableObject
         var root = packInstance.transform.Find("Root");
         root.parent = instance.transform;
         root.localPosition = Vector3.zero;
+        root.gameObject.SetActive(true);
 
         for (int i = 0; i < packInstance.transform.childCount; i++)
         {

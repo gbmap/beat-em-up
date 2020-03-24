@@ -147,7 +147,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         }
         else
         {
-            throw new Exception("No character model configured. Change Type Id to something different than None or apply a specific model to this character.");
+            //throw new Exception("No character model configured. Change Type Id to something different than None or apply a specific model to this character.");
         }
     }
 
