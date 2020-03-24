@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 9179654578965875300}
   - component: {fileID: 2779296892568926867}
   - component: {fileID: 1149929320095481303}
+  - component: {fileID: 2972514295811919040}
   m_Layer: 10
   m_Name: Prop_Barrel
   m_TagString: Untagged
@@ -255,8 +256,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: {fileID: 525851035073122930}
-  Object: {fileID: 5523168617328840162, guid: db1e940575328034ab0af253086b9b4f, type: 3}
+  ObjectPool:
+  - {fileID: 5523168617328840162, guid: db1e940575328034ab0af253086b9b4f, type: 3}
+  - {fileID: 5859386654082122749, guid: 5940414ce7f943b4ca09732d20f19d7b, type: 3}
   Probability: 0.25
+--- !u!114 &2972514295811919040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525851034677697745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb1e4fcd0dd9784190a277908a9a012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 525851035073122930}
+  ObjectPool:
+  - {fileID: 175928, guid: 497b6e4d56b9a2d48ac2cd8de829fa88, type: 3}
+  Probability: 1
 --- !u!1001 &5830891768774287263
 PrefabInstance:
   m_ObjectHideFlags: 0

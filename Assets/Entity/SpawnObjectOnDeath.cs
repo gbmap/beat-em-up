@@ -4,7 +4,7 @@
 public class SpawnObjectOnDeath : MonoBehaviour
 {
     public CharacterHealth Health;
-    public GameObject Object;
+    public GameObject[] ObjectPool;
 
     [Range(0f, 1f)]
     public float Probability;
@@ -24,7 +24,7 @@ public class SpawnObjectOnDeath : MonoBehaviour
         if (!Health.IsDead) return;
         if (Random.value < Probability)
         {
-            Instantiate(Object, transform.position, Quaternion.identity);
+            Instantiate(ObjectPool[Random.Range(0, ObjectPool.Length)], transform.position, Quaternion.identity);
         }
     }
 }
