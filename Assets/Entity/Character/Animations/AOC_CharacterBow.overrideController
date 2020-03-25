@@ -6,7 +6,7 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CharacterBowOverride
+  m_Name: AOC_CharacterBow
   m_Controller: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 9f05fc509e0896b42899e02a00961ff7, type: 2}

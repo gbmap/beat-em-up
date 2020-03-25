@@ -6,7 +6,7 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CharacterTwoHandSwordOverride
+  m_Name: AOC_CharacterTwoHandSword
   m_Controller: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 7400000, guid: 21379c6fe37e7dd41a9b1245c64f31bb, type: 2}

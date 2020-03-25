@@ -47,6 +47,13 @@ namespace Catacumba.Effects.Skills.RockLine
 
         public System.Action<CharacterAttackData> OnAttack;
 
+        private SkillData skillData;
+
+        private void Awake()
+        {
+            skillData = GetComponentInParent<SkillData>();
+        }
+
         // Start is called before the first frame update
         void OnEnable()
         {
@@ -80,7 +87,6 @@ namespace Catacumba.Effects.Skills.RockLine
                 hasEmittedEffect = false;
             }
 
-
             lastT = T;
         }
 
@@ -88,7 +94,7 @@ namespace Catacumba.Effects.Skills.RockLine
         {
             if (T != lastT && T > 0.5f && T < 1.0f)
             {
-                CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject);
+                CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, skillData.Caster.gameObject);
                 Bounds b = GetBounds();
                 CombatManager.Attack(ref ad, b.center, b.extents, transform.rotation);
                 OnAttack?.Invoke(ad);

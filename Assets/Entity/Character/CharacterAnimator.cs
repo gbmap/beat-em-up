@@ -8,6 +8,8 @@ public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
 
+    public bool IgnoreWeaponAnimations = false;
+
     public Vector3 RealCharacterPosition {
         get
         {
@@ -356,12 +358,13 @@ public class CharacterAnimator : MonoBehaviour
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        model.transform.localScale = Vector3.one;
 
         if (item.ItemType == EItemType.Equip)
         {
             if (item.Slot == EInventorySlot.Weapon)
             {
-                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+                if (!IgnoreWeaponAnimations) animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
 
                 SetupSlashParticles(itemCfg);
             }
@@ -400,7 +403,11 @@ public class CharacterAnimator : MonoBehaviour
 
         if (equippedWeapon != null)
         {
-            animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
+            if (!IgnoreWeaponAnimations)
+            {
+                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
+            }
+
             Destroy(equippedWeapon);
         }
     }

@@ -314,7 +314,7 @@ public class CharacterStats
 
     public int Poise
     {
-        get { return Attributes.Dexterity; }
+        get { return Attributes.Vigor; }
     }
 
     public float PoiseChance
