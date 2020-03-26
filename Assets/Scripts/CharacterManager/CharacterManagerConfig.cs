@@ -151,8 +151,20 @@ public class CharacterManagerConfig : ScriptableObject
 
             if (characterModel.gameObject.activeSelf)
             {
+                Vector3 localRot = characterModel.localRotation.eulerAngles;
+                Vector3 localPos = characterModel.localPosition;
+
                 characterModel.parent = instance.transform;
-                characterModel.localPosition = Vector3.zero;
+
+                if (characterModel.name.Contains("Character") || characterModel.name.Contains("Root"))
+                {
+                    characterModel.localPosition = Vector3.zero;
+                }
+                else
+                {
+                    characterModel.localRotation = Quaternion.Euler(localRot);
+                    characterModel.localPosition = localPos;
+                }
             }
         }
 

@@ -571,7 +571,7 @@ PrefabInstance:
     - target: {fileID: 2616921011409615135, guid: a8a50bc14ccb2c54daae331f0fb92de7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2616921011409615135, guid: a8a50bc14ccb2c54daae331f0fb92de7,
         type: 3}
@@ -1312,10 +1312,40 @@ PrefabInstance:
       propertyPath: MoveSpeed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.60876167
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.79335326
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 6583482518706985961, guid: cad834bcefcc79549a1a91f42345bd11,
         type: 3}
       propertyPath: m_Name
       value: Enemy_Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7843980091595961211, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7856076142045882874, guid: cad834bcefcc79549a1a91f42345bd11,
         type: 3}

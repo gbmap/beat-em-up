@@ -97,7 +97,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -451,7 +451,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: aec52a68323cf0c4f813ecf3a67d84e6,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: aec52a68323cf0c4f813ecf3a67d84e6,
         type: 3}
@@ -555,7 +555,7 @@ PrefabInstance:
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -1644,7 +1644,7 @@ PrefabInstance:
     - target: {fileID: 3371783533714216031, guid: e57ab8b2aa3fdc240b2de8c25723677e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3371783533714216031, guid: e57ab8b2aa3fdc240b2de8c25723677e,
         type: 3}
@@ -1823,56 +1823,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: EmissionModule.rateOverTime.scalar
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: InitialModule.startSize.minScalar
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: InitialModule.startSpeed.minScalar
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: InitialModule.startSpeed.scalar
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: ShapeModule.arc.value
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 3644986314732161785, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: ShapeModule.arc.mode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8047722798004374078, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: NoiseModule.strength.minMaxState
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8047722798004374078, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: NoiseModule.strengthY.minMaxState
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8047722798004374078, guid: 3c9c85e47d53d1f4aaa97330d98c0680,
-        type: 3}
-      propertyPath: NoiseModule.strengthZ.minMaxState
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c9c85e47d53d1f4aaa97330d98c0680, type: 3}
 --- !u!1001 &7774345816760975626
@@ -1930,7 +1880,7 @@ PrefabInstance:
     - target: {fileID: 3371783533714216031, guid: e57ab8b2aa3fdc240b2de8c25723677e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3371783533714216031, guid: e57ab8b2aa3fdc240b2de8c25723677e,
         type: 3}

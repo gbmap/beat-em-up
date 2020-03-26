@@ -157,6 +157,11 @@ public class CharacterCombat : MonoBehaviour
         skillData.Caster = data;
     }
 
+    public void AnimUseSkill(GameObject skill, string BonePath)
+    {
+
+    }
+
     public void RequestSkillUse(BaseSkill skill)
     {
         skillBeingCasted = skill;
