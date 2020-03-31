@@ -44,6 +44,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
+      propertyPath: CharacterSkills.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
       propertyPath: VigorCurve.m_ConstantMax
       value: 100
       objectReference: {fileID: 0}
@@ -74,6 +79,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: cb537e041deb57c4982b7dfa1e570f97,
         type: 2}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: CharacterSkills.Array.data[0].Prefab
+      value: 
+      objectReference: {fileID: 806273465816269301, guid: e5d712ccbc149fb4f95cea83830a34f2,
+        type: 3}
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_Name

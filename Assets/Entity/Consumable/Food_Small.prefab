@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 520560353152707543}
   - component: {fileID: 5680221013328013103}
   m_Layer: 12
-  m_Name: Food
+  m_Name: Food_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -438,17 +438,17 @@ PrefabInstance:
     - target: {fileID: 7267454748197322829, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.053994257
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7267454748197322829, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.019545317
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7267454748197322829, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.14635774
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7267454748197322829, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
         type: 3}

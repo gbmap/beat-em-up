@@ -243,8 +243,8 @@ public class CharacterSkillTree
 public class BaseSkill
 {
     public GameObject Prefab;
+    public float forwardOffset = 1.5f;
 }
-
 
 [Serializable]
 public class CharacterStats

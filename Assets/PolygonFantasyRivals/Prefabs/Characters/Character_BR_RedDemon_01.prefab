@@ -509,7 +509,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: cf5e0238a8a313f408a64f262d59b9bb, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -3143,7 +3143,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 1e-45, z: 3.3801e-41, w: 6e-44}
+  m_BoundingSphereOverride: {x: 0, y: 6e-45, z: 2.4097e-41, w: 6e-44}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -4007,7 +4007,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
   EmissionModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
@@ -8037,6 +8037,16 @@ PrefabInstance:
       propertyPath: InheritVelocityModule.m_Curve.maxCurve.m_Curve.Array.data[1].outWeight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4521206343834869671, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
+        type: 3}
+      propertyPath: ClampVelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4521206343834869671, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
+        type: 3}
+      propertyPath: ClampVelocityModule.drag.scalar
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 6611329626566955053, guid: f26fcf7e2159c0c4db2001ff5cc10b2f,
         type: 3}
       propertyPath: m_Name
@@ -8235,7 +8245,7 @@ PrefabInstance:
     - target: {fileID: 165175734505278553, guid: 10bc9027587a7264e980fc1a8c6fa81e,
         type: 3}
       propertyPath: EmissionModule.enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 165175734505278553, guid: 10bc9027587a7264e980fc1a8c6fa81e,
         type: 3}

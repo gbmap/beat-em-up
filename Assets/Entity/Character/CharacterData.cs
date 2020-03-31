@@ -112,6 +112,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public ItemConfig[] StartingItems;
     public ECharacterBrainType BrainType { get; private set; }
 
+    [Space]
+    [Header("Skills")]
+    public BaseSkill[] CharacterSkills;
+
     public List<ItemData> ItemsInRange { get { return itemsInRange; } }
     private List<ItemData> itemsInRange = new List<ItemData>();
 
