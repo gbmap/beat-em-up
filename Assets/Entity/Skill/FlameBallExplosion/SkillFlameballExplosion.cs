@@ -26,8 +26,6 @@ public class SkillFlameballExplosion : MonoBehaviour
 
             var instance = Instantiate(SkillFlameball, transform.position + pos * 2f, rot);
             instance.GetComponent<SkillData>().Caster = skillData.Caster;
-
-            
         }
 
         yield break;

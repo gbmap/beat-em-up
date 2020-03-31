@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 7623903540378476168}
   - component: {fileID: 2887817805196112951}
   - component: {fileID: 8376847162442725725}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Skill_FlameBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

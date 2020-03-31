@@ -106,9 +106,12 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static void CalculateAttackStats(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
     {
+        CharacterStats attackerStats = attacker.GetComponent<CharacterData>()?.Stats;
+        CharacterStats defenderStats = defender.GetComponent<CharacterData>().Stats;
+
         CalculateAttackStats(
-            attacker.GetComponent<CharacterData>()?.Stats, 
-            defender.GetComponent<CharacterData>().Stats,
+            attackerStats,
+            defenderStats,
             ref attackData
         );
     }
