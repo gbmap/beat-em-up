@@ -52,7 +52,7 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
     {
         ItemConfig cfg = Config.GetItemConfig(typeId);
         var instance = GameObject.Instantiate(Config.ItemPrefab, position, Quaternion.identity);
-        //instance.GetComponent<ItemData>().TypeId = typeId;
+        instance.GetComponent<ItemData>().itemConfig = cfg;
         return instance;
     }
 }

@@ -74,11 +74,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
-      propertyPath: CharacterModelOverride.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
-        type: 3}
       propertyPath: Vigor.m_CurveMin.m_Curve.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -89,24 +84,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
-      propertyPath: CharacterModelOverride.Array.data[0]
-      value: 
-      objectReference: {fileID: 128260, guid: 616cc160fcb3b124b8e0fc587258594b, type: 3}
+      propertyPath: StartingItems.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
-      propertyPath: CharacterModelOverride.Array.data[1]
-      value: 
-      objectReference: {fileID: 142548, guid: 659981ab97d9bb64990767ef5f931f7c, type: 3}
-    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
-        type: 3}
-      propertyPath: CharacterModelOverride.Array.data[2]
-      value: 
-      objectReference: {fileID: 171076, guid: 2ea27af6ead886c4d93bb53d28c6c25b, type: 3}
-    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
-        type: 3}
-      propertyPath: CharacterModelOverride.Array.data[3]
-      value: 
-      objectReference: {fileID: 192428, guid: c26833473ce06df4ba5631fd7a4b98bc, type: 3}
+      propertyPath: CharacterModelOverride.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: Vigor.m_Mode
@@ -191,6 +176,31 @@ PrefabInstance:
         type: 3}
       propertyPath: DexterityCurve.m_ConstantMax
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: StartingItems.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CharacterModelOverride.Array.data[0]
+      value: 
+      objectReference: {fileID: 128260, guid: 616cc160fcb3b124b8e0fc587258594b, type: 3}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CharacterModelOverride.Array.data[1]
+      value: 
+      objectReference: {fileID: 142548, guid: 659981ab97d9bb64990767ef5f931f7c, type: 3}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CharacterModelOverride.Array.data[2]
+      value: 
+      objectReference: {fileID: 192428, guid: c26833473ce06df4ba5631fd7a4b98bc, type: 3}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CharacterModelOverride.Array.data[3]
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2836811929868206439, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

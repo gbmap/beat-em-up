@@ -187,6 +187,9 @@ public class ItemStats
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
     public BaseSkill[] Skills;
+
+
+    public bool IsRanged { get { return WeaponType == EWeaponType.Bow || WeaponType == EWeaponType.Scepter; } }
 }
 
 public enum EWeaponType
@@ -240,8 +243,8 @@ public class CharacterSkillTree
 public class BaseSkill
 {
     public GameObject Prefab;
+    public float forwardOffset = 1.5f;
 }
-
 
 [Serializable]
 public class CharacterStats
@@ -311,7 +314,7 @@ public class CharacterStats
 
     public int Poise
     {
-        get { return Attributes.Dexterity; }
+        get { return Attributes.Vigor; }
     }
 
     public float PoiseChance

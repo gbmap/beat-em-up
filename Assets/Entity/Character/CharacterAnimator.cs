@@ -8,6 +8,8 @@ public class CharacterAnimator : MonoBehaviour
 {
     public Animator animator;
 
+    public bool IgnoreWeaponAnimations = false;
+
     public Vector3 RealCharacterPosition {
         get
         {
@@ -17,7 +19,7 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    CharacterData _charData;
+    CharacterData data;
     CharacterMovement movement;
     CharacterCombat combat;
     CharacterHealth health;
@@ -29,32 +31,10 @@ public class CharacterAnimator : MonoBehaviour
 
     private float AnimatorDefaultSpeed
     {
-        get { return _charData.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
-    }
-
-    private Material[] Materials
-    {
-        get; set;
+        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
     }
 
     private new Renderer renderer;
-
-    private float hitEffectFactor;
-    private float HitEffectFactor
-    {
-        get { return hitEffectFactor; }
-        set
-        {
-            hitEffectFactor = value;
-            if (Materials == null) return;
-            for (int i = 0; i < Materials.Length; i++)
-            {
-                Material m = Materials[i];
-                if (m == null) continue;
-                m.SetFloat("_HitFactor", value);
-            }
-        }
-    }
 
     [Space]
     [Header("FX Impact")]
@@ -67,6 +47,13 @@ public class CharacterAnimator : MonoBehaviour
     [Space]
     [Header("FX Smoke")]
     public ParticleSystem ParticlesSmoke;
+
+    [Space]
+    [Header("FX Slash")]
+    public ParticleSystem ParticlesSlash;
+    public ParticleSystem.MinMaxGradient UnarmedGradient;
+    public ParticleSystem.MinMaxCurve UnarmedStartSize;
+    public float UnarmedDistanceFromCharacter = 0.7f;
 
     // ==== MOVEMENT
     int _movingHash = Animator.StringToHash("Moving");
@@ -97,7 +84,7 @@ public class CharacterAnimator : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        _charData = GetComponent<CharacterData>();
+        data = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         health = GetComponent<CharacterHealth>();
         combat = GetComponent<CharacterCombat>();
@@ -105,6 +92,8 @@ public class CharacterAnimator : MonoBehaviour
         renderer = GetComponentInChildren<Renderer>();
 
         animator.speed = AnimatorDefaultSpeed;
+
+        SetupSlashParticles(null);
     }
 
     private void OnEnable()
@@ -117,10 +106,6 @@ public class CharacterAnimator : MonoBehaviour
         health.OnRecover += OnRecoverCallback;
 
         movement.OnRoll += OnRollCallback;
-
-        // Isso aqui tá bugando pq a Unity não garante que o OnEnable vai ser chamado antes do Awake pra componentes diferentes.
-        // Eventualmente a gente vai precisar disso aqui, até lá tem que pensar num trabalho a redondo.
-        //_charData.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
 
     private void OnDisable()
@@ -138,16 +123,9 @@ public class CharacterAnimator : MonoBehaviour
     void Update()
     {
         animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
-
-        UpdateHitFactor();
+        
         UpdateSmokeEmission();
 
-        /*if (true) // pra prevenir o LastDamageData de ser nulo.
-        {
-            UpdateDeathBlinkAnimation(true, 0f);
-        }*/
-
-        
         if (health.IsDead) // pra prevenir o LastDamageData de ser nulo.
         {
             UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
@@ -156,14 +134,6 @@ public class CharacterAnimator : MonoBehaviour
 #if UNITY_EDITOR
         CheckDebugInput();
 #endif
-    }
-
-    private void UpdateHitFactor()
-    {
-        if (!Mathf.Approximately(HitEffectFactor, 0f))
-        {
-            HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
-        }
     }
 
     private void UpdateSmokeEmission()
@@ -238,7 +208,6 @@ public class CharacterAnimator : MonoBehaviour
         {
             main.startSize = WeakHitStartSize;
             main.startColor = WeakHitStartColor;
-            //main.startColor = new ParticleSystem.MinMaxGradient()
         }
         else
         {
@@ -276,10 +245,9 @@ public class CharacterAnimator : MonoBehaviour
         if (attack.CancelAnimation)
         {
             animator.SetInteger(damagedNHitsHash, attack.HitNumber);
-            animator.SetTrigger(attack.Knockdown ? knockdownHash : damagedHash);
+            animator.SetTrigger( (attack.Knockdown || attack.Dead) ? knockdownHash : damagedHash);
         }
-
-        HitEffectFactor = 1f;
+        
         EmitHitImpact(attack);
         FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
     }
@@ -300,6 +268,11 @@ public class CharacterAnimator : MonoBehaviour
         {
             FreezeAnimator();
         }
+        
+        ParticlesSlash.Emit(new ParticleSystem.EmitParams()
+        {
+            velocity = transform.forward,
+        }, 1);
     }
 
     private void OnRecoverCallback()
@@ -328,18 +301,19 @@ public class CharacterAnimator : MonoBehaviour
         if (modelRoot.childCount > 0)
         {
             var model = modelRoot.GetChild(0);
-            Equip(model.gameObject, item.Stats);
+            Equip(model.gameObject, item.itemConfig);
         }
     }
 
     public void Equip(ItemConfig cfg)
     {
-        Equip(Instantiate(cfg.Prefab), cfg.Stats);
+        Equip(Instantiate(cfg.Prefab), cfg);
     }
 
-    public void Equip(GameObject model, ItemStats item)
+    public void Equip(GameObject model, ItemConfig itemCfg)
     {
-       
+        var item = itemCfg.Stats;
+
         equippedWeapon = model.gameObject;
 
         Transform handBone = null;
@@ -384,14 +358,40 @@ public class CharacterAnimator : MonoBehaviour
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+        model.transform.localScale = Vector3.one;
 
         if (item.ItemType == EItemType.Equip)
         {
             if (item.Slot == EInventorySlot.Weapon)
             {
-                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+                if (!IgnoreWeaponAnimations) animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+
+                SetupSlashParticles(itemCfg);
             }
         }
+    }
+
+    private void SetupSlashParticles(ItemConfig itemCfg)
+    {
+        Gradient targetSlashColors = UnarmedGradient.gradient;
+        ParticleSystem.MinMaxCurve targetSize = UnarmedStartSize;
+        float distance = UnarmedDistanceFromCharacter;
+
+        if (itemCfg != null && itemCfg.CustomSlashColors)
+        {
+            // atualizar gradiente 
+            targetSize = itemCfg.StartSize;
+            distance = itemCfg.DistanceFromCharacter;
+            targetSlashColors = itemCfg.SlashColors;
+        }
+
+        var main = ParticlesSlash.main;
+        main.startSize = targetSize;
+
+        var col = ParticlesSlash.colorOverLifetime;
+        col.color = new ParticleSystem.MinMaxGradient(targetSlashColors);
+
+        ParticlesSlash.transform.localPosition = new Vector3(0f, ParticlesSlash.transform.localPosition.y, distance);
     }
 
     public void UnEquip(EInventorySlot slot)
@@ -403,7 +403,11 @@ public class CharacterAnimator : MonoBehaviour
 
         if (equippedWeapon != null)
         {
-            animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
+            if (!IgnoreWeaponAnimations)
+            {
+                animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
+            }
+
             Destroy(equippedWeapon);
         }
     }
@@ -442,20 +446,7 @@ public class CharacterAnimator : MonoBehaviour
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
         renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
-        RefreshMaterials();
-
         OnRefreshAnimator?.Invoke(animator);
-    }
-
-    void RefreshMaterials()
-    {
-        List<Material> materials = new List<Material>();
-        foreach (var r in GetComponentsInChildren<SkinnedMeshRenderer>())
-        {
-            materials.Add(r.material);
-        }
-
-        Materials = materials.ToArray();
     }
 
     public void SetRootMotion(bool v)

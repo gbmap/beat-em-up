@@ -8,10 +8,23 @@ public class ItemConfig : ScriptableObject
         ScriptableObjectUtility.CreateAsset<ItemConfig>();
     }*/
 
+    [Header("UI Config")]
     public string Name;
     public string Description;
-    public GameObject Prefab;
 
+    [Space]
+    [Header("Stats")]
     public ItemStats Stats;
+    
+    [Space]
+    public GameObject Prefab;
     public AnimatorOverrideController AnimationOverride;
+       
+    [Space]
+    [Header("Weapon Configuration")]
+    public bool CustomSlashColors = false;
+    public Gradient SlashColors;
+    public ParticleSystem.MinMaxCurve StartSize = new ParticleSystem.MinMaxCurve(12, 17);
+
+    public float DistanceFromCharacter = 1.4f;
 }

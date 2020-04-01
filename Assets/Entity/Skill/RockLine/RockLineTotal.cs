@@ -78,6 +78,7 @@ namespace Catacumba.Effects.Skills.RockLine {
 
         void OnDestroyAnimationEnd()
         {
+            System.Array.ForEach(rocks, r => r.GetComponent<UnparentParticleSystemOnDeath>().Detach());
             Destroy(gameObject);
         }
 

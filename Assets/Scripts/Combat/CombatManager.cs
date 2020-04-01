@@ -22,6 +22,7 @@ public struct CharacterAttackData
         Poised = false;
         Knockdown = false;
         CancelAnimation = false;
+        Dead = false;
 
         ColliderPos = Vector3.zero;
         ColliderSz = Vector3.zero;
@@ -37,6 +38,7 @@ public struct CharacterAttackData
     public CharacterStats DefenderStats;
     public int Damage;
     public int HitNumber;
+    public bool Dead;
 
     public bool Poised;
     public bool Knockdown;
@@ -104,9 +106,12 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static void CalculateAttackStats(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
     {
+        CharacterStats attackerStats = attacker.GetComponent<CharacterData>()?.Stats;
+        CharacterStats defenderStats = defender.GetComponent<CharacterData>().Stats;
+
         CalculateAttackStats(
-            attacker.GetComponent<CharacterData>()?.Stats, 
-            defender.GetComponent<CharacterData>().Stats,
+            attackerStats,
+            defenderStats,
             ref attackData
         );
     }
@@ -143,6 +148,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         // vê se derrubou o BONECO
         attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0) || defender.Health <= 0;
+        attackData.Dead = defender.Health <= 0;
 
         // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
@@ -171,7 +177,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         foreach (var c in colliders)
         {
-            if (c.gameObject.GetComponent<CharacterMovement>().IsRolling)
+            var movement = c.gameObject.GetComponent<CharacterMovement>();
+            if (movement && movement.IsRolling)
             {
                 continue;
             }
@@ -180,8 +187,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             attack.Defender = c.gameObject;
             CalculateAttackStats(attack.Attacker, c.gameObject, ref attack);
 
-            attack.CancelAnimation = !c.gameObject.GetComponent<CharacterCombat>().IsOnHeavyAttack;
-            attack.CancelAnimation |= attack.Type == EAttackType.Strong;
+            var combat = c.gameObject.GetComponent<CharacterCombat>();
+
+            attack.CancelAnimation = ((combat && !combat.IsOnHeavyAttack) ||
+                attack.Type == EAttackType.Strong ||
+                attack.DefenderStats.Health == 0) &&
+                ((attack.DefenderStats.Attributes.Vigor < attack.AttackerStats.Attributes.Strength) || attack.DefenderStats.PoiseBar < 0.5f);
+            //attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
         }
@@ -196,6 +208,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     private void OnDrawGizmos()
     {
+        if (!Application.isPlaying || lastAttack.Time == 0f) return;
+
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(lastAttack.ColliderPos, lastAttack.ColliderRot, lastAttack.ColliderSz);
         Gizmos.DrawWireCube(Vector3.zero, Vector3.one);

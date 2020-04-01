@@ -151,9 +151,22 @@ public class CharacterCombat : MonoBehaviour
     {
         ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
         BaseSkill skill = weapon.Skills[index];
-        Instantiate(skill.Prefab, transform.position + transform.forward * 1.5f, transform.rotation);
+        SpawnSkill(skill);
     }
 
+    public void AnimUseCharacterSkill(int index)
+    {
+        BaseSkill skill = data.CharacterSkills[index];
+        SpawnSkill(skill);
+    }
+
+    private void SpawnSkill(BaseSkill s)
+    {
+        var skillInstance = Instantiate(s.Prefab, transform.position + transform.forward * s.forwardOffset, transform.rotation);
+        var skillData = skillInstance.GetComponent<SkillData>();
+        skillData.Caster = data;
+    }
+    
     public void RequestSkillUse(BaseSkill skill)
     {
         skillBeingCasted = skill;

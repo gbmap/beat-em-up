@@ -112,6 +112,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public ItemConfig[] StartingItems;
     public ECharacterBrainType BrainType { get; private set; }
 
+    [Space]
+    [Header("Skills")]
+    public BaseSkill[] CharacterSkills;
+
     public List<ItemData> ItemsInRange { get { return itemsInRange; } }
     private List<ItemData> itemsInRange = new List<ItemData>();
 
@@ -144,6 +148,10 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         else if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
+        }
+        else
+        {
+            //throw new Exception("No character model configured. Change Type Id to something different than None or apply a specific model to this character.");
         }
     }
 
