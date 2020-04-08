@@ -1,5 +1,10 @@
 ﻿using UnityEngine;
 
+public enum EWeaponHand
+{
+    Left, Right
+}
+
 public class ItemConfig : ScriptableObject
 {
     /*[MenuItem("Assets/Create/Item/ItemConfig")]
@@ -27,4 +32,9 @@ public class ItemConfig : ScriptableObject
     public ParticleSystem.MinMaxCurve StartSize = new ParticleSystem.MinMaxCurve(12, 17);
 
     public float DistanceFromCharacter = 1.4f;
+
+    [Space]
+    public bool OverrideHand = false;
+    public EWeaponHand Hand;
+
 }

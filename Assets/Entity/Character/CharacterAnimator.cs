@@ -351,6 +351,25 @@ public class CharacterAnimator : MonoBehaviour
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(90f, 0f, 0f);
             }
+
+            if (itemCfg.OverrideHand)
+            {
+                CharacterModelInfo.TransformBone transformBone = null;
+                if (itemCfg.Hand == EWeaponHand.Left)
+                {
+                    transformBone = ModelInfo.LeftHandBone;
+                    rotation = Quaternion.Euler(-131f, -81f, -111f);
+                    position = new Vector3(-0.055f, -0.025f, 0.346f);
+                }
+                else
+                {
+                    transformBone = ModelInfo.RightHandBone;
+                    rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
+                    position = new Vector3(-0.017f, 0.12f, 0.072f);
+                }
+
+                handBone = transformBone.Bone.Find("WeaponHolder");
+            }
         }
 
         model.transform.SetParent(handBone, true);
