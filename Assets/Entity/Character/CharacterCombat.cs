@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class CharacterCombat : MonoBehaviour
 {
-    public bool IgnoreSpeedBump = false;
-
     [HideInInspector] public bool IsOnCombo;
 
     private int _nComboHits;

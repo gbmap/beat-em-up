@@ -56,6 +56,8 @@ public class CharacterMovement : MonoBehaviour
     }
     public bool IsBeingMoved { get { return speedBumpT > 0f; } }
 
+    public bool IgnoreSpeedBump = false;
+
     #region INTERFACE WITH NAVMESH
 
     public NavMeshAgent NavMeshAgent
@@ -283,8 +285,10 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public static float GetSpeedBumpForce(CharacterAttackData attack)
+    public float GetSpeedBumpForce(CharacterAttackData attack)
     {
+        if (IgnoreSpeedBump) return 0f;
+
         float modifier = (attack.Type == EAttackType.Weak ? 1f : 5f);
         modifier = attack.Knockdown ? 1f : modifier;
 
