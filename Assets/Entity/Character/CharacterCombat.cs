@@ -173,6 +173,11 @@ public class CharacterCombat : MonoBehaviour
         OnRequestSkillUse?.Invoke(skill);
     }
 
+    public void UseSkill(int index)
+    {
+        animator.UseSkill(index);
+    }
+
     public void AnimSkillUsed()
     {
         // fazer algo com a skill sendo castada.

@@ -572,7 +572,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7843980091595961211, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
 --- !u!1 &1334862907
 GameObject:
@@ -846,6 +847,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c9c85e47d53d1f4aaa97330d98c0680, type: 3}
+--- !u!1 &1680036519 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7998555847873071830, guid: cad834bcefcc79549a1a91f42345bd11,
+    type: 3}
+  m_PrefabInstance: {fileID: 1220021732}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1680036520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680036519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8b5fb0e2e89501408ce1b1c4719e32d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NumberOfSkills: 6
+  Cooldown: 2
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0
