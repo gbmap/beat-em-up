@@ -1,30 +1,19 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &7843980091595961211
+--- !u!114 &1680036520
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7998555847873071830}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3053d13ab5aca424e94b13b66f9cdbe7, type: 3}
+  m_Script: {fileID: 11500000, guid: d8b5fb0e2e89501408ce1b1c4719e32d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WanderStateConfig:
-    SightRange: 10
-    SleepTime: 5
-    WanderRadius: 5
-  AttackStateConfig:
-    DistanceToAttack: 1.5
-    AttackCooldown: 0.5
-    ComboCooldown: 2
-    SightRange: 10
-    MaxComboHits: 5
-  OrbitStateConfig:
-    OrbitRadius: 3
-    DiceRollCooldown: 2
+  NumberOfSkills: 6
+  Cooldown: 2
 --- !u!1001 &8936086226535225998
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -284,7 +273,7 @@ PrefabInstance:
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1417050446637630400, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -489,7 +478,7 @@ PrefabInstance:
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.9
+      value: -9.85
       objectReference: {fileID: 0}
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -499,7 +488,7 @@ PrefabInstance:
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.18
+      value: -0.38
       objectReference: {fileID: 0}
     - target: {fileID: 2691066672309822027, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -725,7 +714,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: cf5e0238a8a313f408a64f262d59b9bb, type: 2}
+      objectReference: {fileID: 22100000, guid: ee3003c670b3fdc40970d23d0cc0fa08,
+        type: 2}
     - target: {fileID: 6637376402186026283, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_LocalRotation.x
@@ -805,6 +795,11 @@ PrefabInstance:
         type: 3}
       propertyPath: MoveSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: SpeedBumpForce
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6927136765418665499, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}

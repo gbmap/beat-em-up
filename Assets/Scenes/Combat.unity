@@ -501,6 +501,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2027034606363438228, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: SpeedBumpForce
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4022222661145548223, guid: cad834bcefcc79549a1a91f42345bd11,
         type: 3}
       propertyPath: m_Controller
