@@ -501,22 +501,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1680036532, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
-      propertyPath: m_Shape
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1680036532, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
-      propertyPath: m_Extents.x
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1680036532, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
-      propertyPath: m_Extents.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1680036532, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
-      propertyPath: m_Extents.z
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6438966534526204101, guid: cad834bcefcc79549a1a91f42345bd11,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -576,6 +560,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy_Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 7998555847873071830, guid: cad834bcefcc79549a1a91f42345bd11,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cad834bcefcc79549a1a91f42345bd11, type: 3}
@@ -1019,7 +1008,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1920004991
 MonoBehaviour:
   m_ObjectHideFlags: 0

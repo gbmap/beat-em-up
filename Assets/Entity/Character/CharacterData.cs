@@ -103,6 +103,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     public MinMaxCurve DexterityCurve;
     public MinMaxCurve MagicCurve;
 
+    public bool CanBeKnockedOut = true;
+
     [Space]
     [Header("Model")]
     public GameObject[] CharacterModelOverride;
@@ -134,6 +136,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
         Stats.Health = Stats.MaxHealth;
         Stats.Mana = Stats.MaxMana;
+
+        Stats.CanBeKnockedOut = CanBeKnockedOut;
     }
 
     private void Start()

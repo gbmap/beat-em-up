@@ -289,10 +289,10 @@ public class CharacterMovement : MonoBehaviour
     {
         if (IgnoreSpeedBump) return 0f;
 
-        float modifier = (attack.Type == EAttackType.Weak ? 1f : 5f);
+        float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);
         modifier = attack.Knockdown ? 1f : modifier;
 
-        return ((float)attack.Damage / 25) * modifier;
+        return Mathf.Min(7f, ((float)attack.Damage / 25) * modifier);
     }
     
     private void OnCharacterAttackCallback(CharacterAttackData attack)

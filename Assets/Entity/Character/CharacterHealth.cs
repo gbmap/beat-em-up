@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class CharacterHealth : MonoBehaviour
 {
+    public bool CanBeKnockedOut = true;
+
     public System.Action<CharacterAttackData> OnDamaged;
     public System.Action OnFall;
     public System.Action OnRecover;
