@@ -234,7 +234,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
-        if (attack.Poised)
+        if (attack.Poised && !attack.Dead)
         {
             return;
         }
@@ -242,7 +242,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.ResetTrigger(hashWeakAttack);
         animator.ResetTrigger(hashStrongAttack);
 
-        if (attack.CancelAnimation)
+        if (attack.CancelAnimation || attack.Dead)
         {
             animator.SetInteger(hashNHits, attack.HitNumber);
             animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
