@@ -8,7 +8,10 @@ namespace Catacumba.Exploration
     public class CameraChangeTrigger : MonoBehaviour
     {
         [SerializeField] private GameObject virtualCamera;
-        
+        [SerializeField] private bool revertOnExit = false;
+
+        private GameObject oldCamera;
+
         private UnityAction<GameObject> OnCameraChange;
         
         private void OnEnable()
@@ -23,13 +26,24 @@ namespace Catacumba.Exploration
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
-                ChangeCamera();
+            if (!other.CompareTag("Player")) return;
+
+            oldCamera = CameraManager.Instance.CurrentCamera;
+            ChangeCamera(virtualCamera);
         }
 
-        private void ChangeCamera()
+        private void OnTriggerExit(Collider other)
         {
-            OnCameraChange(virtualCamera);
+            if (!other.CompareTag("Player") || !revertOnExit) return;
+
+            var newCamera = oldCamera;
+            oldCamera = CameraManager.Instance.CurrentCamera;
+            ChangeCamera(newCamera);
+        }
+
+        private void ChangeCamera(GameObject camera)
+        {
+            OnCameraChange(camera);
         }
     }
 }

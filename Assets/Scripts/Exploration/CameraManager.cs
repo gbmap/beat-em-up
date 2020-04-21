@@ -16,6 +16,8 @@ namespace Catacumba.Exploration
         private Camera mainCamera;
         private CinemachineImpulseSource _impulseSource;
         private GameObject currentActiveCamera;
+        public GameObject CurrentCamera { get { return currentActiveCamera; } }
+
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
         private void Awake()
