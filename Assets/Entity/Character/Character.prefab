@@ -425,8 +425,10 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_ConstantMin: 0
     m_ConstantMax: 0
+  CanBeKnockedOut: 1
   CharacterModelOverride: []
   StartingItems: []
+  CharacterSkills: []
 --- !u!114 &6927136765418665498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Direction: {x: 0, y: 0, z: 0}
   MoveSpeed: 4
+  IgnoreSpeedBump: 0
   SpeedBumpForce: 0.5
 --- !u!114 &4779215824379891065
 MonoBehaviour:
@@ -454,6 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanBeKnockedOut: 1
   HealthQuad: {fileID: 6927136765445453994}
   IsOnGround: 0
   IsBeingDamaged: 0
@@ -470,6 +474,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5463593265913646897}
+  IgnoreWeaponAnimations: 0
   ParticlesHit: {fileID: 7549969102162730968}
   WeakHitStartSize:
     m_Mode: 3
@@ -744,7 +749,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0.1
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &7704632705183311460
@@ -2663,7 +2668,6 @@ GameObject:
   - component: {fileID: 6927136765445453996}
   - component: {fileID: 6927136765445453993}
   - component: {fileID: 6927136765445453994}
-  - component: {fileID: 4303989933815391568}
   m_Layer: 10
   m_Name: Quad
   m_TagString: Untagged
@@ -2731,18 +2735,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &4303989933815391568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6927136765445453997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 109fb4b820af9e645a938c417ffc54cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6961255382690645573
 GameObject:
   m_ObjectHideFlags: 0

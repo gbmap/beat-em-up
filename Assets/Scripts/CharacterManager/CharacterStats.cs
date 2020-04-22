@@ -336,6 +336,11 @@ public class CharacterStats
         }
     }
 
+    public bool CanBeKnockedOut
+    {
+        get; set;
+    }
+
     public Inventory Inventory;
 
     public CharacterStats()
@@ -352,6 +357,7 @@ public class CharacterStats
 
         Health = MaxHealth;
         Mana = MaxMana;
+        CanBeKnockedOut = true;
     }
 }
 

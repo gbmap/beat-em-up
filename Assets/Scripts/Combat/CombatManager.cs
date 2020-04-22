@@ -44,7 +44,6 @@ public struct CharacterAttackData
     public bool Knockdown;
     public bool CancelAnimation;
 
-
     public Vector3 ColliderPos;
     public Vector3 ColliderSz;
     public Quaternion ColliderRot;
@@ -147,8 +146,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         defender.Health -= damage;
 
         // vê se derrubou o BONECO
-        attackData.Knockdown = Mathf.Approximately(defender.PoiseBar, 0) || defender.Health <= 0;
         attackData.Dead = defender.Health <= 0;
+        attackData.Knockdown = defender.CanBeKnockedOut && (Mathf.Approximately(defender.PoiseBar, 0) || attackData.Dead);
 
         // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;

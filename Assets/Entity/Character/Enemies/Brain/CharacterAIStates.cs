@@ -680,6 +680,73 @@ namespace Catacumba.Character.AI
         }
     }
 
+    #endregion
+
+    #region USE_SKILL
+
+    public class UseSkillStateCfg
+    {
+        public int skillIndex;
+        public GameObject target;
+    }
+
+    public class UseSkillState : BaseState
+    {
+        public const int RES_CONTINUE = 0;
+        public const int RES_CASTING = 1;
+        public const int RES_CASTED = 2;
+
+        private bool usingSkill;
+        private bool usedSkill;
+        private int skillIndex;
+
+        public UseSkillState(GameObject obj, int skillIndex) : base(obj)
+        {
+            usingSkill = false;
+            usedSkill = false;
+
+            this.skillIndex = skillIndex;
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
+
+            animator.OnStartUsingSkill += OnStartUsingSkill;
+            animator.OnEndUsingSkill += OnEndUsingSkill;
+
+            combat.UseSkill(skillIndex);
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            animator.OnStartUsingSkill -= OnStartUsingSkill;
+            animator.OnEndUsingSkill -= OnEndUsingSkill;
+        }
+
+        private void OnStartUsingSkill(CharacterAnimator obj)
+        {
+            usingSkill = true;
+        }
+
+        private void OnEndUsingSkill(CharacterAnimator obj)
+        {
+            usingSkill = false;
+            usedSkill = true;
+        }
+
+        public override StateResult Update()
+        {
+            if (usedSkill)
+                return new StateResult(RES_CASTED);
+            else if (usingSkill)
+                return new StateResult(RES_CASTING);
+
+            return new StateResult(RES_CONTINUE);
+        }
+    }
 
     #endregion
 

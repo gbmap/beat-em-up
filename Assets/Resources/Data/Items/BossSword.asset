@@ -78,6 +78,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    m_ConstantMin: 12
-    m_ConstantMax: 17
+    m_ConstantMin: 15
+    m_ConstantMax: 18
   DistanceFromCharacter: 2.1
+  OverrideHand: 1
+  Hand: 1

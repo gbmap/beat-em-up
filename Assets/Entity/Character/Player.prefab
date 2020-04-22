@@ -65,6 +65,26 @@ PrefabInstance:
       propertyPath: DataInit.Attributes.Magic
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: VigorCurve.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: StrengthCurve.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: DexterityCurve.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: MagicCurve.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 15095382, guid: a04174840aa4b944ab6c2304972f645c, type: 3}
       propertyPath: m_Enabled
       value: 1

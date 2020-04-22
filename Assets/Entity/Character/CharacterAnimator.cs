@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterAnimator : MonoBehaviour
@@ -56,28 +53,31 @@ public class CharacterAnimator : MonoBehaviour
     public float UnarmedDistanceFromCharacter = 0.7f;
 
     // ==== MOVEMENT
-    int _movingHash = Animator.StringToHash("Moving");
-    int _isOnAirHash = Animator.StringToHash("IsOnAir");
-    int _speedYHash = Animator.StringToHash("SpeedY");
-    int _jumpTriggerHash = Animator.StringToHash("Jump");
-    int _rollTriggerHash = Animator.StringToHash("Roll");
+    int hashMoving = Animator.StringToHash("Moving");
+    int hashRoll = Animator.StringToHash("Roll");
 
     // ===== COMBAT
-    int _weakAttackHash = Animator.StringToHash("WeakAttack");
-    int _strongAttackHash = Animator.StringToHash("StrongAttack");
+    int hashWeakAttack = Animator.StringToHash("WeakAttack");
+    int hashStrongAttack = Animator.StringToHash("StrongAttack");
 
     GameObject equippedWeapon;
 
     // ====== HEALTH
-    int damagedHash = Animator.StringToHash("Damaged");
-    int knockdownHash = Animator.StringToHash("Knockdown");
-    int damagedNHitsHash = Animator.StringToHash("DamagedHits");
-    int recoverHash = Animator.StringToHash("Recovered");
-    int castSkillHash = Animator.StringToHash("Cast");
+    int hashDamaged = Animator.StringToHash("Damaged");
+    int hashKnockdown = Animator.StringToHash("Knockdown");
+    int hashNHits = Animator.StringToHash("DamagedHits");
+    int hashRecover = Animator.StringToHash("Recovered");
+    int hashCastSkill = Animator.StringToHash("Cast");
+
+    // ======= SKILL
+    int hashUseSkill = Animator.StringToHash("UseSkill");
+    int hashSkillIndex = Animator.StringToHash("SkillIndex");
 
     // ============ EVENTS
     public System.Action<Animator> OnRefreshAnimator;
 
+    public System.Action<CharacterAnimator> OnStartUsingSkill;
+    public System.Action<CharacterAnimator> OnEndUsingSkill;
 
     #region MONOBEHAVIOUR
 
@@ -122,7 +122,7 @@ public class CharacterAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(_movingHash, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+        animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
         
         UpdateSmokeEmission();
 
@@ -234,18 +234,18 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnCharacterDamagedCallback(CharacterAttackData attack)
     {
-        if (attack.Poised)
+        if (attack.Poised && !attack.Dead)
         {
             return;
         }
 
-        animator.ResetTrigger(_weakAttackHash);
-        animator.ResetTrigger(_strongAttackHash);
+        animator.ResetTrigger(hashWeakAttack);
+        animator.ResetTrigger(hashStrongAttack);
 
-        if (attack.CancelAnimation)
+        if (attack.CancelAnimation || attack.Dead)
         {
-            animator.SetInteger(damagedNHitsHash, attack.HitNumber);
-            animator.SetTrigger( (attack.Knockdown || attack.Dead) ? knockdownHash : damagedHash);
+            animator.SetInteger(hashNHits, attack.HitNumber);
+            animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
         }
         
         EmitHitImpact(attack);
@@ -254,12 +254,12 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
     {
-        animator.SetTrigger(type == EAttackType.Weak ? _weakAttackHash : _strongAttackHash);
+        animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
     }
 
     private void OnRequestSkillUseCallback(BaseSkill obj)
     {
-        animator.SetTrigger(castSkillHash);
+        animator.SetTrigger(hashCastSkill);
     }
 
     private void OnCharacterAttackCallback(CharacterAttackData attack)
@@ -277,20 +277,15 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRecoverCallback()
     {
-        animator.SetTrigger(recoverHash);
-    }
-    
-    private void OnJumpCallback()
-    {
-        animator.SetTrigger(_jumpTriggerHash);
+        animator.SetTrigger(hashRecover);
     }
 
     private void OnRollCallback()
     {
         animator.speed = AnimatorDefaultSpeed;
-        animator.ResetTrigger(_weakAttackHash);
-        animator.ResetTrigger(_strongAttackHash);
-        animator.SetTrigger(_rollTriggerHash);
+        animator.ResetTrigger(hashWeakAttack);
+        animator.ResetTrigger(hashStrongAttack);
+        animator.SetTrigger(hashRoll);
     }
     
     #endregion
@@ -350,6 +345,25 @@ public class CharacterAnimator : MonoBehaviour
             {
                 handBone = ModelInfo.LeftHandBone.Bone.Find("WeaponHolder");
                 rotation = Quaternion.Euler(90f, 0f, 0f);
+            }
+
+            if (itemCfg.OverrideHand)
+            {
+                CharacterModelInfo.TransformBone transformBone = null;
+                if (itemCfg.Hand == EWeaponHand.Left)
+                {
+                    transformBone = ModelInfo.LeftHandBone;
+                    rotation = Quaternion.Euler(-131f, -81f, -111f);
+                    position = new Vector3(-0.055f, -0.025f, 0.346f);
+                }
+                else
+                {
+                    transformBone = ModelInfo.RightHandBone;
+                    rotation = Quaternion.Euler(-26.666f, 85.7f, -117f);
+                    position = new Vector3(-0.017f, 0.12f, 0.072f);
+                }
+
+                handBone = transformBone.Bone.Find("WeaponHolder");
             }
         }
 
@@ -461,6 +475,12 @@ public class CharacterAnimator : MonoBehaviour
         transform.position += hipsPosition;
     }
     
+    public void UseSkill(int index)
+    {
+        animator.SetInteger(hashSkillIndex, index);
+        animator.SetTrigger(hashUseSkill);
+    }
+
 #if UNITY_EDITOR
 
     private void OnGUI()

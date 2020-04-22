@@ -9,8 +9,8 @@ public class DamagingProp : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var caster = GetComponent<SkillData>()?.Caster;
-        if (other.gameObject == caster.gameObject) return;
-
+        if (other.gameObject == caster.gameObject ||
+            other.gameObject.CompareTag(caster.tag)) return;
 
         CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject)
         {

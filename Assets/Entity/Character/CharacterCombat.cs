@@ -26,6 +26,7 @@ public class CharacterCombat : MonoBehaviour
 
     public bool IsOnHeavyAttack;
 
+
     private Vector3 attackColliderBasePosition
     {
         get { return animator.RealCharacterPosition + transform.forward*0.75f + Vector3.up; }
@@ -171,6 +172,11 @@ public class CharacterCombat : MonoBehaviour
     {
         skillBeingCasted = skill;
         OnRequestSkillUse?.Invoke(skill);
+    }
+
+    public void UseSkill(int index)
+    {
+        animator.UseSkill(index);
     }
 
     public void AnimSkillUsed()
