@@ -16,6 +16,7 @@ public class CharacterPlayerInput : MonoBehaviour
     private CharacterCombat combat;
 
     Player _rewiredPlayer;
+    public Player RewiredInput { get { return _rewiredPlayer; } }
 
     float horizontalAxis;
     float verticalAxis;
@@ -30,6 +31,8 @@ public class CharacterPlayerInput : MonoBehaviour
     float[] lastDoublePress = { 0f, 0f };
 
     float doublePressTime = 0.2f;
+
+    public System.Action<CharacterData> OnInteract;
 
     // Start is called before the first frame update
     void Awake()
@@ -69,6 +72,7 @@ public class CharacterPlayerInput : MonoBehaviour
 
         if (_rewiredPlayer.GetButtonDown("Submit"))
         {
+            OnInteract?.Invoke(characterData);
             characterData.Interact();
         }
 
@@ -76,39 +80,6 @@ public class CharacterPlayerInput : MonoBehaviour
         {
             movement.Roll(cFwd.normalized);
         }
-
-        /*
-        lastHorizontalAxis = horizontalAxis;
-        lastVerticalAxis = verticalAxis;
-
-        horizontalAxis = hAxis;
-        verticalAxis = vAxis;
-
-        isPressingCache[0] = isPressing[0];
-        isPressingCache[1] = isPressing[1];
-        isPressing[0] = IsPressing(horizontalAxis, lastHorizontalAxis);
-        isPressing[1] = IsPressing(verticalAxis, lastVerticalAxis);
-
-        // 0 ou 1
-        for (int axis = 0; axis < 2; axis++)
-        {
-            if (!AxisTappedDown(isPressing[axis], isPressingCache[axis]))
-            {
-                continue;
-            }
-
-            if (Time.time < lastPress[axis] + doublePressTime) // double tap
-            {
-                Debug.Log("Double tap");
-                lastDoublePress[axis] = Time.time;
-
-                movement.Roll(cFwd.normalized);
-            }
-
-            Debug.Log("Tap");
-            lastPress[axis] = Time.time;
-        }
-        */
     }
 
     bool AxisTappedDown(bool[] axis, bool[] axisCache)
