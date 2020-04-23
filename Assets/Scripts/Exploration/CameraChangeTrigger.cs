@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
-    [RequireComponent(typeof(BoxCollider))]
+    [RequireComponent(typeof(Collider))]
     public class CameraChangeTrigger : MonoBehaviour
     {
         [SerializeField] private GameObject virtualCamera;
