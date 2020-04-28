@@ -147,8 +147,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
         if (CharacterModelOverride.Length > 0)
         {
             var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch ));
-        } 
+            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch));
+        }
         else if (TypeId != ECharacterType.None)
         {
             StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
@@ -191,7 +191,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     {
         return itemsInRange.Contains(item) ^ enterExit;
     }
-    
+
     public void OnItemInRange(ItemData item)
     {
         if (ValidItem(item, true))
@@ -207,14 +207,14 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
             itemsInRange.Remove(item);
         }
     }
-    
+
     public bool Interact()
     {
         if (itemsInRange.Count == 0) return false;
 
         var item = itemsInRange[0];
         while (item == null)
-        { 
+        {
             itemsInRange.RemoveAt(0);
 
             if (itemsInRange.Count == 0)
@@ -237,21 +237,28 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     public bool Equip(ItemData item)
     {
-        if (Stats.Inventory.HasEquip(item.Stats.Slot))
+        switch (item.Stats.ItemType)
         {
-            UnEquip(item.Stats.Slot);
+            case EItemType.Key:
+                Stats.Inventory.GrabKey(item.itemConfig);
+                return true;
+            case EItemType.Equip:
+                if (Stats.Inventory.HasEquip(item.Stats.Slot))
+                {
+                    UnEquip(item.Stats.Slot);
+                }
+
+                if (!CharacterManager.Instance.Interact(this, item.Stats)) return false;
+
+                var animator = GetComponent<CharacterAnimator>();
+                if (animator)
+                {
+                    animator.Equip(item);
+                }
+                return true;
         }
 
-        if (!CharacterManager.Instance.Interact(this, item.Stats)) return false;
-        if (item.Stats.ItemType == EItemType.Equip)
-        {
-            var animator = GetComponent<CharacterAnimator>();
-            if (animator)
-            {
-                animator.Equip(item);
-            }
-        }
-        return true;
+        return false;
     }
 
     public bool Equip(ItemConfig itemConfig)

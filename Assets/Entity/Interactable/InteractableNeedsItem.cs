@@ -34,9 +34,9 @@ public class InteractableNeedsItem : MonoBehaviour
         interactable.OnInteract -= OnInteract;
     }
 
-    private void OnInteract(CharacterData obj)
+    private void OnInteract(CharacterData character)
     {
-        if (true)
+        if (character.Stats.Inventory.HasKey(Item))
         {
             DialogueBox.Show(HasItemMessage);
             EventHasItem.Invoke();

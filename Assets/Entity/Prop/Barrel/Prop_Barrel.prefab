@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CanBeKnockedOut: 0
   HealthQuad: {fileID: 0}
   IsOnGround: 0
   IsBeingDamaged: 0
@@ -212,8 +213,10 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_ConstantMin: 0
     m_ConstantMax: 0
+  CanBeKnockedOut: 1
   CharacterModelOverride: []
   StartingItems: []
+  CharacterSkills: []
 --- !u!114 &9179654578965875300
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -43,7 +43,8 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
             }
         }
 
-        Instantiate(config.Prefab, modelRoot);
+        var instance = Instantiate(config.Prefab, modelRoot);
+        instance.transform.localPosition = Vector3.zero;
 
         gameObject.transform.Find("Highlight").GetComponent<MeshRenderer>().material = Config.GetRarityColor(config.Stats.Rarity);
     }

@@ -114,9 +114,13 @@ public class Inventory
     [SerializeField]
     private int[] inventory;
 
+    [SerializeField]
+    private List<ItemConfig> keyItems;
+
     public Inventory()
     {
         inventory = new int[((EInventorySlot[])Enum.GetValues(typeof(EInventorySlot))).Length];
+        keyItems = new List<ItemConfig>();
     }
 
     public ItemStats this[EInventorySlot slot]
@@ -160,12 +164,24 @@ public class Inventory
     {
         return inventory[(int)slot] != 0;
     }
+
+    public bool HasKey(ItemConfig itemConfig)
+    {
+        return keyItems.Contains(itemConfig);
+    }
+
+    public void GrabKey(ItemConfig itemCfg)
+    {
+        if (HasKey(itemCfg)) return;
+        keyItems.Add(itemCfg);
+    }
 }
 
 public enum EItemType
 {
     Equip,
-    Consumable
+    Consumable,
+    Key
 }
 
 public enum EItemRarity
