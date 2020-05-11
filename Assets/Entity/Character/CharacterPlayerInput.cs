@@ -1,4 +1,5 @@
 ﻿using System;
+using Catacumba;
 using Catacumba.Exploration;
 using Rewired;
 using UnityEngine;
@@ -110,11 +111,14 @@ public class CharacterPlayerInput : MonoBehaviour
 
     private void UpdateCameraDir()
     {
-        var dolly = CameraManager.Instance.CurrentVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineTrackedDolly>();
+        /*var dolly = CameraManager.Instance.CurrentVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineTrackedDolly>();
         if (dolly)
         {
+
             var posA = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition);
             var posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition + 0.15f);
+
+            // If we're out of bounds when sampling the path, sample a point behind the current point.
             if (Mathf.Approximately(Vector3.Distance(posA, posB), 0f))
             {
                 posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition - 0.15f);
@@ -135,8 +139,10 @@ public class CharacterPlayerInput : MonoBehaviour
         {
             cameraRight = Camera.main.transform.right;
         }
-
-        cameraForward = Camera.main.transform.forward;
+        */
+        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
+        cameraRight = mo.right;
+        cameraForward = mo.forward;
     }
 
     bool AxisTappedDown(bool[] axis, bool[] axisCache)
@@ -171,21 +177,11 @@ public class CharacterPlayerInput : MonoBehaviour
 
         if (!Application.isPlaying) return;
 
-        var dolly = CameraManager.Instance.CurrentVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineTrackedDolly>();
+        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
 
-        if (!dolly) return;
-
-        var posA = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition);
-        var posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition + 0.15f);
-        var delta = (posB - posA).normalized;
-        delta.y = 0f;
-        var camRight = Camera.main.transform.right;
-
-        Vector3 pathRight = delta * Mathf.Round(Vector3.Dot(delta, camRight));
-
-        Gizmos.DrawLine(transform.position, transform.position + pathRight);
+        Gizmos.DrawLine(transform.position, transform.position + mo.right);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.Cross(Vector3.up, delta));
+        Gizmos.DrawLine(transform.position, transform.position + mo.forward);
     }
 }

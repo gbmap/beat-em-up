@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Catacumba;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
@@ -22,8 +23,20 @@ namespace Catacumba.Exploration
         {
             get { return CurrentCamera.GetComponent<CinemachineVirtualCamera>(); }
         }
-        private CinemachineVirtualCamera currentVirtualCamera;
 
+        private PlayerMovementOrientation currentMovementOrientation;
+        public MovementOrientation MovementOrientation
+        {
+            get
+            {
+                if (currentMovementOrientation) return currentMovementOrientation.CalculateMovementOrientation();
+                return new MovementOrientation
+                {
+                    forward = CurrentCamera.transform.forward,
+                    right = CurrentCamera.transform.right
+                };
+            }
+        }
 
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
@@ -34,7 +47,6 @@ namespace Catacumba.Exploration
             mainCamera = Camera.main;
             currentActiveCamera = firstCamera;
             _impulseSource = GetComponent<CinemachineImpulseSource>();
-//            InitializeCameras();
         }
 
         public void Initialize()
@@ -49,6 +61,7 @@ namespace Catacumba.Exploration
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
 
+            currentMovementOrientation = currentActiveCamera.GetComponent<PlayerMovementOrientation>();
 
             OnCameraChange?.Invoke();
         }
