@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: ff724ec2500222d4caac2a769d83d56a
 ModelImporter:
-  serializedVersion: 26
+  serializedVersion: 19300
   internalIDToNameTable:
   - first:
       74: -203655887218126122
@@ -14,7 +14,7 @@ ModelImporter:
     second: Root|Walk
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -123,7 +123,6 @@ ModelImporter:
   - 1350e8fb4269f864198e8f91e96af5d9
   - 29f03b9b689c6de4cafbd4d48ae539fc
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
     serializedVersion: 3
     human:
@@ -772,8 +771,10 @@ ModelImporter:
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

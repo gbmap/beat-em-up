@@ -70,8 +70,7 @@ public class CharacterPlayerInput : MonoBehaviour
 
         if (updateCameraDir)
         {
-            cameraForward = Camera.main.transform.forward;
-            cameraRight = Camera.main.transform.right;
+            UpdateCameraDir();
         }
         else if (Mathf.Abs(hAxis) < 0.2f && Mathf.Abs(vAxis) < 0.2f)
         {
@@ -109,6 +108,37 @@ public class CharacterPlayerInput : MonoBehaviour
         }
     }
 
+    private void UpdateCameraDir()
+    {
+        var dolly = CameraManager.Instance.CurrentVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineTrackedDolly>();
+        if (dolly)
+        {
+            var posA = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition);
+            var posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition + 0.15f);
+            if (Mathf.Approximately(Vector3.Distance(posA, posB), 0f))
+            {
+                posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition - 0.15f);
+            }
+
+            var delta = (posB - posA).normalized;
+            delta.y = 0f;
+            var camRight = Camera.main.transform.right;
+
+            Vector3 pathRight = delta * Mathf.Round(Vector3.Dot(delta, camRight));
+
+            if (delta.sqrMagnitude > 0f)
+            {
+                cameraRight = pathRight;
+            }
+        }
+        else
+        {
+            cameraRight = Camera.main.transform.right;
+        }
+
+        cameraForward = Camera.main.transform.forward;
+    }
+
     bool AxisTappedDown(bool[] axis, bool[] axisCache)
     {
         return (axis[0] && !axisCache[0]) || (axis[1] && !axisCache[1]);
@@ -138,5 +168,24 @@ public class CharacterPlayerInput : MonoBehaviour
         Vector3 a = transform.position + transform.up * transform.localScale.y;
         Vector3 b = a - new Vector3(horizontalAxis, 0f, verticalAxis);
         Gizmos.DrawLine(a, b);
+
+        if (!Application.isPlaying) return;
+
+        var dolly = CameraManager.Instance.CurrentVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineTrackedDolly>();
+
+        if (!dolly) return;
+
+        var posA = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition);
+        var posB = dolly.m_Path.EvaluatePosition(dolly.m_PathPosition + 0.15f);
+        var delta = (posB - posA).normalized;
+        delta.y = 0f;
+        var camRight = Camera.main.transform.right;
+
+        Vector3 pathRight = delta * Mathf.Round(Vector3.Dot(delta, camRight));
+
+        Gizmos.DrawLine(transform.position, transform.position + pathRight);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.Cross(Vector3.up, delta));
     }
 }

@@ -18,6 +18,13 @@ namespace Catacumba.Exploration
         private GameObject currentActiveCamera;
         public GameObject CurrentCamera { get { return currentActiveCamera; } }
 
+        public CinemachineVirtualCamera CurrentVirtualCamera
+        {
+            get { return CurrentCamera.GetComponent<CinemachineVirtualCamera>(); }
+        }
+        private CinemachineVirtualCamera currentVirtualCamera;
+
+
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
         public System.Action OnCameraChange;
@@ -41,6 +48,7 @@ namespace Catacumba.Exploration
             currentActiveCamera.SetActive(false);
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
+
 
             OnCameraChange?.Invoke();
         }
