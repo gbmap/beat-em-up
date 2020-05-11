@@ -20,6 +20,8 @@ namespace Catacumba.Exploration
 
         private List<CameraPathWaypoint> cameraPathWaypoints;
 
+        public System.Action OnCameraChange;
+
         private void Awake()
         {
             mainCamera = Camera.main;
@@ -31,31 +33,7 @@ namespace Catacumba.Exploration
         public void Initialize()
         {
             cameraPathWaypoints = new List<CameraPathWaypoint>();
-            
-            // foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
-            // {
-            //     var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
-            //
-            //     foreach (var waypoint in path.m_Waypoints)
-            //     {
-            //         cameraPathWaypoints.Add(new CameraPathWaypoint(
-            //             vcam.gameObject,
-            //             path.transform.TransformPoint(waypoint.position)));
-            //     }
-            // }
-
             currentActiveCamera.SetActive(true);
-        }
-
-        private void Update()
-        {
-//            timer -= Time.deltaTime;
-//
-//            if (timer <= 0f)
-//            {
-//                CheckForNearestCamera();
-//                timer = cameraCheckTime;
-//            }
         }
 
         public void ChangeCamera(GameObject newCamera)
@@ -63,6 +41,8 @@ namespace Catacumba.Exploration
             currentActiveCamera.SetActive(false);
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
+
+            OnCameraChange?.Invoke();
         }
 
         public void Shake()

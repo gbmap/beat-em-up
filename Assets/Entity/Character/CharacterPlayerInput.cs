@@ -1,4 +1,6 @@
-﻿using Rewired;
+﻿using System;
+using Catacumba.Exploration;
+using Rewired;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
@@ -24,15 +26,11 @@ public class CharacterPlayerInput : MonoBehaviour
     float lastHorizontalAxis;
     float lastVerticalAxis;
 
-    bool[] isPressing = { false, false };
-    bool[] isPressingCache = { false, false };
-
-    float[] lastPress = { 0f, 0f };
-    float[] lastDoublePress = { 0f, 0f };
-
-    float doublePressTime = 0.2f;
-
     public System.Action<CharacterData> OnInteract;
+
+    private Vector3 cameraForward;
+    private Vector3 cameraRight;
+    private bool updateCameraDir = true;
 
     // Start is called before the first frame update
     void Awake()
@@ -49,14 +47,43 @@ public class CharacterPlayerInput : MonoBehaviour
         PlayerIndex = playerIndex;
     }
 
+    private void OnEnable()
+    {
+        CameraManager.Instance.OnCameraChange += OnCameraChange;
+    }
+
+    private void OnDisable()
+    {
+        CameraManager.Instance.OnCameraChange -= OnCameraChange;
+    }
+
+    private void OnCameraChange()
+    {
+        updateCameraDir = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
         float hAxis = _rewiredPlayer.GetAxis("HorizontalMovement");
         float vAxis = _rewiredPlayer.GetAxis("VerticalMovement");
 
-        Vector3 cFwd = Camera.main.transform.forward * vAxis +
-            Camera.main.transform.right * hAxis;
+        if (updateCameraDir)
+        {
+            cameraForward = Camera.main.transform.forward;
+            cameraRight = Camera.main.transform.right;
+        }
+        else if (Mathf.Abs(hAxis) < 0.2f && Mathf.Abs(vAxis) < 0.2f)
+        {
+            updateCameraDir = true;
+        }
+        else
+        {
+            cameraForward = Vector3.Lerp(cameraForward, Camera.main.transform.forward, Time.deltaTime*0.5f);
+            cameraRight = Vector3.Lerp(cameraRight, Camera.main.transform.right, Time.deltaTime*0.5f);
+        }
+        
+        Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
         cFwd.y = 0;
 
         movement.Direction = cFwd;
@@ -106,15 +133,6 @@ public class CharacterPlayerInput : MonoBehaviour
         if (IsPressing(horizontalAxis, lastHorizontalAxis) || IsPressing(verticalAxis, lastVerticalAxis))
         {
             Gizmos.color = Color.green;
-        }
-
-        for (int i = 0; i < 1; i++)
-        {
-            if (Time.time < lastDoublePress[i] + 0.25f)
-            {
-                Gizmos.color = Color.yellow;
-                break;
-            }
         }
 
         Vector3 a = transform.position + transform.up * transform.localScale.y;
