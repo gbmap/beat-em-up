@@ -21,7 +21,7 @@ MonoBehaviour:
     Slot: 5
     WeaponType: 1
     Attributes:
-      Vigor: 1
+      Vigor: 100
       Strength: 1
       Dexterity: 1
       Magic: 1
@@ -81,3 +81,5 @@ MonoBehaviour:
     m_ConstantMin: 12
     m_ConstantMax: 17
   DistanceFromCharacter: 1.4
+  OverrideHand: 0
+  Hand: 0

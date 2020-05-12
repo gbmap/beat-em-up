@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(CharacterHealth))]
 public class SpawnObjectOnDeath : MonoBehaviour
 {
     public CharacterHealth Health;
@@ -11,11 +10,22 @@ public class SpawnObjectOnDeath : MonoBehaviour
 
     private void OnEnable()
     {
+        if (!Health)
+        {
+            Health = GetComponent<CharacterHealth>();
+            if (!Health)
+            {
+                Debug.LogError("No Character Health found!");
+                Destroy(this);
+            }
+        }
+
         Health.OnDamaged += OnDamaged;    
     }
 
     private void OnDisable()
     {
+        if (!Health) return;
         Health.OnDamaged -= OnDamaged;
     }
 

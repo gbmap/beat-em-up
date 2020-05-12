@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Dungeon_Material_Interactable
-  m_Shader: {fileID: -6465566751694194690, guid: 778eeabfb4b3d984286cd003a46d6764,
+  m_Shader: {fileID: -6465566751694194690, guid: 8b58b9be33d32e0408d64b72e250ba93,
     type: 3}
   m_ShaderKeywords: _SPECULAR_SETUP
   m_LightmapFlags: 4
@@ -119,4 +119,5 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColorUI: {r: 1, g: 1, b: 1, a: 1}
+    - _GlowColor: {r: 0.98039216, g: 0.96078426, b: 0.38431367, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

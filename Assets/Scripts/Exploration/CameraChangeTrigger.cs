@@ -12,18 +12,6 @@ namespace Catacumba.Exploration
 
         private GameObject oldCamera;
 
-        private UnityAction<GameObject> OnCameraChange;
-        
-        private void OnEnable()
-        {
-            OnCameraChange += CameraManager.Instance.ChangeCamera;
-        }
-
-        private void OnDisable()
-        {
-            OnCameraChange -= CameraManager.Instance.ChangeCamera;
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag("Player")) return;
@@ -43,7 +31,7 @@ namespace Catacumba.Exploration
 
         private void ChangeCamera(GameObject camera)
         {
-            OnCameraChange(camera);
+            CameraManager.Instance.ChangeCamera(camera);
         }
     }
 }

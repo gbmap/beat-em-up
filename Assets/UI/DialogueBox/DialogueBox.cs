@@ -14,14 +14,17 @@ public class DialogueBox : MonoBehaviour
 
     private static int hashOpen = Animator.StringToHash("Opened");
 
+    private static System.Action OnClosedEvent;
+
     private static DialogueBox instance;
     private static DialogueBox Instance
     {
         get { return (instance ?? (instance = FindObjectOfType<DialogueBox>())); }
     }
 
-    public static void Show(string message)
+    public static void Show(string message, System.Action OnClose = null)
     {
+        OnClosedEvent = OnClose;
         Instance.IShow(message);
     }
 
@@ -57,6 +60,8 @@ public class DialogueBox : MonoBehaviour
             input.enabled = true;
             input.RewiredInput.RemoveInputEventDelegate(OnRewiredInput);
         }
+
+        OnClosedEvent?.Invoke();
     }
 
     
