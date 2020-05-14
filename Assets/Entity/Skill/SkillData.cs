@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SkillData : MonoBehaviour
 {
-    [HideInInspector]
+    //[HideInInspector]
     public CharacterData Caster;
     public Vector3 Offset;
     public Vector3 Rotation = Vector3.zero;

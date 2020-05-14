@@ -46,7 +46,6 @@ public class ItemConfigEditor : Editor
 
                 var skills = serializedObject.FindProperty("Stats.Skills");
                 EditorGUILayout.PropertyField(skills, new UnityEngine.GUIContent("Skills"));
-                serializedObject.ApplyModifiedProperties();
             }
         }
                 
@@ -55,6 +54,8 @@ public class ItemConfigEditor : Editor
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("Prefab"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("AnimationOverride"));
+
+        serializedObject.ApplyModifiedProperties();
     }
 
     private void DrawCharacterAttribute(CharAttributesI a)

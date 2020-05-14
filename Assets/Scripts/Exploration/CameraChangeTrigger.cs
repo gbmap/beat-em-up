@@ -4,6 +4,9 @@ using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
+    [System.Serializable]
+    public class OnCameraChangeEvent : UnityEvent { }
+
     [RequireComponent(typeof(Collider))]
     public class CameraChangeTrigger : MonoBehaviour
     {
@@ -11,6 +14,8 @@ namespace Catacumba.Exploration
         [SerializeField] private bool revertOnExit = false;
 
         private GameObject oldCamera;
+
+        public OnCameraChangeEvent OnCameraChange;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -32,6 +37,7 @@ namespace Catacumba.Exploration
         private void ChangeCamera(GameObject camera)
         {
             CameraManager.Instance.ChangeCamera(camera);
+            OnCameraChange.Invoke();
         }
     }
 }

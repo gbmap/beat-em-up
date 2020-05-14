@@ -5,6 +5,7 @@ using UnityEngine;
 public class DamagingProp : MonoBehaviour
 {
     public Collider Collider;
+    public bool DestroyOnTouch = true;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -22,6 +23,7 @@ public class DamagingProp : MonoBehaviour
         var p = GetComponentsInChildren<UnparentParticleSystemOnDeath>();
         System.Array.ForEach(p, d => d.Detach());
 
-        Destroy(gameObject);
+        if (DestroyOnTouch)
+            Destroy(gameObject);
     }
 }
