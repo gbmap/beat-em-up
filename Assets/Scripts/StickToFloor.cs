@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class StickToFloor : MonoBehaviour
 {
+    /*
     void Update()
     {
         // manter hud no chão
@@ -15,4 +16,5 @@ public class StickToFloor : MonoBehaviour
         //transform.rotation = Quaternion.Euler(90f, -transform.parent.rotation.y, 0f);
 
     }
+    */
 }

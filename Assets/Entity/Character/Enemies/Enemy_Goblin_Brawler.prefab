@@ -75,7 +75,7 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: CharacterModelOverride.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
@@ -101,12 +101,12 @@ PrefabInstance:
         type: 3}
       propertyPath: CharacterModelOverride.Array.data[2]
       value: 
-      objectReference: {fileID: 173802, guid: 388fa61abd880a549864058f895c8045, type: 3}
+      objectReference: {fileID: 165754, guid: 9a6b87430c6b2684aa9c1d4616d38a60, type: 3}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: CharacterModelOverride.Array.data[3]
       value: 
-      objectReference: {fileID: 165754, guid: 9a6b87430c6b2684aa9c1d4616d38a60, type: 3}
+      objectReference: {fileID: 112422, guid: 8cd752dc36d412b4bba2efd06775153a, type: 3}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: Vigor.m_Mode
