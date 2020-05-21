@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(CharacterHealth))]
 public class EmitParticlesOnDamage : MonoBehaviour
 {
     public CharacterHealth Health;

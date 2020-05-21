@@ -82,6 +82,7 @@ namespace Catacumba
 
     public static class EntityUtilities
     {
+        /*
         [MenuItem("Catacumba/Change Object/Into Damageable")]
         public static void ChangeIntoDamageable()
         {
@@ -120,6 +121,7 @@ namespace Catacumba
                 }
             }
         }
+        */
 
         public class ChangeIntoDamageableParams
         {
@@ -194,7 +196,7 @@ namespace Catacumba
             }
         }
 
-        [MenuItem("Catacumba/Change Object/Into Interactable")]
+        [MenuItem("Catacumba/Change Object/Into Interactable %k")]
         public static void ChangeIntoInteractable()
         {
             if (!EditorUtility.DisplayDialog("Change Object Into Interactable", "This action is not undo-able. Make sure everything is setup properly.", "Ok", "Cancel"))
@@ -218,7 +220,7 @@ namespace Catacumba
                 interactable = go.AddComponent<Interactable>();
             }
 
-            if (interactable.renderers.Length == 0)
+            if (interactable.renderers == null || interactable.renderers.Length == 0)
             {
                 interactable.renderers = interactable.GetComponentsInChildren<Renderer>();
             }

@@ -205,8 +205,6 @@ public class CharacterManagerConfig : ScriptableObject
 
         yield return null;
 
-        
-
         yield return EquipInventory(instance, instance.GetComponent<CharacterData>().StartingItems);
     }
 

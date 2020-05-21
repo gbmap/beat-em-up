@@ -372,7 +372,7 @@ public class CharacterAnimator : MonoBehaviour
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-        model.transform.localScale = Vector3.one;
+        //model.transform.localScale = Vector3.one;
 
         if (item.ItemType == EItemType.Equip)
         {
