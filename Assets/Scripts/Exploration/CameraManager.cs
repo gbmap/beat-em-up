@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Catacumba;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,44 +17,42 @@ namespace Catacumba.Exploration
         private Camera mainCamera;
         private CinemachineImpulseSource _impulseSource;
         private GameObject currentActiveCamera;
+        public GameObject CurrentCamera { get { return currentActiveCamera; } }
+
+        public CinemachineVirtualCamera CurrentVirtualCamera
+        {
+            get { return CurrentCamera.GetComponent<CinemachineVirtualCamera>(); }
+        }
+
+        private PlayerMovementOrientation currentMovementOrientation;
+        public MovementOrientation MovementOrientation
+        {
+            get
+            {
+                if (currentMovementOrientation) return currentMovementOrientation.CalculateMovementOrientation();
+                return new MovementOrientation
+                {
+                    forward = CurrentCamera.transform.forward,
+                    right = CurrentCamera.transform.right
+                };
+            }
+        }
+
         private List<CameraPathWaypoint> cameraPathWaypoints;
+
+        public System.Action OnCameraChange;
 
         private void Awake()
         {
             mainCamera = Camera.main;
             currentActiveCamera = firstCamera;
             _impulseSource = GetComponent<CinemachineImpulseSource>();
-//            InitializeCameras();
         }
 
         public void Initialize()
         {
             cameraPathWaypoints = new List<CameraPathWaypoint>();
-            
-            // foreach (var vcam in GetComponentsInChildren<CinemachineVirtualCamera>(true))
-            // {
-            //     var path = vcam.transform.parent.GetComponentInChildren<CinemachinePath>();
-            //
-            //     foreach (var waypoint in path.m_Waypoints)
-            //     {
-            //         cameraPathWaypoints.Add(new CameraPathWaypoint(
-            //             vcam.gameObject,
-            //             path.transform.TransformPoint(waypoint.position)));
-            //     }
-            // }
-
             currentActiveCamera.SetActive(true);
-        }
-
-        private void Update()
-        {
-//            timer -= Time.deltaTime;
-//
-//            if (timer <= 0f)
-//            {
-//                CheckForNearestCamera();
-//                timer = cameraCheckTime;
-//            }
         }
 
         public void ChangeCamera(GameObject newCamera)
@@ -61,6 +60,10 @@ namespace Catacumba.Exploration
             currentActiveCamera.SetActive(false);
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
+
+            currentMovementOrientation = currentActiveCamera.GetComponent<PlayerMovementOrientation>();
+
+            OnCameraChange?.Invoke();
         }
 
         public void Shake()

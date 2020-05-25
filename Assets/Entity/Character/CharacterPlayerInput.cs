@@ -1,4 +1,7 @@
-﻿using Rewired;
+﻿using System;
+using Catacumba;
+using Catacumba.Exploration;
+using Rewired;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
@@ -16,6 +19,7 @@ public class CharacterPlayerInput : MonoBehaviour
     private CharacterCombat combat;
 
     Player _rewiredPlayer;
+    public Player RewiredInput { get { return _rewiredPlayer; } }
 
     float horizontalAxis;
     float verticalAxis;
@@ -23,13 +27,11 @@ public class CharacterPlayerInput : MonoBehaviour
     float lastHorizontalAxis;
     float lastVerticalAxis;
 
-    bool[] isPressing = { false, false };
-    bool[] isPressingCache = { false, false };
+    public System.Action<CharacterData> OnInteract;
 
-    float[] lastPress = { 0f, 0f };
-    float[] lastDoublePress = { 0f, 0f };
-
-    float doublePressTime = 0.2f;
+    private Vector3 cameraForward;
+    private Vector3 cameraRight;
+    private bool updateCameraDir = true;
 
     // Start is called before the first frame update
     void Awake()
@@ -46,14 +48,42 @@ public class CharacterPlayerInput : MonoBehaviour
         PlayerIndex = playerIndex;
     }
 
+    private void OnEnable()
+    {
+        CameraManager.Instance.OnCameraChange += OnCameraChange;
+    }
+
+    private void OnDisable()
+    {
+        CameraManager.Instance.OnCameraChange -= OnCameraChange;
+    }
+
+    private void OnCameraChange()
+    {
+        updateCameraDir = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
         float hAxis = _rewiredPlayer.GetAxis("HorizontalMovement");
         float vAxis = _rewiredPlayer.GetAxis("VerticalMovement");
 
-        Vector3 cFwd = Camera.main.transform.forward * vAxis +
-            Camera.main.transform.right * hAxis;
+        if (updateCameraDir)
+        {
+            UpdateCameraDir();
+        }
+        else if (Mathf.Abs(hAxis) < 0.2f && Mathf.Abs(vAxis) < 0.2f)
+        {
+            updateCameraDir = true;
+        }
+        else
+        {
+            cameraForward = Vector3.Lerp(cameraForward, Camera.main.transform.forward, Time.deltaTime*0.5f);
+            cameraRight = Vector3.Lerp(cameraRight, Camera.main.transform.right, Time.deltaTime*0.5f);
+        }
+        
+        Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
         cFwd.y = 0;
 
         movement.Direction = cFwd;
@@ -69,6 +99,7 @@ public class CharacterPlayerInput : MonoBehaviour
 
         if (_rewiredPlayer.GetButtonDown("Submit"))
         {
+            OnInteract?.Invoke(characterData);
             characterData.Interact();
         }
 
@@ -76,39 +107,13 @@ public class CharacterPlayerInput : MonoBehaviour
         {
             movement.Roll(cFwd.normalized);
         }
+    }
 
-        /*
-        lastHorizontalAxis = horizontalAxis;
-        lastVerticalAxis = verticalAxis;
-
-        horizontalAxis = hAxis;
-        verticalAxis = vAxis;
-
-        isPressingCache[0] = isPressing[0];
-        isPressingCache[1] = isPressing[1];
-        isPressing[0] = IsPressing(horizontalAxis, lastHorizontalAxis);
-        isPressing[1] = IsPressing(verticalAxis, lastVerticalAxis);
-
-        // 0 ou 1
-        for (int axis = 0; axis < 2; axis++)
-        {
-            if (!AxisTappedDown(isPressing[axis], isPressingCache[axis]))
-            {
-                continue;
-            }
-
-            if (Time.time < lastPress[axis] + doublePressTime) // double tap
-            {
-                Debug.Log("Double tap");
-                lastDoublePress[axis] = Time.time;
-
-                movement.Roll(cFwd.normalized);
-            }
-
-            Debug.Log("Tap");
-            lastPress[axis] = Time.time;
-        }
-        */
+    private void UpdateCameraDir()
+    {
+        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
+        cameraRight = mo.right;
+        cameraForward = mo.forward;
     }
 
     bool AxisTappedDown(bool[] axis, bool[] axisCache)
@@ -137,17 +142,17 @@ public class CharacterPlayerInput : MonoBehaviour
             Gizmos.color = Color.green;
         }
 
-        for (int i = 0; i < 1; i++)
-        {
-            if (Time.time < lastDoublePress[i] + 0.25f)
-            {
-                Gizmos.color = Color.yellow;
-                break;
-            }
-        }
-
         Vector3 a = transform.position + transform.up * transform.localScale.y;
         Vector3 b = a - new Vector3(horizontalAxis, 0f, verticalAxis);
         Gizmos.DrawLine(a, b);
+
+        if (!Application.isPlaying) return;
+
+        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
+
+        Gizmos.DrawLine(transform.position, transform.position + mo.right);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, transform.position + mo.forward);
     }
 }

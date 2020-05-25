@@ -4,32 +4,40 @@ using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
-    [RequireComponent(typeof(BoxCollider))]
+    [System.Serializable]
+    public class OnCameraChangeEvent : UnityEvent { }
+
+    [RequireComponent(typeof(Collider))]
     public class CameraChangeTrigger : MonoBehaviour
     {
         [SerializeField] private GameObject virtualCamera;
-        
-        private UnityAction<GameObject> OnCameraChange;
-        
-        private void OnEnable()
-        {
-            OnCameraChange += CameraManager.Instance.ChangeCamera;
-        }
+        [SerializeField] private bool revertOnExit = false;
 
-        private void OnDisable()
-        {
-            OnCameraChange -= CameraManager.Instance.ChangeCamera;
-        }
+        private GameObject oldCamera;
+
+        public OnCameraChangeEvent OnCameraChange;
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
-                ChangeCamera();
+            if (!other.CompareTag("Player")) return;
+
+            oldCamera = CameraManager.Instance.CurrentCamera;
+            ChangeCamera(virtualCamera);
         }
 
-        private void ChangeCamera()
+        private void OnTriggerExit(Collider other)
         {
-            OnCameraChange(virtualCamera);
+            if (!other.CompareTag("Player") || !revertOnExit) return;
+
+            var newCamera = oldCamera;
+            oldCamera = CameraManager.Instance.CurrentCamera;
+            ChangeCamera(newCamera);
+        }
+
+        private void ChangeCamera(GameObject camera)
+        {
+            CameraManager.Instance.ChangeCamera(camera);
+            OnCameraChange.Invoke();
         }
     }
 }

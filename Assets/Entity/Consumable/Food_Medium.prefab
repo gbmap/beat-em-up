@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Food_Medium
       objectReference: {fileID: 0}
+    - target: {fileID: 6407174673068516211, guid: db1e940575328034ab0af253086b9b4f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7370140600609807006, guid: db1e940575328034ab0af253086b9b4f,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -22,6 +27,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 4300000, guid: be2ea4eed4dbe4645b484669d1804f87, type: 3}
+    - target: {fileID: 7997922598290286121, guid: db1e940575328034ab0af253086b9b4f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.03
+      objectReference: {fileID: 0}
     - target: {fileID: 8215366575919787570, guid: db1e940575328034ab0af253086b9b4f,
         type: 3}
       propertyPath: m_LocalPosition.x

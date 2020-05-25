@@ -37,6 +37,8 @@ public class AIManager : Singleton<AIManager>
 
     public int GetMaxAttackers(GameObject target)
     {
+        if (target == null) return int.MaxValue;
+
         CharacterData characterData = target.GetComponent<CharacterData>();
         if (characterData == null) return 0;
         return Mathf.CeilToInt(characterData.Stats.Level*0.1f);

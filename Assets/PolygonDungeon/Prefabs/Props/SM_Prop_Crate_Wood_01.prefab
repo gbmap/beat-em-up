@@ -11,7 +11,15 @@ GameObject:
   - component: {fileID: 419638}
   - component: {fileID: 3300430}
   - component: {fileID: 2361422}
-  m_Layer: 0
+  - component: {fileID: 1053219370}
+  - component: {fileID: 1053219369}
+  - component: {fileID: 1053219368}
+  - component: {fileID: 1053219367}
+  - component: {fileID: 1053219366}
+  - component: {fileID: 1053219365}
+  - component: {fileID: 1053219364}
+  - component: {fileID: 1053219363}
+  m_Layer: 10
   m_Name: SM_Prop_Crate_Wood_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 42b64fdb315e3054ea757d8d1c4bcfa7, type: 2}
+  - {fileID: 2100000, guid: 9d989eda7609b63478426ec4023bef70, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,3 +86,195 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &1053219370
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: -0.0000002682209, y: 0.58503616, z: 0}
+--- !u!208 &1053219369
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.58500004, z: 0}
+  m_TimeToStationary: 0.5
+--- !u!114 &1053219368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanBeKnockedOut: 0
+  HealthQuad: {fileID: 0}
+  IsOnGround: 0
+  IsBeingDamaged: 0
+--- !u!114 &1053219367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf8c6b746b03ad646a5d4f4d074581be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TypeId: 0
+  VigorCurve:
+    m_Mode: 0
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 0
+    m_ConstantMax: 1
+  StrengthCurve:
+    m_Mode: 0
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 0
+    m_ConstantMax: 0
+  DexterityCurve:
+    m_Mode: 0
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 0
+    m_ConstantMax: 0
+  MagicCurve:
+    m_Mode: 0
+    m_CurveMultiplier: 0
+    m_CurveMin:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_CurveMax:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ConstantMin: 0
+    m_ConstantMax: 0
+  CanBeKnockedOut: 1
+  CharacterModelOverride: []
+  StartingItems: []
+  CharacterSkills: []
+--- !u!114 &1053219366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d1dc5d7fbfedd43a6cec63f199fe21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 525851035073122930, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
+  Particles:
+  - {fileID: 3407175187265056528, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
+--- !u!114 &1053219365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 610f6ea749c253a44b88cc6b10bd9162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Particles: {fileID: 8610709862227938421, guid: e0c2348fed151bc4db01398e855fb5d2,
+    type: 3}
+--- !u!114 &1053219364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb1e4fcd0dd9784190a277908a9a012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 525851035073122930, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
+  ObjectPool:
+  - {fileID: 5523168617328840162, guid: db1e940575328034ab0af253086b9b4f, type: 3}
+  - {fileID: 5859386654082122749, guid: 5940414ce7f943b4ca09732d20f19d7b, type: 3}
+  Probability: 0.25
+--- !u!114 &1053219363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb1e4fcd0dd9784190a277908a9a012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 525851035073122930, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
+  ObjectPool:
+  - {fileID: 175928, guid: 497b6e4d56b9a2d48ac2cd8de829fa88, type: 3}
+  Probability: 1

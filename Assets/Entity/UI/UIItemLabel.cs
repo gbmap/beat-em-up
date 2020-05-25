@@ -17,8 +17,18 @@ public class UIItemLabel : MonoBehaviour
         Title.text = item.Name;
         Rarity.text = string.Format("({0})", item.Stats.Rarity.ToString());
         Description.text = item.Description;
-        Attributes.text = AttributesToString(item.Stats.Attributes);
-        DamageScaling.text = DamageScalingToString(item.Stats.DamageScaling);
+
+        if (item.Stats.ItemType == EItemType.Key ||
+            item.Stats.ItemType == EItemType.Consumable)
+        {
+            Attributes.text = string.Empty;
+            DamageScaling.text = string.Empty;
+        }
+        else
+        {
+            Attributes.text = AttributesToString(item.Stats.Attributes);
+            DamageScaling.text = DamageScalingToString(item.Stats.DamageScaling);
+        }
     }
 
     private string AttributesToString(CharAttributesI attr)

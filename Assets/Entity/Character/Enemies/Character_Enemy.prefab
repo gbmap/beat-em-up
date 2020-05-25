@@ -15,7 +15,7 @@ MonoBehaviour:
   WanderStateConfig:
     SightRange: 10
     SleepTime: 5
-    WanderRadius: 5
+    WanderRadius: 0
   AttackStateConfig:
     DistanceToAttack: 1.5
     AttackCooldown: 0.5
