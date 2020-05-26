@@ -393,7 +393,7 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: StrengthCurve.m_ConstantMax
-      value: 30
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
@@ -425,6 +425,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Icon
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3773363730234558313, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: m_Speed
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6088739693104260900, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: animatorSpeed
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9191630728786402830, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

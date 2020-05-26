@@ -28,10 +28,12 @@ public class CharacterAnimator : MonoBehaviour
 
     private float AnimatorDefaultSpeed
     {
-        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
+        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : animatorSpeed; }
     }
 
     private new Renderer renderer;
+
+    public float animatorSpeed = 1f;
 
     [Space]
     [Header("FX Impact")]
