@@ -169,15 +169,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             1 << LayerMask.NameToLayer("Entities")
         );
 
-        if (colliders.Length > 1)
-        {
-            SoundManager.Instance.PlayHit(colliderPos);
-        }
+        int hits = 0;
 
         foreach (var c in colliders)
         {
             var movement = c.gameObject.GetComponent<CharacterMovement>();
-            if (movement && movement.IsRolling)
+            var health = c.gameObject.GetComponent<CharacterHealth>();
+            if (movement && movement.IsRolling || health && health.IgnoreDamage)
             {
                 continue;
             }
@@ -195,6 +193,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             //attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
+
+            hits++;
+        }
+
+        if (hits > 0)
+        {
+            SoundManager.Instance.PlayHit(colliderPos);
         }
 
         lastAttack = attack;

@@ -124,7 +124,10 @@ public class CharacterAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+        if (movement.NavMeshAgent)
+        {
+            animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+        }
         
         UpdateSmokeEmission();
 

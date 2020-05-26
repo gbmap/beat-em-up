@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 
 namespace Catacumba
 {
@@ -14,7 +16,35 @@ namespace Catacumba
 
         private static int hashSelected = Shader.PropertyToID("_Selected");
 
-        void OnPlayerInteract(CharacterData player)
+        private CharacterData data;
+
+        private void Awake()
+        {
+            data = GetComponent<CharacterData>();
+        }
+
+        private void OnEnable()
+        {
+            if (!data) return;
+            data.OnCharacterModelUpdated += OnCharacterModelUpdated;
+        }
+
+        private void OnDisable()
+        {
+            if (data)
+            {
+                data.OnCharacterModelUpdated += OnCharacterModelUpdated;
+            }
+
+            System.Array.ForEach(renderers, renderer => renderer.material.SetFloat(hashSelected, 0f));
+        }
+
+        private void OnCharacterModelUpdated(GameObject obj)
+        {
+            renderers = renderers.Append(obj.GetComponent<Renderer>()).ToArray();
+        }
+
+        public void OnPlayerInteract(CharacterData player)
         {
             //if (!selected) return;
             OnInteract?.Invoke(player);

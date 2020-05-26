@@ -7,6 +7,7 @@ using UnityEngine;
 public class CharacterHealth : MonoBehaviour
 {
     public bool CanBeKnockedOut = true;
+    public bool IgnoreDamage = false;
 
     public System.Action<CharacterAttackData> OnDamaged;
     public System.Action OnFall;
@@ -236,5 +237,10 @@ public class CharacterHealth : MonoBehaviour
         }
 
         Materials = materials.ToArray();
+    }
+
+    public void SetIgnoreDamage(bool v)
+    {
+        IgnoreDamage = v;
     }
 }

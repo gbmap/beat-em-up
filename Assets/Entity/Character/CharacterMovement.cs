@@ -121,7 +121,10 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+        if (NavMeshAgent)
+        {
+            NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+        }
     }
 
     private void OnEnable()
@@ -255,7 +258,10 @@ public class CharacterMovement : MonoBehaviour
             OnRollEnded?.Invoke();
         }
 
-        NavMeshAgent.isStopped = IsAgentStopped;
+        if (NavMeshAgent)
+        {
+            NavMeshAgent.isStopped = IsAgentStopped;
+        }
     }
 
     public void ApplySpeedBump(Vector3 direction, float force)
