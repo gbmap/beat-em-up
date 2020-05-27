@@ -19,7 +19,7 @@ public class DialogueBox : MonoBehaviour
     private static DialogueBox instance;
     private static DialogueBox Instance
     {
-        get { return (instance ?? (instance = FindObjectOfType<DialogueBox>())); }
+        get { return instance == null ? (instance = FindObjectOfType<DialogueBox>()) : instance; }
     }
 
     public static void Show(string message, System.Action OnClose = null)

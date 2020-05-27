@@ -1,27 +1,35 @@
-﻿using UnityEngine;
+﻿using Frictionless;
+using UnityEngine;
 
-public class SpawnParticleSystemOnDestroy : MonoBehaviour
-{
-    public GameObject Particles;
-
-    private bool isQuitting;
-
-    private void Start()
+namespace Catacumba {
+    public class SpawnParticleSystemOnDestroy : MonoBehaviour
     {
-        if (!Particles)
-            Destroy(this);
+        public GameObject Particles;
 
-        Application.quitting += ApplicationQuitting;
-    }
+        private bool isQuitting;
 
-    private void ApplicationQuitting()
-    {
-        isQuitting = true;
-    }
+        private void Start()
+        {
+            if (!Particles)
+                Destroy(this);
 
-    private void OnDisable()
-    {
-        if (!Application.isPlaying || !Particles || isQuitting) return;
-        var particle = Instantiate(Particles, transform.position, Quaternion.identity);
+            ServiceFactory.Instance.Resolve<MessageRouter>().AddHandler<StateManager.MsgOnSceneChangeRequest>(OnSceneChangeRequest);
+        }
+
+        private void OnSceneChangeRequest(StateManager.MsgOnSceneChangeRequest msg)
+        {
+            isQuitting = true;
+        }
+
+        private void OnApplicationQuit()
+        {
+            isQuitting = true;
+        }
+
+        private void OnDisable()
+        {
+            if (!Application.isPlaying || !Particles || isQuitting) return;
+            var particle = Instantiate(Particles, transform.position, Quaternion.identity);
+        }
     }
 }

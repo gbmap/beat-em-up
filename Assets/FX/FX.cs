@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class FX : Singleton<FX>
+public class FX : SimpleSingleton<FX>
 {
     [Tooltip("Used in heal targets")]
     public GameObject HealEffect;

@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
-    public class CameraManager : Singleton<CameraManager>
+    public class CameraManager : SimpleSingleton<CameraManager>
     {
         [SerializeField] private Transform character;
         [SerializeField] private float cameraCheckTime = 1f;

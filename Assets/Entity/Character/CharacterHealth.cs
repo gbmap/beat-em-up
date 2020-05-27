@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using Catacumba.Exploration;
+using Frictionless;
 using UnityEngine;
+
+public class MsgOnPlayerDied { public CharacterData player; }
 
 public class CharacterHealth : MonoBehaviour
 {
@@ -71,6 +74,7 @@ public class CharacterHealth : MonoBehaviour
     public bool IsOnGround;
     public bool IsBeingDamaged; // rolando animação de dano
 
+    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -99,6 +103,11 @@ public class CharacterHealth : MonoBehaviour
                 if (IsDead)
                 {
                     OnDeath?.Invoke();
+                    if (characterData.BrainType == ECharacterBrainType.Input)
+                    {
+                        ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = characterData });
+                    }
+
                     Destroy(gameObject);
                 }
                 else
@@ -199,6 +208,8 @@ public class CharacterHealth : MonoBehaviour
 
             if (!characterAnimator)
             {
+                
+
                 Destroy(gameObject);
             }
         }

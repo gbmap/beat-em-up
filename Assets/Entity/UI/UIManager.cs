@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class UIManager : Singleton<UIManager> // TODO: trocar isso aqui por um ConfigurableSingleton
+public class UIManager : SimpleSingleton<UIManager> // TODO: trocar isso aqui por um ConfigurableSingleton
 {
     public GameObject UILabel;
 

@@ -17,15 +17,12 @@ public class ItemData : MonoBehaviour /*ConfigurableObject<ItemStats, int>*/
         InstanceId = GetInstanceID(); // fix nojento
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        // isso aqui tá dando exceção qnd fecha o jogo :(
-        ItemManager.Instance?.UnregisterItemInstance(InstanceId);
     }
 
     private void Start()
     {
-        ItemManager.Instance.RegisterItemInstance(this);
         ItemManager.Instance.SetupItem(gameObject, itemConfig);
     }
 

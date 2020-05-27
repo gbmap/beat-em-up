@@ -434,7 +434,12 @@ PrefabInstance:
     - target: {fileID: 6088739693104260900, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: animatorSpeed
-      value: 0.5
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6088739693104260901, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: MoveSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9191630728786402830, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

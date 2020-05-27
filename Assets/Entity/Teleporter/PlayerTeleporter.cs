@@ -41,7 +41,7 @@ namespace Catacumba
             OnTeleportStarted?.Invoke();
 
             UIFade f = FindObjectOfType<UIFade>();
-            f.Fade(true);
+            f.Fade(false);
 
             yield return new WaitForSeconds(2f);
 
@@ -51,7 +51,7 @@ namespace Catacumba
 
             yield return new WaitForSeconds(2f);
             
-            f.Fade(false);
+            f.Fade(true);
 
             yield return new WaitForSeconds(1f);
 
