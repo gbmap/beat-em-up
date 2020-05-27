@@ -175,7 +175,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         {
             var movement = c.gameObject.GetComponent<CharacterMovement>();
             var health = c.gameObject.GetComponent<CharacterHealth>();
-            if (movement && movement.IsRolling || health && health.IgnoreDamage)
+            if (movement && movement.IsRolling || !health || health && health.IgnoreDamage)
             {
                 continue;
             }

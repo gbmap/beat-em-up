@@ -55,6 +55,6 @@ public class ItemBehaviour : MonoBehaviour
     private void UpdateVisuals(bool enterExit)
     {
         SetHighlight(playersSelecting.Count > 0);
-        UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), enterExit);
+        //UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), enterExit);
     }
 }
