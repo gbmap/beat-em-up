@@ -159,6 +159,7 @@ namespace Catacumba.Character.AI
         public const int RES_TOO_MANY_ATTACKERS = 2;
         public const int RES_COMBO_END = 3;
         public const int RES_ORBIT_REACTION_COMBO_END = 4;
+        public const int RES_TARGET_DESTROYED = 5;
 
         private StateResult RESULT_CONTINUE = new StateResult { code = RES_CONTINUE };
 
@@ -238,6 +239,8 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
+            if (Target == null) return new StateResult { code = RES_TARGET_DESTROYED };
+
             StateResult result = CheckNumberOfAttackers();
             if (result.code != RES_CONTINUE) return result;
 
@@ -440,6 +443,7 @@ namespace Catacumba.Character.AI
     {
         public const int RES_NOT_ENOUGH_ATTACKERS = 1;
         public const int RES_ORBIT_ATTACK = 2;
+        public const int RES_TARGET_DESTROYED = 3;
 
         private float lastAttackRoll;
 
@@ -454,7 +458,17 @@ namespace Catacumba.Character.AI
 
         public override StateResult Update()
         {
-            if (AIManager.Instance.GetNumberOfAttackers(Target) < AIManager.Instance.GetMaxAttackers(Target))
+            if (Target == null) return new StateResult(RES_TARGET_DESTROYED);
+
+            int nAttackers = AIManager.Instance.GetNumberOfAttackers(Target);
+            if (nAttackers == -1)
+            {
+                return new StateResult(RES_TARGET_DESTROYED); ;
+            }
+
+            int maxAttackers = AIManager.Instance.GetMaxAttackers(Target);
+
+            if (nAttackers < maxAttackers)
             {
                 //MovementStatus = EBrawlerAIStates.Attack;
                 return new StateResult(RES_NOT_ENOUGH_ATTACKERS, Target);
@@ -675,8 +689,6 @@ namespace Catacumba.Character.AI
                 movement.IsAgentStopped = false;
                 return new StateResult(RES_CONTINUE);
             }
-
-
         }
     }
 

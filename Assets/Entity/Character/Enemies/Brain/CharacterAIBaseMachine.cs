@@ -45,6 +45,10 @@ namespace Catacumba.Character.AI
             movement = GetComponent<CharacterMovement>();
         }
 
+#if UNITY_EDITOR
+        private static bool debug = false;
+#endif
+
         protected virtual void Update()
         {
             if (currentState != null && !health.IsOnGround)
@@ -52,6 +56,10 @@ namespace Catacumba.Character.AI
                 StateResult result = currentState.Update();
                 HandleStateResult(CurrentAIState, result);
             }
+
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.F5)) debug = !debug;
+#endif
         }
 
         protected abstract BaseState CreateNewState(T previousState, T currentState, params object[] data);
@@ -85,7 +93,7 @@ namespace Catacumba.Character.AI
 
         protected virtual void OnGUI()
         {
-            if (!Application.isEditor) return;
+            if (!Application.isEditor || !debug) return;
 
             Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
             GUI.Label(r, "State: " + CurrentAIState);
@@ -95,6 +103,7 @@ namespace Catacumba.Character.AI
                 currentState.OnGUI();
             }
         }
+
 #endif
 
     }

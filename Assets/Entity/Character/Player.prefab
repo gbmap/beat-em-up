@@ -39,8 +39,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1519907925882052452}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 0.7319925, b: 0.2688679, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -1172,7 +1173,7 @@ PrefabInstance:
     - target: {fileID: 5463593265913646897, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_ApplyRootMotion
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6637376402186026283, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
@@ -1292,7 +1293,7 @@ PrefabInstance:
     - target: {fileID: 6927136765418665498, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: SpeedBumpForce
-      value: 0.8
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6927136765418665499, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}

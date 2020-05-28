@@ -58,7 +58,6 @@ namespace Catacumba.Character.AI
         {
             base.Update();
 
-
             if (Time.time > lastItemCheck + itemCheckTime)
             {
                 /* OTIMIZAR ISSO AQUI >>>>EVENTUALMENTE<<<< */
@@ -120,7 +119,8 @@ namespace Catacumba.Character.AI
                     {
                         SetCurrentState(EBrawlerAIStates.Orbit, result.data[0] as GameObject);
                     }
-                    else if (result.code == AttackState.RES_OUT_OF_SIGHT)
+                    else if (result.code == AttackState.RES_OUT_OF_SIGHT ||
+                             result.code == AttackState.RES_TARGET_DESTROYED)
                     {
                         SetCurrentState(EBrawlerAIStates.Wander);
                     }

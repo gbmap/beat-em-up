@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AIManager : Singleton<AIManager>
+public class AIManager : SimpleSingleton<AIManager>
 {
     private class TargetInfo
     {
@@ -46,14 +46,14 @@ public class AIManager : Singleton<AIManager>
 
     public int GetNumberOfAttackers(GameObject target)
     {
-        try
+        TargetInfo info;
+        if (mapTargets.TryGetValue(target, out info))
         {
-            return mapTargets[target].Attackers;
+            return info.Attackers;
         }
-        catch (KeyNotFoundException ex)
+        else
         {
-            Debug.LogError(ex.Message);
-            throw ex;
+            return -1;
         }
     }
 
@@ -64,6 +64,8 @@ public class AIManager : Singleton<AIManager>
 
     public void DecreaseAttackers(GameObject target)
     {
+        TargetInfo t;
+        if (!mapTargets.TryGetValue(target, out t)) return;
         mapTargets[target].Attackers--;
     }
 }

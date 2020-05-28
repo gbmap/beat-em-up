@@ -63,6 +63,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -129,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanBeKnockedOut: 0
+  IgnoreDamage: 0
   HealthQuad: {fileID: 0}
   IsOnGround: 0
   IsBeingDamaged: 0
@@ -263,6 +265,8 @@ MonoBehaviour:
   - {fileID: 5523168617328840162, guid: db1e940575328034ab0af253086b9b4f, type: 3}
   - {fileID: 5859386654082122749, guid: 5940414ce7f943b4ca09732d20f19d7b, type: 3}
   Probability: 0.25
+  Instances: 1
+  RangeOfInstances: 0
 --- !u!114 &2972514295811919040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -279,6 +283,8 @@ MonoBehaviour:
   ObjectPool:
   - {fileID: 175928, guid: 497b6e4d56b9a2d48ac2cd8de829fa88, type: 3}
   Probability: 1
+  Instances: 1
+  RangeOfInstances: 0
 --- !u!1001 &5830891768774287263
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -389,6 +395,11 @@ PrefabInstance:
     - target: {fileID: 9197417981095653519, guid: 0e7d29bae151d0f4d90460ccde2d2d94,
         type: 3}
       propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197417981095653519, guid: 0e7d29bae151d0f4d90460ccde2d2d94,
+        type: 3}
+      propertyPath: stopAction
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

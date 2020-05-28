@@ -2,7 +2,7 @@
 
 public enum EAttackType
 {
-    Weak,
+    Weak = 1,
     Strong
 }
 
@@ -140,7 +140,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         }
 
         // TODO: poise bar legítimo
-        defender.PoiseBar -= (defender.Poise*0.1f) / defender.Poise;
+        defender.CurrentPoise -= attackData.Type == EAttackType.Weak ? 1 : 2;
 
         // reduz vida
         defender.Health -= damage;
@@ -186,10 +186,10 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
             var combat = c.gameObject.GetComponent<CharacterCombat>();
 
-            attack.CancelAnimation = ((combat && !combat.IsOnHeavyAttack) ||
-                attack.Type == EAttackType.Strong ||
-                attack.DefenderStats.Health == 0) &&
-                ((attack.DefenderStats.Attributes.Vigor < attack.AttackerStats.Attributes.Strength) || attack.DefenderStats.PoiseBar < 0.5f);
+            attack.CancelAnimation = (attack.DefenderStats.CanBeKnockedOut && ((combat && !combat.IsOnHeavyAttack) ||
+                                                                                attack.Type == EAttackType.Strong ||
+                                                                                attack.DefenderStats.Health == 0))
+                                      || attack.DefenderStats.PoiseBar < 0.25f;  
             //attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);

@@ -6,14 +6,14 @@ public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
 
     public ItemStats RegisterItemInstance(ItemData item)
     {
-        UIManager.Instance.CreateItemLabel(item);
+        //UIManager.Instance.CreateItemLabel(item);
         //return GetItem(item.TypeId);
         return null;
     }
 
     public void UnregisterItemInstance(int instanceId)
     {
-        UIManager.Instance.DestroyItemLabel(instanceId);
+        //UIManager.Instance.DestroyItemLabel(instanceId);
     }
 
     public ItemConfig GetItemConfig(int id)

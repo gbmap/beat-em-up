@@ -162,7 +162,7 @@ public class CharacterAnimator : MonoBehaviour
         if (movement.IsRolling)
         {
             main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
-            main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2f);
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
             emission.rateOverDistanceMultiplier = 2f;
             
         }

@@ -25,6 +25,26 @@ MonoBehaviour:
   OrbitStateConfig:
     OrbitRadius: 3
     DiceRollCooldown: 2
+--- !u!114 &9177282144961453490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2836811929868206439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb1e4fcd0dd9784190a277908a9a012, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Health: {fileID: 0}
+  ObjectPool:
+  - {fileID: 5523168617328840162, guid: db1e940575328034ab0af253086b9b4f, type: 3}
+  - {fileID: 5859386654082122749, guid: 5940414ce7f943b4ca09732d20f19d7b, type: 3}
+  - {fileID: 5859386654082122749, guid: e6f38fa6e9b19d046a477c9f51484676, type: 3}
+  Probability: 0.15
+  Instances: 1
+  RangeOfInstances: 0
 --- !u!1001 &3773363730220257599
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32,6 +52,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -6239386818837155508, guid: a04174840aa4b944ab6c2304972f645c,
+        type: 3}
+      propertyPath: VigorCurve.m_ConstantMax
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1370166557560115288, guid: a04174840aa4b944ab6c2304972f645c,
         type: 3}
       propertyPath: m_Name

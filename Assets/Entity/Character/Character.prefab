@@ -444,7 +444,7 @@ MonoBehaviour:
   Direction: {x: 0, y: 0, z: 0}
   MoveSpeed: 4
   IgnoreSpeedBump: 0
-  SpeedBumpForce: 0.5
+  SpeedBumpForce: 0
 --- !u!114 &4779215824379891065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -458,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CanBeKnockedOut: 1
+  IgnoreDamage: 0
   HealthQuad: {fileID: 6927136765445453994}
   IsOnGround: 0
   IsBeingDamaged: 0
@@ -475,6 +476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 5463593265913646897}
   IgnoreWeaponAnimations: 0
+  animatorSpeed: 1
   ParticlesHit: {fileID: 7549969102162730968}
   WeakHitStartSize:
     m_Mode: 3
@@ -3643,6 +3645,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632521888154165591, guid: dccde09acb74c6246b0bea3a886ef9f2,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.minScalar
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8632521888154165591, guid: dccde09acb74c6246b0bea3a886ef9f2,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dccde09acb74c6246b0bea3a886ef9f2, type: 3}

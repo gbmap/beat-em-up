@@ -18,8 +18,6 @@ public class CharacterHealth : MonoBehaviour
     public System.Action OnGetUp;
     public System.Action OnDeath;
 
-    private bool _isOnFloor;
-
     private Rigidbody _rigidbody;
     private Collider collider;
 
@@ -71,10 +69,9 @@ public class CharacterHealth : MonoBehaviour
     private float recoverTimer;
     private float recoverCooldown = 2f;
 
-    public bool IsOnGround;
+    public bool IsOnGround { get; private set; }
     public bool IsBeingDamaged; // rolando animação de dano
 
-    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -90,7 +87,7 @@ public class CharacterHealth : MonoBehaviour
     {
         if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
         {
-            characterData.Stats.PoiseBar = 1f;
+            characterData.Stats.CurrentPoise = characterData.Stats.Poise;
             UpdatePoise(1f);
         }
 
@@ -163,7 +160,6 @@ public class CharacterHealth : MonoBehaviour
         //_rigidbody.useGravity = true;
         IsOnGround = false;
         collider.enabled = true;
-        _isOnFloor = false;
     }
 
     private void OnFallCallback()
@@ -171,7 +167,6 @@ public class CharacterHealth : MonoBehaviour
         //_rigidbody.isKinematic = true;
         //_rigidbody.useGravity = false;
         collider.enabled = false;
-        //_isOnFloor = true;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
         if (IsDead)
@@ -208,8 +203,6 @@ public class CharacterHealth : MonoBehaviour
 
             if (!characterAnimator)
             {
-                
-
                 Destroy(gameObject);
             }
         }
