@@ -140,7 +140,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         }
 
         // TODO: poise bar legítimo
-        defender.CurrentPoise -= attackData.Type == EAttackType.Weak ? 1 : 2;
+        defender.CurrentPoise -= attackData.Type == EAttackType.Weak ? 1 : 3;
 
         // reduz vida
         defender.Health -= damage;

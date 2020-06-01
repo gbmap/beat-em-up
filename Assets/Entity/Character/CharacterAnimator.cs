@@ -287,6 +287,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRollCallback()
     {
+        
         animator.speed = AnimatorDefaultSpeed;
         animator.ResetTrigger(hashWeakAttack);
         animator.ResetTrigger(hashStrongAttack);

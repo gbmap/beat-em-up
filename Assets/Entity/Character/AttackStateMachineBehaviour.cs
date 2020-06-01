@@ -35,7 +35,10 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = false;
+        if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
+        {
+            animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = false;
+        }
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine

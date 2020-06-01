@@ -51,7 +51,7 @@ public class CharacterMovement : MonoBehaviour
                 !health.IsOnGround &&
                 !health.IsBeingDamaged &&
                 !IsBeingMoved &&
-                Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f));
+                (data.BrainType == ECharacterBrainType.AI ? Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f)) : true);
         }
     }
     public bool IsBeingMoved { get { return speedBumpT > 0f; } }
@@ -334,7 +334,8 @@ public class CharacterMovement : MonoBehaviour
     public void Roll(Vector3 direction)
     {
         if (Time.time < lastRoll + 0.75f ||
-            health.IsOnGround)
+            health.IsOnGround ||
+            combat.IsOnHeavyAttack)
         {
             return;
         }
@@ -344,7 +345,7 @@ public class CharacterMovement : MonoBehaviour
             direction = transform.forward;
         }
 
-
+        combat.IsOnCombo = false;
         OnRoll?.Invoke();
         rollSpeedT = 1f;
         speedBumpT = 0f;
