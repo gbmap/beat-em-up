@@ -8,6 +8,7 @@ namespace Catacumba
     public class ItemConfigEditor : Editor
     {
         ItemConfig itemConfig;
+        
 
         private void OnEnable()
         {
@@ -17,6 +18,7 @@ namespace Catacumba
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+            bool changed = false;
 
             //base.OnInspectorGUI();
             E.LabelField("UI Config");
@@ -36,14 +38,14 @@ namespace Catacumba
                 s.Slot = (EInventorySlot)E.EnumPopup("Slot", s.Slot);
 
                 E.LabelField("Item Attributes", EditorStyles.boldLabel);
-                DrawCharacterAttributeInt(ref s.Attributes);
+                changed |= DrawCharacterAttributeInt(ref s.Attributes);
 
                 if (s.Slot == EInventorySlot.Weapon)
                 {
                     E.Separator();
 
                     E.LabelField("Item Damage Scaling", EditorStyles.boldLabel);
-                    DrawCharacterAttributeFloat(ref s.DamageScaling);
+                    changed |= DrawCharacterAttributeFloat(ref s.DamageScaling);
 
                     E.Separator();
                     s.WeaponType = (EWeaponType)E.EnumPopup("Weapon Type", s.WeaponType);
@@ -59,7 +61,10 @@ namespace Catacumba
             E.PropertyField(serializedObject.FindProperty("Prefab"));
             E.PropertyField(serializedObject.FindProperty("AnimationOverride"));
 
-            EditorUtility.SetDirty(target);
+            if (changed)
+            {
+                EditorUtility.SetDirty(target);
+            }
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -83,20 +88,40 @@ namespace Catacumba
         }
         */
 
-        private void DrawCharacterAttributeInt(ref CharAttributesI attrs)
+        private int IntCheck(int v, string name, int min, int max, ref bool changed)
         {
-            attrs.Vigor = E.IntSlider("Vigor", attrs.Vigor, -100, 100);
-            attrs.Strength = E.IntSlider("Strength", attrs.Strength, -100, 100);
-            attrs.Dexterity = E.IntSlider("Dexterity", attrs.Dexterity, -100, 100);
-            attrs.Magic = E.IntSlider("Magic", attrs.Magic, -100, 100);
+            int lv = v;
+            v = E.IntSlider(name, v, min, max);
+            changed |= lv != v;
+            return v;
         }
 
-        private void DrawCharacterAttributeFloat(ref CharAttributesF attrs)
+        private float FloatCheck(string name, float v, float min, float max, ref bool changed)
         {
-            attrs.Vigor = E.Slider("Vigor", attrs.Vigor, 0f, 10f);
-            attrs.Strength = E.Slider("Strength", attrs.Strength, 0f, 10f);
-            attrs.Dexterity = E.Slider("Dexterity", attrs.Dexterity, 0f, 10f);
-            attrs.Magic = E.Slider("Magic", attrs.Magic, 0f, 10f);
+            float lv = v;
+            v = E.Slider(name, v, min, max);
+            changed |= lv != v;
+            return v;
+        }
+
+        private bool DrawCharacterAttributeInt(ref CharAttributesI attrs)
+        {
+            bool changed = false;
+            attrs.Vigor = IntCheck(attrs.Vigor, "Vigor", -100, 100, ref changed);
+            attrs.Strength = IntCheck(attrs.Strength, "Strength", -100, 100, ref changed);
+            attrs.Dexterity = IntCheck(attrs.Dexterity, "Dexterity", -100, 100, ref changed);
+            attrs.Magic = IntCheck(attrs.Magic, "Magic", -100, 100, ref changed);
+            return changed;
+        }
+
+        private bool DrawCharacterAttributeFloat(ref CharAttributesF attrs)
+        {
+            bool changed = false;
+            attrs.Vigor = FloatCheck("Vigor", attrs.Vigor, 0f, 10f, ref changed);
+            attrs.Strength = FloatCheck("Strength", attrs.Strength, 0f, 10f, ref changed);
+            attrs.Dexterity = FloatCheck("Dexterity", attrs.Dexterity, 0f, 10f, ref changed);
+            attrs.Magic = FloatCheck("Magic", attrs.Magic, 0f, 10f, ref changed);
+            return changed;
         }
     }
 
