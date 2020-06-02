@@ -2,16 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillFlameballExplosion : MonoBehaviour
+public class SkillFlameballExplosion : SkillData
 {
-    public SkillData skillData;
     public GameObject SkillFlameball;
     public int NumberOfSpawns = 6;
-
-    private IEnumerator Start()
-    {
-        yield return EmitFlameballs();
-    }
 
     public IEnumerator EmitFlameballs()
     {
@@ -25,9 +19,14 @@ public class SkillFlameballExplosion : MonoBehaviour
             Quaternion rot = Quaternion.LookRotation(pos);
 
             var instance = Instantiate(SkillFlameball, transform.position + pos * 2f, rot);
-            instance.GetComponent<SkillData>().Caster = skillData.Caster;
+            instance.GetComponent<SkillData>().Caster = Caster;
         }
 
         yield break;
+    }
+
+    public override void Cast()
+    {
+        StartCoroutine(EmitFlameballs());
     }
 }

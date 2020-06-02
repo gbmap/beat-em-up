@@ -485,8 +485,6 @@ namespace Catacumba.Character.AI
                 lastAttackRoll = Time.time;
             }
 
-            
-
             return base.Update();
         }
     }
@@ -710,14 +708,17 @@ namespace Catacumba.Character.AI
 
         private bool usingSkill;
         private bool usedSkill;
-        private int skillIndex;
+        public int SkilIndex
+        {
+            get; private set;
+        }
 
         public UseSkillState(GameObject obj, int skillIndex) : base(obj)
         {
             usingSkill = false;
             usedSkill = false;
 
-            this.skillIndex = skillIndex;
+            SkilIndex = skillIndex;
         }
 
         public override void OnEnter()
@@ -727,7 +728,7 @@ namespace Catacumba.Character.AI
             animator.OnStartUsingSkill += OnStartUsingSkill;
             animator.OnEndUsingSkill += OnEndUsingSkill;
 
-            combat.UseSkill(skillIndex);
+            combat.UseSkill(SkilIndex);
         }
 
         public override void OnExit()

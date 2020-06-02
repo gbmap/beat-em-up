@@ -202,7 +202,7 @@ public class ItemStats
     public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
-    public BaseSkill[] Skills;
+    public SkillData[] Skills;
 
     public bool IsRanged { get { return WeaponType == EWeaponType.Bow || WeaponType == EWeaponType.Scepter; } }
 }

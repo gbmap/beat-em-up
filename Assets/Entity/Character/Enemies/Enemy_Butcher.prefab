@@ -388,7 +388,7 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: VigorCurve.m_ConstantMax
-      value: 50
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

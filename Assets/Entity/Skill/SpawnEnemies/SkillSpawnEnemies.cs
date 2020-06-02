@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillSpawnEnemies : MonoBehaviour
+public class SkillSpawnEnemies : SkillData
 {
     public GameObject[] Enemies;
     public int NumberOfEnemies;
@@ -9,8 +11,20 @@ public class SkillSpawnEnemies : MonoBehaviour
 
     public ParticleSystem SpawnEffect;
     public int ParticlesPerSpawn = 10;
-    
-    IEnumerator Start()
+
+    public List<GameObject> Minions { get; private set; }
+
+    private void Awake()
+    {
+        Minions = new List<GameObject>();
+    }
+
+    void Spawn()
+    {
+        StartCoroutine(SpawnCoroutine());
+    }
+
+    IEnumerator SpawnCoroutine()
     {
         int[] indexes = new int[NumberOfEnemies];
         Vector3[] poss = new Vector3[NumberOfEnemies];
@@ -19,9 +33,9 @@ public class SkillSpawnEnemies : MonoBehaviour
         {
             for (int i = 0; i < NumberOfEnemies; i++)
             {
-                indexes[i] = Random.Range(0, Enemies.Length);
+                indexes[i] = UnityEngine.Random.Range(0, Enemies.Length);
 
-                Vector2 posA = Random.insideUnitCircle * SpawnRange;
+                Vector2 posA = UnityEngine.Random.insideUnitCircle * SpawnRange;
                 poss[i] = new Vector3(posA.x, 0f, posA.y);
 
                 GameObject enemy = Enemies[indexes[i]];
@@ -40,14 +54,27 @@ public class SkillSpawnEnemies : MonoBehaviour
         for (int i = 0; i < NumberOfEnemies; i++)
         {
             GameObject enemy = Enemies[indexes[i]];
-            Vector3 pos = poss[i];
+            Vector3 pos = transform.position + poss[i];
 
-            Instantiate(enemy, pos, Quaternion.identity);
+            var obj = Instantiate(enemy, pos, Quaternion.identity);
+            obj.GetComponent<CharacterHealth>().OnDeath += OnMinionDeathCallback;
+            Minions.Add(obj);
         }
+    }
+
+    private void OnMinionDeathCallback(CharacterHealth health)
+    {
+        Minions.Remove(health.gameObject);
+        health.OnDeath -= OnMinionDeathCallback;
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, SpawnRange);
+    }
+
+    public override void Cast()
+    {
+        Spawn();
     }
 }

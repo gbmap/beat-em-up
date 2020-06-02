@@ -16,7 +16,7 @@ public class CharacterHealth : MonoBehaviour
     public System.Action OnFall;
     public System.Action OnRecover;
     public System.Action OnGetUp;
-    public System.Action OnDeath;
+    public System.Action<CharacterHealth> OnDeath;
 
     private Rigidbody _rigidbody;
     private Collider collider;
@@ -99,7 +99,7 @@ public class CharacterHealth : MonoBehaviour
             {
                 if (IsDead)
                 {
-                    OnDeath?.Invoke();
+                    OnDeath?.Invoke(this);
                     if (characterData.BrainType == ECharacterBrainType.Input)
                     {
                         ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = characterData });

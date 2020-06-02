@@ -116,7 +116,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     [Space]
     [Header("Skills")]
-    public BaseSkill[] CharacterSkills;
+    public SkillData[] CharacterSkills;
 
     public List<ItemData> ItemsInRange { get { return itemsInRange; } }
     private List<ItemData> itemsInRange = new List<ItemData>();

@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5469485212257514023}
   - component: {fileID: 8536354885132389960}
-  - component: {fileID: 8328261565374915449}
   - component: {fileID: 1782158517914120195}
   - component: {fileID: 3149050047774098624}
   m_Layer: 0
@@ -46,26 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4f27b2f3d3713b459f274afcabec95b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillData: {fileID: 8328261565374915449}
+  skillData: {fileID: 0}
   SkillFlameball: {fileID: 2682875265519537132, guid: 2ff42413a4c191c4bb18052d515111fa,
     type: 3}
   NumberOfSpawns: 10
---- !u!114 &8328261565374915449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 806273465816269301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01ea935b16e50214cbf4e1df81393a3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Caster: {fileID: 0}
-  Offset: {x: 0, y: 0, z: 0}
-  Rotation: {x: 0, y: 0, z: 0}
-  AutomaticOffset: 0
 --- !u!199 &1782158517914120195
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -81,6 +64,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

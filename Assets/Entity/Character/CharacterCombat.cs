@@ -152,21 +152,26 @@ public class CharacterCombat : MonoBehaviour
     public void AnimUseWeaponSkill(int index)
     {
         ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
-        BaseSkill skill = weapon.Skills[index];
-        SpawnSkill(skill);
+        SkillData skill = weapon.Skills[index];
+        UseSkill(skill);
     }
 
     public void AnimUseCharacterSkill(int index)
     {
-        BaseSkill skill = data.CharacterSkills[index];
-        SpawnSkill(skill);
+        SkillData skill = data.CharacterSkills[index];
+        UseSkill(skill);
     }
 
-    private void SpawnSkill(BaseSkill s)
+    private void UseSkill(SkillData s)
     {
-        var skillInstance = Instantiate(s.Prefab, transform.position + transform.forward * s.forwardOffset, transform.rotation);
-        var skillData = skillInstance.GetComponent<SkillData>();
-        skillData.Caster = data;
+        // hack pra determinar se é um prefab
+        if (s.gameObject.scene.rootCount == 0)
+        {
+            var obj = Instantiate(s.gameObject, transform.position + transform.forward * s.Offset.z, transform.rotation);
+            s = obj.GetComponent<SkillData>();
+            s.Caster = data;
+        }
+        s.Cast();
     }
     
     public void RequestSkillUse(BaseSkill skill)
