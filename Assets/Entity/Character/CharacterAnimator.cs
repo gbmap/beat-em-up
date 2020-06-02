@@ -28,10 +28,12 @@ public class CharacterAnimator : MonoBehaviour
 
     private float AnimatorDefaultSpeed
     {
-        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : 1f; }
+        get { return data.BrainType == ECharacterBrainType.Input ? 1.3f : animatorSpeed; }
     }
 
     private new Renderer renderer;
+
+    public float animatorSpeed = 1f;
 
     [Space]
     [Header("FX Impact")]
@@ -122,7 +124,10 @@ public class CharacterAnimator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+        if (movement.NavMeshAgent)
+        {
+            animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+        }
         
         UpdateSmokeEmission();
 
@@ -157,7 +162,7 @@ public class CharacterAnimator : MonoBehaviour
         if (movement.IsRolling)
         {
             main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
-            main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2f);
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
             emission.rateOverDistanceMultiplier = 2f;
             
         }

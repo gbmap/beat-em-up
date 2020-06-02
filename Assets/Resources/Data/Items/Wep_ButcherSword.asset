@@ -27,8 +27,8 @@ MonoBehaviour:
       Magic: 0
     DamageScaling:
       Vigor: 0
-      Strength: 4
-      Dexterity: -0.2
+      Strength: 0.51
+      Dexterity: 0
       Magic: 0
     Skills: []
   Prefab: {fileID: 1574553127320600, guid: 77b19eccec82c1b4686ead7ab56da65b, type: 3}

@@ -7,6 +7,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3213784575284672424, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: Items.Array.data[0].Item
+      value: 
+      objectReference: {fileID: 11400000, guid: abfaea5f1d9bc314fbc48c5c2b9f6f15,
+        type: 2}
+    - target: {fileID: 3213784575284672424, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: Probability
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
         type: 3}
       propertyPath: CharacterModelOverride.Array.size
@@ -15,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
         type: 3}
       propertyPath: StartingItems.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
         type: 3}

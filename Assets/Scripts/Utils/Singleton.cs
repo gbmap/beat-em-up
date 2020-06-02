@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public abstract class ConfigurableSingleton<T, S> : Singleton<T> where T : MonoBehaviour where S : ScriptableObject
+public abstract class ConfigurableSingleton<T, S> : SimpleSingleton<T> where T : MonoBehaviour where S : ScriptableObject
 {
     private S config;
     public S Config
@@ -12,6 +12,27 @@ public abstract class ConfigurableSingleton<T, S> : Singleton<T> where T : MonoB
     }
 
     protected abstract string Path { get; }
+}
+
+public class SimpleSingleton<T> : MonoBehaviour where T : MonoBehaviour
+{
+    private static T instance;
+    public static T Instance
+    {
+        get
+        {
+            if (!instance)
+            {
+                instance = FindObjectOfType<T>();
+                if (!instance)
+                {
+                    GameObject obj = new GameObject(typeof(T).Name);
+                    instance = obj.AddComponent<T>();
+                }
+            }
+            return instance;
+        }
+    }
 }
 
 /// <summary>

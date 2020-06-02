@@ -18,6 +18,8 @@ namespace Catacumba
         [Range(0, 10)]
         public int RangeOfInstances = 0;
 
+        public float RangeOfSpawn = 1f;
+
         private List<Spawner> childSpawners;
 
         private List<GameObject> spawnInstances;
@@ -45,7 +47,10 @@ namespace Catacumba
             {
                 if (Random.value < Probability)
                 {
-                    var instance = Instantiate(ObjectPool[Random.Range(0, ObjectPool.Length)], transform.position, Quaternion.identity);
+                    Vector2 o2d = Random.insideUnitCircle * RangeOfSpawn;
+                    Vector3 offset = new Vector3(o2d.x, 0f, o2d.y); 
+
+                    var instance = Instantiate(ObjectPool[Random.Range(0, ObjectPool.Length)], transform.position + offset, Quaternion.identity);
                     spawnInstances.Add(instance);
                 }
             }

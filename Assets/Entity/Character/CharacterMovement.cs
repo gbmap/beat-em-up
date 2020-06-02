@@ -65,6 +65,11 @@ public class CharacterMovement : MonoBehaviour
         get; private set;
     }
 
+    public bool NavAgentValid
+    {
+        get { return NavMeshAgent && NavMeshAgent.enabled; }
+    }
+
     private bool isAgentStopped;
     public bool IsAgentStopped
     {
@@ -80,6 +85,7 @@ public class CharacterMovement : MonoBehaviour
         get { return NavMeshAgent.pathStatus; }
     }
 
+    private Vector3 targetDestination;
     public Vector3 Destination
     {
         get { return NavMeshAgent.destination; }
@@ -89,11 +95,15 @@ public class CharacterMovement : MonoBehaviour
 
     public bool SetDestination(Vector3 pos)
     {
-        return NavMeshAgent.SetDestination(pos);
+        targetDestination = pos;
+        if (NavMeshAgent.enabled)
+        {
+            return NavMeshAgent.SetDestination(pos);
+        }
+        return false;
     }
 
     #endregion
-
 
     [Header("Dash when attacks")]
     public float SpeedBumpForce = 0.9f;
@@ -116,12 +126,17 @@ public class CharacterMovement : MonoBehaviour
         health = GetComponent<CharacterHealth>();
 
         health.OnDamaged += OnDamagedCallback;
+        health.OnFall += OnFallCallback;
+        health.OnGetUp += OnGetUpCallback;
     }
 
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+        if (NavMeshAgent)
+        {
+            NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+        }
     }
 
     private void OnEnable()
@@ -134,11 +149,21 @@ public class CharacterMovement : MonoBehaviour
     {
         combat.OnCharacterAttack -= OnCharacterAttackCallback;
         combat.OnRequestCharacterAttack -= OnCharacterRequestAttackCallback;
+
+        health.OnDamaged -= OnDamagedCallback;
+        health.OnFall -= OnFallCallback;
+        health.OnGetUp -= OnGetUpCallback;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (health.IsOnGround)
+        {
+            NavMeshAgent.enabled = speedBumpT > 0f;
+        }
+        //if (targetDestination != NavMeshAgent.destination && NavMeshAgent.enabled) SetDestination(targetDestination);
+        
         //Move1();
         Move_Old();
 
@@ -187,7 +212,6 @@ public class CharacterMovement : MonoBehaviour
 
     void Move_Old()
     {
-      
         Vector3 velocity = Vector3.zero;
 
         if (IsBeingMoved)
@@ -239,12 +263,7 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        else // fix 
-        {
-            //velocity = Vector3.Lerp(velocity, Vector3.zero, Time.deltaTime * 2f);
-        }
-
-        if ((brainType == ECharacterBrainType.Input || speedBumpT > 0f))
+        if ( NavAgentValid && (brainType == ECharacterBrainType.Input || speedBumpT > 0f) )
         {
             NavMeshAgent.Move(velocity * Time.deltaTime);
         }
@@ -255,7 +274,10 @@ public class CharacterMovement : MonoBehaviour
             OnRollEnded?.Invoke();
         }
 
-        NavMeshAgent.isStopped = IsAgentStopped;
+        if (NavAgentValid)
+        {
+            NavMeshAgent.isStopped = IsAgentStopped;
+        }
     }
 
     public void ApplySpeedBump(Vector3 direction, float force)
@@ -275,11 +297,14 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnDamagedCallback(CharacterAttackData attack)
     {
-        var lookAt = attack.Attacker.transform.position;
-        lookAt.y = transform.position.y;
-        transform.LookAt(lookAt);
+        if (attack.CancelAnimation)
+        {
+            var lookAt = attack.Attacker.transform.position;
+            lookAt.y = transform.position.y;
+            transform.LookAt(lookAt);
+        }
 
-        if (/*attack.CancelAnimation || attack.Knockdown*/ true)
+        if (attack.Knockdown)
         {
             ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
         }
@@ -288,6 +313,7 @@ public class CharacterMovement : MonoBehaviour
     public float GetSpeedBumpForce(CharacterAttackData attack)
     {
         if (IgnoreSpeedBump) return 0f;
+        return (attack.Type == EAttackType.Weak ? 3f : 6f);
 
         float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);
         modifier = attack.Knockdown ? 1f : modifier;
@@ -339,6 +365,16 @@ public class CharacterMovement : MonoBehaviour
         //rollSpeedT = 0f;
     }
 
+    private void OnGetUpCallback()
+    {
+        NavMeshAgent.enabled = true;
+    }
+
+    private void OnFallCallback()
+    {
+        //NavMeshAgent.enabled = false;
+    }
+
 #if UNITY_EDITOR
 
     private bool showDebug = false;
@@ -353,7 +389,8 @@ public class CharacterMovement : MonoBehaviour
             return;*/
 
         Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
-        GUI.Label(r, "IsOnCombo: " + combat.IsOnCombo +
+        GUI.Label(r, "NavMeshAgent: " + NavAgentValid +
+                     "\nIsOnCombo: " + combat.IsOnCombo +
                      "\nspeedBumpT: " + speedBumpT +
                      "\nrollSpeedT: " + rollSpeedT +
                      "\nrollDir: " + rollDirection +

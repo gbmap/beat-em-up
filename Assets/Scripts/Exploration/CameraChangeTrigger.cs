@@ -21,8 +21,7 @@ namespace Catacumba.Exploration
         {
             if (!other.CompareTag("Player")) return;
 
-            oldCamera = CameraManager.Instance.CurrentCamera;
-            ChangeCamera(virtualCamera);
+            Trigger();
         }
 
         private void OnTriggerExit(Collider other)
@@ -38,6 +37,12 @@ namespace Catacumba.Exploration
         {
             CameraManager.Instance.ChangeCamera(camera);
             OnCameraChange.Invoke();
+        }
+
+        public void Trigger()
+        {
+            oldCamera = CameraManager.Instance.CurrentCamera;
+            ChangeCamera(virtualCamera);
         }
     }
 }

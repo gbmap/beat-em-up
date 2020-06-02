@@ -68,7 +68,13 @@ namespace Catacumba
         {
             if (EvaluateInteraction(character))
             {
-                DialogueBox.Show(HasItemMessage, delegate { EventHasItem.Invoke(); } );
+                DialogueBox.Show(HasItemMessage, delegate 
+                {
+                    EventHasItem.Invoke();
+                    Destroy(this);
+                    var interactable = GetComponent<Interactable>();
+                    if (interactable) Destroy(interactable);
+                });
             }
             else
             {

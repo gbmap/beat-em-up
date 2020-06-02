@@ -123,6 +123,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     ECharacterType lastCharacterType;
 
+    public System.Action<GameObject> OnCharacterModelUpdated;
+
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;

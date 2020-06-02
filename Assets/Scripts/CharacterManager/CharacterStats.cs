@@ -337,18 +337,17 @@ public class CharacterStats
         get { return CombatManager.GetPoiseChance(this); }
     }
 
-    private float poiseBar = 1f;
     public float PoiseBar
     {
         get
         {
-            return poiseBar;
+            return ((float)CurrentPoise)/Poise;
         }
+    }
 
-        set
-        {
-            poiseBar = Mathf.Clamp01(value);
-        }
+    public int CurrentPoise
+    {
+        get; set;
     }
 
     public bool CanBeKnockedOut
@@ -373,6 +372,7 @@ public class CharacterStats
         Health = MaxHealth;
         Mana = MaxMana;
         CanBeKnockedOut = true;
+        CurrentPoise = Poise;
     }
 }
 

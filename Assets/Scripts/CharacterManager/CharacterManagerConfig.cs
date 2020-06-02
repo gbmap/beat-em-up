@@ -144,6 +144,8 @@ public class CharacterManagerConfig : ScriptableObject
         root.localPosition = Vector3.zero;
         root.gameObject.SetActive(true);
 
+        Transform characterTransform = null;
+
         for (int i = 0; i < packInstance.transform.childCount; i++)
         {
             characterModel = packInstance.transform.GetChild(i);
@@ -158,6 +160,7 @@ public class CharacterManagerConfig : ScriptableObject
 
                 if (characterModel.name.Contains("Character") || characterModel.name.Contains("Root"))
                 {
+                    if (characterModel.name.Contains("Character")) characterTransform = characterModel;
                     characterModel.localPosition = Vector3.zero;
                 }
                 else
@@ -204,6 +207,11 @@ public class CharacterManagerConfig : ScriptableObject
         weaponHolder.transform.localScale = Vector3.one;
 
         yield return null;
+
+        if (characterTransform)
+        {
+            instance.GetComponent<CharacterData>().OnCharacterModelUpdated?.Invoke(characterTransform.gameObject);
+        }
 
         yield return EquipInventory(instance, instance.GetComponent<CharacterData>().StartingItems);
     }

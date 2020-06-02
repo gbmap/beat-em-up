@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace Catacumba.Exploration
 {
-    public class CameraManager : Singleton<CameraManager>
+    public class CameraManager : SimpleSingleton<CameraManager>
     {
         [SerializeField] private Transform character;
         [SerializeField] private float cameraCheckTime = 1f;
@@ -45,7 +45,8 @@ namespace Catacumba.Exploration
         private void Awake()
         {
             mainCamera = Camera.main;
-            currentActiveCamera = firstCamera;
+            //currentActiveCamera = firstCamera;
+            ChangeCamera(FindObjectOfType<CinemachineVirtualCamera>().gameObject);
             _impulseSource = GetComponent<CinemachineImpulseSource>();
         }
 
@@ -57,7 +58,10 @@ namespace Catacumba.Exploration
 
         public void ChangeCamera(GameObject newCamera)
         {
-            currentActiveCamera.SetActive(false);
+            if (currentActiveCamera)
+            {
+                currentActiveCamera.SetActive(false);
+            }
             currentActiveCamera = newCamera;
             currentActiveCamera.SetActive(true);
 
