@@ -29,17 +29,24 @@ public class CharacterCombat : MonoBehaviour
 
     private Vector3 attackColliderBasePosition
     {
-        get { return animator.RealCharacterPosition + transform.forward*0.75f + Vector3.up; }
+        get { return animator.RealCharacterPosition + transform.forward*1.25f + Vector3.up; }
     }
 
     private Vector3 attackColliderSize
     {
-        get { return (Vector3.one * 0.5f + Vector3.right * 0.5f) * (1f+((float)data.Stats.GetAttributeTotal(EAttribute.Strength)) / CharacterStats.MaxAttributeLevel); }
+        get { return (Vector3.one * 0.5f + Vector3.right * 0.5f); }
     }
 
     private Vector3 GetAttackColliderSize(EAttackType type)
     {
-        return attackColliderSize * (type == EAttackType.Weak ? 1.5f : 2.5f);
+        float weaponScale = 0f;
+        
+        if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+        {
+            weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
+        }
+
+        return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.15f) + Vector3.one * weaponScale;
     }
 
     public CharacterAttackData LastAttackData
@@ -210,8 +217,8 @@ public class CharacterCombat : MonoBehaviour
             if (Time.time < LastAttackData.Time + 1f)
             {
                 Gizmos.color = Color.red;
-                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, transform.lossyScale);
-                Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type));
+                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, Vector3.one);
+                Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type)*2f);
             }
         }
         catch { }

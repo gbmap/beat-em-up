@@ -41,7 +41,7 @@ public class AIManager : SimpleSingleton<AIManager>
 
         CharacterData characterData = target.GetComponent<CharacterData>();
         if (characterData == null) return 0;
-        return Mathf.CeilToInt(characterData.Stats.Level*0.1f);
+        return Mathf.RoundToInt(characterData.Stats.HealthNormalized*3f);
     }
 
     public int GetNumberOfAttackers(GameObject target)

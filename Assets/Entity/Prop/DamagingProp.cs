@@ -13,6 +13,12 @@ public class DamagingProp : MonoBehaviour
         if (other.gameObject == caster.gameObject ||
             other.gameObject.CompareTag(caster.tag)) return;
 
+        if (other.gameObject.layer == caster.gameObject.layer) return;
+
+        var movement = other.GetComponent<CharacterMovement>();
+        if (movement.IsRolling) return;
+
+
         CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject)
         {
             Damage = 10,

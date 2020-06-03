@@ -87,7 +87,7 @@ public class CharacterHealth : MonoBehaviour
     {
         if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
         {
-            characterData.Stats.CurrentPoise = characterData.Stats.Poise;
+            characterData.Stats.CurrentStamina = characterData.Stats.Stamina;
             UpdatePoise(1f);
         }
 
@@ -151,7 +151,7 @@ public class CharacterHealth : MonoBehaviour
 
     private void OnStatsChangedCallback(CharacterStats stats)
     {
-        UpdateHealthQuad(stats.HealthNormalized, stats.PoiseBar);
+        UpdateHealthQuad(stats.HealthNormalized, stats.StaminaBar);
     }
 
     public void OnGetUpAnimationEnd()
@@ -187,7 +187,7 @@ public class CharacterHealth : MonoBehaviour
 
         lastHit = Time.time;
 
-        UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.PoiseBar);
+        UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.StaminaBar);
 
         if (data.Knockdown && data.CancelAnimation ||
             data.DefenderStats.Health <= 0)

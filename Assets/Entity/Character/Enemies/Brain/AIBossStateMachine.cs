@@ -98,7 +98,10 @@ namespace Catacumba.Character.AI
                         case StateWait.RES_CONTINUE: break;
                         case StateWait.RES_END_WAIT:
                             {
-                                SetCurrentState(EBossAIStates.UseSkill, GetNextSkill(target));
+                                if (target != null)
+                                {
+                                    SetCurrentState(EBossAIStates.UseSkill, GetNextSkill(target));
+                                }
                                 break;
                             }
                         default: throw new System.Exception("Unexpected state result at EBossAIStates.Wait: " + result.code);
@@ -108,7 +111,8 @@ namespace Catacumba.Character.AI
                     switch (result.code)
                     {
                         case UseSkillState.RES_CASTED:
-                            if ((currentState as UseSkillState).SkilIndex == (int)EBossSkills.SpawnMinions)
+                            if ((currentState as UseSkillState).SkilIndex == (int)EBossSkills.SpawnMinions ||
+                                SpawnSkill.Minions.Count > 0)
                             {
                                 SetCurrentState(EBossAIStates.WaitMinionsDie, SpawnSkill.Minions);
                                 break;
@@ -153,7 +157,7 @@ namespace Catacumba.Character.AI
                 case 2:
                     {
                         SkillWeights.Add(EBossSkills.OneSlash);
-                        SkillWeights.Add(EBossSkills.SpawnMinions, 2);
+                        SkillWeights.Add(EBossSkills.SpawnMinions);
                         break;
                     }
                 case 3: SkillWeights.Add(EBossSkills.FireBreath); break;
@@ -179,7 +183,8 @@ namespace Catacumba.Character.AI
         private GameObject FindTarget()
         {
             var players = FindObjectsOfType<CharacterPlayerInput>();
-            return players?.OrderBy(p => Vector3.Distance(gameObject.transform.position, p.transform.position)).FirstOrDefault().gameObject;
+            if (players.Length == 0) return null;
+            return players.OrderBy(p => Vector3.Distance(gameObject.transform.position, p.transform.position)).FirstOrDefault().gameObject;
         }
     }
 
