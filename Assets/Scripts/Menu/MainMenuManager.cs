@@ -44,6 +44,8 @@ public class MainMenuManager : MonoBehaviour
         {
             {startButton, startCamera}, {creditsButton, creditsCamera}
         };
+
+        EventSystem.current.SetSelectedGameObject(startButton);
     }
 
     private void OnHoverButton(GameObject button, bool hover)
