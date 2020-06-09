@@ -141,6 +141,7 @@ public class CharacterCombat : MonoBehaviour
     */
     public void Attack(EAttackType type)
     {
+        if (health.IsDead || health.IsOnGround) return;
         Attack(new CharacterAttackData(type, gameObject, ++_nComboHits));
     }
 

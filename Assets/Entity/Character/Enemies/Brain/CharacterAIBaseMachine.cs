@@ -51,6 +51,8 @@ namespace Catacumba.Character.AI
 
         protected virtual void Update()
         {
+            if (!data.IsInitialized) return;
+            
             if (currentState != null && !health.IsOnGround)
             {
                 StateResult result = currentState.Update();

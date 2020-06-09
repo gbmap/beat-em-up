@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Frictionless;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utils;
 
 namespace Catacumba.Character.AI
 {
+    public class MsgOnBossDied { }
+
     public enum EBossAIStates
     {
         UseSkill,
@@ -48,6 +52,7 @@ namespace Catacumba.Character.AI
             SkillWeights.Add(EBossSkills.ThreeSlashes);
 
             health.OnDamaged += OnDamagedCallback;
+            health.OnDeath += OnDeathCallback;
 
             SetCurrentState(EBossAIStates.Wait);
         }
@@ -55,7 +60,9 @@ namespace Catacumba.Character.AI
         private void OnDisable()
         {
             health.OnDamaged -= OnDamagedCallback;
+            health.OnDeath -= OnDeathCallback;
         }
+             
 
         protected override void Update()
         {
@@ -69,6 +76,7 @@ namespace Catacumba.Character.AI
             {
                 Vector3 tp = target.transform.position;
                 tp.y = transform.position.y;
+                
                 transform.LookAt(tp);
             }
         }
@@ -167,6 +175,25 @@ namespace Catacumba.Character.AI
             {
                 SetCurrentState(EBossAIStates.UseSkill, EBossSkills.OneSlash);
             }
+
+            if (data.DefenderStats.Health <= 0)
+            {
+                foreach (GameObject minion in SpawnSkill.Minions)
+                {
+                    var d = minion.GetComponent<CharacterData>();
+                    CharacterAttackData att = new CharacterAttackData()
+                    {
+                        Damage = int.MaxValue,
+                    };
+                    CombatManager.CalculateAttackStats(null, d.Stats, ref att);
+                    d.GetComponent<CharacterHealth>()?.TakeDamage(att);
+                }
+            }
+        }
+
+        private void OnDeathCallback(CharacterHealth obj)
+        {
+            ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnBossDied { });
         }
 
         private EBossSkills GetNextSkill(GameObject target)

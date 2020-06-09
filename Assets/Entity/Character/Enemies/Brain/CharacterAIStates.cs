@@ -189,9 +189,7 @@ namespace Catacumba.Character.AI
 
             if (rangedAttack)
             {
-                float dist = Cfg.DistanceToAttack * 5f;
-                return distanceToTarget > dist - 0.75f &&
-                    distanceToTarget < dist + 0.75f;
+                return distanceToTarget <= Cfg.DistanceToAttack + 5f;
             }
             else
             {

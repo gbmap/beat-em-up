@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SkillFlameballExplosion : SkillData
 {
+    public ParticleSystem Flames;
     public GameObject SkillFlameball;
     public int NumberOfSpawns = 6;
 
@@ -27,6 +28,7 @@ public class SkillFlameballExplosion : SkillData
 
     public override void Cast()
     {
+        Flames.Emit(300);
         StartCoroutine(EmitFlameballs());
     }
 }

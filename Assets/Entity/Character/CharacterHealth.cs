@@ -185,6 +185,18 @@ public class CharacterHealth : MonoBehaviour
             return;
         }
 
+        if (data.Attacker == null)
+        {
+            data.Attacker = gameObject;
+            data.AttackerStats = characterData.Stats;
+        }
+
+        if (data.Defender == null)
+        {
+            data.Defender = gameObject;
+            data.DefenderStats = characterData.Stats;
+        }
+
         lastHit = Time.time;
 
         UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.StaminaBar);

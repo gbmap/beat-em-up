@@ -55,6 +55,8 @@ public class CharacterPlayerInput : MonoBehaviour
 
     private void OnDisable()
     {
+        movement.Direction = Vector3.zero;
+
         if (!CameraManager.Instance) return;
         CameraManager.Instance.OnCameraChange -= OnCameraChange;
     }

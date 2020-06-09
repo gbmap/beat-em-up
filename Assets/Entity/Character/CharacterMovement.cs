@@ -256,9 +256,10 @@ public class CharacterMovement : MonoBehaviour
 
             // aplicar roll speed
             velocity = dirNorm * rollSpeed;
-            if (Direction.sqrMagnitude > 0f)
+            if (Direction.sqrMagnitude > 0f && !combat.IsOnCombo)
             {
                 dirNorm.y = 0f;
+                
                 transform.LookAt(transform.position + forward);
             }
         }
@@ -304,7 +305,7 @@ public class CharacterMovement : MonoBehaviour
             transform.LookAt(lookAt);
         }
 
-        if (attack.Knockdown)
+        if (attack.Knockdown && attack.AttackerStats != data.Stats)
         {
             ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
         }
@@ -374,6 +375,39 @@ public class CharacterMovement : MonoBehaviour
     private void OnFallCallback()
     {
         //NavMeshAgent.enabled = false;
+    }
+
+    public static Vector3 DistanceIndependentRotation2D(Vector3 targetPosition, Vector3 currentPosition, Vector3 currentForward)
+    {
+        float maxRotationAngle = 60f;
+
+        // rotação independente de distância do alvo
+        Vector3 dir3d = (targetPosition - currentPosition);
+        dir3d.y = 0f;
+
+        Vector3 fwd3d = currentForward;
+        dir3d.y = 0f;
+
+        Vector2 d = new Vector2(dir3d.x, dir3d.z).normalized;
+        Vector2 f = new Vector2(fwd3d.x, fwd3d.z).normalized;
+
+        float t = Vector2.SignedAngle(f, d);
+        float a = Mathf.Min(Mathf.Abs(t), maxRotationAngle);
+        a *= Mathf.Sign(t);
+        a *= Time.deltaTime;
+
+        // talvez tenha uma forma suportada de rotacionar um v2d
+        Vector2 y = new Vector2();
+
+        float sin = Mathf.Sin(a * Mathf.Deg2Rad);
+        float cos = Mathf.Cos(a * Mathf.Deg2Rad);
+
+        float tx = f.x;
+        float ty = f.y;
+        y.x = (cos * tx) - (sin * ty);
+        y.y = (sin * tx) + (cos * ty);
+
+        return new Vector3(y.x, currentForward.y, y.y);
     }
 
 #if UNITY_EDITOR

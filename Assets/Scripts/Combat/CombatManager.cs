@@ -3,7 +3,8 @@
 public enum EAttackType
 {
     Weak = 1,
-    Strong
+    Strong,
+    Skill
 }
 
 public struct CharacterAttackData
@@ -122,7 +123,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         // calcula dano cru
         int damage = 0;
-        if (attacker == null)
+        if (attacker == null || attackData.Type == EAttackType.Skill)
         {
             // TODO: remover isso aqui
             damage = attackData.Damage;
@@ -139,7 +140,6 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             damage = (int)(damage * 0.9f);
         }
 
-        // TODO: poise bar legítimo
         defender.CurrentStamina -= attackData.Type == EAttackType.Weak ? 1 : 3;
 
         // reduz vida
@@ -162,7 +162,15 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         attack.ColliderSz = colliderSize;
         attack.ColliderRot = colliderRot;
 
-        string layer = attack.Attacker.layer == LayerMask.NameToLayer("Entities") ? "Player" : "Entities";
+        string layer = "Entities";
+        if (attack.Attacker)
+        {
+            layer = attack.Attacker.layer == LayerMask.NameToLayer("Entities") ? "Player" : "Entities";
+        }
+        else
+        {
+            Debug.LogWarning("SkillData with no caster. Defaulting attack to entities layer. This shouldn't be happening.");
+        }
 
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 

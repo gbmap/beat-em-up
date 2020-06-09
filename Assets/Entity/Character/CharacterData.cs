@@ -125,6 +125,8 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     public System.Action<GameObject> OnCharacterModelUpdated;
 
+    public bool IsInitialized { get; set; }
+
     void Awake()
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
