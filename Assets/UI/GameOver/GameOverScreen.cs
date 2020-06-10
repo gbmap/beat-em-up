@@ -94,7 +94,7 @@ namespace Catacumba
             {
                 case RES_RETRY:
                     {
-                        StateManager.Instance.ResetScene();
+                        StateManager.Instance.ResetScene(true);
                         break;
                     }
                 case RES_EXIT: Application.Quit(); break;

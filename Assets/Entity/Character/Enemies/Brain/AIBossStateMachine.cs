@@ -176,13 +176,16 @@ namespace Catacumba.Character.AI
                 SetCurrentState(EBossAIStates.UseSkill, EBossSkills.OneSlash);
             }
 
+
             if (data.DefenderStats.Health <= 0)
             {
+                SpawnSkill.StopAllCoroutines();
                 foreach (GameObject minion in SpawnSkill.Minions)
                 {
                     var d = minion.GetComponent<CharacterData>();
                     CharacterAttackData att = new CharacterAttackData()
                     {
+                        
                         Damage = int.MaxValue,
                     };
                     CombatManager.CalculateAttackStats(null, d.Stats, ref att);

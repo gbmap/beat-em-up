@@ -11,8 +11,9 @@ namespace Catacumba.Exploration
     {
         [SerializeField] private Transform character;
         [SerializeField] private float cameraCheckTime = 1f;
-        [SerializeField] private GameObject firstCamera;
-        
+        [SerializeField] private GameObject menuCamera;
+        [SerializeField] private GameObject gameCamera;
+
         private float timer;
         private Camera mainCamera;
         private CinemachineImpulseSource _impulseSource;
@@ -46,14 +47,16 @@ namespace Catacumba.Exploration
         {
             mainCamera = Camera.main;
             //currentActiveCamera = firstCamera;
-            ChangeCamera(FindObjectOfType<CinemachineVirtualCamera>().gameObject);
+            GameObject initialCamera = StateManager.Retry ? gameCamera : menuCamera;
+            ChangeCamera(initialCamera);
             _impulseSource = GetComponent<CinemachineImpulseSource>();
         }
 
         public void Initialize()
         {
             cameraPathWaypoints = new List<CameraPathWaypoint>();
-            currentActiveCamera.SetActive(true);
+            //currentActiveCamera.SetActive(true);
+            ChangeCamera(gameCamera);
         }
 
         public void ChangeCamera(GameObject newCamera)

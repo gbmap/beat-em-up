@@ -125,7 +125,6 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         int damage = 0;
         if (attacker == null || attackData.Type == EAttackType.Skill)
         {
-            // TODO: remover isso aqui
             damage = attackData.Damage;
         }
         else

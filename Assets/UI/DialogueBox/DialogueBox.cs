@@ -35,6 +35,7 @@ public class DialogueBox : MonoBehaviour
 
     public void IShow(string message)
     {
+        animator.gameObject.SetActive(true);
         TextBox.text = message;
         animator.SetBool(hashOpen, true);
 
