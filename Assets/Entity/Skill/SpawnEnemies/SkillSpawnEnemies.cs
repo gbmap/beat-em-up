@@ -43,13 +43,13 @@ public class SkillSpawnEnemies : SkillData
 
                 ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
                 {
-                    position = pos
+                    position = transform.position + pos
                 };
                 SpawnEffect.Emit(emitParams, ParticlesPerSpawn);
             }
         }
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.25f);
 
         for (int i = 0; i < NumberOfEnemies; i++)
         {

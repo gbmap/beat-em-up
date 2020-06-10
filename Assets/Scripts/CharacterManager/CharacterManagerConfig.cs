@@ -128,8 +128,6 @@ public class CharacterManagerConfig : ScriptableObject
 
         // MOVE O PACK PRA BAIXO DO ANIMATOR
         var packInstance = Instantiate(packPrefab);
-        /*packInstance.transform.parent = instance.transform;
-        packInstance.transform.localPosition = Vector3.zero;*/
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
         Transform characterModel = null;
@@ -137,7 +135,6 @@ public class CharacterManagerConfig : ScriptableObject
 
         string children = string.Empty;
         // MOVE A INSTÂNCIA (primeira criança ativa) PRA BAIXO DO ANIMATOR
-
 
         var root = packInstance.transform.Find("Root");
         root.parent = instance.transform;
@@ -210,10 +207,20 @@ public class CharacterManagerConfig : ScriptableObject
 
         if (characterTransform)
         {
-            instance.GetComponent<CharacterData>().OnCharacterModelUpdated?.Invoke(characterTransform.gameObject);
+            var cd = instance.GetComponent<CharacterData>();
+            cd.OnCharacterModelUpdated?.Invoke(characterTransform.gameObject);
+
+            // HACK: Atualizar Skill Datas que podem vir dentro do modelo novo.
+            SkillData[] sd = characterTransform.GetComponentsInChildren<SkillData>();
+            foreach (SkillData skill in sd)
+            {
+                skill.Caster = cd;
+            }
         }
 
         yield return EquipInventory(instance, instance.GetComponent<CharacterData>().StartingItems);
+
+        instance.GetComponent<CharacterData>().IsInitialized = true;
     }
 
     public IEnumerator SetupCharacter(GameObject instance, ECharacterType characterType)

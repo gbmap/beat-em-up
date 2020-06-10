@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Catacumba;
 using Catacumba.Exploration;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,6 +9,8 @@ using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
 {
+    //[SerializeField] private GameObject mainMenuObject;
+    [SerializeField] private GameObject mainMenuCanvas;
     [SerializeField] private CanvasGroup canvasGroup;
     
     [SerializeField] private GameObject startButton;
@@ -20,16 +23,34 @@ public class MainMenuManager : MonoBehaviour
 
     private Dictionary<GameObject, GameObject> cameras;
 
+    CharacterPlayerInput[] inputs;
+
     // Start is called before the first frame update
     private void Start()
     {
+        if (StateManager.Retry)
+        {
+            //mainMenuObject.SetActive(false);
+            mainMenuCanvas.SetActive(false);
+            gameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            inputs = FindObjectsOfType<CharacterPlayerInput>();
+            foreach (var i in inputs)
+            {
+                i.enabled = false;
+            }
+        }
+
         // Start button
         var startEntry = new EventTrigger.Entry {eventID = EventTriggerType.PointerEnter};
         startEntry.callback.AddListener(eventData => OnHoverButton(startButton, true));
         var startExit = new EventTrigger.Entry {eventID = EventTriggerType.PointerExit};
         startExit.callback.AddListener(eventData => OnHoverButton(startButton, false));
         var startSubmit = new EventTrigger.Entry {eventID = EventTriggerType.PointerClick};
-        startSubmit.callback.AddListener(eventData => StartCoroutine(OnStart()));
+        startSubmit.callback.AddListener(eventData => StartCoroutine(COnStart()));
 
         // Credits button
         var creditsEntry = new EventTrigger.Entry {eventID = EventTriggerType.PointerEnter};
@@ -44,6 +65,9 @@ public class MainMenuManager : MonoBehaviour
         {
             {startButton, startCamera}, {creditsButton, creditsCamera}
         };
+
+        EventSystem.current.SetSelectedGameObject(startButton);
+
     }
 
     private void OnHoverButton(GameObject button, bool hover)
@@ -51,8 +75,14 @@ public class MainMenuManager : MonoBehaviour
         cameras[button].SetActive(hover);
     }
 
-    private IEnumerator OnStart()
+    public void OnStart()
     {
+        StartCoroutine(COnStart());
+    }
+
+    private IEnumerator COnStart()
+    {
+               
         // Hide main menu
         var lerpValue = 0f;
         while (canvasGroup.alpha > 0f)
@@ -62,7 +92,9 @@ public class MainMenuManager : MonoBehaviour
 
             yield return 1;
         }
-        
+
+        mainMenuCanvas.SetActive(false);
+
         // Enable start camera
         initCamera.SetActive(true);
 
@@ -70,6 +102,11 @@ public class MainMenuManager : MonoBehaviour
         var playable = initCamera.GetComponent<PlayableDirector>();
         while (playable.state == PlayState.Playing)
             yield return 1;
+
+        foreach (var i in inputs)
+        {
+            i.enabled = true;
+        }
 
         // Disable cameras
         startCamera.SetActive(false);

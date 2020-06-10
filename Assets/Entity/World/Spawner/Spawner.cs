@@ -20,6 +20,8 @@ namespace Catacumba
 
         public float RangeOfSpawn = 1f;
 
+        public bool OneShot = true;
+
         private List<Spawner> childSpawners;
 
         private List<GameObject> spawnInstances;
@@ -58,6 +60,11 @@ namespace Catacumba
             foreach (var s in childSpawners)
             {
                 s.Spawn();
+            }
+
+            if (OneShot)
+            {
+                Destroy(this);
             }
         }
 
