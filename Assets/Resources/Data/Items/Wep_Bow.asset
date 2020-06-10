@@ -32,9 +32,7 @@ MonoBehaviour:
       Dexterity: 0.1
       Magic: 0.1
     Skills:
-    - Prefab: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
-        type: 3}
-      forwardOffset: 1.5
+    - {fileID: 5701630693006442494, guid: 85f70e4dff1085746af780aa3a09ef7b, type: 3}
   Prefab: {fileID: 6725322082494346537, guid: a3abf781048381440acf26ab65872d7e, type: 3}
   AnimationOverride: {fileID: 0}
   CustomSlashColors: 1

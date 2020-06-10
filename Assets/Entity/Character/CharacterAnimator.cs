@@ -287,6 +287,7 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRollCallback()
     {
+        
         animator.speed = AnimatorDefaultSpeed;
         animator.ResetTrigger(hashWeakAttack);
         animator.ResetTrigger(hashStrongAttack);
@@ -377,7 +378,10 @@ public class CharacterAnimator : MonoBehaviour
         model.transform.localRotation = rotation;
         model.transform.localPosition = position;
         //model.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-        //model.transform.localScale = Vector3.one;
+        if (model.transform.localScale.sqrMagnitude <= new Vector3(1f, 1f, 1f).sqrMagnitude)
+        {
+            model.transform.localScale = Vector3.one;
+        }
 
         if (item.ItemType == EItemType.Equip)
         {

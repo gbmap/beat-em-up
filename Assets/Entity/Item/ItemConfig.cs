@@ -24,9 +24,10 @@ public class ItemConfig : ScriptableObject
     [Space]
     public GameObject Prefab;
     public AnimatorOverrideController AnimationOverride;
-       
+
     [Space]
     [Header("Weapon Configuration")]
+
     public bool CustomSlashColors = false;
     public Gradient SlashColors;
     public ParticleSystem.MinMaxCurve StartSize = new ParticleSystem.MinMaxCurve(12, 17);

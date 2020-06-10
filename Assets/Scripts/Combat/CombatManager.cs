@@ -80,7 +80,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Vigor+c.Inventory.GetTotalAttributes().Vigor) * 19;
+        return (c.Attributes.Stamina+c.Inventory.GetTotalAttributes().Stamina) * 19;
     }
 
     public static int GetMaxMana(CharacterStats c)
@@ -140,14 +140,14 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         }
 
         // TODO: poise bar legítimo
-        defender.CurrentPoise -= attackData.Type == EAttackType.Weak ? 1 : 2;
+        defender.CurrentStamina -= attackData.Type == EAttackType.Weak ? 1 : 3;
 
         // reduz vida
         defender.Health -= damage;
 
         // vê se derrubou o BONECO
         attackData.Dead = defender.Health <= 0;
-        attackData.Knockdown = defender.CanBeKnockedOut && (Mathf.Approximately(defender.PoiseBar, 0) || attackData.Dead);
+        attackData.Knockdown = defender.CanBeKnockedOut && (Mathf.Approximately(defender.StaminaBar, 0) || attackData.Dead);
 
         // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
@@ -162,11 +162,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         attack.ColliderSz = colliderSize;
         attack.ColliderRot = colliderRot;
 
+        string layer = attack.Attacker.layer == LayerMask.NameToLayer("Entities") ? "Player" : "Entities";
+
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 
             colliderSize, 
             colliderRot, 
-            1 << LayerMask.NameToLayer("Entities")
+            1 << LayerMask.NameToLayer(layer)
         );
 
         int hits = 0;
@@ -189,7 +191,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             attack.CancelAnimation = (attack.DefenderStats.CanBeKnockedOut && ((combat && !combat.IsOnHeavyAttack) ||
                                                                                 attack.Type == EAttackType.Strong ||
                                                                                 attack.DefenderStats.Health == 0))
-                                      || attack.DefenderStats.PoiseBar < 0.25f;  
+                                      || attack.DefenderStats.StaminaBar < 0.25f;  
             //attack.CancelAnimation |= attack.Type == EAttackType.Strong;
 
             c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);

@@ -116,7 +116,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
     [Space]
     [Header("Skills")]
-    public BaseSkill[] CharacterSkills;
+    public SkillData[] CharacterSkills;
 
     public List<ItemData> ItemsInRange { get { return itemsInRange; } }
     private List<ItemData> itemsInRange = new List<ItemData>();
@@ -131,7 +131,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
         // setup attribs
         Stats = new CharacterStats();
-        Stats.Attributes.Vigor = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
+        Stats.Attributes.Stamina = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Strength = Mathf.RoundToInt(StrengthCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Dexterity = Mathf.RoundToInt(DexterityCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Magic = Mathf.RoundToInt(MagicCurve.Evaluate(UnityEngine.Random.value));

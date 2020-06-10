@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Catacumba.Effects.Skills.RockLine {
     [ExecuteInEditMode]
-    public class RockLineTotal : MonoBehaviour
+    public class RockLineTotal : SkillData
     {
         [Range(0f, 1f)]
         public float T;
@@ -82,5 +82,9 @@ namespace Catacumba.Effects.Skills.RockLine {
             Destroy(gameObject);
         }
 
+        public override void Cast()
+        {
+
+        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SkillData : MonoBehaviour
 {
@@ -20,4 +18,6 @@ public class SkillData : MonoBehaviour
         }
         transform.position += Offset;
     }
+
+    public virtual void Cast() { }
 }

@@ -55,6 +55,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4858,6 +4859,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9670,6 +9672,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -10226,9 +10229,9 @@ GameObject:
   - component: {fileID: 3786862214191023337}
   - component: {fileID: 214124010750694693}
   - component: {fileID: 4793835933334061793}
-  - component: {fileID: -4425608416604559345}
   - component: {fileID: 1625824517798020264}
   - component: {fileID: 4069870399188961611}
+  - component: {fileID: 5795027011756059732}
   m_Layer: 0
   m_Name: SkillRockThrow
   m_TagString: Untagged
@@ -10269,6 +10272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Collider: {fileID: 3786862214191023337}
+  DestroyOnTouch: 1
 --- !u!135 &3786862214191023337
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -10315,21 +10319,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 25
   SpeedFactor: 1
---- !u!114 &-4425608416604559345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6604004384178233995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01ea935b16e50214cbf4e1df81393a3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Caster: {fileID: 0}
-  Offset: {x: 0, y: 1, z: 0}
-  AutomaticOffset: 0
 --- !u!114 &1625824517798020264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10359,6 +10348,22 @@ MonoBehaviour:
   Systems:
   - {fileID: 6984036044844067063}
   - {fileID: 4342888321243108942}
+--- !u!114 &5795027011756059732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6604004384178233995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ea935b16e50214cbf4e1df81393a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Caster: {fileID: 0}
+  Offset: {x: 0, y: 0, z: 0}
+  Rotation: {x: 0, y: 0, z: 0}
+  AutomaticOffset: 0
 --- !u!1001 &1519466383489227866
 PrefabInstance:
   m_ObjectHideFlags: 0

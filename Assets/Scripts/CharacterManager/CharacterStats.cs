@@ -17,7 +17,7 @@ public enum EAttribute
 
 public class TCharAttributes<T>
 {
-    public T Vigor;
+    public T Stamina;
     public T Strength;
     public T Dexterity;
     public T Magic;
@@ -26,7 +26,7 @@ public class TCharAttributes<T>
     {
         switch (attr)
         {
-            case EAttribute.Vigor: return Vigor;
+            case EAttribute.Vigor: return Stamina;
             case EAttribute.Strength: return Strength;
             case EAttribute.Magic: return Magic;
             case EAttribute.Dexterity: return Dexterity;
@@ -38,7 +38,7 @@ public class TCharAttributes<T>
     {
         switch (attr)
         {
-            case EAttribute.Vigor: Vigor = v; break;
+            case EAttribute.Vigor: Stamina = v; break;
             case EAttribute.Strength: Strength = v; break;
             case EAttribute.Magic: Magic = v; break;
             case EAttribute.Dexterity: Dexterity = v; break;
@@ -51,7 +51,7 @@ public class TCharAttributes<T>
         {
             return new TCharAttributes<T>
             {
-                Vigor = default,
+                Stamina = default,
                 Strength = default,
                 Dexterity = default,
                 Magic = default
@@ -76,7 +76,7 @@ public static class TCharAttributeExtension
 {
     public static void Add(this TCharAttributes<float> a, TCharAttributes<float> b)
     {
-        a.Vigor += b.Vigor;
+        a.Stamina += b.Stamina;
         a.Strength += b.Strength;
         a.Dexterity += b.Dexterity;
         a.Magic += b.Magic;
@@ -84,7 +84,7 @@ public static class TCharAttributeExtension
 
     public static void Add(this TCharAttributes<int> a, TCharAttributes<int> b)
     {
-        a.Vigor += b.Vigor;
+        a.Stamina += b.Stamina;
         a.Strength += b.Strength;
         a.Dexterity += b.Dexterity;
         a.Magic += b.Magic;
@@ -202,7 +202,10 @@ public class ItemStats
     public EWeaponType WeaponType;
     public CharAttributesI Attributes;
     public CharAttributesF DamageScaling;
-    public BaseSkill[] Skills;
+    public SkillData[] Skills;
+
+    [Range(0f, 2f)]
+    public float WeaponColliderScaling = 0f;
 
     public bool IsRanged { get { return WeaponType == EWeaponType.Bow || WeaponType == EWeaponType.Scepter; } }
 }
@@ -234,7 +237,7 @@ public class CharacterSkillTree
     {
         AttributeLevels = new CharAttributesI
         {
-            Vigor = 0,
+            Stamina = 0,
             Strength = 0,
             Dexterity = 0,
             Magic = 0
@@ -317,19 +320,19 @@ public class CharacterStats
             case EAttribute.Dexterity: return (Attributes.Dexterity + Inventory.GetTotalAttributes().Dexterity);
             case EAttribute.Magic: return (Attributes.Magic + Inventory.GetTotalAttributes().Magic);
             case EAttribute.Strength: return (Attributes.Strength + Inventory.GetTotalAttributes().Strength);
-            case EAttribute.Vigor: return (Attributes.Vigor + Inventory.GetTotalAttributes().Vigor);
+            case EAttribute.Vigor: return (Attributes.Stamina + Inventory.GetTotalAttributes().Stamina);
             default: throw new NotImplementedException("Requested attributed not implemented!");
         }
     }
 
     public int Stagger
     {
-        get { return Attributes.Vigor; }
+        get { return Attributes.Stamina; }
     }
 
-    public int Poise
+    public int Stamina
     {
-        get { return Attributes.Vigor; }
+        get { return Attributes.Stamina; }
     }
 
     public float PoiseChance
@@ -337,15 +340,15 @@ public class CharacterStats
         get { return CombatManager.GetPoiseChance(this); }
     }
 
-    public float PoiseBar
+    public float StaminaBar
     {
         get
         {
-            return ((float)CurrentPoise)/Poise;
+            return ((float)CurrentStamina)/Stamina;
         }
     }
 
-    public int CurrentPoise
+    public int CurrentStamina
     {
         get; set;
     }
@@ -364,7 +367,7 @@ public class CharacterStats
         {
             Strength = 10,
             Dexterity = 10,
-            Vigor = 10,
+            Stamina = 10,
             Magic = 10
         };
         Inventory = new Inventory();
@@ -372,7 +375,7 @@ public class CharacterStats
         Health = MaxHealth;
         Mana = MaxMana;
         CanBeKnockedOut = true;
-        CurrentPoise = Poise;
+        CurrentStamina = Stamina;
     }
 }
 
