@@ -323,17 +323,17 @@ PrefabInstance:
     - target: {fileID: 1226448816622039924, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 49.268692
+      value: 26.33
       objectReference: {fileID: 0}
     - target: {fileID: 1226448816622039924, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.15
+      value: -0.791564
       objectReference: {fileID: 0}
     - target: {fileID: 1226448816622039924, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -32.140495
+      value: 0.672
       objectReference: {fileID: 0}
     - target: {fileID: 1226448816622039924, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
@@ -434,7 +434,12 @@ PrefabInstance:
     - target: {fileID: 6088739693104260900, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: animatorSpeed
-      value: 0.15
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6088739693104260900, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: IgnoreWeaponAnimations
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6088739693104260901, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
@@ -446,6 +451,12 @@ PrefabInstance:
       propertyPath: m_Avatar
       value: 
       objectReference: {fileID: 9000000, guid: a50cd06a0668d1a418d586a2944e3ed5, type: 3}
+    - target: {fileID: 9191630728786402830, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: 0bdf435c740b89c45a4d6d892deddd52,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2632ece4a494ff3429739c868f948495, type: 3}
 --- !u!1 &5672527845085037230 stripped

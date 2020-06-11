@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AOC_Butcher
+  m_Controller: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 9f05fc509e0896b42899e02a00961ff7, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d597abbecf1168843817561ffe5dcb30, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ac00411713170854d9d9785ad58390a4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 05cd25ae9e9a26e44b9f6965fe81ce93, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 21379c6fe37e7dd41a9b1245c64f31bb, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 64a252c527f9e314aaeca01761094b23, type: 2}
+  - m_OriginalClip: {fileID: 398027492087232581, guid: 1cbfe14fe80a3ed4382d7bf2be6f9530,
+      type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 692cbe1d7117448438562897759ce310, type: 2}
+  - m_OriginalClip: {fileID: 1335679570341400972, guid: ff724ec2500222d4caac2a769d83d56a,
+      type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 553bef705cfad5a48ac241da87805c04, type: 2}
