@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CharacterManager : ConfigurableSingleton<CharacterManager, CharacterManagerConfig>
@@ -20,6 +21,11 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
     public IEnumerator SetupCharacter(GameObject instance, GameObject model)
     {
         yield return CharacterManagerConfig.SetupCharacter(instance, model);
+    }
+
+    public IEnumerator SetupInventory(GameObject instance, ItemConfig[] items)
+    {
+        yield return CharacterManagerConfig.EquipInventory(instance, items);
     }
 
     public bool Interact(CharacterData character, ItemStats item)

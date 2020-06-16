@@ -113,14 +113,39 @@ public class Inventory
 {
     [SerializeField]
     private int[] inventory;
+    public int[] ItemIds
+    {
+        get { return inventory; }
+    }
 
     [SerializeField]
     private List<ItemConfig> keyItems;
+    public List<ItemConfig> KeyItems
+    {
+        get { return keyItems; }
+    }
 
     public Inventory()
     {
         inventory = new int[((EInventorySlot[])Enum.GetValues(typeof(EInventorySlot))).Length];
         keyItems = new List<ItemConfig>();
+    }
+
+    public Inventory(ItemConfig[] keyItems)
+    {
+        inventory = new int[((EInventorySlot[])Enum.GetValues(typeof(EInventorySlot))).Length];
+        this.keyItems = new List<ItemConfig>(keyItems);
+    }
+
+    public Inventory(int[] items, ItemConfig[] keyItems)
+    {
+        inventory = new int[items.Length];
+        for (int i = 0; i < items.Length; i++)
+        {
+            inventory[i] = items[i];
+        }
+
+        this.keyItems = new List<ItemConfig>(keyItems);
     }
 
     public ItemStats this[EInventorySlot slot]

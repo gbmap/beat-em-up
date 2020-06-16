@@ -64,7 +64,7 @@ public class SkillSpawnEnemies : SkillData
 
     private void OnMinionDeathCallback(CharacterHealth health)
     {
-        Minions.Remove(health.gameObject);
+        //Minions.Remove(health.gameObject);
         health.OnDeath -= OnMinionDeathCallback;
     }
 

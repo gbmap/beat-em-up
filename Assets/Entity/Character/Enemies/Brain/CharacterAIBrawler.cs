@@ -47,11 +47,6 @@ namespace Catacumba.Character.AI
         private void OnDisable()
         {
             health.OnDamaged -= OnDamagedCallback;
-            if (CurrentAIState == EBrawlerAIStates.Attack)
-            {
-                AttackState attackState = currentState as AttackState;
-                AIManager.Instance?.DecreaseAttackers(attackState.Target);
-            }
         }
 
         protected override void Update()

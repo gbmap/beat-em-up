@@ -99,7 +99,6 @@ public class CharacterHealth : MonoBehaviour
             {
                 if (IsDead)
                 {
-                    OnDeath?.Invoke(this);
                     if (characterData.BrainType == ECharacterBrainType.Input)
                     {
                         ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = characterData });
@@ -173,9 +172,6 @@ public class CharacterHealth : MonoBehaviour
         {
             recoverTimer *= 2f;
         }
-        
-        // Shake camera
-        CameraManager.Instance.Shake();
     }
 
     public void TakeDamage(CharacterAttackData data)
@@ -212,6 +208,7 @@ public class CharacterHealth : MonoBehaviour
         if (IsDead)
         {
             collider.enabled = false;
+            OnDeath?.Invoke(this);
 
             if (!characterAnimator)
             {

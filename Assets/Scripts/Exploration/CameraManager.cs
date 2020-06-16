@@ -47,7 +47,17 @@ namespace Catacumba.Exploration
         {
             mainCamera = Camera.main;
             //currentActiveCamera = firstCamera;
-            GameObject initialCamera = StateManager.Retry ? gameCamera : menuCamera;
+
+            GameObject initialCamera = menuCamera;
+            if (CheckpointManager.Retry)
+            {
+                // if there's a checkpoint, get its camera.
+                var tempCamera = CheckpointManager.CheckpointCamera;
+                if (tempCamera != null)
+                    gameCamera = tempCamera;
+
+                initialCamera = gameCamera;
+            }
             ChangeCamera(initialCamera);
             _impulseSource = GetComponent<CinemachineImpulseSource>();
         }
@@ -61,6 +71,9 @@ namespace Catacumba.Exploration
 
         public void ChangeCamera(GameObject newCamera)
         {
+            if (newCamera == null)
+                return;
+
             if (currentActiveCamera)
             {
                 currentActiveCamera.SetActive(false);
@@ -78,6 +91,22 @@ namespace Catacumba.Exploration
             if (_impulseSource)
             {
                 _impulseSource.GenerateImpulse();
+            }
+            else
+            {
+                Debug.LogError("No impulse source.");
+            }
+        }
+
+        public void LightShake(int nHits = 1)
+        {
+            if (_impulseSource)
+            {
+                _impulseSource.GenerateImpulse(Vector3.one * 0.0125f * nHits);
+            }
+            else
+            {
+                Debug.LogError("No impulse source.");
             }
         }
 
