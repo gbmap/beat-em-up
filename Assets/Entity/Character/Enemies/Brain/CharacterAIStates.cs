@@ -343,7 +343,9 @@ namespace Catacumba.Character.AI
 
         protected void OnDamagedCallback(CharacterAttackData attackData)
         {
-            /*if (attackData.Type == EAttackType.Strong)
+            if (!health.CanBeKnockedOut) return;
+
+            if (attackData.Type == EAttackType.Strong)
             {
                 lastAttack = Time.time + 0.2f;
             }
@@ -351,7 +353,6 @@ namespace Catacumba.Character.AI
             {
                 lastAttack = Time.time;
             }
-            */
         }
 
     }

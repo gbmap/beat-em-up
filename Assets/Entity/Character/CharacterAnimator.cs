@@ -270,7 +270,7 @@ public class CharacterAnimator : MonoBehaviour
         AnimationClip clip = clips[0].clip;
         if (clip.name.Contains("Heavy")) // VAI DA MERDA VAI
         {
-            if (info.normalizedTime < 0.5f) return;
+            if (info.normalizedTime < 0.33f) return;
         }
 
         animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
