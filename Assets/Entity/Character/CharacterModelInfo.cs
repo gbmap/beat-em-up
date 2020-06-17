@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
+﻿using UnityEngine;
 
 public class CharacterModelInfo : MonoBehaviour
 {
@@ -25,7 +21,6 @@ public class CharacterModelInfo : MonoBehaviour
         }
     }
 
-
     public TransformBone LeftHandBone;
     public TransformBone RightHandBone;
     public TransformBone HipsBone;
@@ -35,6 +30,11 @@ public class CharacterModelInfo : MonoBehaviour
     string hipsPath = "Root/Hips";
 
     private void Awake()
+    {
+        UpdateBones();
+    }
+
+    public void UpdateBones()
     {
         LeftHandBone = new TransformBone(gameObject, leftFingerPath);
         RightHandBone = new TransformBone(gameObject, rightFingerPath);

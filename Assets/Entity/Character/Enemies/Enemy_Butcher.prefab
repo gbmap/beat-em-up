@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: {fileID: 0}
   ObjectPool:
-  - {fileID: 3786660775625988702, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
+  - {fileID: 4157368691536935581, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
   Probability: 1
   Instances: 1
   RangeOfInstances: 0
@@ -438,6 +438,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Icon
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2836811929868206439, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3773363730234558313, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

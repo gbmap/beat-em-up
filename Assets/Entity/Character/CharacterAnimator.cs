@@ -267,10 +267,13 @@ public class CharacterAnimator : MonoBehaviour
         AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
         AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
 
-        AnimationClip clip = clips[0].clip;
-        if (clip.name.Contains("Heavy")) // VAI DA MERDA VAI
+        if (clips.Length > 0)
         {
-            if (info.normalizedTime < 0.33f) return;
+            AnimationClip clip = clips[0].clip;
+            if (clip.name.Contains("Heavy")) // VAI DA MERDA VAI
+            {
+                if (info.normalizedTime < 0.33f) return;
+            }
         }
 
         animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
@@ -481,6 +484,7 @@ public class CharacterAnimator : MonoBehaviour
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
+        modelInfo?.UpdateBones();
         renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         OnRefreshAnimator?.Invoke(animator);

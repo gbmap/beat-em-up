@@ -16,7 +16,7 @@ MonoBehaviour:
   HasSourceProject: 1
   HasPlatforms: 1
   sourceProjectPath: FmodProject/Catacumba-fmod/Catacumba-fmod.fspro
-  sourceBankPath: FmodProject/Catacumba-fmod/Build
+  sourceBankPath: FmodProject\Catacumba-fmod\Build
   SourceBankPathUnformatted: 
   AutomaticEventLoading: 1
   BankLoadType: 0
