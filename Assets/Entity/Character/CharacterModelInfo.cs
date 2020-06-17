@@ -34,7 +34,7 @@ public class CharacterModelInfo : MonoBehaviour
     string rightFingerPath = "Root/Hips/Spine_01/Spine_02/Spine_03/Clavicle_R/Shoulder_R/Elbow_R/Hand_R/Finger_01 1";
     string hipsPath = "Root/Hips";
 
-    private void Start()
+    private void Awake()
     {
         LeftHandBone = new TransformBone(gameObject, leftFingerPath);
         RightHandBone = new TransformBone(gameObject, rightFingerPath);

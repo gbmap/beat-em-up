@@ -33,6 +33,8 @@ public class CharacterPlayerInput : MonoBehaviour
     private Vector3 cameraRight;
     private bool updateCameraDir = true;
 
+    private float dropTimer;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -57,8 +59,8 @@ public class CharacterPlayerInput : MonoBehaviour
     {
         movement.Direction = Vector3.zero;
 
-        if (!CameraManager.Instance) return;
-        CameraManager.Instance.OnCameraChange -= OnCameraChange;
+        //if (!CameraManager.Instance) return;
+        //CameraManager.Instance.OnCameraChange -= OnCameraChange;
     }
 
     private void OnCameraChange()
@@ -104,6 +106,23 @@ public class CharacterPlayerInput : MonoBehaviour
         {
             OnInteract?.Invoke(characterData);
             characterData.Interact();
+        }
+
+        if (_rewiredPlayer.GetButton("Submit"))
+        {
+            if (characterData.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+            {
+                dropTimer += Time.deltaTime;
+                if (dropTimer > 2f)
+                {
+                    characterData.UnEquip(EInventorySlot.Weapon);
+                    dropTimer = 0f;
+                }
+            }
+        }
+        else
+        {
+            dropTimer = 0f;
         }
 
         if (_rewiredPlayer.GetButtonDown("Dodge"))

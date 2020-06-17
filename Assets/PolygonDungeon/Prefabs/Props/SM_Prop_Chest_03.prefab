@@ -11,7 +11,12 @@ GameObject:
   - component: {fileID: 493996}
   - component: {fileID: 3316034}
   - component: {fileID: 2316472}
-  m_Layer: 0
+  - component: {fileID: 685781339}
+  - component: {fileID: 685781337}
+  - component: {fileID: 685781338}
+  - component: {fileID: 2378224332624703188}
+  - component: {fileID: 2161477749767266786}
+  m_Layer: 10
   m_Name: SM_Prop_Chest_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,10 +60,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 42b64fdb315e3054ea757d8d1c4bcfa7, type: 2}
+  - {fileID: 2100000, guid: 9d989eda7609b63478426ec4023bef70, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -79,6 +85,120 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &685781339
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144976}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.7, y: 1.98, z: 4.61}
+  m_Center: {x: 0.0012351279, y: 0.20658672, z: -0.00074386626}
+--- !u!114 &685781337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb905fc32d6a9340894d6f29835ecfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractionType: 0
+  Item: {fileID: 0}
+  AttrToCheck: 0
+  AttrOperation: 0
+  AttrValue: 0
+  TargetObjects: []
+  HasItemMessage: 
+  NoItemMessage: 
+  EventHasItem:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2378224332624703188}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Open
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2161477749767266786}
+        m_MethodName: Spawn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  EventNoItem:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &685781338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cba2aef5307bd5e48b12df5412f48219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 2316472}
+  - {fileID: 2350564}
+--- !u!95 &2378224332624703188
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144976}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: ed88dfb88a1bb1f4eb4ae7fb5b674095, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2161477749767266786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62054cc51325e9e409c3b2a6c4c82939, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObjectPool:
+  - {fileID: 5859386654082122749, guid: e6f38fa6e9b19d046a477c9f51484676, type: 3}
+  Probability: 1
+  Instances: 1
+  RangeOfInstances: 0
+  RangeOfSpawn: 1
+  OneShot: 1
 --- !u!1 &167976
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,7 +210,7 @@ GameObject:
   - component: {fileID: 461604}
   - component: {fileID: 3363582}
   - component: {fileID: 2350564}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SM_Prop_Chest_03_Lid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,10 +253,11 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 42b64fdb315e3054ea757d8d1c4bcfa7, type: 2}
+  - {fileID: 2100000, guid: 9d989eda7609b63478426ec4023bef70, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

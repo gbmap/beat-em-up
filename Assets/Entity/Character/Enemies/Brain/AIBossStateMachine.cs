@@ -180,17 +180,22 @@ namespace Catacumba.Character.AI
             if (data.DefenderStats.Health <= 0)
             {
                 SpawnSkill.StopAllCoroutines();
+
                 foreach (GameObject minion in SpawnSkill.Minions)
                 {
+                    if (minion == null) continue;
+
                     var d = minion.GetComponent<CharacterData>();
                     CharacterAttackData att = new CharacterAttackData()
                     {
-                        
+
                         Damage = int.MaxValue,
                     };
                     CombatManager.CalculateAttackStats(null, d.Stats, ref att);
                     d.GetComponent<CharacterHealth>()?.TakeDamage(att);
                 }
+                
+                Destroy(SpawnSkill);
             }
         }
 

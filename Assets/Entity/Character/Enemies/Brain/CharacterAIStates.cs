@@ -259,7 +259,9 @@ namespace Catacumba.Character.AI
             }
 
             // olha pro alvo
-            gameObject.transform.forward = (Target.transform.position - gameObject.transform.position).normalized;
+            var dir = (Target.transform.position - gameObject.transform.position).normalized;
+            dir.y = gameObject.transform.forward.y;
+            gameObject.transform.forward = dir;
 
             return RESULT_CONTINUE;
         }
@@ -325,8 +327,11 @@ namespace Catacumba.Character.AI
             }
             else
             {
+                Vector3 pt = Target.transform.position;
+                Vector3 pc = gameObject.transform.position;
+
                 float targetDistance = Cfg.DistanceToAttack;
-                targetPosition = (gameObject.transform.position - Target.transform.position).normalized * targetDistance;
+                targetPosition = pt + (pc-pt).normalized * targetDistance;
             }
 
             if (Vector3.Distance(movement.Destination, targetPosition) > 0.75f)
@@ -338,6 +343,8 @@ namespace Catacumba.Character.AI
 
         protected void OnDamagedCallback(CharacterAttackData attackData)
         {
+            if (!health.CanBeKnockedOut) return;
+
             if (attackData.Type == EAttackType.Strong)
             {
                 lastAttack = Time.time + 0.2f;
@@ -423,8 +430,8 @@ namespace Catacumba.Character.AI
             {
                 //movement.IsAgentStopped = health.IsOnGround;
                 float angle = gameObject.GetInstanceID() % 360f;
-                Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-                movement.SetDestination(Target.transform.position + offset * Cfg.OrbitRadius);
+                Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * Cfg.OrbitRadius;
+                movement.SetDestination(Target.transform.position + offset);
                 lastPathChange = Time.time;
             }
 
@@ -461,7 +468,7 @@ namespace Catacumba.Character.AI
             int nAttackers = AIManager.Instance.GetNumberOfAttackers(Target);
             if (nAttackers == -1)
             {
-                return new StateResult(RES_TARGET_DESTROYED); ;
+                return new StateResult(RES_TARGET_DESTROYED);
             }
 
             int maxAttackers = AIManager.Instance.GetMaxAttackers(Target);

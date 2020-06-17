@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AOC_Treasure
+  m_Controller: {fileID: 9100000, guid: a2f0c9aac715c50448a50c9b052b92ad, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 1d0c2bfb238b56a41b455db5fb29f438, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 5beb6c45f79f5be4fafc1cfec00e4aca, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 2f5135956cba3154689c2def0db58b3e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 34aa5c3e974878042b87edab763bf509, type: 2}

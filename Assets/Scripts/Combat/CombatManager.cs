@@ -182,9 +182,13 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         foreach (var c in colliders)
         {
+            Vector3 fwd = attack.Attacker.transform.forward;
+            Vector3 dir2Collider = (c.transform.position - attack.Attacker.transform.position).normalized;
+
             var movement = c.gameObject.GetComponent<CharacterMovement>();
             var health = c.gameObject.GetComponent<CharacterHealth>();
-            if (movement && movement.IsRolling || !health || health && health.IgnoreDamage)
+            if (movement && movement.IsRolling || !health || health && health.IgnoreDamage ||
+                Vector3.Angle(fwd, dir2Collider) >= 60f)
             {
                 continue;
             }

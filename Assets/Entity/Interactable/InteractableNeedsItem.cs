@@ -68,17 +68,25 @@ namespace Catacumba
         {
             if (EvaluateInteraction(character))
             {
-                DialogueBox.Show(HasItemMessage, delegate 
+                if (string.IsNullOrEmpty(HasItemMessage))
                 {
-                    EventHasItem.Invoke();
-                    Destroy(this);
-                    var interactable = GetComponent<Interactable>();
-                    if (interactable) Destroy(interactable);
-                });
+                    CB_HasItem();
+                }
+                else
+                {
+                    DialogueBox.Show(HasItemMessage, CB_HasItem);
+                }
             }
             else
             {
-                DialogueBox.Show(NoItemMessage, delegate { EventNoItem.Invoke(); });
+                if (string.IsNullOrEmpty(NoItemMessage))
+                {
+                    CB_NoItem();
+                }
+                else
+                {
+                    DialogueBox.Show(NoItemMessage, CB_NoItem);
+                }
             }
         }
 
@@ -102,6 +110,19 @@ namespace Catacumba
                 default:
                     return true;
             }
+        }
+
+        private void CB_HasItem()
+        {
+            EventHasItem.Invoke();
+            Destroy(this);
+            var interactable = GetComponent<Interactable>();
+            if (interactable) Destroy(interactable);
+        }
+        
+        private void CB_NoItem()
+        {
+            EventNoItem.Invoke();
         }
     }
 

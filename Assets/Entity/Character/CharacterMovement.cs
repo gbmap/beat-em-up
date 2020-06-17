@@ -335,8 +335,8 @@ public class CharacterMovement : MonoBehaviour
     public void Roll(Vector3 direction)
     {
         if (Time.time < lastRoll + 0.75f ||
-            health.IsOnGround ||
-            combat.IsOnHeavyAttack)
+            health.IsOnGround/* ||
+            combat.IsOnHeavyAttack*/)
         {
             return;
         }

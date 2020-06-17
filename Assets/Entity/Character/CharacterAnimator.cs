@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Catacumba.Exploration;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterAnimator : MonoBehaviour
@@ -179,7 +180,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         if (!isDead || renderer == null) return;
 
-        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath) * 0.75f));
+        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath)));
         timeFactor *= timeFactor;
         float y = Mathf.Cos(Time.time * timeFactor);
         bool enabled = y > 0.0f;
@@ -203,6 +204,8 @@ public class CharacterAnimator : MonoBehaviour
                 velocity = vel
             }, 1);
         }
+
+        CameraManager.Instance.Shake();
     }
 
     private void EmitHitImpact(CharacterAttackData attack)
@@ -252,6 +255,8 @@ public class CharacterAnimator : MonoBehaviour
             animator.SetInteger(hashNHits, attack.HitNumber);
             animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
         }
+
+        CameraManager.Instance.LightShake(attack.HitNumber);
         
         EmitHitImpact(attack);
         FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
@@ -259,6 +264,15 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnRequestCharacterAttackCallback(EAttackType type)
     {
+        AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
+
+        AnimationClip clip = clips[0].clip;
+        if (clip.name.Contains("Heavy")) // VAI DA MERDA VAI
+        {
+            if (info.normalizedTime < 0.33f) return;
+        }
+
         animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
     }
 
