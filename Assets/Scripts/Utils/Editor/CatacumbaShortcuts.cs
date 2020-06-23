@@ -74,7 +74,7 @@ public class CatacumbaShortcuts : MonoBehaviour
         }
 
         // blargh
-        var cams = cameraManager.GetComponentsInChildren<Cinemachine.CinemachineVirtualCamera>();
+        var cams = cameraManager.GetComponentsInChildren<Cinemachine.CinemachineVirtualCamera>(includeInactive: true);
         var targetCamera = cams.OrderBy(c => Vector3.Distance(startPosition.transform.position, c.transform.position)).First();
         foreach (var cam in cams)
         {

@@ -2,7 +2,7 @@
 
 public enum EAttackType
 {
-    Weak = 1,
+    Weak = 0,
     Strong,
     Skill
 }
@@ -100,7 +100,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
-        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?1:4);
+        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?2:8);
     }
 
 

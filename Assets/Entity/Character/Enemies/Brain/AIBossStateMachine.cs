@@ -173,7 +173,15 @@ namespace Catacumba.Character.AI
 
             if (CurrentAIState == EBossAIStates.WaitMinionsDie)
             {
-                SetCurrentState(EBossAIStates.UseSkill, EBossSkills.OneSlash);
+                float d = Vector3.Distance(target.transform.position, gameObject.transform.position);
+                if (d > 3f)
+                {
+                    SetCurrentState(EBossAIStates.UseSkill, EBossSkills.GroundSmash);
+                }
+                else
+                {
+                    SetCurrentState(EBossAIStates.UseSkill, EBossSkills.OneSlash);
+                }
             }
 
 

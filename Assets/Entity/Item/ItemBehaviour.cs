@@ -35,7 +35,7 @@ public class ItemBehaviour : MonoBehaviour
         if (ValidCollision(other, true))
         {
             playersSelecting.Add(other.gameObject);
-            other.GetComponent<CharacterData>().OnItemInRange(GetComponent<ItemData>());
+            other.GetComponent<CharacterData>()?.OnItemInRange(GetComponent<ItemData>());
         }
 
         UpdateVisuals(other.CompareTag("Player"));
@@ -46,7 +46,7 @@ public class ItemBehaviour : MonoBehaviour
         if (ValidCollision(other, false))
         {
             playersSelecting.Remove(other.gameObject);
-            other.GetComponent<CharacterData>().OnItemOutOfRange(GetComponent<ItemData>());
+            other.GetComponent<CharacterData>()?.OnItemOutOfRange(GetComponent<ItemData>());
         }
 
         UpdateVisuals(false);

@@ -464,6 +464,22 @@ PrefabInstance:
       propertyPath: MoveSpeed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9177282144961453490, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: ObjectPool.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9177282144961453490, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: Probability
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9177282144961453490, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: ObjectPool.Array.data[0]
+      value: 
+      objectReference: {fileID: 5859386654082122749, guid: e6f38fa6e9b19d046a477c9f51484676,
+        type: 3}
     - target: {fileID: 9191630728786402830, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: m_Avatar

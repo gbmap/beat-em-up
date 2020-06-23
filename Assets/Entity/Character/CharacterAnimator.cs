@@ -63,6 +63,10 @@ public class CharacterAnimator : MonoBehaviour
     int hashWeakAttack = Animator.StringToHash("WeakAttack");
     int hashStrongAttack = Animator.StringToHash("StrongAttack");
 
+    int hashAttackType = Animator.StringToHash("AttackType");
+    int hashAttackTrigger = Animator.StringToHash("Attack");
+
+
     GameObject equippedWeapon;
 
     // ====== HEALTH
@@ -94,9 +98,13 @@ public class CharacterAnimator : MonoBehaviour
         modelInfo = GetComponent<CharacterModelInfo>();
         renderer = GetComponentInChildren<Renderer>();
 
-        animator.speed = AnimatorDefaultSpeed;
-
         SetupSlashParticles(null);
+    }
+
+    private void Start()
+    {
+        animator.speed = AnimatorDefaultSpeed;
+        animator.SetInteger("BrainType", (int)data.BrainType);
     }
 
     private void OnEnable()
@@ -247,8 +255,8 @@ public class CharacterAnimator : MonoBehaviour
             return;
         }
 
-        animator.ResetTrigger(hashWeakAttack);
-        animator.ResetTrigger(hashStrongAttack);
+        animator.ResetTrigger(hashAttackTrigger);
+        animator.ResetTrigger(hashAttackTrigger);
 
         if (attack.CancelAnimation || attack.Dead)
         {
@@ -276,7 +284,9 @@ public class CharacterAnimator : MonoBehaviour
             }
         }
 
-        animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
+        animator.SetInteger(hashAttackType, (int)type);
+        animator.SetTrigger(hashAttackTrigger);
+        // animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
     }
 
     private void OnRequestSkillUseCallback(BaseSkill obj)
@@ -306,8 +316,8 @@ public class CharacterAnimator : MonoBehaviour
     {
         
         animator.speed = AnimatorDefaultSpeed;
-        animator.ResetTrigger(hashWeakAttack);
-        animator.ResetTrigger(hashStrongAttack);
+        animator.ResetTrigger(hashAttackTrigger);
+        animator.ResetTrigger(hashAttackTrigger);
         animator.SetTrigger(hashRoll);
     }
     
@@ -404,7 +414,11 @@ public class CharacterAnimator : MonoBehaviour
         {
             if (item.Slot == EInventorySlot.Weapon)
             {
-                if (!IgnoreWeaponAnimations) animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+                if (!IgnoreWeaponAnimations)
+                {
+                    animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(item);
+                    RefreshAnimator(false);
+                }
 
                 SetupSlashParticles(itemCfg);
             }
@@ -446,6 +460,7 @@ public class CharacterAnimator : MonoBehaviour
             if (!IgnoreWeaponAnimations)
             {
                 animator.runtimeAnimatorController = CharacterManager.Instance.Config.GetRuntimeAnimatorController(EWeaponType.Fists);
+                RefreshAnimator(false);
             }
 
             Destroy(equippedWeapon);
@@ -454,8 +469,8 @@ public class CharacterAnimator : MonoBehaviour
 
     public void ResetAttackTrigger()
     {
-        animator.ResetTrigger("WeakAttack");
-        animator.ResetTrigger("StrongAttack");
+        animator.ResetTrigger(hashAttackTrigger);
+        animator.ResetTrigger(hashAttackTrigger);
     }
 
     public void FreezeAnimator()
@@ -464,25 +479,29 @@ public class CharacterAnimator : MonoBehaviour
     }
 
     // gambiarra 
-    public void RefreshAnimator()
+    public void RefreshAnimator(bool destroyCurrentAnimator = true)
     {
         Avatar avatar = animator.avatar;
         RuntimeAnimatorController controller = animator.runtimeAnimatorController;
         bool rootMotion = animator.applyRootMotion;
-        RefreshAnimator(avatar, controller, rootMotion);
+        RefreshAnimator(avatar, controller, rootMotion, destroyCurrentAnimator);
     }
 
-    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller, bool rootMotion)
+    public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller, bool rootMotion, bool destroyCurrentAnimator = true)
     {
         if (avatar == null)
         {
             avatar = animator.avatar;
         }
 
-        DestroyImmediate(animator);
-        animator = gameObject.AddComponent<Animator>();
+        if (destroyCurrentAnimator)
+        {
+            DestroyImmediate(animator);
+            animator = gameObject.AddComponent<Animator>();
+        }
         animator.avatar = avatar;
         animator.runtimeAnimatorController = controller;
+        animator.SetInteger("BrainType", (int)data.BrainType);
         modelInfo = GetComponentInChildren<CharacterModelInfo>();
         modelInfo?.UpdateBones();
         renderer = GetComponentInChildren<SkinnedMeshRenderer>();

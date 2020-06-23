@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class AttackStateMachineBehaviour : StateMachineBehaviour
 {
-    int hashWeakAttack = Animator.StringToHash("WeakAttack");
-    int hashStrongAttack = Animator.StringToHash("StrongAttack");
+    // int hashWeakAttack = Animator.StringToHash("WeakAttack");
+    // int hashStrongAttack = Animator.StringToHash("StrongAttack");
+    int hashAttackTrigger = Animator.StringToHash("AttackType");
 
     int[] heavyAttackHashes = {
         Animator.StringToHash("H"),
@@ -17,8 +18,8 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.ResetTrigger(hashWeakAttack);
-        animator.ResetTrigger(hashStrongAttack);
+        animator.ResetTrigger(hashAttackTrigger);
+        animator.ResetTrigger(hashAttackTrigger);
 
         if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
         {
@@ -64,7 +65,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     {
         animator.GetComponent<CharacterCombat>().OnComboEnded?.Invoke();
 
-        animator.ResetTrigger(hashWeakAttack);
-        animator.ResetTrigger(hashStrongAttack);
+        animator.ResetTrigger(hashAttackTrigger);
+        animator.ResetTrigger(hashAttackTrigger);
     }
 }

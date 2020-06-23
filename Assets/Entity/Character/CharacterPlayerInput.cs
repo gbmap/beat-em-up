@@ -130,10 +130,10 @@ public class CharacterPlayerInput : MonoBehaviour
             movement.Roll(cFwd.normalized);
         }
 
-        if (Input.GetKeyDown(KeyCode.F6) ||
-            _rewiredPlayer.GetButtonDoublePressHold("Submit"))
+        if ( Input.GetKeyDown(KeyCode.F6) ||
+            _rewiredPlayer.GetButtonDoublePressHold("Submit") )
         {
-            characterData.Stats.Attributes.SetAttr(EAttribute.Vigor, int.MaxValue);
+            characterData.Stats.Attributes.SetAttr(EAttribute.Vigor, 10000);
             characterData.Stats.Health = characterData.Stats.MaxHealth;
         }
 

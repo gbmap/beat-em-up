@@ -16,7 +16,7 @@ public class DamagingProp : MonoBehaviour
         if (other.gameObject.layer == caster.gameObject.layer) return;
 
         var movement = other.GetComponent<CharacterMovement>();
-        if (movement.IsRolling) return;
+        if (movement != null && movement.IsRolling) return;
 
 
         CharacterAttackData ad = new CharacterAttackData(EAttackType.Weak, gameObject)

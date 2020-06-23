@@ -26,7 +26,6 @@ public class CharacterCombat : MonoBehaviour
 
     public bool IsOnHeavyAttack;
 
-
     private Vector3 attackColliderBasePosition
     {
         get { return animator.RealCharacterPosition + transform.forward*1.25f + Vector3.up; }
@@ -34,7 +33,7 @@ public class CharacterCombat : MonoBehaviour
 
     private Vector3 attackColliderSize
     {
-        get { return (Vector3.one * 0.5f + Vector3.right * 0.5f); }
+        get { return (Vector3.one * 0.65f + Vector3.right * 0.65f); }
     }
 
     private Vector3 GetAttackColliderSize(EAttackType type)
@@ -46,7 +45,7 @@ public class CharacterCombat : MonoBehaviour
             weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
         }
 
-        return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.15f) + Vector3.one * weaponScale;
+        return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
     }
 
     public CharacterAttackData LastAttackData
@@ -224,8 +223,8 @@ public class CharacterCombat : MonoBehaviour
             if (Time.time < LastAttackData.Time + 1f)
             {
                 Gizmos.color = Color.red;
-                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, Vector3.one);
-                Gizmos.DrawWireCube(Vector3.zero, GetAttackColliderSize(LastAttackData.Type)*2f);
+                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, GetAttackColliderSize(LastAttackData.Type));
+                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
             }
         }
         catch { }
