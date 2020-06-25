@@ -343,7 +343,11 @@ namespace Catacumba.Character.AI
 
         protected void OnDamagedCallback(CharacterAttackData attackData)
         {
-            if (!health.CanBeKnockedOut) return;
+            if (!health.CanBeKnockedOut)
+            {
+                //lastAttack -= 0.2f; // HACK
+                return;
+            }
 
             if (attackData.Type == EAttackType.Strong)
             {

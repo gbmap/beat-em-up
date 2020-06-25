@@ -100,7 +100,7 @@ public class CharacterCombat : MonoBehaviour
 
     public void RequestAttack(EAttackType type)
     {
-        if (health.IsDead || health.IsBeingDamaged) return;
+        if (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut) ) return;
         OnRequestCharacterAttack?.Invoke(type);
     }
 

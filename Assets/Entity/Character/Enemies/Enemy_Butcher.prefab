@@ -464,6 +464,11 @@ PrefabInstance:
       propertyPath: MoveSpeed
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8506878765702962246, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CanBeKnockedOut
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9177282144961453490, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: ObjectPool.Array.size
