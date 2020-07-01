@@ -100,7 +100,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
-        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?2:8);
+        return Mathf.FloorToInt((str) * crit * backstab) * (attackType == EAttackType.Weak?2:8);
     }
 
 
