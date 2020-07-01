@@ -177,6 +177,11 @@ public class CharacterCombat : MonoBehaviour
 
     private void UseSkill(SkillData s)
     {
+        if (s.gameObject == null) // objeto foi destruído por algum motivo, possivelmente o jogo foi ganho?
+        {
+            return;
+        }
+
         // hack pra determinar se é um prefab
         if (s.gameObject.scene.rootCount == 0)
         {
