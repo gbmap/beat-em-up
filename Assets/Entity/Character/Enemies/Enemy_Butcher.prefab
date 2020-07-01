@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: {fileID: 0}
   ObjectPool:
-  - {fileID: 4157368691536935581, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
+  - {fileID: 3786660775625988702, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
   Probability: 1
   Instances: 1
   RangeOfInstances: 0
@@ -406,17 +406,17 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: VigorCurve.m_ConstantMax
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: StrengthCurve.m_ConstantMax
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: DexterityCurve.m_ConstantMax
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

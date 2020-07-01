@@ -155,17 +155,17 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: VigorCurve.m_ConstantMin
-      value: 10
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: VigorCurve.m_ConstantMax
-      value: 20
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: StrengthCurve.m_Mode
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
@@ -175,12 +175,12 @@ PrefabInstance:
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: StrengthCurve.m_ConstantMax
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: DexterityCurve.m_Mode
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}

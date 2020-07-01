@@ -39,6 +39,41 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: abfaea5f1d9bc314fbc48c5c2b9f6f15,
         type: 2}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: VigorCurve.m_ConstantMin
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: VigorCurve.m_ConstantMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: StrengthCurve.m_ConstantMin
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: StrengthCurve.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: StrengthCurve.m_ConstantMax
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: DexterityCurve.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742128334014284129, guid: 34873556028b1eb429b46d8a8ea650c8,
+        type: 3}
+      propertyPath: DexterityCurve.m_ConstantMax
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5620145747591893606, guid: 34873556028b1eb429b46d8a8ea650c8,
         type: 3}
       propertyPath: m_LocalPosition.x
