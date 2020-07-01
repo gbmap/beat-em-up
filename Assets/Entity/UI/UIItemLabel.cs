@@ -33,7 +33,7 @@ public class UIItemLabel : MonoBehaviour
 
     private string AttributesToString(CharAttributesI attr)
     {
-        return FormatAttributeString(AttributeToString, attr.Stamina, " Vigor") +
+        return FormatAttributeString(AttributeToString, attr.Vigor, " Vigor") +
                FormatAttributeString(AttributeToString, attr.Strength, " Strength") +
                FormatAttributeString(AttributeToString, attr.Dexterity, " Dexterity") +
                FormatAttributeString(AttributeToString, attr.Magic, " Magic", true);
@@ -61,7 +61,7 @@ public class UIItemLabel : MonoBehaviour
 
     private string DamageScalingToString(CharAttributesF dmgScaling)
     {
-        return FormatAttributeString(DamageScaleToString, dmgScaling.Stamina, " Vigor") +
+        return FormatAttributeString(DamageScaleToString, dmgScaling.Vigor, " Vigor") +
                FormatAttributeString(DamageScaleToString, dmgScaling.Strength, " Strength") +
                FormatAttributeString(DamageScaleToString, dmgScaling.Dexterity, " Dexterity") +
                FormatAttributeString(DamageScaleToString, dmgScaling.Magic, " Magic", true);
