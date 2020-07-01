@@ -13,7 +13,7 @@ namespace Catacumba {
             if (!Particles)
                 Destroy(this);
 
-            ServiceFactory.Instance.Resolve<MessageRouter>().AddHandler<StateManager.MsgOnSceneChangeRequest>(OnSceneChangeRequest);
+            ServiceFactory.Instance.Resolve<MessageRouter>()?.AddHandler<StateManager.MsgOnSceneChangeRequest>(OnSceneChangeRequest);
         }
 
         private void OnSceneChangeRequest(StateManager.MsgOnSceneChangeRequest msg)
