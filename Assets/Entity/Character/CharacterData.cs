@@ -133,7 +133,7 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 
         // setup attribs
         Stats = new CharacterStats();
-        Stats.Attributes.Stamina = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
+        Stats.Attributes.Vigor = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Strength = Mathf.RoundToInt(StrengthCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Dexterity = Mathf.RoundToInt(DexterityCurve.Evaluate(UnityEngine.Random.value));
         Stats.Attributes.Magic = Mathf.RoundToInt(MagicCurve.Evaluate(UnityEngine.Random.value));

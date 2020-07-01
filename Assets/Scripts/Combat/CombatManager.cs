@@ -81,7 +81,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Stamina+c.Inventory.GetTotalAttributes().Stamina) * 19;
+        return (c.Attributes.Vigor+c.Inventory.GetTotalAttributes().Vigor) * 19;
     }
 
     public static int GetMaxMana(CharacterStats c)

@@ -109,7 +109,7 @@ namespace Catacumba
         private bool DrawCharacterAttributeInt(ref CharAttributesI attrs)
         {
             bool changed = false;
-            attrs.Stamina = IntCheck(attrs.Stamina, "Vigor", -100, 100, ref changed);
+            attrs.Vigor = IntCheck(attrs.Vigor, "Vigor", -100, 100, ref changed);
             attrs.Strength = IntCheck(attrs.Strength, "Strength", -100, 100, ref changed);
             attrs.Dexterity = IntCheck(attrs.Dexterity, "Dexterity", -100, 100, ref changed);
             attrs.Magic = IntCheck(attrs.Magic, "Magic", -100, 100, ref changed);
@@ -119,7 +119,7 @@ namespace Catacumba
         private bool DrawCharacterAttributeFloat(ref CharAttributesF attrs)
         {
             bool changed = false;
-            attrs.Stamina = FloatCheck("Vigor", attrs.Stamina, 0f, 10f, ref changed);
+            attrs.Vigor = FloatCheck("Vigor", attrs.Vigor, 0f, 10f, ref changed);
             attrs.Strength = FloatCheck("Strength", attrs.Strength, 0f, 10f, ref changed);
             attrs.Dexterity = FloatCheck("Dexterity", attrs.Dexterity, 0f, 10f, ref changed);
             attrs.Magic = FloatCheck("Magic", attrs.Magic, 0f, 10f, ref changed);
