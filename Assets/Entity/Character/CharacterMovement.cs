@@ -158,6 +158,8 @@ public class CharacterMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //NavMeshAgent.
+
         if (health.IsOnGround)
         {
             NavMeshAgent.enabled = speedBumpT > 0f;

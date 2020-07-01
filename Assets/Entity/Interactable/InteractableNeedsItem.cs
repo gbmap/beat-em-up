@@ -44,8 +44,8 @@ namespace Catacumba
         public string HasItemMessage;
         public string NoItemMessage;
 
-        public InteractEvent EventHasItem;
-        public InteractEvent EventNoItem;
+        public InteractEvent EventHasItem = new InteractEvent();
+        public InteractEvent EventNoItem = new InteractEvent();
 
         Interactable interactable;
 

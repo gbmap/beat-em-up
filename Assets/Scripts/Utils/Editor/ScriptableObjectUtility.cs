@@ -30,4 +30,10 @@ public static class ScriptableObjectUtility
         EditorUtility.FocusProjectWindow();
         Selection.activeObject = asset;
     }
+
+    [MenuItem("Catacumba/Create/Scriptable Object")]
+    public static void CreateAsset()
+    {
+        CreateAsset<ScriptableObject>();
+    }
 }

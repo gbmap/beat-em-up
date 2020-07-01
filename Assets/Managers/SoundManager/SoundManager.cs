@@ -6,28 +6,25 @@ public class SoundManager : SimpleSingleton<SoundManager>
     public AudioClip[] Wooshes;
     public AudioClip[] Hits;
 
-    private AudioClip GetRandomWoosh()
+    private AudioClip GetRandomClip(AudioClip[] arr)
     {
-        return Wooshes[UnityEngine.Random.Range(0, Wooshes.Length)];
-    }
-
-    private AudioClip GetRandomHit()
-    {
-        return Hits[UnityEngine.Random.Range(0, Hits.Length)];
+        if (arr == null || arr.Length == 0) return null;
+        return arr[UnityEngine.Random.Range(0, arr.Length)];
     }
 
     public void PlayWoosh(Vector3 position)
     {
-        PlayRandomAudio(position, GetRandomWoosh);
+        PlayAudio(position, GetRandomClip(Wooshes));
     }
 
     public void PlayHit(Vector3 position)
     {
-        PlayRandomAudio(position, GetRandomHit);
+        PlayAudio(position, GetRandomClip(Hits));
     }
 
-    private void PlayRandomAudio(Vector3 position, Func<AudioClip> selector)
+    private void PlayAudio(Vector3 position, AudioClip clip)
     {
-        AudioSource.PlayClipAtPoint(selector(), position);
+        if (!clip) return;
+        AudioSource.PlayClipAtPoint(clip, position);
     }
 }

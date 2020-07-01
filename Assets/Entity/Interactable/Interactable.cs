@@ -21,6 +21,10 @@ namespace Catacumba
         private void Awake()
         {
             data = GetComponent<CharacterData>();
+            if (renderers == null)
+            {
+                renderers = GetComponentsInChildren<Renderer>();
+            }
         }
 
         private void OnEnable()
