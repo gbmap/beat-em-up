@@ -31,10 +31,19 @@ namespace Catacumba.Exploration
             get
             {
                 if (currentMovementOrientation) return currentMovementOrientation.CalculateMovementOrientation();
+                if (CurrentCamera != null)
+                {
+                    return new MovementOrientation
+                    {
+                        forward = CurrentCamera.transform.forward,
+                        right = CurrentCamera.transform.right
+                    };
+                }
+
                 return new MovementOrientation
                 {
-                    forward = CurrentCamera.transform.forward,
-                    right = CurrentCamera.transform.right
+                    forward = Camera.main.transform.forward,
+                    right = Camera.main.transform.right
                 };
             }
         }
@@ -94,7 +103,7 @@ namespace Catacumba.Exploration
             }
             else
             {
-                Debug.LogError("No impulse source.");
+                Debug.LogWarning("No impulse source.");
             }
         }
 
@@ -106,7 +115,7 @@ namespace Catacumba.Exploration
             }
             else
             {
-                Debug.LogError("No impulse source.");
+                Debug.LogWarning("No impulse source.");
             }
         }
 
