@@ -8,7 +8,7 @@ public class CameraHideEnvironmentInFront : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 tp = Target.transform.position;
-        FireRay(tp);
+        FireRay(tp, 1f);
 
         tp = Target.transform.position + transform.right * 5f;
         FireRay(tp);
@@ -17,7 +17,7 @@ public class CameraHideEnvironmentInFront : MonoBehaviour
         FireRay(tp);
     }
 
-    private void FireRay(Vector3 tp)
+    private void FireRay(Vector3 tp, float angleThreshold = 0.6f)
     {
         Ray r = new Ray();
         r.origin = transform.position;
@@ -30,6 +30,10 @@ public class CameraHideEnvironmentInFront : MonoBehaviour
 
         foreach (RaycastHit rh in hits)
         {
+            float dot = Vector3.Dot(rh.collider.gameObject.transform.forward, Camera.main.transform.forward);
+            if (Mathf.Abs(dot) < angleThreshold)
+                continue;
+
             var dissolves = rh.collider.GetComponentsInChildren<EnvironmentDissolveEffect>();
             foreach (var d in dissolves)
             {

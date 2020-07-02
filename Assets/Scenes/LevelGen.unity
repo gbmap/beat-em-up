@@ -608,18 +608,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77451c7144680794b80c07ee823379ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelSize: {x: 50, y: 50}
-  GenerateMesh: 0
-  AddSectors: 1
-  Divisions: {x: 5, y: 5}
-  ConnectorChances: {x: 0.5, y: 0.5}
-  Walkers: 0
-  WalkerLife: 13
-  WalkerRoomSz: {x: 5, y: 5}
-  WalkerTurnChance: 0.35
-  BiomeConfig: {fileID: 11400000, guid: ae93beba36eadde43b0095ffa566f7da, type: 2}
-  PlayerPrefab: {fileID: 4401398104034988439, guid: 10e5cae364fee7748bd82572b44ec6a1,
-    type: 3}
+  Params:
+    LevelSize: {x: 20, y: 20}
+    GenerateMesh: 0
+    AddSectors: 1
+    Divisions: {x: 3, y: 3}
+    SectorChance: 1
+    ConnectorChances: {x: 0.5, y: 0.5}
+    Walkers: 0
+    WalkerLife: 6
+    WalkerRoomSz: {x: 5, y: 5}
+    WalkerTurnChance: 0.25
+    BiomeConfig: {fileID: 11400000, guid: ae93beba36eadde43b0095ffa566f7da, type: 2}
+    PlayerPrefab: {fileID: 4401398104034988439, guid: 10e5cae364fee7748bd82572b44ec6a1,
+      type: 3}
 --- !u!4 &881023759
 Transform:
   m_ObjectHideFlags: 0

@@ -23,7 +23,7 @@ public class EnvironmentDissolveEffect : MonoBehaviour
 
         float delta = (Target - t);
         float dt = Mathf.Min(Mathf.Abs(delta), 0.2f) * Mathf.Sign(delta);
-        t += dt * Time.deltaTime * 3f; // * Time.deltaTime;
+        t += dt * Time.deltaTime * 8f; // * Time.deltaTime;
         
         System.Array.ForEach(materials, m => m.SetFloat(hashDissolve, t));
     }

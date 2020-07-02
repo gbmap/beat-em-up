@@ -44,8 +44,6 @@ namespace Catacumba.Level
         {
             // TODO: FIX MEM LEAK
             Texture2D txtr = LevelToTexture(l);
-            //Rect r = new Rect(Vector2.zero, l.Size);
-            //Sprite s = Sprite.Create(txtr, r, Vector2.zero, txtr.width);
             Image.texture = txtr;
         }
     }

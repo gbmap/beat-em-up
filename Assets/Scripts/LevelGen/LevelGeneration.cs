@@ -169,12 +169,6 @@ namespace Catacumba.Level
         }
     }
 
-    public class Room
-    {
-        public Vector2Int Position;
-        public Vector2Int Size;
-    }
-
     public class Connector
     {
         public Sector From; 
@@ -234,11 +228,15 @@ namespace Catacumba.Level
             Connectors = new List<Connector>();
         }
 
+        
         public bool IsIn(Vector2Int p)
         {
             return IsIn(p.x, p.y);
         }
 
+        /*
+         * Checks if a local space point is inside the sector.
+         * */
         public bool IsIn(float x, float y)
         {
             return LevelGeneration.IsInBox(Pos.x + x, Pos.y + y, Pos, Size);
@@ -269,6 +267,10 @@ namespace Catacumba.Level
                 return Parent.GetCell(Pos + p);
         }
 
+        /*
+         * Sets a point in local space to the desired value.
+         * If overwrite is true, the value will be set even if c < current value in map.
+         * */
         public void SetCell(Vector2Int p, int c, bool overwrite = false)
         {
             if (!IsIn(p))
@@ -309,6 +311,7 @@ namespace Catacumba.Level
         public void DestroySector()
         {
             FillSector(LevelGeneration.CODE_EMPTY);
+            if (Parent != null) Parent.RemoveChild(this);
             for (int i = 0; i < Connectors.Count; i++)
             {
                 Connector c = Connectors[i];
@@ -349,6 +352,22 @@ namespace Catacumba.Level
             Children.Remove(s);
         }
 
+        /*
+         * Returns the closest sector with the same parent.
+         * */
+        public Sector GetClosestSiblingSector()
+        {
+            if (Parent == null) return null;
+            if (Parent.Children.Count == 1) return null;
+
+            return Parent.Children.OrderBy(s => Vector2.Distance(Pos, s.Pos)).ElementAt(1);
+        }
+
+        public HashSet<Sector> ListConnectedSectors()
+        {
+            return ListConnectedSectors(new HashSet<Sector>(), this);
+        }
+
         public static HashSet<Sector> ListConnectedSectors(HashSet<Sector> sl, Sector sec)
         {
             if (sl.Contains(sec))
@@ -365,6 +384,11 @@ namespace Catacumba.Level
 
             return sl;
         }
+
+        public static int GetNumberOfConnectedSectors(Sector sec)
+        {
+            return ListConnectedSectors(new HashSet<Sector>(), sec).Count;
+        }
     }
     
     public class Level
@@ -379,6 +403,7 @@ namespace Catacumba.Level
         private int[,] Map;
 
         public Vector2Int SpawnPoint;
+        public Sector SpawnSector;
 
         public Sector BaseSector { get; private set; }
 
@@ -419,18 +444,23 @@ namespace Catacumba.Level
         }
     }
 
-
     [System.Serializable]
     public class LevelGenerationParams
     {
         public Vector2Int LevelSize = new Vector2Int(50, 50);
         public bool GenerateMesh = false;
 
+        [Range(1, 20)]
+        public int TargetRooms = 5;
+
         [Header("Sectors")]
         public bool AddSectors = true;
         //[Range(1, 10)]
         public Vector2Int Divisions = new Vector2Int(3, 1);
 
+        [Range(0f, 1f)]
+        [Tooltip("The chance a sector will spawn at any sector division.")]
+        public float SectorChance = 1f;
         public Vector2 ConnectorChances = new Vector2(0.5f, 0.5f);
 
         [Header("Walkers")]
@@ -504,7 +534,7 @@ namespace Catacumba.Level
             /////////////////
             /// SECTORS
             if (p.AddSectors)
-                yield return StepAddSectors(level, p.LevelSize, p.Divisions, p.ConnectorChances);
+                yield return StepAddSectors(level, p.LevelSize, p.Divisions, p.SectorChance, p.ConnectorChances);
 
             UpdateVis(level);
 
@@ -515,32 +545,41 @@ namespace Catacumba.Level
 
             /////////////////
             /// PLAYER POSITION
-            int count = level.BaseSector.Children.Count;
-            var spawnSector = level.BaseSector.Children[Random.Range(0, count)];
-            spawnSector.SetCell(Vector2Int.one, LevelGeneration.CODE_PLAYER_SPAWN);
-
-            level.SpawnPoint = spawnSector.GetAbsolutePosition(Vector2Int.one);
-
+            Sector[] secs = StepSelectPlayerSpawnPoint(level);
             UpdateVis(level);
+
+            /*
+
+            // Not enough rooms, connect rooms starting by
+            // the farthest one.
+            if (secs.Length < p.TargetRooms)
+            {
+                for (int i = secs.Length-1; i > 0; i--)
+                {
+                    Sector ts = secs[i];
+                    
+                }
+            }
+
+            // Too much rooms
+            else if (secs.Length > p.TargetRooms)
+            {
+                for (int i = secs.Length-1; i > 0; i--)
+                {
+                    Sector ts = secs[i];
+                    ts.DestroySector();
+                }
+            }
+
+            */
 
             /////////////////
             /// CLEAN UP
-            HashSet<Sector> sectors = Sector.ListConnectedSectors(new HashSet<Sector>(), spawnSector);
-            for (int i = 0; i < level.BaseSector.Children.Count; i++)
-            {
-                Sector sc = level.BaseSector.Children[i];
-                if (sectors.Contains(sc))
-                    continue;
-
-                sc.DestroySector();
-                level.BaseSector.Children.RemoveAt(i);
-                i--;
-
-                UpdateVis(level);
-                yield return new WaitForSeconds(0.25f);
-            }
-
+            
+            // remove sectors not available to player's sector through connectors.
+            yield return StepCleanup(level);
             UpdateVis(level);
+
             yield return new WaitForSeconds(0.5f);
 
             //////////////////
@@ -580,6 +619,7 @@ namespace Catacumba.Level
         private static System.Collections.IEnumerator StepAddSectors(Level level,
                                                                      Vector2Int size, 
                                                                      Vector2Int divisions,
+                                                                     float sectorChance,
                                                                      Vector2 connectorChances)
         {
             ////////////////////////
@@ -591,7 +631,7 @@ namespace Catacumba.Level
             {
                 for (int sy = 0; sy < d.y; sy++)
                 {
-                    if (Random.value < 0.25f) continue;
+                    if (Random.value < 1f - sectorChance) continue;
 
                     int ri = sx + sy * d.y; // sector index
 
@@ -686,8 +726,11 @@ namespace Catacumba.Level
                 yield return new WaitForSeconds(0.1f);
             }
 
-            // remove rooms with no connectors
-            // we could also connect them to the closest room
+
+            // remove rooms with no connectors.
+            // TODO: connect unconnected sectors to the nearest sector
+
+            /*
             for (int i = 0; i < level.BaseSector.Children.Count; i++)
             {
                 Sector c = level.BaseSector.Children[i];
@@ -703,6 +746,7 @@ namespace Catacumba.Level
                 }
                 yield return new WaitForSeconds(.1f);
             }
+            */
 
             yield break;
         }
@@ -732,11 +776,46 @@ namespace Catacumba.Level
             }
         }
         
-        
+        /*
+         * Returns a list of connected Sectors starting by the spawn sector.
+         * */
+        private static Sector[] StepSelectPlayerSpawnPoint(Level l)
+        {
+            IOrderedEnumerable<Sector> sectors = l.BaseSector.Children
+                                                  .OrderByDescending(s => Sector.GetNumberOfConnectedSectors(s));
+            // select the sector with most connected sectors to it
+            // i'm dumb as a door
+            var spawnSector = sectors.First();
+
+            spawnSector.SetCell(Vector2Int.one, LevelGeneration.CODE_PLAYER_SPAWN);
+
+            l.SpawnSector = spawnSector;
+            l.SpawnPoint = spawnSector.GetAbsolutePosition(Vector2Int.one);
+
+            return Sector.ListConnectedSectors(new HashSet<Sector>(), spawnSector)
+                .OrderBy(s => Vector2.Distance(spawnSector.Pos, s.Pos)).ToArray();
+        }
+
+        private static System.Collections.IEnumerator StepCleanup(Level l)
+        {
+            HashSet<Sector> sectors = Sector.ListConnectedSectors(new HashSet<Sector>(), l.SpawnSector);
+            for (int i = 0; i < l.BaseSector.Children.Count; i++)
+            {
+                Sector sc = l.BaseSector.Children[i];
+                if (sectors.Contains(sc))
+                    continue;
+
+                sc.DestroySector();
+                i--;
+
+                UpdateVis(l);
+                yield return new WaitForSeconds(0.25f);
+            }
+        }
+
         ///////////////////////////
         /// MESH GENERATION
         /// 
-
         static void OnLevelGenerationComplete(Level l, LevelGenerationParams p)
         {
             // Se já tem geometria de um level anterior, destruir.
@@ -756,7 +835,6 @@ namespace Catacumba.Level
             cellSize.y = 0f;
             GameObject player = Instantiate(p.PlayerPrefab, cellSize, Quaternion.identity);
 
-
             // Setar câmera
             Camera.main.transform.position = cellSize;
             var c = Camera.main.gameObject.AddComponent<CameraHideEnvironmentInFront>();
@@ -769,7 +847,7 @@ namespace Catacumba.Level
 
             var body = vcam.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
             body.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
-            body.m_FollowOffset = new Vector3(0f, 7f, -13f);
+            body.m_FollowOffset = new Vector3(0f, 12f, -12f);
 
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
             //aim.
