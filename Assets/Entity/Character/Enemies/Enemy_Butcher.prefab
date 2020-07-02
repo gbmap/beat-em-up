@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Health: {fileID: 0}
   ObjectPool:
-  - {fileID: 3786660775625988702, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
+  - {fileID: 4157368691536935581, guid: 7692dad60ceb81a47b73e4fe5c66fbf1, type: 3}
   Probability: 1
   Instances: 1
   RangeOfInstances: 0
