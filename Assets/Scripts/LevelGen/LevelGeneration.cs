@@ -192,6 +192,10 @@ namespace Catacumba.Level
         }
     }
 
+    ////////////////////////////// 
+    // Represents a sector inside a level. It has
+    // also sub-sectors.
+    //
     public class Sector
     {
         public Level Level { get; private set; }
@@ -227,7 +231,6 @@ namespace Catacumba.Level
             Children = new List<Sector>();
             Connectors = new List<Connector>();
         }
-
         
         public bool IsIn(Vector2Int p)
         {
@@ -240,6 +243,14 @@ namespace Catacumba.Level
         public bool IsIn(float x, float y)
         {
             return LevelGeneration.IsInBox(Pos.x + x, Pos.y + y, Pos, Size);
+        }
+
+        /*
+         * Returns 
+         * */
+        public Sector GetChildSectorAtPosition(Vector2Int p)
+        {
+            return null;
         }
 
         public Vector2Int GetAbsolutePosition(Vector2Int p)
@@ -361,6 +372,20 @@ namespace Catacumba.Level
             if (Parent.Children.Count == 1) return null;
 
             return Parent.Children.OrderBy(s => Vector2.Distance(Pos, s.Pos)).ElementAt(1);
+        }
+
+        public Sector[] GetSiblings()
+        {
+            if (Parent == null) return null;
+            if (Parent.Children.Count == 1) return null;
+
+            return Parent.Children.OrderBy(s => Vector2.Distance(Pos, s.Pos)).ToArray();
+        }
+
+        public Sector GetSectorAt(Vector2Int pos)
+        {
+            return Children.Where(s => pos.x > s.Pos.x && pos.y > s.Pos.y &&
+                                       pos.x < s.Pos.x + s.Size.x && pos.y < s.Pos.y + s.Size.y).FirstOrDefault();
         }
 
         public HashSet<Sector> ListConnectedSectors()
@@ -548,30 +573,73 @@ namespace Catacumba.Level
             Sector[] secs = StepSelectPlayerSpawnPoint(level);
             UpdateVis(level);
 
-            /*
+            int secsL = secs.Length;
 
             // Not enough rooms, connect rooms starting by
             // the farthest one.
-            if (secs.Length < p.TargetRooms)
+            if (secsL < p.TargetRooms)
             {
-                for (int i = secs.Length-1; i > 0; i--)
+                // Iterate backwards through sectors connected to player.
+                for (int i = secsL - 1; i > 0; i--)
                 {
                     Sector ts = secs[i];
-                    
+
+                    Vector2Int ipm = ts.Pos + (ts.Size / 2);
+                    Vector2Int pm = ipm;
+
+                    // Attempt to connect to sectors on each direction.
+                    for (EDirection d = (EDirection)0; d < EDirection.Left; d++)
+                    {
+                        Vector2Int delta = LevelGeneration.DirectionToVector2(d);
+
+                        // While the current position is still inside the map
+                        while (level.BaseSector.IsIn(pm)) 
+                        {
+                            // Advance towards the direction.
+                            pm += delta;
+
+                            // If we hit a sector...
+                            int c = level.BaseSector.GetCell(pm);
+                            if (c == LevelGeneration.CODE_ROOM)
+                            {
+                                // And it is not the sector we started from.
+                                var sec = level.BaseSector.GetSectorAt(pm);
+                                if (sec == null || sec == ts)
+                                    continue;
+
+                                // Walk from the starting sector to the one we hit.
+                                TargetedWalker tw = new TargetedWalker(ipm, pm);
+                                tw.OnDeath += delegate(BaseWalker w)
+                                {
+                                    var twr = (w as TargetedWalker);
+                                    twr.Connector.From = ts;
+                                    twr.Connector.To = sec;
+                                };
+
+                                while (tw.Walk(level.BaseSector))
+                                {
+                                    yield return new WaitForSeconds(.1f);
+                                }
+                                
+                                // One minus sector to go
+                                secsL--;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
             // Too much rooms
-            else if (secs.Length > p.TargetRooms)
+            else if (secsL > p.TargetRooms)
             {
-                for (int i = secs.Length-1; i > 0; i--)
+                for (int i = secsL-1; i > 0 && secsL > p.TargetRooms; i--)
                 {
                     Sector ts = secs[i];
                     ts.DestroySector();
+                    secsL--;
                 }
             }
-
-            */
 
             /////////////////
             /// CLEAN UP
@@ -662,6 +730,7 @@ namespace Catacumba.Level
                 {
                     if (sectors[sx, sy] == null) continue;
 
+                    // If we should connect to the right,
                     if (sx + 1 < d.x && sectors[sx+1, sy] != null && Random.value < connectorChances.x)
                     {
                         Sector a = sectors[sx, sy];
@@ -683,6 +752,7 @@ namespace Catacumba.Level
                         walkers.Add(w);
                     }
 
+                    // If we should connect down
                     if (sy + 1 < d.y && sectors[sx, sy+1] != null && Random.value < connectorChances.y)
                     {
                         Sector a = sectors[sx, sy];

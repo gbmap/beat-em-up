@@ -50,7 +50,6 @@ public struct CharacterAttackData
     public Quaternion ColliderRot;
 }
 
-
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
 {
     protected override string Path => "Data/CombatManagerConfig";
@@ -69,7 +68,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         // esse 256 é arbitrário e significa o valor de destreza que equivale a 50% de chance de crit.
         return 1f - (1f / (Mathf.Pow(d/256, 2f)+1f));
-        //return Mathf.Pow(d/256, 1f/1.75f);
+        // return Mathf.Pow(d/256, 1f/1.75f);
     }
 
     public static float GetPoiseChance(CharacterStats c)

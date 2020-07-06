@@ -1,19 +1,26 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.AI;
 using Frictionless;
 using Catacumba.Character.AI;
-using System;
 
 public class CheckpointData
 {
     public int Index;
     public string TargetCameraName;
-    public int[] Items;
-    public ItemConfig[] KeyItems;
+
+    public class CheckpointDataPlayer
+    {
+        public int[] Items;
+        public ItemConfig[] KeyItems;
+    }
+
+    public CheckpointDataPlayer[] Players;
+
+    // public int[] Items;
+    // public ItemConfig[] KeyItems;
     public Vector3 Position;
 }
 
@@ -62,41 +69,55 @@ public class CheckpointManager : SimpleSingleton<CheckpointManager>
 
     private static void SetupPlayer()
     {
-        CharacterPlayerInput input = FindObjectOfType<CharacterPlayerInput>();
-        CharacterData data = input.GetComponent<CharacterData>();
+        CharacterPlayerInput[] inputs = FindObjectsOfType<CharacterPlayerInput>();
 
-        // Append starting items to player's
-        ItemConfig[] configs = new ItemConfig[checkpointData.Items.Length];
-        for (int i = 0; i < configs.Length; i++)
+        for (int i1 = 0; i1 < inputs.Length; i1++)
         {
-            configs[i] = ItemManager.Instance.GetItemConfig(checkpointData.Items[i]);
+            CharacterPlayerInput input = inputs[i1];
+            CharacterData data = input.GetComponent<CharacterData>();
+
+            CheckpointData.CheckpointDataPlayer checkpointPlayerData = checkpointData.Players[i1];
+
+            // Append starting items to player's
+            ItemConfig[] configs = new ItemConfig[checkpointPlayerData.Items.Length];
+            for (int i = 0; i < configs.Length; i++)
+            {
+                configs[i] = ItemManager.Instance.GetItemConfig(checkpointPlayerData.Items[i]);
+            }
+
+            // Set starting items to the player.
+            List<ItemConfig> items = new List<ItemConfig>(configs);
+            items.AddRange(data.StartingItems);
+            data.StartingItems = items.ToArray();
+
+            // Create new inventory with keys also
+            data.Stats.Inventory = new Inventory(checkpointPlayerData.KeyItems);
+
+            // Set player's checkpoint position
+            input.GetComponent<NavMeshAgent>().Warp(checkpointData.Position);
         }
-
-        List<ItemConfig> items = new List<ItemConfig>(configs);
-        items.AddRange(data.StartingItems);
-        data.StartingItems = items.ToArray();
-
-        // Create new inventory with keys also
-        data.Stats.Inventory = new Inventory(checkpointData.KeyItems);
-
-        // Set player's checkpoint position
-        input.GetComponent<NavMeshAgent>().Warp(checkpointData.Position);
     }
 
     public static void OnCheckpoint(Checkpoint c)
     {
-        var input = FindObjectOfType<CharacterPlayerInput>();
-        var inventory = input.GetComponent<CharacterData>().Stats.Inventory;
+        var inputs = FindObjectsOfType<CharacterPlayerInput>();
 
         CheckpointIndex = c.transform.GetSiblingIndex();
         checkpointData = new CheckpointData()
         {
             Index = c.Index,
-            Items = (int[])inventory.ItemIds.Clone(),
-            KeyItems = inventory.KeyItems.ToArray(),
+            Players = new CheckpointData.CheckpointDataPlayer[inputs.Length],
             TargetCameraName = c.TargetCamera.name,
             Position = c.transform.position
         };
+
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            CharacterPlayerInput input = (CharacterPlayerInput)inputs[i];
+            var inventory = input.GetComponent<CharacterData>().Stats.Inventory;
+            checkpointData.Players[i].Items = (int[])inventory.ItemIds.Clone();
+            checkpointData.Players[i].KeyItems = inventory.KeyItems.ToArray();
+        }
     }
 
     public static T DeepCopy<T>(T other)
