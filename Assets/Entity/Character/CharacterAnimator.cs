@@ -188,7 +188,7 @@ public class CharacterAnimator : MonoBehaviour
     {
         if (!isDead || renderer == null) return;
 
-        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath)));
+        float timeFactor = Mathf.Max(0f, ((Time.time - timeOfDeath)*0.75f));
         timeFactor *= timeFactor;
         float y = Mathf.Cos(Time.time * timeFactor);
         bool enabled = y > 0.0f;
