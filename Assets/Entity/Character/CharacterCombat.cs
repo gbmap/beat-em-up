@@ -159,7 +159,7 @@ public class CharacterCombat : MonoBehaviour
     public void AnimUseWeaponSkill(int index)
     {
         ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
-        if (weapon.Skills == null)
+        if (weapon == null || weapon.Skills == null)
         {
             Debug.LogWarning("No weapon skills found. This shouldn't be happening.");
             return;
