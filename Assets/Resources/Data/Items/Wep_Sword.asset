@@ -21,13 +21,13 @@ MonoBehaviour:
     Slot: 5
     WeaponType: 1
     Attributes:
-      Stamina: 0
-      Strength: 4
-      Dexterity: -1
+      Stamina: 8
+      Strength: 5
+      Dexterity: 20
       Magic: 0
     DamageScaling:
       Stamina: 0
-      Strength: 0.5
+      Strength: 0
       Dexterity: 0
       Magic: 0
     Skills: []

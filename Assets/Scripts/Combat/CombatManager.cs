@@ -80,7 +80,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Stamina+c.Inventory.GetTotalAttributes().Stamina) * 19;
+        return (c.Attributes.Vigor+c.Inventory.GetTotalAttributes().Vigor) * 19;
     }
 
     public static int GetMaxMana(CharacterStats c)
@@ -92,14 +92,11 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
     {
         var dmgScaling = attacker.Inventory.GetTotalDamageScaling();
 
-        float str = (attacker.GetAttributeTotal(EAttribute.Strength)) * (1f + dmgScaling.Strength);
-        float dex = (attacker.GetAttributeTotal(EAttribute.Dexterity)) * dmgScaling.Dexterity;
-        float mag = (attacker.GetAttributeTotal(EAttribute.Magic)) * dmgScaling.Magic;
+        float str = (attacker.GetAttributeTotal(EAttribute.Strength)) * (1f + dmgScaling.Strength) * (attackType == EAttackType.Weak ? 1f : 4f);
         float crit = Random.value < GetCritChance(attacker) ? GetCritFactor(attacker) : 1f;
+        float backstab = Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
-        float backstab = 1f + Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
-
-        return Mathf.FloorToInt((str + dex + mag) * crit * backstab) * (attackType == EAttackType.Weak?2:8);
+        return Mathf.RoundToInt((str+(str*backstab)) * crit);
     }
 
 

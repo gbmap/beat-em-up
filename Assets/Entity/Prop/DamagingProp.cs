@@ -10,7 +10,8 @@ public class DamagingProp : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var caster = GetComponent<SkillData>().Caster;
-        if (other.gameObject == caster.gameObject ||
+        if (other.gameObject == null || 
+            other.gameObject == caster.gameObject ||
             other.gameObject.CompareTag(caster.tag)) return;
 
         if (other.gameObject.layer == caster.gameObject.layer) return;

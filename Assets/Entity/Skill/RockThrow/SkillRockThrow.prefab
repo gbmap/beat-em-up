@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1076290352923656299}
   - component: {fileID: 3553418993973027247}
   - component: {fileID: 5072280497471144162}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Mesh_Rock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 8320472097921562763}
   - component: {fileID: 1342075243400267989}
   - component: {fileID: 8177256650173395101}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PS_Trails
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4920,7 +4920,7 @@ GameObject:
   - component: {fileID: 377917534670747643}
   - component: {fileID: 6039264304276467607}
   - component: {fileID: 6474217052655186420}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PS_SmallRocks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10232,7 +10232,7 @@ GameObject:
   - component: {fileID: 1625824517798020264}
   - component: {fileID: 4069870399188961611}
   - component: {fileID: 5795027011756059732}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SkillRockThrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10396,6 +10396,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PS_WindRings
       objectReference: {fileID: 0}
+    - target: {fileID: 4679107016272722679, guid: bf0bdb908580a994d859db32b46b66c4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 6335690682442195233, guid: bf0bdb908580a994d859db32b46b66c4,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -10476,6 +10481,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PS_Wind
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260294180196297419, guid: 1833d3673c517374eb9dd1b790e29744,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4272338490391053897, guid: 1833d3673c517374eb9dd1b790e29744,
         type: 3}
@@ -10687,6 +10697,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PS_TipTrail
+      objectReference: {fileID: 0}
+    - target: {fileID: 6823070697751104311, guid: 106a70f3f4b6aee4983e20fb072fcafb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 106a70f3f4b6aee4983e20fb072fcafb, type: 3}

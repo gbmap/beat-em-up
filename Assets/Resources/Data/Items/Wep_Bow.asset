@@ -22,17 +22,18 @@ MonoBehaviour:
     Slot: 5
     WeaponType: 5
     Attributes:
-      Vigor: 1
-      Strength: 1
-      Dexterity: 1
+      Stamina: 0
+      Strength: 0
+      Dexterity: 15
       Magic: 1
     DamageScaling:
-      Vigor: 0.1
-      Strength: 0.1
-      Dexterity: 0.1
-      Magic: 0.1
+      Stamina: 0
+      Strength: 0
+      Dexterity: 0
+      Magic: 0
     Skills:
     - {fileID: 5701630693006442494, guid: 85f70e4dff1085746af780aa3a09ef7b, type: 3}
+    WeaponColliderScaling: 0
   Prefab: {fileID: 6725322082494346537, guid: a3abf781048381440acf26ab65872d7e, type: 3}
   AnimationOverride: {fileID: 0}
   CustomSlashColors: 1

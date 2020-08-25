@@ -19,7 +19,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animator.ResetTrigger(hashAttackTrigger);
-        animator.ResetTrigger(hashAttackTrigger);
+        //animator.ResetTrigger(hashAttackTrigger);
 
         if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
         {
