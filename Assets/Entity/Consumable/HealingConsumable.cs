@@ -16,7 +16,7 @@ public class HealingConsumable : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         other.GetComponent<CharacterData>().Stats.Health += HealValue;
 
-        FX.Instance.EmitHealEffect(other.gameObject);
+        FX.Instance?.EmitHealEffect(other.gameObject);
 
         animator?.SetTrigger("Taken");
     }

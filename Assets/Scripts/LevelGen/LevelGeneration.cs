@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Catacumba.Level
+namespace Catacumba.LevelGen
 {
     public enum EDirection 
     {
@@ -11,163 +11,6 @@ namespace Catacumba.Level
         Down,
         Left
     } // DON'T CHANGE THIS ORDER 
-
-    /*
-     * Walks randomly around the dungeon until it explodes and
-     * creates a room.
-     */
-    public abstract class BaseWalker
-    {
-        public EDirection Direction;
-        public Vector2Int Position;
-
-        public System.Action<BaseWalker> OnDeath;
-
-        public BaseWalker(Vector2Int pos)
-        {
-            Direction = (EDirection)Random.Range(0, 4);
-            Position = pos;
-        }
-
-        public bool Walk(Sector s)
-        {
-            s.SetCell(Position, LevelGeneration.CODE_HALL);
-            Vector2Int newPos = GetNewPosition(s);
-
-            if (s.IsIn(newPos))
-            {
-                Position = newPos;
-                if (OnMoved(s))
-                {
-                    OnDeath?.Invoke(this);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public abstract bool OnMoved(Sector s);
-
-        //public abstract bool Walk(ref Level l);
-        public abstract Vector2Int GetNewPosition(Sector s);
-
-        public void ChangeDirection()
-        {
-            int d = (((int)Direction + (int)Mathf.Sign(Random.value - .5f)) % 4);
-            if (d < 0) d = 3;
-            Direction = (EDirection)d;
-        }
-    }
-
-    public class KamikazeWalker : BaseWalker
-    {
-        private static Dictionary<EDirection, Vector2Int> DirectionVectors = new Dictionary<EDirection, Vector2Int>
-        {
-            { EDirection.Down, Vector2Int.down },
-            { EDirection.Left, Vector2Int.left },
-            { EDirection.Right, Vector2Int.right },
-            { EDirection.Up, Vector2Int.up }
-        };
-
-        public int Life;
-        public float TurnChance;
-        public Vector2Int RoomSize;
-
-        public KamikazeWalker(Vector2Int pos, int life, float turnChance, Vector2Int explosionSz)
-            : base(pos)
-        {
-            Life = life;
-            TurnChance = turnChance;
-            RoomSize = explosionSz;
-        }
-
-        public override Vector2Int GetNewPosition(Sector s)
-        {
-            var newPos = Position + DirectionVectors[Direction];
-            if (!s.IsIn(newPos))
-            {
-                Direction = (EDirection)(((int)Direction + 1) % 4);
-                return GetNewPosition(s);
-            }
-            return newPos;
-        }
-
-        public override bool OnMoved(Sector s)
-        {
-            if (Random.value < TurnChance)
-                ChangeDirection();
-
-            if (s.GetCell(Position) == LevelGeneration.CODE_EMPTY)
-            {
-                Life--;
-            }
-
-            if (Life <= 0)
-            {
-                Sector sec = new Sector(s.Level, Position, RoomSize, s);
-                s.CreateSector(sec);
-                //LevelGeneration.CreateRoom(l, r);
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    public class TargetedWalker : BaseWalker
-    {
-        public Vector2Int TargetPos { get; private set; }
-        public List<EDirection> Path { get; private set; }
-
-        public Connector Connector { get; private set; }
-
-        public TargetedWalker(Vector2Int pos, Vector2Int targetPos)
-            : base(pos)
-        {
-            TargetPos = targetPos;
-            Path = new List<EDirection>();
-
-            Connector = new Connector(pos, targetPos);
-        }
-
-        public override Vector2Int GetNewPosition(Sector s)
-        {
-            Vector2Int delta = TargetPos - Position;
-            Vector2Int mov = Vector2Int.zero;
-
-            EDirection d;
-
-            if (delta.x != 0 && delta.y != 0)
-            {
-                if (Random.value > 0.5f)
-                    mov.x = (int)Mathf.Sign(delta.x);
-                else
-                    mov.y = (int)Mathf.Sign(delta.y);
-            }
-            else
-            {
-                if (delta.x != 0)
-                    mov.x = (int)Mathf.Sign(delta.x);
-                else
-                    mov.y = (int)Mathf.Sign(delta.y);
-            }
-
-            if (mov.x != 0)
-                d = mov.x > 0 ? EDirection.Right : EDirection.Left;
-            else
-                d = mov.y > 0 ? EDirection.Up : EDirection.Down;
-
-            Connector.Path.Add(d);
-
-            return Position + mov;
-        }
-
-        public override bool OnMoved(Sector s)
-        {
-            return TargetPos - Position == Vector2Int.zero;
-        }
-    }
 
     public class Connector
     {
@@ -222,7 +65,13 @@ namespace Catacumba.Level
 
         public List<Connector> Connectors;
 
-        public Sector(Level l, Vector2Int p, Vector2Int sz, Sector parent)
+        public LevelGeneration.ECellCode Code { get; private set; }
+
+        public Sector(Level l,
+                      Vector2Int p, 
+                      Vector2Int sz, 
+                      Sector parent, 
+                      LevelGeneration.ECellCode code)
         {
             Level = l;
             Pos = p;
@@ -230,6 +79,7 @@ namespace Catacumba.Level
             Parent = parent;
             Children = new List<Sector>();
             Connectors = new List<Connector>();
+            Code = code;
         }
         
         public bool IsIn(Vector2Int p)
@@ -262,15 +112,15 @@ namespace Catacumba.Level
             return Parent.GetAbsolutePosition(Pos + p);
         }
 
-        public int GetCell(int x, int y)
+        public LevelGeneration.ECellCode GetCell(int x, int y)
         {
             return GetCell(new Vector2Int(x, y));
         }
 
-        public int GetCell(Vector2Int p)
+        public LevelGeneration.ECellCode GetCell(Vector2Int p)
         {
             if (!IsIn(p))
-                return LevelGeneration.CODE_ERROR;
+                return LevelGeneration.ECellCode.Error;
 
             if (Parent == null)
                 return Level.GetCell(Pos + p);
@@ -282,7 +132,9 @@ namespace Catacumba.Level
          * Sets a point in local space to the desired value.
          * If overwrite is true, the value will be set even if c < current value in map.
          * */
-        public void SetCell(Vector2Int p, int c, bool overwrite = false)
+        public void SetCell(Vector2Int p,
+                            LevelGeneration.ECellCode c, 
+                            bool overwrite = false)
         {
             if (!IsIn(p))
                 return; // Do nothing.
@@ -293,21 +145,21 @@ namespace Catacumba.Level
                 Parent.SetCell(Pos + p, c, overwrite);
         }
 
-        public void CreateSector(Sector s, int code = LevelGeneration.CODE_ROOM)
+        public void CreateSector(Sector s)
         {
             for (int x = 0; x < s.Size.x; x++)
             {
                 for (int y = 0; y < s.Size.y; y++)
                 {
                     Vector2Int p = new Vector2Int(s.Pos.x + x, s.Pos.y + y);
-                    SetCell(p, code);
+                    SetCell(p, s.Code);
                 }
             }
             s.Parent = this;
             //Children.Add(s);
         }
 
-        private void FillSector(int code = LevelGeneration.CODE_ROOM)
+        private void FillSector(LevelGeneration.ECellCode code = LevelGeneration.ECellCode.Room)
         {
             for (int x = 0; x < Size.x; x++)
             {
@@ -340,15 +192,15 @@ namespace Catacumba.Level
             c.To.Connectors.Remove(c);
 
             Vector2Int p = c.StartPosition;
-            int v = Level.GetCell(p);
-            if (v == LevelGeneration.CODE_HALL)
+            LevelGeneration.ECellCode v = Level.GetCell(p);
+            if (v == LevelGeneration.ECellCode.Hall)
                 Level.SetCell(p, 0, true);
 
             for (int i = 0; i < c.Path.Count; i++)
             {
                 p += LevelGeneration.DirectionToVector2(c.Path[i]);
                 v = Level.GetCell(p);
-                if (v == LevelGeneration.CODE_HALL)
+                if (v == LevelGeneration.ECellCode.Hall)
                     Level.SetCell(p, 0, true);
             }
         }
@@ -416,86 +268,26 @@ namespace Catacumba.Level
         }
     }
     
-    public class Level
-    {
-        public Vector2Int Size
-        {
-            get
-            {
-                return new Vector2Int(Map.GetLength(0), Map.GetLength(1));
-            }
-        }
-        private int[,] Map;
-
-        public Vector2Int SpawnPoint;
-        public Sector SpawnSector;
-
-        public Sector BaseSector { get; private set; }
-
-        public void SetCell(Vector2Int p, int v, bool overwrite = false)
-        {
-            SetCell(p.x, p.y, v, overwrite);
-        }
-
-        public void SetCell(int x, int y, int v, bool overwrite = false)
-        {
-            if (overwrite)
-                Map[x, y] = v;
-            else
-                Map[x, y] = Mathf.Max(Map[x, y], v);
-        }
-
-        public int GetCell(Vector2Int p)
-        {
-            return GetCell(p.x, p.y);
-        }
-
-        public int GetCell(int x, int y)
-        {
-            try
-            {
-                return Map[x, y];
-            }
-            catch (System.IndexOutOfRangeException ex)
-            {
-                return LevelGeneration.CODE_ERROR;
-            }
-        }
-
-        public Level(Vector2Int size)
-        {
-            Map = new int[size.x, size.y];
-            BaseSector = new Sector(this, Vector2Int.zero, size, null);
-        }
-    }
-
     [System.Serializable]
     public class LevelGenerationParams
     {
+        public enum ELevelType
+        {
+            Dungeon,
+            Cave
+        }
+
+        public ELevelType LevelType;
+
         public Vector2Int LevelSize = new Vector2Int(50, 50);
+
+        [Range(0f, 1f)]
+        public float PropChance = 0.65f;
+
+        [Range(0f, 1f)]
+        public float EnemyChance = 0.65f;
+
         public bool GenerateMesh = false;
-
-        [Range(1, 20)]
-        public int TargetRooms = 5;
-
-        [Header("Sectors")]
-        public bool AddSectors = true;
-        //[Range(1, 10)]
-        public Vector2Int Divisions = new Vector2Int(3, 1);
-
-        [Range(0f, 1f)]
-        [Tooltip("The chance a sector will spawn at any sector division.")]
-        public float SectorChance = 1f;
-        public Vector2 ConnectorChances = new Vector2(0.5f, 0.5f);
-
-        [Header("Walkers")]
-        [Range(0, 10)]
-        public int Walkers = 1;
-        [Range(4, 20)]
-        public int WalkerLife = 6;
-        public Vector2Int WalkerRoomSz = new Vector2Int(5, 5);
-        [Range(0f, 1f)]
-        public float WalkerTurnChance = .25f;
 
         [Header("Mesh Configuration")]
         public LevelGenBiomeConfig BiomeConfig;
@@ -506,14 +298,42 @@ namespace Catacumba.Level
 
     public class LevelGeneration : SimpleSingleton<LevelGeneration>
     {
-        public const int CODE_ERROR = -1;
-        public const int CODE_EMPTY = 0;
-        public const int CODE_HALL = 1;
-        public const int CODE_ROOM = 2;
-        public const int CODE_BOSS_ROOM = 3;
-        public const int CODE_SPAWNER = 4;
-        public const int CODE_PLAYER_SPAWN = 5;
-        public const int CODE_PROP = 6;
+        public enum ECellCode
+        {
+            Error = -1,
+            Empty,
+            Hall,
+            Room,
+            BossRoom,
+            Spawner,
+            PlayerSpawn,
+            Prop,
+            RoomItem,
+            RoomPrison,
+            RoomEnemies,
+            RoomDice,
+            RoomBloodOath,
+            RoomKillChallenge,
+            RoomChase,
+            Enemy
+        }
+
+        public const int CODE_ERROR               = -1;
+        public const int CODE_EMPTY               = 0;
+        public const int CODE_HALL                = 1;
+        public const int CODE_ROOM                = 2;
+        public const int CODE_BOSS_ROOM           = 3;
+        public const int CODE_SPAWNER             = 4;
+        public const int CODE_PLAYER_SPAWN        = 5;
+        public const int CODE_PROP                = 6;
+        public const int CODE_ROOM_ITEM           = 7;
+        public const int CODE_ROOM_PRISON         = 8;
+        public const int CODE_ROOM_ENEMIES        = 9;
+        public const int CODE_ROOM_DICE           = 10;
+        public const int CODE_ROOM_BLOOD_OATH     = 11;
+        public const int CODE_ROOM_KILL_CHALLENGE = 12;
+        public const int CODE_ROOM_CHASE          = 13;
+        public const int CODE_ENEMY               = 14;
 
         public LevelGenerationParams Params;
 
@@ -548,25 +368,20 @@ namespace Catacumba.Level
         public static System.Collections.IEnumerator CGenerate(LevelGenerationParams p,
                                                        System.Action<Level, LevelGenerationParams> OnCompleted)
         {
-
             Debug.Log("Level generation started.");
-
 
             Level level = new Level(p.LevelSize);
 
             UpdateVis(level);
 
-            /////////////////
-            /// SECTORS
-            if (p.AddSectors)
-                yield return StepAddSectors(level, p.LevelSize, p.Divisions, p.SectorChance, p.ConnectorChances);
-
-            UpdateVis(level);
-
-            /////////////////
-            /// WALKERS
-            if (p.Walkers > 0)
-                yield return StepAddWalkers(level, p.Walkers, p.WalkerLife, p.WalkerTurnChance, p.WalkerRoomSz);
+            ILevelGenAlgo[] genSteps = {
+                GetLevelGenerationAlgorithm(p),
+                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Prop, 1f - p.PropChance, 0.5f, 0.5f),
+                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Enemy, 1f - p.EnemyChance, 0.5f, 0.5f)
+            };
+            
+            foreach (ILevelGenAlgo algo in genSteps)
+                yield return algo.Run(level, UpdateVis);
 
             /////////////////
             /// PLAYER POSITION
@@ -574,80 +389,6 @@ namespace Catacumba.Level
             UpdateVis(level);
 
             int secsL = secs.Length;
-
-            // Not enough rooms, connect rooms starting by
-            // the farthest one.
-            if (secsL < p.TargetRooms)
-            {
-                // Iterate backwards through sectors connected to player.
-                for (int i = secsL - 1; i > 0; i--)
-                {
-                    Sector ts = secs[i];
-
-                    Vector2Int ipm = ts.Pos + (ts.Size / 2);
-                    Vector2Int pm = ipm;
-
-                    // Attempt to connect to sectors on each direction.
-                    for (EDirection d = (EDirection)0; d < EDirection.Left; d++)
-                    {
-                        Vector2Int delta = LevelGeneration.DirectionToVector2(d);
-
-                        // While the current position is still inside the map
-                        while (level.BaseSector.IsIn(pm)) 
-                        {
-                            // Advance towards the direction.
-                            pm += delta;
-
-                            // If we hit a sector...
-                            int c = level.BaseSector.GetCell(pm);
-                            if (c == LevelGeneration.CODE_ROOM)
-                            {
-                                // And it is not the sector we started from.
-                                var sec = level.BaseSector.GetSectorAt(pm);
-                                if (sec == null || sec == ts)
-                                    continue;
-
-                                // Walk from the starting sector to the one we hit.
-                                TargetedWalker tw = new TargetedWalker(ipm, pm);
-                                tw.OnDeath += delegate(BaseWalker w)
-                                {
-                                    var twr = (w as TargetedWalker);
-                                    twr.Connector.From = ts;
-                                    twr.Connector.To = sec;
-                                };
-
-                                while (tw.Walk(level.BaseSector))
-                                {
-                                    yield return new WaitForSeconds(.1f);
-                                }
-                                
-                                // One minus sector to go
-                                secsL--;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Too much rooms
-            else if (secsL > p.TargetRooms)
-            {
-                for (int i = secsL-1; i > 0 && secsL > p.TargetRooms; i--)
-                {
-                    Sector ts = secs[i];
-                    ts.DestroySector();
-                    secsL--;
-                }
-            }
-
-            /////////////////
-            /// CLEAN UP
-            
-            // remove sectors not available to player's sector through connectors.
-            yield return StepCleanup(level);
-            UpdateVis(level);
-
             yield return new WaitForSeconds(0.5f);
 
             //////////////////
@@ -660,7 +401,7 @@ namespace Catacumba.Level
                     Vector2Int pos = new Vector2Int(Random.Range(0, sec.Size.x),
                                                   Random.Range(0, sec.Size.y));
 
-                    sec.SetCell(pos, CODE_PROP);
+                    sec.SetCell(pos, LevelGeneration.ECellCode.Prop);
                 }
             }
 
@@ -684,168 +425,16 @@ namespace Catacumba.Level
             yield break;
         }
 
-        private static System.Collections.IEnumerator StepAddSectors(Level level,
-                                                                     Vector2Int size, 
-                                                                     Vector2Int divisions,
-                                                                     float sectorChance,
-                                                                     Vector2 connectorChances)
+        private static ILevelGenAlgo GetLevelGenerationAlgorithm(LevelGenerationParams p)
         {
-            ////////////////////////
-            // SECTION ROOMS
-            Vector2Int d = divisions;
-            Sector[,] sectors = new Sector[d.x, d.y];
-            Vector2Int secSz = new Vector2Int(Mathf.Max(2, size.x / d.x), Mathf.Max(2, size.y / d.y)); // sector size
-            for (int sx = 0; sx < d.x; sx++)
+            switch (p.LevelType)
             {
-                for (int sy = 0; sy < d.y; sy++)
-                {
-                    if (Random.value < 1f - sectorChance) continue;
-
-                    int ri = sx + sy * d.y; // sector index
-
-                    Vector2Int secPos = secSz * new Vector2Int(sx, sy);
-
-                    Vector2Int rsz = new Vector2Int(Random.Range((int)(secSz.x*0.5f), secSz.x), 
-                                                    Random.Range((int)(secSz.y*0.5f), secSz.y));
-                    /*Vector2Int p = new Vector2Int(rsz.x / 2 + sx * secSz.x, rsz.y / 2 + sy * secSz.y) +
-                        new Vector2Int(Random.Range(0, secSz.x - rsz.x / 2),
-                                       Random.Range(0, secSz.y - rsz.y / 2));*/
-                    Vector2Int p = new Vector2Int(Random.Range(0, (secSz - rsz).x), 
-                                                  Random.Range(0, (secSz - rsz).y));
-                    sectors[sx, sy] = new Sector(level, secPos + p, rsz, level.BaseSector);
-                    level.BaseSector.CreateSector(sectors[sx, sy], CODE_ROOM);
-                }
+                case LevelGenerationParams.ELevelType.Dungeon: return new LevelGenAlgoWalkers();
+                case LevelGenerationParams.ELevelType.Cave: return new LevelGenAlgoPerlin();
+                default: return new LevelGenAlgoWalkers();
             }
-
-            UpdateVis(level);
-
-            ////////////////////////
-            // CONNECTORS
-
-            // connect sectors with targeted walkers
-            List<TargetedWalker> walkers = new List<TargetedWalker>();
-            for (int sx = 0; sx < d.x; sx++)
-            {
-                for (int sy = 0; sy < d.y; sy++)
-                {
-                    if (sectors[sx, sy] == null) continue;
-
-                    // If we should connect to the right,
-                    if (sx + 1 < d.x && sectors[sx+1, sy] != null && Random.value < connectorChances.x)
-                    {
-                        Sector a = sectors[sx, sy];
-                        Sector b = sectors[sx + 1, sy];
-
-                        TargetedWalker w = new TargetedWalker(
-                            a.Pos + new Vector2Int(Random.Range(0, a.Size.x), Random.Range(0, a.Size.y)),
-                            b.Pos + new Vector2Int(Random.Range(0, b.Size.x), Random.Range(0, b.Size.y)));
-
-                        w.OnDeath += (delegate (BaseWalker bw)
-                        {
-                            TargetedWalker tw = (bw as TargetedWalker);
-                            tw.Connector.From = a;
-                            tw.Connector.To = b;
-                            a.Connectors.Add(tw.Connector);
-                            b.Connectors.Add(tw.Connector);
-                        });
-
-                        walkers.Add(w);
-                    }
-
-                    // If we should connect down
-                    if (sy + 1 < d.y && sectors[sx, sy+1] != null && Random.value < connectorChances.y)
-                    {
-                        Sector a = sectors[sx, sy];
-                        Sector b = sectors[sx, sy+1];
-                        Connector c = new Connector(a, b);
-                        a.Connectors.Add(c);
-                        b.Connectors.Add(c);
-
-                        TargetedWalker w = new TargetedWalker(
-                            a.Pos + new Vector2Int(Random.Range(0, a.Size.x), Random.Range(0, a.Size.y)),
-                            b.Pos + new Vector2Int(Random.Range(0, b.Size.x), Random.Range(0, b.Size.y)));
-
-                        w.OnDeath += (delegate (BaseWalker bw)
-                        {
-                            TargetedWalker tw = (bw as TargetedWalker);
-                            tw.Connector.From = a;
-                            tw.Connector.To = b;
-                            a.Connectors.Add(tw.Connector);
-                            b.Connectors.Add(tw.Connector);
-                        });
-
-                        walkers.Add(w);
-                    }
-                }
-            }
-
-            walkers.ForEach(w => w.OnDeath += delegate (BaseWalker bw) { walkers.Remove(bw as TargetedWalker); });
-
-            // wait walkers do their thing
-            while (walkers.Count > 0)
-            {
-                for (int i = 0; i < walkers.Count; i++)
-                {
-                    if (walkers[i].Walk(level.BaseSector))
-                    {
-                        i--;
-                    }
-                }
-
-                UpdateVis(level);
-                yield return new WaitForSeconds(0.1f);
-            }
-
-
-            // remove rooms with no connectors.
-            // TODO: connect unconnected sectors to the nearest sector
-
-            /*
-            for (int i = 0; i < level.BaseSector.Children.Count; i++)
-            {
-                Sector c = level.BaseSector.Children[i];
-                if (c.Connectors.Count == 0)
-                {
-                    c.DestroySector();
-                    UpdateVis(level);
-                }
-
-                if (c == null || c.Connectors.Count == 0) {
-                    level.BaseSector.RemoveChild(c);
-                    i--;
-                }
-                yield return new WaitForSeconds(.1f);
-            }
-            */
-
-            yield break;
         }
 
-        
-        private static System.Collections.IEnumerator StepAddWalkers(Level l,
-                                                       int nWalkers,
-                                                       int life,                // walker life time
-                                                       float turnChance,        // walker turn chance
-                                                       Vector2Int roomSize)     // roomSize on walker explosion
-        {
-            List<BaseWalker> walkers = GenerateWalkers(l, nWalkers, life, turnChance, roomSize);
-
-            while (walkers.Count > 0)
-            {
-                for (int i = 0; i < walkers.Count; i++)
-                {
-                    BaseWalker w = walkers[i];
-                    if (w.Walk(l.BaseSector))
-                    {
-                        i--;
-                    }
-                }
-                yield return new WaitForSeconds(0.1f);
-
-                UpdateVis(l);
-            }
-        }
-        
         /*
          * Returns a list of connected Sectors starting by the spawn sector.
          * */
@@ -853,17 +442,36 @@ namespace Catacumba.Level
         {
             IOrderedEnumerable<Sector> sectors = l.BaseSector.Children
                                                   .OrderByDescending(s => Sector.GetNumberOfConnectedSectors(s));
+
+            if (sectors == null || sectors.Count() == 0)
+            {
+                return new Sector[] { l.BaseSector };
+            }
+            
             // select the sector with most connected sectors to it
             // i'm dumb as a door
             var spawnSector = sectors.First();
 
-            spawnSector.SetCell(Vector2Int.one, LevelGeneration.CODE_PLAYER_SPAWN);
+            spawnSector.SetCell(Vector2Int.one, LevelGeneration.ECellCode.PlayerSpawn, true);
 
             l.SpawnSector = spawnSector;
             l.SpawnPoint = spawnSector.GetAbsolutePosition(Vector2Int.one);
 
             return Sector.ListConnectedSectors(new HashSet<Sector>(), spawnSector)
                 .OrderBy(s => Vector2.Distance(spawnSector.Pos, s.Pos)).ToArray();
+        }
+
+        private static void StepAddProps(Level l)
+        {
+            for (int x = 0; x < l.Size.x; x++)
+            {
+                for (int y = 0; y < l.Size.y; y++)
+                {
+                    LevelGeneration.ECellCode cell = l.GetCell(x, y);
+                    if (cell != LevelGeneration.ECellCode.Hall)
+                        continue;
+                }
+            }
         }
 
         private static System.Collections.IEnumerator StepCleanup(Level l)
@@ -920,35 +528,6 @@ namespace Catacumba.Level
             body.m_FollowOffset = new Vector3(0f, 12f, -12f);
 
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
-            //aim.
-        }
-
-        /////////////////////////////
-        /// UTILS
-        /// 
-        public static List<BaseWalker> GenerateWalkers(Level l,
-                                                       int nWalkers,
-                                                       int life,                // walker life time
-                                                       float turnChance,        // walker turn chance
-                                                       Vector2Int roomSize)     // roomSize on walker explosion
-
-        {
-            List<BaseWalker> walkers = new List<BaseWalker>();
-            for (int i = 0; i < nWalkers; i++)
-            {
-                Vector2Int pos = new Vector2Int(Random.Range(0, l.Size.x), Random.Range(0, l.Size.y));
-                Vector2Int sz = roomSize;
-                BaseWalker walker = new KamikazeWalker(
-                    pos, 
-                    Random.Range(Mathf.Max(2, life/2), life+1),
-                    turnChance, 
-                    new Vector2Int(Random.Range(sz.x/2, sz.x),
-                                   Random.Range(sz.y/2, sz.y))
-                );
-                walker.OnDeath += delegate (BaseWalker w) { walkers.Remove(w); };
-                walkers.Add(walker);
-            }
-            return walkers;
         }
 
         public static bool IsValidPosition(Level l, Vector2Int p)
@@ -968,13 +547,22 @@ namespace Catacumba.Level
                     (y >= bp.y && y < bp.y + bsz.y));
         }
 
-        public static void SetCell(Level l, Vector2Int p, int code)
+        public static bool AABB(Rect a, Rect b)
         {
-            if (!IsValidPosition(l, p) || code < l.GetCell(p.x, p.y))
+            return a.x < b.x + b.width &&
+                   a.x + a.width > b.x &&
+                   a.y < b.y + b.height &&
+                   a.y + a.height > b.y;
+        }
+
+        public static void SetCell(Level l, Vector2Int p, LevelGeneration.ECellCode code)
+        {
+            if (!IsValidPosition(l, p) || (int)code < (int)l.GetCell(p.x, p.y))
                 return;
 
             l.SetCell(p.x, p.y, code);
         }
+
 
         public static void UpdateVis(Level l)
         {

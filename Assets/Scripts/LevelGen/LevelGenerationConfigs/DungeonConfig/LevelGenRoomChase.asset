@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 69d3baa133c3a38468ab6f803873523f, type: 3}
-  m_Name: LevelGenBiomeCastle
+  m_Name: LevelGenRoomChase
   m_EditorClassIdentifier: UnityEngine.CoreModule:UnityEngine:ScriptableObject
   EnvironmentMaterial: {fileID: 2100000, guid: 632a7799a9e20a64aa2b09af30152b44, type: 2}
   Floors:
@@ -40,3 +40,5 @@ MonoBehaviour:
   - {fileID: 114226, guid: f7f8afc7225502240bc7b70a9419c566, type: 3}
   - {fileID: 128464, guid: 30cbf2b140e7ff04cac9897c5ab79430, type: 3}
   DoorAnimator: {fileID: 22100000, guid: f5133466232c43d4dbd7e560c1d9a446, type: 2}
+  Props:
+  - {fileID: 525851034677697745, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
