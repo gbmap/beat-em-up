@@ -2,6 +2,7 @@
 
 namespace Catacumba.LevelGen
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(LevelGenRoomConfig))]
     public class LevelGenBiomeConfigEditor : Editor
     {

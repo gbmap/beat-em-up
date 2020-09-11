@@ -1,9 +1,119 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 namespace Catacumba.LevelGen
 {
+
+#region DIRECTION BITMASK
+
+    [Flags]
+    public enum EDirectionBitmask
+    {
+        None = 0,
+        Up = 1 << 1,
+        Right = 1 << 2,
+        Down = 1 << 3,
+        Left = 1 << 4
+    }
+
+    public static class BitmaskHelper
+    {
+        public static bool IsSet<T>(T flags, T flag) where T : struct
+        {
+            int flagsValue = (int)(object)flags;
+            int flagValue = (int)(object)flag;
+
+            return (flagsValue & flagValue) != 0;
+        }
+
+        public static void Set<T>(ref T flags, T flag) where T : struct
+        {
+            int flagsValue = (int)(object)flags;
+            int flagValue = (int)(object)flag;
+
+            flags = (T)(object)(flagsValue | flagValue);
+        }
+
+        public static void Unset<T>(ref T flags, T flag) where T : struct
+        {
+            int flagsValue = (int)(object)flags;
+            int flagValue = (int)(object)flag;
+
+            flags = (T)(object)(flagsValue & (~flagValue));
+        }
+    }
+
+    public static class DirectionHelper
+    {
+        public static bool IsSet(EDirectionBitmask flags, EDirectionBitmask flag) 
+        {
+            return BitmaskHelper.IsSet<EDirectionBitmask>(flags, flag);
+        }
+
+        public static void Set(ref EDirectionBitmask flags, EDirectionBitmask flag) 
+        {
+            BitmaskHelper.Set<EDirectionBitmask>(ref flags, flag);
+        }
+
+        public static void Unset(ref EDirectionBitmask flags, EDirectionBitmask flag) 
+        {
+            BitmaskHelper.Unset<EDirectionBitmask>(ref flags, flag);
+        }
+
+        private static System.Collections.Generic.Dictionary<EDirectionBitmask, float> DictDirectionToAngle
+            = new System.Collections.Generic.Dictionary<EDirectionBitmask, float>
+        {
+            { EDirectionBitmask.Up, 180f },
+            { EDirectionBitmask.Right, -90f },
+            { EDirectionBitmask.Down, 0f },
+            { EDirectionBitmask.Left, 90f }
+        };
+
+        private static System.Collections.Generic.Dictionary<EDirectionBitmask, Vector2Int> DictDirectionToPrefabOffset 
+            = new System.Collections.Generic.Dictionary<EDirectionBitmask, Vector2Int>
+        {
+            { EDirectionBitmask.Up, Vector2Int.up+Vector2Int.left },
+            { EDirectionBitmask.Right, Vector2Int.up },
+            { EDirectionBitmask.Down, Vector2Int.zero },
+            { EDirectionBitmask.Left, Vector2Int.left }
+        };
+
+        public static float ToAngle(EDirectionBitmask dir)
+        {
+            return DictDirectionToAngle[dir];
+        }
+
+        public static Vector2Int ToPrefabOffset(EDirectionBitmask dir)
+        {
+            return DictDirectionToPrefabOffset[dir];
+        }
+
+        public static EDirectionBitmask[] GetValues()
+        {
+            return Enum.GetValues(typeof(EDirectionBitmask)).Cast<EDirectionBitmask>().ToArray();
+        }
+
+        public static string GetName(EDirectionBitmask direction)
+        {
+            return direction.ToString();
+        }
+
+        public static string ToString(EDirectionBitmask mask)
+        {
+            string str = "";
+            foreach (var value in GetValues())
+            {
+                int v = IsSet(mask, value) ? 1 : 0;
+                str += v;
+            }
+            return str;
+        }
+    }
+
+#endregion 
+
     public enum EDirection 
     {
         Up,
@@ -87,6 +197,11 @@ namespace Catacumba.LevelGen
             return IsIn(p.x, p.y);
         }
 
+        public bool IsInFromGlobal(Vector2Int p)
+        {
+            return IsIn(p - Pos);
+        }
+
         /*
          * Checks if a local space point is inside the sector.
          * */
@@ -112,20 +227,20 @@ namespace Catacumba.LevelGen
             return Parent.GetAbsolutePosition(Pos + p);
         }
 
-        public LevelGeneration.ECellCode GetCell(int x, int y)
+        public LevelGeneration.ECellCode GetCell(int x, int y, ELevelLayer layer = LevelBitmap.AllLayers)
         {
-            return GetCell(new Vector2Int(x, y));
+            return GetCell(new Vector2Int(x, y), layer);
         }
 
-        public LevelGeneration.ECellCode GetCell(Vector2Int p)
+        public LevelGeneration.ECellCode GetCell(Vector2Int p, ELevelLayer layer = LevelBitmap.AllLayers)
         {
             if (!IsIn(p))
                 return LevelGeneration.ECellCode.Error;
 
             if (Parent == null)
-                return Level.GetCell(Pos + p);
+                return Level.GetCell(Pos + p, layer);
             else
-                return Parent.GetCell(Pos + p);
+                return Parent.GetCell(Pos + p, layer);
         }
 
         /*
@@ -134,15 +249,16 @@ namespace Catacumba.LevelGen
          * */
         public void SetCell(Vector2Int p,
                             LevelGeneration.ECellCode c, 
+                            ELevelLayer layer = ELevelLayer.All,
                             bool overwrite = false)
         {
             if (!IsIn(p))
                 return; // Do nothing.
 
             if (Parent == null)
-                Level.SetCell(Pos + p, c, overwrite);
+                Level.SetCell(Pos + p, c, layer, overwrite);
             else
-                Parent.SetCell(Pos + p, c, overwrite);
+                Parent.SetCell(Pos + p, c, layer, overwrite);
         }
 
         public void CreateSector(Sector s)
@@ -159,14 +275,14 @@ namespace Catacumba.LevelGen
             //Children.Add(s);
         }
 
-        private void FillSector(LevelGeneration.ECellCode code = LevelGeneration.ECellCode.Room)
+        private void FillSector(LevelGeneration.ECellCode code = LevelGeneration.ECellCode.Room, ELevelLayer layer = ELevelLayer.All)
         {
             for (int x = 0; x < Size.x; x++)
             {
                 for (int y = 0; y < Size.y; y++)
                 {
                     Vector2Int p = new Vector2Int(x, y);
-                    SetCell(p, code, true);
+                    SetCell(p, code, layer, true);
                 }
             }
         }
@@ -194,14 +310,14 @@ namespace Catacumba.LevelGen
             Vector2Int p = c.StartPosition;
             LevelGeneration.ECellCode v = Level.GetCell(p);
             if (v == LevelGeneration.ECellCode.Hall)
-                Level.SetCell(p, 0, true);
+                Level.SetCell(p, 0, ELevelLayer.All, true);
 
             for (int i = 0; i < c.Path.Count; i++)
             {
                 p += LevelGeneration.DirectionToVector2(c.Path[i]);
                 v = Level.GetCell(p);
                 if (v == LevelGeneration.ECellCode.Hall)
-                    Level.SetCell(p, 0, true);
+                    Level.SetCell(p, 0, ELevelLayer.All, true);
             }
         }
 
@@ -376,8 +492,8 @@ namespace Catacumba.LevelGen
 
             ILevelGenAlgo[] genSteps = {
                 GetLevelGenerationAlgorithm(p),
-                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Prop, 1f - p.PropChance, 0.5f, 0.5f),
-                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Enemy, 1f - p.EnemyChance, 0.5f, 0.5f)
+                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Prop, 1f - p.PropChance, 0.5f, 0.5f, ELevelLayer.All),
+                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Enemy, 1f - p.EnemyChance, 0.5f, 0.5f, ELevelLayer.Hall)
             };
             
             foreach (ILevelGenAlgo algo in genSteps)
@@ -395,11 +511,11 @@ namespace Catacumba.LevelGen
             /// PROPS
             foreach (Sector sec in level.BaseSector.Children)
             {
-                int propCells = Random.Range(0, ((sec.Size.x + sec.Size.y) / 2));
+                int propCells = UnityEngine.Random.Range(0, ((sec.Size.x + sec.Size.y) / 2));
                 for (int i = 0; i < propCells; i++)
                 {
-                    Vector2Int pos = new Vector2Int(Random.Range(0, sec.Size.x),
-                                                  Random.Range(0, sec.Size.y));
+                    Vector2Int pos = new Vector2Int(UnityEngine.Random.Range(0, sec.Size.x),
+                                                  UnityEngine.Random.Range(0, sec.Size.y));
 
                     sec.SetCell(pos, LevelGeneration.ECellCode.Prop);
                 }
@@ -452,7 +568,7 @@ namespace Catacumba.LevelGen
             // i'm dumb as a door
             var spawnSector = sectors.First();
 
-            spawnSector.SetCell(Vector2Int.one, LevelGeneration.ECellCode.PlayerSpawn, true);
+            spawnSector.SetCell(Vector2Int.one, LevelGeneration.ECellCode.PlayerSpawn, ELevelLayer.All, true);
 
             l.SpawnSector = spawnSector;
             l.SpawnPoint = spawnSector.GetAbsolutePosition(Vector2Int.one);
@@ -504,7 +620,7 @@ namespace Catacumba.LevelGen
             }
 
             // Mesh
-            LevelGenerationMesh.Generate(l, p.BiomeConfig);
+            Mesh.LevelGenerationMesh.Generate(l, p.BiomeConfig);
 
             // Criar Player
             var cellSize = p.BiomeConfig.CellSize();
@@ -525,7 +641,7 @@ namespace Catacumba.LevelGen
 
             var body = vcam.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
             body.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
-            body.m_FollowOffset = new Vector3(0f, 12f, -12f);
+            body.m_FollowOffset = new Vector3(0f, 16f, -9f);
 
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
         }

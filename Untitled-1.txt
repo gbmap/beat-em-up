@@ -1,0 +1,27 @@
+
+
+------ HUB:
+    - Personagens que dão quests:
+        - Ache personagem X;
+        - Colete X colecionáveis Y e te dou Z
+
+    - Shop de itens utilizáveis;
+    - Blacksmith upa itens com recursos encontrados na dungeon;
+
+------ DUNGEON:
+    - Gerada proceduralmente, é reciclada até que o player resolva ela;
+    - Áreas acessáveis apenas por:
+        - Chaves;
+        - Paredes destrutíveis;
+        - Puzzles;
+            - Empurrar caixa em buraco;
+            - Lever no chão;
+            - Fazer coisa explodir pra movimentar outra coisa;
+            - Bater numa tocha aleatória e apagar a tocha;
+        - Portas normais;
+    - Tipos de sala:
+        - Inimigos;
+        - Hazards;
+
+------ MULTIPLAYER:
+    - Com photon;

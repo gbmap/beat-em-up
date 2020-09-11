@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Dungeon_Material_Environment
+  m_Name: Mat_Dungeon_Default
   m_Shader: {fileID: -6465566751694194690, guid: 5ac5ac4135c67f2479c77a58da242472,
     type: 3}
   m_ShaderKeywords: _SPECULAR_SETUP
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_AE916E58: 0.42
+    - Vector1_AE916E58: 1
     - Vector1_B22CC71A: 0
     - _AlphaClip: 0
     - _Blend: 0
@@ -113,7 +113,7 @@ Material:
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - Color_A0F76A2E: {r: 0.72996396, g: 0.6028941, b: 0.85882354, a: 1}
+    - Color_A0F76A2E: {r: 0.7294118, g: 0.6039216, b: 0.85882354, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

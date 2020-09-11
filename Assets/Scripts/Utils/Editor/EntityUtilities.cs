@@ -15,7 +15,6 @@ namespace Catacumba
 
     public class WizardIntoDamageableEditor : EditorWindow
     {
-
         public int TargetLayer;
         public GameObject OnDestroyParticleSystem;
         public WIDSpawnObject[] SpawnObjects;

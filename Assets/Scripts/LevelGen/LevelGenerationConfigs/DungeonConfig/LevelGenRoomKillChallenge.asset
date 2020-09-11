@@ -26,12 +26,6 @@ MonoBehaviour:
   - {fileID: 123934, guid: c6cb56b5c70f4f14ebf96689fda29f2c, type: 3}
   Walls:
   - {fileID: 176122, guid: 939f27c57ef13654eafcf37ff873a454, type: 3}
-  - {fileID: 173052, guid: f18318a9de51f9b4f993559b01c40e15, type: 3}
-  - {fileID: 196870, guid: d3ce5fe83b1090246a3572735e3dd832, type: 3}
-  - {fileID: 189982, guid: a475e72db2f78ba41b557ca01e7ed990, type: 3}
-  - {fileID: 140754, guid: e73dff4b52d607f4ca11b85eca8f146b, type: 3}
-  - {fileID: 111768, guid: d35aef65f03ae2a4e98cc24bcb5b5cdc, type: 3}
-  - {fileID: 183648, guid: 42988b617e6b4924e88885352823ba7f, type: 3}
   DoorWalls:
   - {fileID: 116930, guid: ded14b4d6268d2643ae9d947489d4667, type: 3}
   DoorFrame:
