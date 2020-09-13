@@ -57,7 +57,7 @@ namespace Catacumba.LevelGen
 
         private LevelGeneration.ECellCode[] GenerateRooms(Level level, int nWalkers)
         {
-            Utils.ShuffleBag<LevelGeneration.ECellCode> bag = new Utils.ShuffleBag<LevelGeneration.ECellCode>();
+            Utilities.ShuffleBag<LevelGeneration.ECellCode> bag = new Utilities.ShuffleBag<LevelGeneration.ECellCode>();
             bag.Add(LevelGeneration.ECellCode.RoomEnemies, 50);
             bag.Add(LevelGeneration.ECellCode.RoomItem, 10);
             bag.Add(LevelGeneration.ECellCode.RoomKillChallenge, 10);

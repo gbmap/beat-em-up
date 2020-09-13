@@ -18,13 +18,12 @@ namespace Catacumba.LevelGen
                                          float perlinThreshold = .35f,
                                          float perlinScaleX = .15f,
                                          float perlinScaleY = .15f,
-                                         ELevelLayer targetLayer = LevelBitmap.AllLayers)
-        {
-            this.targetCellCode = targetCellCode;
-            this.cellCode = cellCode;
+                                         ELevelLayer targetLayer = ELevelLayer.All) {
+            this.targetCellCode  = targetCellCode;
+            this.cellCode        = cellCode;
             this.perlinThreshold = perlinThreshold;
-            this.perlinScale = new Vector2(perlinScaleX, perlinScaleY);
-            this.layer = targetLayer;
+            this.perlinScale     = new Vector2(perlinScaleX, perlinScaleY);
+            this.layer           = targetLayer;
         }
 
         public IEnumerator Run(Level level, System.Action<Level> updateVis=null)
@@ -35,7 +34,7 @@ namespace Catacumba.LevelGen
             {
                 for (int y = 0; y < level.Size.y; y++)
                 {
-                    if (level.BaseSector.GetCell(x, y, layer) != this.targetCellCode)
+                    if (level.BaseSector.GetCell(x, y) != this.targetCellCode)
                         continue;
 
                     float psx = this.perlinScale.x;

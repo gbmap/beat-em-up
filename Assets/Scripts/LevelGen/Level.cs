@@ -46,7 +46,8 @@ namespace Catacumba.LevelGen
             { LevelGeneration.ECellCode.RoomEnemies,       ELevelLayer.Rooms   },
             { LevelGeneration.ECellCode.RoomItem,          ELevelLayer.Rooms   },
             { LevelGeneration.ECellCode.RoomKillChallenge, ELevelLayer.Rooms   },
-            { LevelGeneration.ECellCode.RoomPrison,        ELevelLayer.Rooms   }
+            { LevelGeneration.ECellCode.RoomPrison,        ELevelLayer.Rooms   },
+            { LevelGeneration.ECellCode.Door,              ELevelLayer.Doors   }
         };
 
         public LevelBitmap(Vector2Int size)
@@ -59,12 +60,26 @@ namespace Catacumba.LevelGen
                 this.Map[v] = new CellCode[size.x, size.y];
         }
 
-        public void SetCell(int x, int y,
+        public void SetCell(Vector2Int p,
                             LevelGeneration.ECellCode value,
-                            ELevelLayer layer = ELevelLayer.All, 
+                            bool overwrite = false)
+        {
+            SetCell(p, value, this.dictCellToLayer[value], overwrite);
+        }
+
+        public void SetCell(int x, int y, 
+                            LevelGeneration.ECellCode value, 
                             bool overwrite = false)
         {
             SetCell(x, y, value, this.dictCellToLayer[value], overwrite);
+        }
+
+        public void SetCell(int x, int y,
+                            LevelGeneration.ECellCode value,
+                            ELevelLayer layer, 
+                            bool overwrite = false)
+        {
+            SetCell(new Vector2Int(x, y), value, layer, overwrite);
         }
 
         public void SetCell(Vector2Int p, 
@@ -72,6 +87,9 @@ namespace Catacumba.LevelGen
                             ELevelLayer layer, 
                             bool overwrite = false)
         {
+            if (layer == ELevelLayer.All)
+                layer = this.dictCellToLayer[value];
+
             CellCode[,] layerMap = Map[layer];
             if (overwrite)
                 layerMap[p.x, p.y] = value; 
@@ -91,7 +109,7 @@ namespace Catacumba.LevelGen
 
         public LevelGeneration.ECellCode GetCellFromLayerBitmask(int x, int y, ELevelLayer bitmask)
         {
-            var values = Enum.GetValues(typeof(ELevelLayer)).Cast<ELevelLayer>().Reverse();
+            var values = Enum.GetValues(typeof(ELevelLayer)).Cast<ELevelLayer>().Reverse().Skip(1);
 
             foreach (var v in values)
             {
@@ -136,6 +154,13 @@ namespace Catacumba.LevelGen
 
         public Sector BaseSector { get; private set; }
 
+        public Level(Vector2Int size)
+        {
+            // Map = new LevelGeneration.ECellCode[size.x, size.y];
+            this.map = new LevelBitmap(size);
+            BaseSector = new Sector(this, Vector2Int.zero, size, LevelGeneration.CODE_EMPTY);
+        }
+
         public void SetCell(Vector2Int p, LevelGeneration.ECellCode v, ELevelLayer layer = ELevelLayer.All, bool overwrite = false)
         {
             map.SetCell(p, v, layer, overwrite);
@@ -161,11 +186,15 @@ namespace Catacumba.LevelGen
             return map.GetCell(x, y, layer);
         }
 
-        public Level(Vector2Int size)
+        public Sector GetSectorAt(Vector2Int position)
         {
-            // Map = new LevelGeneration.ECellCode[size.x, size.y];
-            this.map = new LevelBitmap(size);
-            BaseSector = new Sector(this, Vector2Int.zero, size, null, LevelGeneration.CODE_EMPTY);
+            foreach (var sec in BaseSector.Children)
+            {
+                if (sec.IsInFromGlobal(position))
+                    return sec;
+            }
+            return BaseSector;
         }
+
     }
 }

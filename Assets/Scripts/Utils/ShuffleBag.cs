@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Utils
+namespace Utilities
 {
     public class ShuffleBag<T> : ICollection<T>, IList<T>
     {

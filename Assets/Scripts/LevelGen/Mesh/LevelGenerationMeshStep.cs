@@ -17,7 +17,6 @@ namespace Catacumba.LevelGen.Mesh
             {
                 GenerateRoom(sec, cfg.GetRoomConfig(sec.Code), root);
             }
-            
         }
 
         void GenerateRoom(Sector sec, LevelGenRoomConfig cfg, GameObject root)
@@ -80,12 +79,12 @@ namespace Catacumba.LevelGen.Mesh
             var hallCfg = cfg.GetRoomConfig(LevelGeneration.ECellCode.Hall);
             Vector3 cellSize = hallCfg.Floors[0].GetComponent<Renderer>().bounds.size;
 
-            Func<LevelGeneration.ECellCode, Vector2Int, bool> comparer = delegate(LevelGeneration.ECellCode cellCode, Vector2Int p)
+            Func<Utils.CheckNeighborsComparerParams, bool> comparer = delegate(Utils.CheckNeighborsComparerParams p)
             {
-                bool put = cellCode != LevelGeneration.ECellCode.Empty &&
-                           cellCode != LevelGeneration.ECellCode.Enemy &&
-                           cellCode != LevelGeneration.ECellCode.Hall &&
-                           cellCode != LevelGeneration.ECellCode.Prop;
+                bool put = p.neighborCell != LevelGeneration.ECellCode.Empty &&
+                           p.neighborCell != LevelGeneration.ECellCode.Enemy &&
+                           p.neighborCell != LevelGeneration.ECellCode.Hall &&
+                           p.neighborCell != LevelGeneration.ECellCode.Prop;
                 return put;
             };
 
@@ -147,7 +146,7 @@ namespace Catacumba.LevelGen.Mesh
     {
         void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
         {
-            
+
         }
     }
 

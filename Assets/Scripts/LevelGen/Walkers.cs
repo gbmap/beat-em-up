@@ -121,8 +121,12 @@ namespace Catacumba.LevelGen
 
         protected void SpawnSector(BaseWalker w)
         {
-            Sector sec = new Sector(Sector.Level, this.Position, this.RoomSize, this.Sector, this.roomCode);
-            Sector.CreateSector(sec);
+            Sector sec = new Sector(Sector.Level, 
+                                    this.Position, 
+                                    this.RoomSize, 
+                                    this.roomCode,
+                                    this.Sector); 
+            //Sector.CreateSector(sec);
         }
     }
 
@@ -214,9 +218,9 @@ namespace Catacumba.LevelGen
             Sector sec = new Sector(Sector.Level, 
                                     this.Position, 
                                     this.RoomSize, 
-                                    this.Sector, 
-                                    this.roomCode);
-            Sector.CreateSector(sec);
+                                    this.roomCode,
+                                    this.Sector); 
+            //Sector.CreateSector(sec);
         }
     }
 

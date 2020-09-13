@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Catacumba.LevelGen.Mesh;
+using Catacumba.LevelGen;
 
 namespace Tests
 {

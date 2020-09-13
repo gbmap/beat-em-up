@@ -34,11 +34,21 @@ namespace Tests
             LevelBitmap level = new LevelBitmap(new Vector2Int(128, 128));
             level.SetCell(50, 50, LevelGeneration.ECellCode.Prop, ELevelLayer.Hall);
             Assert.AreEqual(LevelGeneration.ECellCode.Prop, level.GetCell(50, 50));
+            Assert.AreEqual(LevelGeneration.ECellCode.Empty, level.GetCell(50, 50, ELevelLayer.Doors));
+            Assert.AreEqual(LevelGeneration.ECellCode.Empty, level.GetCell(50, 50, ELevelLayer.Enemies | ELevelLayer.Props));
+            Assert.AreEqual(LevelGeneration.ECellCode.Empty, level.GetCell(50, 50, ELevelLayer.All & ~ELevelLayer.Hall));
+        }
 
-            level.SetCell(50, 50, LevelGeneration.ECellCode.Enemy, ELevelLayer.Enemies);
-            Assert.AreEqual(LevelGeneration.ECellCode.Enemy, level.GetCell(50, 50));
+        [Test]
+        public void Test_GetCellAllLayers()
+        {
 
-            level.SetCell(50, 50, LevelGeneration.ECellCode.Enemy, ELevelLayer.Enemies);
+        }
+
+        [Test]
+        public void Test_GetCellSpecificLayers()
+        {
+            LevelBitmap level = new LevelBitmap(new Vector2Int(128, 128));
         }
     }
 }

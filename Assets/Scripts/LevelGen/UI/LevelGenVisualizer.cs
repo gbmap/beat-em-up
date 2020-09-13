@@ -9,6 +9,21 @@ namespace Catacumba.LevelGen
     {
         public RawImage Image;
 
+        public ELevelLayer Layers;
+        private ELevelLayer _lastLayers;
+
+        private Level level;
+
+        void Update()
+        {
+            if (_lastLayers == Layers)
+                return;
+            else
+                UpdateTexture(this.level);                
+
+            _lastLayers = Layers;
+        }
+
         public Color CodeToColor(int code)
         {
             switch (code)
@@ -50,6 +65,7 @@ namespace Catacumba.LevelGen
                 case LevelGeneration.ECellCode.RoomChase: return new Color(0.141f, 0.8f, 0.733f);
                 case LevelGeneration.ECellCode.RoomKillChallenge: return new Color(0.8f, 0.360f, 0.141f);
                 case LevelGeneration.ECellCode.Enemy: return new Color(0.55f, 0.25f, 0.25f);
+                case LevelGeneration.ECellCode.Door: return Color.magenta;
             }
 
             return Color.black;
@@ -62,7 +78,7 @@ namespace Catacumba.LevelGen
             {
                 for (int x = 0; x < l.Size.x; x++)
                 {
-                    t.SetPixel(x, /*(l.Size.y-1) - */ y, CodeToColor(l.GetCell(x, y)));
+                    t.SetPixel(x, /*(l.Size.y-1) - */ y, CodeToColor(l.GetCell(x, y, Layers)));
                 }
             }
             t.filterMode = FilterMode.Point;
@@ -75,6 +91,8 @@ namespace Catacumba.LevelGen
             // TODO: FIX MEM LEAK
             Texture2D txtr = LevelToTexture(l);
             Image.texture = txtr;
+
+            this.level = l;
         }
     }
 }

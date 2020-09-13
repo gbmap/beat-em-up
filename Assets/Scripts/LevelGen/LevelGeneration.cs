@@ -80,6 +80,15 @@ namespace Catacumba.LevelGen
             { EDirectionBitmask.Left, Vector2Int.left }
         };
 
+        private static System.Collections.Generic.Dictionary<EDirectionBitmask, Vector2Int> DictDirectionToOffset 
+            = new System.Collections.Generic.Dictionary<EDirectionBitmask, Vector2Int>
+        {
+            { EDirectionBitmask.Up, Vector2Int.up },
+            { EDirectionBitmask.Right, Vector2Int.right },
+            { EDirectionBitmask.Down, Vector2Int.down },
+            { EDirectionBitmask.Left, Vector2Int.left }
+        };
+
         public static float ToAngle(EDirectionBitmask dir)
         {
             return DictDirectionToAngle[dir];
@@ -88,6 +97,11 @@ namespace Catacumba.LevelGen
         public static Vector2Int ToPrefabOffset(EDirectionBitmask dir)
         {
             return DictDirectionToPrefabOffset[dir];
+        }
+
+        public static Vector2Int ToOffset(EDirectionBitmask dir)
+        {
+            return DictDirectionToOffset[dir];
         }
 
         public static EDirectionBitmask[] GetValues()
@@ -151,6 +165,9 @@ namespace Catacumba.LevelGen
     //
     public class Sector
     {
+        private static int _sectorCount;
+        public int Id { get; private set; }
+
         public Level Level { get; private set; }
 
         private Sector _parent;
@@ -180,16 +197,29 @@ namespace Catacumba.LevelGen
         public Sector(Level l,
                       Vector2Int p, 
                       Vector2Int sz, 
-                      Sector parent, 
-                      LevelGeneration.ECellCode code)
+                      LevelGeneration.ECellCode code,
+                      Sector parent = null) 
         {
+            _sectorCount++;
+            Id = _sectorCount;
+
             Level = l;
             Pos = p;
             Size = sz;
-            Parent = parent;
             Children = new List<Sector>();
             Connectors = new List<Connector>();
             Code = code;
+
+            if (parent != null)
+                Parent = parent;
+            else if (l.BaseSector != null)
+                Parent = l.BaseSector;
+            else
+            {  
+                Debug.LogWarning("Sector being created with no parent and no Base Sector set for the Level instance provided. If this is run by Level's constructor, this message can be ignored.");
+            }
+
+            FillSector(code);
         }
         
         public bool IsIn(Vector2Int p)
@@ -275,7 +305,7 @@ namespace Catacumba.LevelGen
             //Children.Add(s);
         }
 
-        private void FillSector(LevelGeneration.ECellCode code = LevelGeneration.ECellCode.Room, ELevelLayer layer = ELevelLayer.All)
+        public void FillSector(LevelGeneration.ECellCode code = LevelGeneration.ECellCode.Room, ELevelLayer layer = ELevelLayer.All)
         {
             for (int x = 0; x < Size.x; x++)
             {
@@ -285,6 +315,8 @@ namespace Catacumba.LevelGen
                     SetCell(p, code, layer, true);
                 }
             }
+
+            this.Code = code;
         }
 
         public void DestroySector()
@@ -390,7 +422,8 @@ namespace Catacumba.LevelGen
         public enum ELevelType
         {
             Dungeon,
-            Cave
+            Cave,
+            Test
         }
 
         public ELevelType LevelType;
@@ -431,7 +464,8 @@ namespace Catacumba.LevelGen
             RoomBloodOath,
             RoomKillChallenge,
             RoomChase,
-            Enemy
+            Enemy,
+            Door
         }
 
         public const int CODE_ERROR               = -1;
@@ -493,7 +527,8 @@ namespace Catacumba.LevelGen
             ILevelGenAlgo[] genSteps = {
                 GetLevelGenerationAlgorithm(p),
                 new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Prop, 1f - p.PropChance, 0.5f, 0.5f, ELevelLayer.All),
-                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Enemy, 1f - p.EnemyChance, 0.5f, 0.5f, ELevelLayer.Hall)
+                new LevelGenAlgoPerlinMaskAdd(ECellCode.Hall, ECellCode.Enemy, 1f - p.EnemyChance, 0.5f, 0.5f, ELevelLayer.All),
+                new LevelGenAlgoAddDoors()
             };
             
             foreach (ILevelGenAlgo algo in genSteps)
@@ -506,20 +541,6 @@ namespace Catacumba.LevelGen
 
             int secsL = secs.Length;
             yield return new WaitForSeconds(0.5f);
-
-            //////////////////
-            /// PROPS
-            foreach (Sector sec in level.BaseSector.Children)
-            {
-                int propCells = UnityEngine.Random.Range(0, ((sec.Size.x + sec.Size.y) / 2));
-                for (int i = 0; i < propCells; i++)
-                {
-                    Vector2Int pos = new Vector2Int(UnityEngine.Random.Range(0, sec.Size.x),
-                                                  UnityEngine.Random.Range(0, sec.Size.y));
-
-                    sec.SetCell(pos, LevelGeneration.ECellCode.Prop);
-                }
-            }
 
             UpdateVis(level);
 
@@ -547,6 +568,7 @@ namespace Catacumba.LevelGen
             {
                 case LevelGenerationParams.ELevelType.Dungeon: return new LevelGenAlgoWalkers();
                 case LevelGenerationParams.ELevelType.Cave: return new LevelGenAlgoPerlin();
+                case LevelGenerationParams.ELevelType.Test: return new LevelGenAlgoTest();
                 default: return new LevelGenAlgoWalkers();
             }
         }
