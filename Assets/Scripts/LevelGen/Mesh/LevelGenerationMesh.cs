@@ -43,16 +43,12 @@ namespace Catacumba.LevelGen.Mesh
             propRoot.isStatic = true;
 
 
-            // foreach (Sector sec in l.BaseSector.Children)
-            //  GenerateRoom(sec, cfg.GetRoomConfig(sec.Code), root);
-
-            //GenerateHall(l, cfg, floorRoot, wallRoot);
-
             ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
             {
                 new LevelGenerationMeshStepRooms(),
                 new LevelGenerationMeshStepHall(floorRoot, wallRoot),
-                new LevelGenerationMeshStepGroupWalls()
+                new LevelGenerationMeshStepGroupWalls(),
+                new LevelGenerationMeshStepDoors()
             };
 
             foreach (ILevelGenerationMeshStep step in steps)
@@ -64,8 +60,6 @@ namespace Catacumba.LevelGen.Mesh
             s.layerMask = LayerMask.GetMask(new string[]{ "Level" });
             s.BuildNavMesh();
         }
-
-
 
         private static GameObject[] CheckProp(LevelGenRoomConfig cfg,
                                               Vector3 cellSize,
@@ -93,18 +87,6 @@ namespace Catacumba.LevelGen.Mesh
             }
             return propInstances;
         }
-
-        private static bool GetShouldPutTwoSidedWall(Sector l, 
-                                                     Vector3 cellSize, 
-                                                     LevelGeneration.ECellCode cellCode,
-                                                     Vector2Int pos)
-        {
-            Vector3 worldPosition = new Vector3(pos.x*cellSize.x, 0f, pos.y*cellSize.z);
-            worldPosition += cellSize * 0.5f;
-
-            return !l.IsIn(pos);
-        }
-
     }
 
 }

@@ -32,6 +32,7 @@ namespace Catacumba.LevelGen.Mesh
             GameObject roomObject = new GameObject("Room");
             roomObject.transform.SetParent(root.transform);
             roomObject.transform.localPosition = Vector3.zero;
+            roomObject.transform.localPosition = Utils.LevelToWorldPos(sec.Pos, cellSize);
 
             Action<Utils.SectorCellIteration> ac = delegate(Utils.SectorCellIteration param) {
                 int x = param.cellPosition.x;
@@ -43,11 +44,11 @@ namespace Catacumba.LevelGen.Mesh
                 Utils.PutFloor(cfg, cellSize, roomObject, p);
 
                 // Borders
-                if (x == pos.x || x == pos.x+sz.x-1 ||
-                    y == pos.y || y == pos.y+sz.y-1)
+                if (x == 0 || x == sz.x-1 ||
+                    y == 0 || y == sz.y-1)
                 {
-                    Utils.CheckOneSidedWalls(sec, cfg, cellSize, roomObject, p-pos);
-                    Utils.CheckTwoSidedWalls(sec, cfg, cellSize, roomObject, p-pos);
+                    Utils.CheckOneSidedWalls(sec, cfg, cellSize, roomObject, p);
+                    Utils.CheckTwoSidedWalls(sec, cfg, cellSize, roomObject, p);
                 }
             };
 
@@ -81,10 +82,8 @@ namespace Catacumba.LevelGen.Mesh
 
             Func<Utils.CheckNeighborsComparerParams, bool> comparer = delegate(Utils.CheckNeighborsComparerParams p)
             {
-                bool put = p.neighborCell != LevelGeneration.ECellCode.Empty &&
-                           p.neighborCell != LevelGeneration.ECellCode.Enemy &&
-                           p.neighborCell != LevelGeneration.ECellCode.Hall &&
-                           p.neighborCell != LevelGeneration.ECellCode.Prop;
+                bool put = p.neighborCell > LevelGeneration.ECellCode.Empty &&
+                           p.neighborCell != LevelGeneration.ECellCode.Hall;
                 return put;
             };
 
@@ -101,11 +100,13 @@ namespace Catacumba.LevelGen.Mesh
                                        cellSize, 
                                        wallRoot, 
                                        param.cellPosition, 
+                                       ELevelLayer.Hall | ELevelLayer.Rooms,
+                                       //param.layer,
                                        comparer);
                 }
             };
 
-            Utils.IterateSector(l.BaseSector, new Action<Utils.SectorCellIteration>[] { hallStep }, ELevelLayer.Hall);
+            Utils.IterateSector(l.BaseSector, new Action<Utils.SectorCellIteration>[] { hallStep }, ELevelLayer.All &~ ELevelLayer.Doors);
         }
     }
 
@@ -146,8 +147,65 @@ namespace Catacumba.LevelGen.Mesh
     {
         void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
         {
+            System.Collections.Generic.List<GameObject> doorsSpawned = new System.Collections.Generic.List<GameObject>();
 
+            Action<Utils.SectorCellIteration> checkDoors = delegate(Utils.SectorCellIteration iteration)
+            {
+                if (iteration.cell != LevelGeneration.ECellCode.Door)
+                    return;
+
+
+                var cell    = iteration.sector.Level.GetSectorAt(iteration.cellPosition).Code;
+                var roomCfg = cfg.GetRoomConfig(cell);
+
+                EDirectionBitmask directions = Utils.CheckNeighbors(iteration.sector, iteration.cellPosition, SelectDoors, iteration.layer);
+
+                Utils.PutWallParams p = new Utils.PutWallParams()
+                {
+                    root        = root,
+                    cfg         = roomCfg,
+                    directions  = directions,
+                    prefab      = roomCfg.DoorWalls[0],
+                    cellSize    = roomCfg.Floors[0].GetComponent<Renderer>().bounds.size,
+                    namePreffix = "D",
+                    position    = iteration.cellPosition,
+                };
+                NeighborObjects doors = Utils.PutWall(p);
+
+                foreach (var value in doors.Values) {
+                    doorsSpawned.Add(value);
+                }
+            };
+
+            Utils.IterateSector(level.BaseSector, checkDoors, ELevelLayer.Doors);
+
+            foreach (GameObject door in doorsSpawned) {
+                Vector3 pos = door.GetComponentInChildren<Renderer>().bounds.center;
+                Collider[] collisions = Physics.OverlapSphere(pos, 0.1f,  1<< LayerMask.NameToLayer("Entities"));
+
+                foreach (var collider in collisions) {
+                    if (collider.gameObject.name[0] != 'D') {
+                        //GameObject.Destroy(collider.gameObject);
+                    }
+                }
+            }
         }
+
+        bool SelectDoors(Utils.CheckNeighborsComparerParams param)
+        {
+            var level = param.sector.Level;
+            
+            Vector2Int globalOriginalPos = param.sector.GetAbsolutePosition(param.originalPosition);
+            Vector2Int globalNeighborPos = param.sector.GetAbsolutePosition(param.neighborPosition);
+
+            bool bothDoors = param.originalCell == LevelGeneration.ECellCode.Door && 
+                             param.neighborCell == LevelGeneration.ECellCode.Door;
+
+            bool differentSectors = level.GetSectorAt(globalOriginalPos).Id != level.GetSectorAt(globalNeighborPos).Id;
+
+            return bothDoors && differentSectors;
+        }
+
     }
 
 }

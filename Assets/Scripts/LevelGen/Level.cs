@@ -109,18 +109,24 @@ namespace Catacumba.LevelGen
 
         public LevelGeneration.ECellCode GetCellFromLayerBitmask(int x, int y, ELevelLayer bitmask)
         {
-            var values = Enum.GetValues(typeof(ELevelLayer)).Cast<ELevelLayer>().Reverse().Skip(1);
+            try {
+                var values = Enum.GetValues(typeof(ELevelLayer)).Cast<ELevelLayer>().Reverse().Skip(1);
 
-            foreach (var v in values)
-            {
-                if (!BitmaskHelper.IsSet<ELevelLayer>(bitmask, v))
-                    continue;
+                foreach (var v in values)
+                {
+                    if (!BitmaskHelper.IsSet<ELevelLayer>(bitmask, v))
+                        continue;
 
-                var cell = this.Map[v][x,y];
-                if (cell > LevelGeneration.ECellCode.Empty)
-                    return cell;
+                    var cell = this.Map[v][x,y];
+                    if (cell > LevelGeneration.ECellCode.Empty)
+                        return cell;
+                }
+                return LevelGeneration.ECellCode.Empty;
             }
-            return LevelGeneration.ECellCode.Empty;
+            catch (IndexOutOfRangeException ex)
+            {
+                return LevelGeneration.ECellCode.Error;
+            }
         }
 
         private static ELevelLayer GetAllLayers()

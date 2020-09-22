@@ -628,11 +628,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Params:
-    LevelType: 2
-    LevelSize: {x: 50, y: 50}
+    LevelType: 0
+    LevelSize: {x: 30, y: 30}
     PropChance: 0.3
     EnemyChance: 0.45
-    GenerateMesh: 0
+    GenerateMesh: 1
     BiomeConfig: {fileID: 11400000, guid: 0412aa65f66d0094cbf4d1ddd6811e26, type: 2}
     PlayerPrefab: {fileID: 4401398104034988439, guid: 10e5cae364fee7748bd82572b44ec6a1,
       type: 3}

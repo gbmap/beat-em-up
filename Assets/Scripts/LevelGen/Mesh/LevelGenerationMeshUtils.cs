@@ -72,11 +72,11 @@ namespace Catacumba.LevelGen.Mesh
             Vector2Int[]        vecDirections  = GenerateNeighborOffsets(p);
             EDirectionBitmask[] enumDirections = GenerateNeighborDirections();
             
-            LevelGeneration.ECellCode originalCell = l.GetCell(p);
+            LevelGeneration.ECellCode originalCell = l.GetCell(p, layer);
 
             for (int i = 0; i < vecDirections.Length; i++)
             {
-                LevelGeneration.ECellCode eDir = l.GetCell(vecDirections[i], layer);
+                LevelGeneration.ECellCode eDir = l.Level.GetCell(l.GetAbsolutePosition(vecDirections[i]), layer);
                 CheckNeighborsComparerParams param = new CheckNeighborsComparerParams
                 {
                     sector           = l,
@@ -131,6 +131,7 @@ namespace Catacumba.LevelGen.Mesh
             public LevelGeneration.ECellCode cell {get; set;}
             public Vector2Int cellPosition { get; set; }
             public Sector sector {get; set; }
+            public ELevelLayer layer { get; set; }
         }
 
         public class SectorIterationArgs
@@ -172,6 +173,7 @@ namespace Catacumba.LevelGen.Mesh
                         cell = cell,
                         cellPosition = cellPosition,
                         sector = sector,
+                        layer = layer
                     };
                     Array.ForEach(functions, function => function(param));
 
@@ -192,7 +194,7 @@ namespace Catacumba.LevelGen.Mesh
             public bool shouldCollide;
         }
 
-        public static NeighborObjects PutWall(PutWallParams p)
+        public static NeighborObjects PutWall(PutWallParams p, bool removeExisting = false)
         {
             Vector3 position = Vector3.zero;
             float angle = 0f;
@@ -227,10 +229,22 @@ namespace Catacumba.LevelGen.Mesh
                     obstacle.carving = true;
                 }
 
+                if (removeExisting) {
+                    Vector3  checkCollisionWithExisting = obj.GetComponentInChildren<Renderer>().bounds.center;
+                    Collider[] collisions               = Physics.OverlapSphere(checkCollisionWithExisting, 0.1f, 1 << LayerMask.NameToLayer("Entities"));
+                    foreach( var collision in collisions) {
+                        // Hack imbecil pra impedir que o outro lado da porta seja removido
+                        if (collision.gameObject.name[0] != p.namePreffix[0]) {
+                            GameObject.Destroy(collision.gameObject);
+                        }
+                    }
+                }
+
                 walls[dir] = obj;
             }
 
-            SetMaterialInObjects(walls.Values, p.cfg.EnvironmentMaterial);
+            if (walls.Count > 0)
+                SetMaterialInObjects(walls.Values, p.cfg.EnvironmentMaterial);
 
             return walls;
         }
@@ -258,10 +272,10 @@ namespace Catacumba.LevelGen.Mesh
         }
 
         public static NeighborObjects CheckOneSidedWalls(Sector sector, 
-                                                          LevelGenRoomConfig cfg, 
-                                                          Vector3 cellSize, 
-                                                          GameObject root, 
-                                                          Vector2Int position)
+                                                         LevelGenRoomConfig cfg, 
+                                                         Vector3 cellSize, 
+                                                         GameObject root, 
+                                                         Vector2Int position)
         {
             EDirectionBitmask directions = CheckNeighbors(
                 sector.Level.BaseSector, 
@@ -276,27 +290,34 @@ namespace Catacumba.LevelGen.Mesh
                 directions    = directions,
                 namePreffix   = "W",
                 prefab        = cfg.Walls[UnityEngine.Random.Range(0, cfg.Walls.Length)],
-                position      = sector.GetAbsolutePosition(position),
+                position      = position,
                 root          = root,
                 shouldCollide = false
             };
             return PutWall(param);
         }
 
+
         public static NeighborObjects CheckTwoSidedWalls(Sector sector,
-                                                          LevelGenRoomConfig cfg,
-                                                          Vector3 cellSize,
-                                                          GameObject root,
-                                                          Vector2Int position, // relative to sector position
-                                                          Func<CheckNeighborsComparerParams, bool> selector = null)
+                                                         LevelGenRoomConfig cfg,
+                                                         Vector3 cellSize,
+                                                         GameObject root,
+                                                         Vector2Int position, // relative to sector position
+                                                         ELevelLayer layer = ELevelLayer.All,
+                                                         Func<CheckNeighborsComparerParams, bool> selector = null)
         {
             if (selector == null)
+            {
                 selector = (CheckNeighborsComparerParams p) => !sector.IsIn(p.neighborPosition); 
+                /*selector = (CheckNeighborsComparerParams p) => !p.sector.IsIn(p.neighborPosition) &&
+                                                                p.neighborCell > LevelGeneration.ECellCode.Empty);*/
+            }
 
             EDirectionBitmask directions = CheckNeighbors(
                 sector, 
                 position, 
-                selector
+                selector,
+                layer
             );
 
             PutWallParams param = new PutWallParams
@@ -305,7 +326,7 @@ namespace Catacumba.LevelGen.Mesh
                 cfg           = cfg,
                 cellSize      = cellSize,
                 root          = root,
-                position      = sector.GetAbsolutePosition(position),
+                position      = position,
                 directions    = directions,
                 namePreffix   = "WD",
                 shouldCollide = true
