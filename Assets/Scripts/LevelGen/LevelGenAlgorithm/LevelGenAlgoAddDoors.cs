@@ -78,9 +78,6 @@ namespace Catacumba.LevelGen
                     Vector2Int outsideDoorPosition = cellIteration.sector.GetAbsolutePosition(
                         cellIteration.cellPosition + DirectionHelper.ToOffset(dir)
                     );
-
-                    //cellIteration.sector.SetCell(cellIteration.cellPosition, LevelGeneration.ECellCode.Door);
-                    //cellIteration.sector.Level.SetCell(outsideDoorPosition, LevelGeneration.ECellCode.Door);
                 }
             }
         }

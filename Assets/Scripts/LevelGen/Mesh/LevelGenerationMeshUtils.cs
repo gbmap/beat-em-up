@@ -147,14 +147,14 @@ namespace Catacumba.LevelGen.Mesh
         */
         public static void IterateSector(Sector sector,
                                          Action<SectorCellIteration> iterator,
-                                         ELevelLayer layer = LevelBitmap.AllLayers)
+                                         ELevelLayer layer = ELevelLayer.All)
         {
             IterateSector(sector, new Action<SectorCellIteration>[] { iterator }, layer);
         }
 
         public static void IterateSector(Sector sector, 
                                          Action<SectorCellIteration>[] functions,
-                                         ELevelLayer layer = LevelBitmap.AllLayers)
+                                         ELevelLayer layer = ELevelLayer.All)
         {
             Vector2Int pos = sector.Pos; //sec.GetAbsolutePosition(sec.Pos);
             Vector2Int sz = sector.Size;
@@ -184,12 +184,15 @@ namespace Catacumba.LevelGen.Mesh
 
         public struct PutWallParams
         {
+            //public Level level;
+            public Sector sector;
             public LevelGenRoomConfig cfg; 
             public GameObject prefab; 
             public Vector3 cellSize;
             public GameObject root;
             public Vector2Int position;
             public EDirectionBitmask directions;
+            public Material material;
             public string namePreffix; 
             public bool shouldCollide;
         }
@@ -219,8 +222,10 @@ namespace Catacumba.LevelGen.Mesh
                 obj.layer = LayerMask.NameToLayer("Level");
                 obj.tag = "Level";
 
-                var renderers = obj.GetComponentsInChildren<Renderer>();
-                System.Array.ForEach(renderers, r => r.material = p.cfg.EnvironmentMaterial);
+                SetMaterialInObject(obj, p.material);
+
+                ComponentVisibility vis = obj.AddComponent<ComponentVisibility>();
+                vis.cellPosition = p.sector.GetAbsolutePosition(p.position);
 
                 if (p.shouldCollide)
                 {
@@ -243,10 +248,33 @@ namespace Catacumba.LevelGen.Mesh
                 walls[dir] = obj;
             }
 
-            if (walls.Count > 0)
-                SetMaterialInObjects(walls.Values, p.cfg.EnvironmentMaterial);
-
             return walls;
+        }
+
+        public struct PutFloorParams
+        {
+            public Sector sector;
+            public GameObject floorPrefab;
+            public Material floorMaterial;
+            public Vector3 cellSize;
+            public GameObject floorRoot;
+            public Vector2Int position;
+        }
+
+        public static GameObject PutFloor(PutFloorParams p)
+        {
+            var floor = GameObject.Instantiate(p.floorPrefab, p.floorRoot.transform);
+            floor.name = string.Format("F_{0}_{1}", p.position.x, p.position.y);
+            floor.transform.localPosition = new Vector3(p.position.x * p.cellSize.x, 0f, p.position.y * p.cellSize.z);
+            floor.layer = LayerMask.NameToLayer("Level");
+
+            SetMaterialInObject(floor, p.floorMaterial);
+
+            var vis = floor.AddComponent<ComponentVisibility>();
+            vis.cellPosition = p.sector.GetAbsolutePosition(p.position);
+
+            return floor;
+
         }
 
         public static GameObject PutFloor(LevelGenRoomConfig cfg,
@@ -275,7 +303,8 @@ namespace Catacumba.LevelGen.Mesh
                                                          LevelGenRoomConfig cfg, 
                                                          Vector3 cellSize, 
                                                          GameObject root, 
-                                                         Vector2Int position)
+                                                         Vector2Int position,
+                                                         Material material = null)
         {
             EDirectionBitmask directions = CheckNeighbors(
                 sector.Level.BaseSector, 
@@ -285,6 +314,7 @@ namespace Catacumba.LevelGen.Mesh
 
             PutWallParams param = new PutWallParams
             {
+                sector        = sector,
                 cellSize      = cellSize,
                 cfg           = cfg,
                 directions    = directions,
@@ -292,11 +322,11 @@ namespace Catacumba.LevelGen.Mesh
                 prefab        = cfg.Walls[UnityEngine.Random.Range(0, cfg.Walls.Length)],
                 position      = position,
                 root          = root,
-                shouldCollide = false
+                shouldCollide = false,
+                material      = material 
             };
             return PutWall(param);
         }
-
 
         public static NeighborObjects CheckTwoSidedWalls(Sector sector,
                                                          LevelGenRoomConfig cfg,
@@ -304,7 +334,8 @@ namespace Catacumba.LevelGen.Mesh
                                                          GameObject root,
                                                          Vector2Int position, // relative to sector position
                                                          ELevelLayer layer = ELevelLayer.All,
-                                                         Func<CheckNeighborsComparerParams, bool> selector = null)
+                                                         Func<CheckNeighborsComparerParams, bool> selector = null,
+                                                         Material material = null)
         {
             if (selector == null)
             {
@@ -322,6 +353,7 @@ namespace Catacumba.LevelGen.Mesh
 
             PutWallParams param = new PutWallParams
             {
+                sector        = sector,
                 prefab        = cfg.Walls[0],
                 cfg           = cfg,
                 cellSize      = cellSize,
@@ -329,7 +361,8 @@ namespace Catacumba.LevelGen.Mesh
                 position      = position,
                 directions    = directions,
                 namePreffix   = "WD",
-                shouldCollide = true
+                shouldCollide = true,
+                material      = material
             };
             NeighborObjects walls = PutWall(param); 
 
@@ -338,10 +371,10 @@ namespace Catacumba.LevelGen.Mesh
                 GameObject wall = kvp.Value;
                 wall.layer = LayerMask.NameToLayer("Entities");
                 //wall.transform.localPosition = wall.transform.localPosition * 0.99f;
-                var data = wall.AddComponent<CharacterData>();
-                data.Stats.Attributes.Vigor = 1;
+                //var data = wall.AddComponent<CharacterData>();
+                //data.Stats.Attributes.Vigor = 1;
 
-                wall.AddComponent<CharacterHealth>();
+                //wall.AddComponent<CharacterHealth>();
             }
 
             return walls;

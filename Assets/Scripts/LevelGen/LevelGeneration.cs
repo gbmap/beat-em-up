@@ -257,12 +257,12 @@ namespace Catacumba.LevelGen
             return Parent.GetAbsolutePosition(Pos + p);
         }
 
-        public LevelGeneration.ECellCode GetCell(int x, int y, ELevelLayer layer = LevelBitmap.AllLayers)
+        public LevelGeneration.ECellCode GetCell(int x, int y, ELevelLayer layer = ELevelLayer.All)
         {
             return GetCell(new Vector2Int(x, y), layer);
         }
 
-        public LevelGeneration.ECellCode GetCell(Vector2Int p, ELevelLayer layer = LevelBitmap.AllLayers)
+        public LevelGeneration.ECellCode GetCell(Vector2Int p, ELevelLayer layer = ELevelLayer.All)
         {
             if (!IsIn(p))
                 return LevelGeneration.ECellCode.Error;

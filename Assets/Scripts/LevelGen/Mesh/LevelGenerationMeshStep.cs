@@ -34,6 +34,8 @@ namespace Catacumba.LevelGen.Mesh
             roomObject.transform.localPosition = Vector3.zero;
             roomObject.transform.localPosition = Utils.LevelToWorldPos(sec.Pos, cellSize);
 
+            Material roomMaterial = new Material(cfg.EnvironmentMaterial);
+
             Action<Utils.SectorCellIteration> ac = delegate(Utils.SectorCellIteration param) {
                 int x = param.cellPosition.x;
                 int y = param.cellPosition.y;
@@ -41,14 +43,22 @@ namespace Catacumba.LevelGen.Mesh
                 Vector2Int pos = param.sector.Pos;
                 Vector2Int sz = param.sector.Size;
 
-                Utils.PutFloor(cfg, cellSize, roomObject, p);
+                var obj = Utils.PutFloor(new Utils.PutFloorParams
+                {
+                    sector        = sec,
+                    cellSize      = cellSize,
+                    floorMaterial = roomMaterial,
+                    floorPrefab   = cfg.Floors[0],
+                    floorRoot     = roomObject,
+                    position      = p
+                });
 
                 // Borders
                 if (x == 0 || x == sz.x-1 ||
                     y == 0 || y == sz.y-1)
                 {
-                    Utils.CheckOneSidedWalls(sec, cfg, cellSize, roomObject, p);
-                    Utils.CheckTwoSidedWalls(sec, cfg, cellSize, roomObject, p);
+                    Utils.CheckOneSidedWalls(sec, cfg, cellSize, roomObject, p, roomMaterial);
+                    Utils.CheckTwoSidedWalls(sec, cfg, cellSize, roomObject, p, material: roomMaterial);
                 }
             };
 
@@ -93,8 +103,18 @@ namespace Catacumba.LevelGen.Mesh
                     param.cell == LevelGeneration.ECellCode.Prop ||
                     param.cell == LevelGeneration.ECellCode.Enemy)
                 {
-                    Utils.PutFloor(hallCfg, cellSize, floorRoot, param.cellPosition);
-                    Utils.CheckOneSidedWalls(param.sector.Level.BaseSector, hallCfg, cellSize, wallRoot, param.cellPosition);
+
+
+                    Utils.PutFloor(new Utils.PutFloorParams
+                    {
+                        sector        = param.sector,
+                        position      = param.cellPosition,
+                        cellSize      = cfg.CellSize(),
+                        floorPrefab   = hallCfg.Floors[0],
+                        floorMaterial = hallCfg.EnvironmentMaterial,
+                        floorRoot     = floorRoot
+                    });
+                    Utils.CheckOneSidedWalls(param.sector.Level.BaseSector, hallCfg, cellSize, wallRoot, param.cellPosition, hallCfg.EnvironmentMaterial);
                     Utils.CheckTwoSidedWalls(param.sector.Level.BaseSector, 
                                        hallCfg, 
                                        cellSize, 
@@ -102,7 +122,7 @@ namespace Catacumba.LevelGen.Mesh
                                        param.cellPosition, 
                                        ELevelLayer.Hall | ELevelLayer.Rooms,
                                        //param.layer,
-                                       comparer);
+                                       comparer, hallCfg.EnvironmentMaterial);
                 }
             };
 
@@ -162,6 +182,7 @@ namespace Catacumba.LevelGen.Mesh
 
                 Utils.PutWallParams p = new Utils.PutWallParams()
                 {
+                    sector      = iteration.sector,
                     root        = root,
                     cfg         = roomCfg,
                     directions  = directions,
@@ -169,6 +190,7 @@ namespace Catacumba.LevelGen.Mesh
                     cellSize    = roomCfg.Floors[0].GetComponent<Renderer>().bounds.size,
                     namePreffix = "D",
                     position    = iteration.cellPosition,
+                    material    = roomCfg.EnvironmentMaterial
                 };
                 NeighborObjects doors = Utils.PutWall(p);
 
@@ -185,7 +207,7 @@ namespace Catacumba.LevelGen.Mesh
 
                 foreach (var collider in collisions) {
                     if (collider.gameObject.name[0] != 'D') {
-                        //GameObject.Destroy(collider.gameObject);
+                        GameObject.Destroy(collider.gameObject);
                     }
                 }
             }

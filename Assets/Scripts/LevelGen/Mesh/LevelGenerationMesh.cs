@@ -24,6 +24,7 @@ namespace Catacumba.LevelGen.Mesh
             root.transform.localScale = Vector3.one;
             root.isStatic = true;
 
+
             GameObject floorRoot = new GameObject("Floors");
             floorRoot.transform.parent = root.transform;
             floorRoot.transform.localPosition = Vector3.zero;
@@ -59,6 +60,9 @@ namespace Catacumba.LevelGen.Mesh
             NavMeshSurface s = root.AddComponent<NavMeshSurface>();
             s.layerMask = LayerMask.GetMask(new string[]{ "Level" });
             s.BuildNavMesh();
+
+            ComponentLevel levelComponent = root.AddComponent<ComponentLevel>();
+            levelComponent.SetLevel(l, cfg);
         }
 
         private static GameObject[] CheckProp(LevelGenRoomConfig cfg,

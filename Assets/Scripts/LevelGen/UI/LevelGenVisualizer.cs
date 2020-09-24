@@ -7,21 +7,40 @@ namespace Catacumba.LevelGen
 {
     public class LevelGenVisualizer : MonoBehaviour
     {
+        public enum EVisualizationMode
+        {
+            Level,
+            Visibility
+        }
+
         public RawImage Image;
 
         public ELevelLayer Layers;
+        public EVisualizationMode VisualizationMode = EVisualizationMode.Level;
+
         private ELevelLayer _lastLayers;
 
         private Level level;
+        public ComponentLevel componentLevel;
 
-        void Update()
+        void FixedUpdate()
         {
-            if (_lastLayers == Layers)
-                return;
-            else
-                UpdateTexture(this.level);                
+            if (VisualizationMode == EVisualizationMode.Level)
+            {
+                if (_lastLayers == Layers)
+                    return;
+                else
+                    UpdateTexture(this.level);                
 
-            _lastLayers = Layers;
+                _lastLayers = Layers;
+            }
+            else 
+            {
+                if (componentLevel == null)
+                    return;
+
+                UpdateTexture(componentLevel.VisibilityMap);
+            }
         }
 
         public Color CodeToColor(int code)
@@ -78,7 +97,23 @@ namespace Catacumba.LevelGen
             {
                 for (int x = 0; x < l.Size.x; x++)
                 {
-                    t.SetPixel(x, /*(l.Size.y-1) - */ y, CodeToColor(l.GetCell(x, y, Layers)));
+                    t.SetPixel(x, y, CodeToColor(l.GetCell(x, y, Layers)));
+                }
+            }
+            t.filterMode = FilterMode.Point;
+            t.Apply();
+            return t;
+        }
+
+        public Texture2D VisibilityMapToTexture(VisibilityMap map) 
+        {
+            Texture2D t = new Texture2D(map.Size.x, map.Size.y, TextureFormat.RGBA32, false);
+            for (int y = 0; y < map.Size.y; y++)
+            {
+                for (int x = 0; x < map.Size.x; x++)
+                {
+                    float h = map.GetVisibilityAt(new Vector2Int(x, y));
+                    t.SetPixel(x, /*(l.Size.y-1) - */ y, new Color(h, h, h));
                 }
             }
             t.filterMode = FilterMode.Point;
@@ -91,8 +126,13 @@ namespace Catacumba.LevelGen
             // TODO: FIX MEM LEAK
             Texture2D txtr = LevelToTexture(l);
             Image.texture = txtr;
-
             this.level = l;
+        }
+
+        public void UpdateTexture(VisibilityMap m)
+        {
+            Texture2D txtr = VisibilityMapToTexture(m);
+            Image.texture = txtr;
         }
     }
 }
