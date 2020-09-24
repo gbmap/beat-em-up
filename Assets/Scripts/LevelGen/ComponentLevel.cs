@@ -17,11 +17,21 @@ namespace Catacumba.LevelGen
 
         public void FillSector(System.Func<int, int, float> fillFunction, Vector2Int playerCell) 
         {
+            Vector2Int xRange = new Vector2Int(
+                Mathf.Max(0, playerCell.x-5),
+                Mathf.Min(this.visibilityMap.GetLength(0), playerCell.x+5)
+            );
+
+            Vector2Int yRange = new Vector2Int(
+                Mathf.Max(0, playerCell.y-5),
+                Mathf.Min(this.visibilityMap.GetLength(1), playerCell.y+5)
+            );
+
             try
             {
-                for (int x = playerCell.x - 5; x < Mathf.Min(this.visibilityMap.GetLength(0), playerCell.x+5); x++) 
+                for (int x = xRange.x; x < xRange.y; x++) 
                 {
-                    for (int y = playerCell.y-5; y < Mathf.Min(this.visibilityMap.GetLength(1), playerCell.y+5); y++) 
+                    for (int y = yRange.x; y < yRange.y; y++) 
                     {
                         this.visibilityMap[x, y] = Mathf.Clamp01(fillFunction(x, y));
                     }

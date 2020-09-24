@@ -25,7 +25,7 @@ namespace Catacumba.LevelGen
 
         void FixedUpdate()
         {
-            if (VisualizationMode == EVisualizationMode.Level)
+            if (VisualizationMode == EVisualizationMode.Level && level != null)
             {
                 if (_lastLayers == Layers)
                     return;
