@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 namespace Catacumba.Entity {
 [RequireComponent(typeof(NavMeshAgent))]
-public class CharacterMovement : MonoBehaviour
+public class CharacterMovement : MonoBehaviour, CharacterCombat.IAttackEventHandler, CharacterCombat.IComboEventHandler
 {
     // === REFS
     CharacterHealth health;
@@ -45,14 +45,19 @@ public class CharacterMovement : MonoBehaviour
     private float lastRoll;
     private Vector3 rollDirection;
 
+    private Bitmask canMoveMask;
+
     public bool CanMove
     {
         get
         {
+            return true;
+            /*
             return (!combat || !combat.IsOnCombo) &&
                 (!health || (!health.IsOnGround && !health.IsBeingDamaged)) &&
                 !IsBeingMoved &&
                 (data.BrainType == ECharacterBrainType.AI ? Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f)) : true);
+            */
         }
     }
     public bool IsBeingMoved { get { return speedBumpT > 0f; } }
@@ -137,40 +142,26 @@ public class CharacterMovement : MonoBehaviour
     void Start()
     {
         if (NavMeshAgent)
-            NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
+            NavMeshAgent.speed = MoveSpeed;
     }
-
-    private void OnEnable()
-    {
-        if (combat)
-        {
-            combat.OnCharacterAttack += OnCharacterAttackCallback;
-            combat.OnRequestCharacterAttack += OnCharacterRequestAttackCallback;
-        }
-    }
+  
 
     private void OnDisable()
     {
-        combat.OnCharacterAttack -= OnCharacterAttackCallback;
-        combat.OnRequestCharacterAttack -= OnCharacterRequestAttackCallback;
-
-        health.OnDamaged -= OnDamagedCallback;
-        health.OnFall -= OnFallCallback;
-        health.OnGetUp -= OnGetUpCallback;
+        if (health)
+        {
+            health.OnDamaged -= OnDamagedCallback;
+            health.OnFall -= OnFallCallback;
+            health.OnGetUp -= OnGetUpCallback;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        //NavMeshAgent.
-
-        if (health.IsOnGround)
-        {
+        if (health && health.IsOnGround)
             NavMeshAgent.enabled = speedBumpT > 0f;
-        }
-        //if (targetDestination != NavMeshAgent.destination && NavMeshAgent.enabled) SetDestination(targetDestination);
         
-        //Move1();
         Move_Old();
 
 #if UNITY_EDITOR
@@ -233,39 +224,26 @@ public class CharacterMovement : MonoBehaviour
 
         else if (CanMove)
         {
-            //float rollSpeed = 1f + Mathf.Clamp01(1f-Mathf.Pow((1f-rollSpeedT), 3f));
-            // x * (1 - x) * 4
             float rollSpeed = 1f + Mathf.Clamp01(rollSpeedT * (1f - rollSpeedT) * 4f);
-            // x*(1-x)*(1-x)/0.15
-            //float rollSpeed = 1f + Mathf.Clamp01(rollSpeedT * (1f-rollSpeedT)*(1f-rollSpeedT) / 0.15f );
-
 
             var dir = Direction.normalized;
             if (isRolling)
             {
-                //dir = rollDirection;
-                /*float a = Vector3.Dot(dir, rollDirection);*/
                 float a = 1f - rollSpeedT;
                 a = a * a * a * a;
                 dir = Vector3.Slerp(rollDirection, dir, a);
-
-                /*if (dir.sqrMagnitude >= .9f)
-                    rollDirection = dir;*/
-                //dir = rollDirection;
             }
 
             // escalar direção c a velocidade
-            var dirNorm = dir * MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.85f : 1f);
+            var dirNorm = dir * MoveSpeed;
             forward = Vector3.Slerp(forward, dirNorm, 0.5f * Time.deltaTime * 30f).normalized;
-
-            //dirNorm.y = velocity.y;
 
             // aplicar roll speed
             velocity = dirNorm * rollSpeed;
-            if (Direction.sqrMagnitude > 0f && !combat.IsOnCombo)
+
+            if (Direction.sqrMagnitude > 0f && true /*!combat.IsOnCombo*/)
             {
                 dirNorm.y = 0f;
-                
                 transform.LookAt(transform.position + forward);
             }
         }
@@ -294,14 +272,6 @@ public class CharacterMovement : MonoBehaviour
         _speedBumpDir = direction.normalized * force;
     }
 
-    /*private void LateUpdate()
-    {
-        if (brainType == ECharacterBrainType.AI)
-        {
-            NavMeshAgent.isStopped |= speedBumpT > 0f || health.IsOnGround;
-        }
-    }*/
-
     private void OnDamagedCallback(CharacterAttackData attack)
     {
         if (attack.CancelAnimation)
@@ -317,6 +287,27 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    void CharacterCombat.IAttackEventHandler.OnRequestAttack(EAttackType type)
+    {
+        forward = Direction.normalized;
+    }
+
+    void CharacterCombat.IAttackEventHandler.OnAttack(CharacterAttackData attack)
+    {
+        ApplySpeedBump(transform.forward, GetSpeedBumpForce(attack) * 0.5f);
+    }
+
+    void CharacterCombat.IComboEventHandler.OnComboStarted()
+    {
+        canMoveMask.Set(0, true);
+    }
+
+    void CharacterCombat.IComboEventHandler.OnComboEnded()
+    {
+        canMoveMask.Set(0, false);
+    }
+
+
     public float GetSpeedBumpForce(CharacterAttackData attack)
     {
         if (IgnoreSpeedBump) return 0f;
@@ -327,21 +318,11 @@ public class CharacterMovement : MonoBehaviour
 
         return Mathf.Min(7f, ((float)attack.Damage / 25) * modifier);
     }
-    
-    private void OnCharacterAttackCallback(CharacterAttackData attack)
-    {
-        //ApplySpeedBump(transform.forward, SpeedBumpForce, attack.Type);
-    }
-
-    private void OnCharacterRequestAttackCallback(EAttackType obj)
-    {
-        forward = Direction.normalized;
-    }
 
     public void Roll(Vector3 direction)
     {
         if (Time.time < lastRoll + 0.75f ||
-            health.IsOnGround/* ||
+            (!health || health.IsOnGround ) /* ||
             combat.IsOnHeavyAttack*/)
         {
             return;
@@ -352,7 +333,7 @@ public class CharacterMovement : MonoBehaviour
             direction = transform.forward;
         }
 
-        combat.IsOnCombo = false;
+        //combat.IsOnCombo = false;
         OnRoll?.Invoke();
         rollSpeedT = 1f;
         speedBumpT = 0f;
@@ -445,6 +426,7 @@ public class CharacterMovement : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + _speedBumpDir);
     }
+
 #endif
-}
+    }
 }
