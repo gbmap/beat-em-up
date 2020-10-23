@@ -644,6 +644,13 @@ namespace Catacumba.LevelGen
             // Mesh
             Mesh.LevelGenerationMesh.Generate(l, p.BiomeConfig);
 
+            // Criar inimigos
+            LevelGenerationEntities(l, p);
+
+        }
+
+        static void LevelGenerationEntities(Level l, LevelGenerationParams p)
+        {
             // Criar Player
             var cellSize = p.BiomeConfig.CellSize();
             cellSize.x *= l.SpawnPoint.x;
@@ -666,6 +673,19 @@ namespace Catacumba.LevelGen
             body.m_FollowOffset = new Vector3(0f, 16f, -9f);
 
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
+
+            // Spawn enemies
+            Mesh.Utils.IterateSector(l.BaseSector, SpawnEnemies, ELevelLayer.Enemies);
+        }
+
+        private static void SpawnEnemies(Mesh.Utils.SectorCellIteration it)
+        {
+            if (it.cell != ECellCode.Enemy) 
+                return;
+
+
+
+
         }
 
         public static bool IsValidPosition(Level l, Vector2Int p)

@@ -218,6 +218,12 @@ PrefabInstance:
       propertyPath: CharacterModelOverride.Array.data[5]
       value: 
       objectReference: {fileID: 112422, guid: 8cd752dc36d412b4bba2efd06775153a, type: 3}
+    - target: {fileID: 2104466273385308275, guid: 2632ece4a494ff3429739c868f948495,
+        type: 3}
+      propertyPath: CharacterConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: 12a9179c170c94341b6b9e2660fd9454,
+        type: 2}
     - target: {fileID: 2836811929868206439, guid: 2632ece4a494ff3429739c868f948495,
         type: 3}
       propertyPath: m_Name

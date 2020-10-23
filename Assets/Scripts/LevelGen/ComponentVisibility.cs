@@ -42,7 +42,8 @@ namespace Catacumba {
             */
         }
 
-        void OnDestroy() {
+        void OnDestroy() 
+        {
             this.componentLevel.Events.OnVisibilityMapChanged -= Cb_OnVisibilityMapChanged;
         }
 

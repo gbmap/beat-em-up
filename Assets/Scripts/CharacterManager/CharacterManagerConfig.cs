@@ -123,7 +123,6 @@ public class CharacterManagerConfig : ScriptableObject
             }
         }
 
-
         yield return null;
 
         // MOVE O PACK PRA BAIXO DO ANIMATOR
@@ -131,7 +130,6 @@ public class CharacterManagerConfig : ScriptableObject
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
         Transform characterModel = null;
-
 
         string children = string.Empty;
         // MOVE A INSTÂNCIA (primeira criança ativa) PRA BAIXO DO ANIMATOR

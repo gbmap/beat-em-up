@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3082322250378933785}
   - component: {fileID: 7260396958273399628}
   - component: {fileID: 8418878565317597034}
-  - component: {fileID: 5787206686047150264}
   m_Layer: 9
   m_Name: distortion
   m_TagString: Untagged
@@ -4769,10 +4768,11 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e91e98263a483504e9713122568d4b66, type: 2}
+  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -4817,18 +4817,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &5787206686047150264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1453602844186706217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bfcc68b06ba6f2428b439aef91caaf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3878711662271008035
 GameObject:
   m_ObjectHideFlags: 0
@@ -9605,6 +9593,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9664,7 +9653,6 @@ GameObject:
   - component: {fileID: 3878711662377219264}
   - component: {fileID: 3878711662377219903}
   - component: {fileID: 3878711662377219902}
-  - component: {fileID: 3878711662377219265}
   m_Layer: 9
   m_Name: hit
   m_TagString: Untagged
@@ -14431,6 +14419,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -14479,18 +14468,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &3878711662377219265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3878711662377219901}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bfcc68b06ba6f2428b439aef91caaf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7091171409670478800
 GameObject:
   m_ObjectHideFlags: 0
@@ -14539,7 +14516,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -19263,6 +19240,7 @@ ParticleSystemRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

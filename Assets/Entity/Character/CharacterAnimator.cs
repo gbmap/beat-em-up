@@ -109,41 +109,61 @@ public class CharacterAnimator : MonoBehaviour
 
     private void OnEnable()
     {
-        combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
-        combat.OnRequestSkillUse += OnRequestSkillUseCallback;
-        combat.OnCharacterAttack += OnCharacterAttackCallback;
+        if (combat != null) 
+        {
+            combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
+            combat.OnRequestSkillUse += OnRequestSkillUseCallback;
+            combat.OnCharacterAttack += OnCharacterAttackCallback;
+        }
 
-        health.OnDamaged += OnCharacterDamagedCallback;
-        health.OnRecover += OnRecoverCallback;
+        if (health != null)
+        {
+            health.OnDamaged += OnCharacterDamagedCallback;
+            health.OnRecover += OnRecoverCallback;
+        }
 
-        movement.OnRoll += OnRollCallback;
+        if (movement != null)
+        {
+            movement.OnRoll += OnRollCallback;
+        }
     }
 
     private void OnDisable()
     {
-        combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
-        combat.OnCharacterAttack -= OnCharacterAttackCallback;
+        if (combat != null)
+        {
+            combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
+            combat.OnCharacterAttack -= OnCharacterAttackCallback;
+        }
 
-        health.OnDamaged -= OnCharacterDamagedCallback;
-        health.OnRecover -= OnRecoverCallback;
+        if (health != null)
+        {
+            health.OnDamaged -= OnCharacterDamagedCallback;
+            health.OnRecover -= OnRecoverCallback;
+        }
 
-        movement.OnRoll -= OnRollCallback;
+        if (movement != null)
+        {
+            movement.OnRoll -= OnRollCallback;
+        }
     }
     
     // Update is called once per frame
     void Update()
     {
-        if (movement.NavMeshAgent)
+        if (movement)
         {
-            animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+            if (movement && movement.NavMeshAgent)
+                animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+            
+            if (combat)
+            {
+                UpdateSmokeEmission();
+            }
         }
-        
-        UpdateSmokeEmission();
 
-        if (health.IsDead) // pra prevenir o LastDamageData de ser nulo.
-        {
+        if (health && combat && health.IsDead) // pra prevenir o LastDamageData de ser nulo.
             UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
-        }
 
 #if UNITY_EDITOR
         CheckDebugInput();

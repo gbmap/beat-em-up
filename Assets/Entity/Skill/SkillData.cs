@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/****
+*   Skill Component that holds instance data for casted skills.
+***/
 public class SkillData : MonoBehaviour
 {
     //[HideInInspector]

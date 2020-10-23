@@ -13,9 +13,6 @@ namespace Catacumba.LevelGen.Mesh
     {
         public static void Generate(Level l, LevelGenBiomeConfig cfg)
         {
-            // Vector3 cellSize = cfg.Floors[0].GetComponent<Renderer>().bounds.size;
-            // cellSize.y = 0f;
-
             //////////////////
             /// Roots
             GameObject root = new GameObject("Level");

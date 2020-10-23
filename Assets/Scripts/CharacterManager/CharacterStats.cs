@@ -385,15 +385,15 @@ public class CharacterStats
 
     public Inventory Inventory;
 
-    public CharacterStats()
+    public CharacterStats(Catacumba.Data.CharacterStatConfiguration stats)
     {
         Level = 1;
         Attributes = new CharAttributesI()
         {
-            Strength = 10,
-            Dexterity = 10,
-            Vigor = 10,
-            Magic = 10
+            Strength = Mathf.RoundToInt(stats.StrengthCurve.Evaluate(UnityEngine.Random.value)),
+            Dexterity = Mathf.RoundToInt(stats.DexterityCurve.Evaluate(UnityEngine.Random.value)),
+            Vigor = Mathf.RoundToInt(stats.VigorCurve.Evaluate(UnityEngine.Random.value)),
+            Magic = Mathf.RoundToInt(stats.MagicCurve.Evaluate(UnityEngine.Random.value))
         };
         Inventory = new Inventory();
 

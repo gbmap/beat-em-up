@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077d2da6891e1584dbd7e4d1156bd705, type: 3}
+  m_Name: CharacterView_Goblin
+  m_EditorClassIdentifier: 
+  Models:
+  - {fileID: 124030, guid: d48e97c38730e6d4a8a87d44d568bc50, type: 3}
+  - {fileID: 114438, guid: 2ef59bc5d753ebe4490b708befe65999, type: 3}
+  - {fileID: 194332, guid: 70ad07d06832dba42a3bb244ab822fd1, type: 3}
+  - {fileID: 173802, guid: 388fa61abd880a549864058f895c8045, type: 3}
+  - {fileID: 165754, guid: 9a6b87430c6b2684aa9c1d4616d38a60, type: 3}
+  - {fileID: 112422, guid: 8cd752dc36d412b4bba2efd06775153a, type: 3}

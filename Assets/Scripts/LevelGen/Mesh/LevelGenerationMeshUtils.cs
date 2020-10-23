@@ -223,9 +223,8 @@ namespace Catacumba.LevelGen.Mesh
                 obj.tag = "Level";
 
                 SetMaterialInObject(obj, p.material);
+                AddVisibilityComponent(obj, p.sector.GetAbsolutePosition(p.position));
 
-                ComponentVisibility vis = obj.AddComponent<ComponentVisibility>();
-                vis.cellPosition = p.sector.GetAbsolutePosition(p.position);
 
                 if (p.shouldCollide)
                 {
@@ -269,12 +268,18 @@ namespace Catacumba.LevelGen.Mesh
             floor.layer = LayerMask.NameToLayer("Level");
 
             SetMaterialInObject(floor, p.floorMaterial);
-
-            var vis = floor.AddComponent<ComponentVisibility>();
-            vis.cellPosition = p.sector.GetAbsolutePosition(p.position);
+            AddVisibilityComponent(floor, p.sector.GetAbsolutePosition(p.position));
 
             return floor;
 
+        }
+
+        private static ComponentVisibility AddVisibilityComponent(GameObject gameObject, Vector2Int cellPosition) 
+        {
+            return null;
+            var vis = gameObject.AddComponent<ComponentVisibility>();
+            vis.cellPosition = cellPosition;
+            return vis;
         }
 
         public static GameObject PutFloor(LevelGenRoomConfig cfg,

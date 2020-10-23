@@ -168,7 +168,7 @@ namespace Catacumba
                 if (!go.GetComponent<CharacterData>())
                 {
                     var data = go.AddComponent<CharacterData>();
-                    data.VigorCurve = param.VigorCurve;
+                    // data.VigorCurve = param.VigorCurve;
                 }
 
                 if (!go.GetComponent<CharacterHealth>())

@@ -4,6 +4,11 @@ using System.Linq;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
+/********
+*  Character component for instance-based data.
+*  Holds stats, effects, inventory, etc.
+*********/
+
 public enum ECharacterBrainType
 {
     AI,
@@ -97,11 +102,8 @@ public enum ECharacterType
 public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
 {
     [Space]
-    [Header("Stats")]
-    public MinMaxCurve VigorCurve;
-    public MinMaxCurve StrengthCurve;
-    public MinMaxCurve DexterityCurve;
-    public MinMaxCurve MagicCurve;
+    [Header("Configuration")]
+    public Catacumba.Data.CharacterConfiguration CharacterCfg;
 
     public bool CanBeKnockedOut = true;
 
@@ -131,37 +133,34 @@ public class CharacterData : ConfigurableObject<CharacterStats, ECharacterType>
     {
         BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
 
+        // Load basic cfg if no configuration is set.
+        if (CharacterCfg == null) 
+            CharacterCfg = Catacumba.Data.CharacterConfiguration.Default;
+
         // setup attribs
-        Stats = new CharacterStats();
-        Stats.Attributes.Vigor = Mathf.RoundToInt(VigorCurve.Evaluate(UnityEngine.Random.value));
-        Stats.Attributes.Strength = Mathf.RoundToInt(StrengthCurve.Evaluate(UnityEngine.Random.value));
-        Stats.Attributes.Dexterity = Mathf.RoundToInt(DexterityCurve.Evaluate(UnityEngine.Random.value));
-        Stats.Attributes.Magic = Mathf.RoundToInt(MagicCurve.Evaluate(UnityEngine.Random.value));
-
-        Stats.Health = Stats.MaxHealth;
-        Stats.Mana = Stats.MaxMana;
-
-        Stats.CanBeKnockedOut = CanBeKnockedOut;
+        Stats = new CharacterStats(CharacterCfg.Stats);
     }
 
     private void Start()
     {
         if (!Application.isPlaying) return;
 
-        if (CharacterModelOverride.Length > 0)
+        GameObject prefab = CharacterCfg.View.GetRandomModel();
+        //StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, prefab));
+        /*
+        if (CharacterModelOverride != null)
         {
-            var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch));
+            if (CharacterModelOverride.Length > 0)
+            {
+                var ch = CharacterModelOverride[UnityEngine.Random.Range(0, CharacterModelOverride.Length)];
+                StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, ch));
+            }
+            else if (TypeId != ECharacterType.None)
+                StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
+            else
+                StartCoroutine(CharacterManager.Instance.SetupInventory(gameObject, StartingItems));
         }
-        else if (TypeId != ECharacterType.None)
-        {
-            StartCoroutine(CharacterManager.Instance.SetupCharacter(gameObject, TypeId));
-        }
-        else
-        {
-            StartCoroutine(CharacterManager.Instance.SetupInventory(gameObject, StartingItems));
-            //throw new Exception("No character model configured. Change Type Id to something different than None or apply a specific model to this character.");
-        }
+        */
     }
 
     public System.Collections.IEnumerator Test_AllCharacters()
