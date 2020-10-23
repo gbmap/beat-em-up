@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Stats: {fileID: 11400000, guid: 2b8343d5306be204886bbe29ffdf9da6, type: 2}
   Skills: {fileID: 0}
-  View: {fileID: 11400000, guid: e44fc7ed1c251d04db590eeb251190c4, type: 2}
+  View: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}

@@ -1,9 +1,7 @@
 ﻿using System;
 using Catacumba;
-using Catacumba.Exploration;
 using Rewired;
 using UnityEngine;
-
 
 namespace Catacumba.Entity 
 {
@@ -33,7 +31,6 @@ public class CharacterPlayerInput : MonoBehaviour
 
     private float dropTimer;
 
-    private bool useCameraManager;
 
     // Start is called before the first frame update
     void Awake()
@@ -41,8 +38,6 @@ public class CharacterPlayerInput : MonoBehaviour
         characterData = GetComponent<CharacterData>();
         movement = GetComponent<CharacterMovement>();
         combat = GetComponent<CharacterCombat>();
-
-        useCameraManager = FindObjectOfType<CameraManager>() != null;
     }
 
     void Start()
@@ -50,12 +45,6 @@ public class CharacterPlayerInput : MonoBehaviour
         // Get first player as default
         //_rewiredPlayer = ReInput.players.GetPlayer(0);
         PlayerIndex = playerIndex;
-    }
-
-    private void OnEnable()
-    {
-        if (useCameraManager)
-            CameraManager.Instance.OnCameraChange += OnCameraChange;
     }
 
     private void OnDisable()
@@ -77,28 +66,8 @@ public class CharacterPlayerInput : MonoBehaviour
         float hAxis = _rewiredPlayer.GetAxis("HorizontalMovement");
         float vAxis = _rewiredPlayer.GetAxis("VerticalMovement");
 
-        if (useCameraManager)
-        {
-
-            if (updateCameraDir)
-            {
-                UpdateCameraDir();
-            }
-            else if (Mathf.Abs(hAxis) < 0.2f && Mathf.Abs(vAxis) < 0.2f)
-            {
-                updateCameraDir = true;
-            }
-            else
-            {
-                cameraForward = Vector3.Lerp(cameraForward, Camera.main.transform.forward, Time.deltaTime * 0.5f);
-                cameraRight = Vector3.Lerp(cameraRight, Camera.main.transform.right, Time.deltaTime * 0.5f);
-            }
-        }
-        else
-        {
-            cameraForward = Camera.main.transform.forward;
-            cameraRight = Camera.main.transform.right;
-        }
+        cameraForward = Camera.main.transform.forward;
+        cameraRight = Camera.main.transform.right;
         
         Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
         cFwd.y = 0;
@@ -127,7 +96,7 @@ public class CharacterPlayerInput : MonoBehaviour
                 dropTimer += Time.deltaTime;
                 if (dropTimer > 2f)
                 {
-                    characterData.UnEquip(EInventorySlot.Weapon);
+                    //characterData.UnEquip(EInventorySlot.Weapon);
                     dropTimer = 0f;
                 }
             }
@@ -151,23 +120,5 @@ public class CharacterPlayerInput : MonoBehaviour
 
     }
 
-    private void UpdateCameraDir()
-    {
-        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
-        cameraRight = mo.right;
-        cameraForward = mo.forward;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
-
-        MovementOrientation mo = CameraManager.Instance.MovementOrientation;
-
-        Gizmos.DrawLine(transform.position, transform.position + mo.right);
-
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, transform.position + mo.forward);
-    }
 }
 }

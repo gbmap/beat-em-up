@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 namespace Catacumba.Entity {
+[RequireComponent(typeof(NavMeshAgent))]
 public class CharacterMovement : MonoBehaviour
 {
     // === REFS
@@ -48,9 +49,8 @@ public class CharacterMovement : MonoBehaviour
     {
         get
         {
-            return !combat.IsOnCombo &&
-                !health.IsOnGround &&
-                !health.IsBeingDamaged &&
+            return (!combat || !combat.IsOnCombo) &&
+                (!health || (!health.IsOnGround && !health.IsBeingDamaged)) &&
                 !IsBeingMoved &&
                 (data.BrainType == ECharacterBrainType.AI ? Time.time > (combat.LastDamageData.Time + (combat.LastDamageData.Type == EAttackType.Strong ? 0.25f : 0.75f)) : true);
         }
@@ -126,24 +126,27 @@ public class CharacterMovement : MonoBehaviour
         combat = GetComponent<CharacterCombat>();
         health = GetComponent<CharacterHealth>();
 
-        health.OnDamaged += OnDamagedCallback;
-        health.OnFall += OnFallCallback;
-        health.OnGetUp += OnGetUpCallback;
+        if (health)
+        {
+            health.OnDamaged += OnDamagedCallback;
+            health.OnFall += OnFallCallback;
+            health.OnGetUp += OnGetUpCallback;
+        }
     }
 
     void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
         if (NavMeshAgent)
-        {
             NavMeshAgent.speed = MoveSpeed * (data.BrainType == ECharacterBrainType.AI ? 0.75f : 1f);
-        }
     }
 
     private void OnEnable()
     {
-        combat.OnCharacterAttack += OnCharacterAttackCallback;
-        combat.OnRequestCharacterAttack += OnCharacterRequestAttackCallback;
+        if (combat)
+        {
+            combat.OnCharacterAttack += OnCharacterAttackCallback;
+            combat.OnRequestCharacterAttack += OnCharacterRequestAttackCallback;
+        }
     }
 
     private void OnDisable()

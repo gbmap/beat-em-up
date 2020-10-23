@@ -6,6 +6,7 @@ namespace Catacumba.Data
     public class CharacterViewConfiguration : ScriptableObject
     {
         public GameObject[] Models;
+        public AnimationConfig AnimationConfig;
 
         public GameObject GetRandomModel()
         {
@@ -19,6 +20,10 @@ namespace Catacumba.Data
             RemoveExistingModel(instance);
             GameObject modelPrefab = SelectModel(modelIndex);
             GameObject modelInstance = AddModelToInstance(instance, modelPrefab);
+
+            if (AnimationConfig != null)
+                SetupModelAnimator(modelInstance, AnimationConfig);
+
         }
 
 
@@ -50,8 +55,19 @@ namespace Catacumba.Data
                 Quaternion.identity, 
                 instance.transform
             );
+            modelInstance.transform.localPosition = Vector3.zero; // Somehow Instantiate with Vector3.zero is not working.
 
             return modelInstance;
+        }
+
+        private void SetupModelAnimator(GameObject modelInstance, AnimationConfig animationConfig)
+        {
+            var anim = modelInstance.GetComponent<Animator>();
+            if (anim == null)
+                anim = modelInstance.AddComponent<Animator>();
+
+            anim.runtimeAnimatorController = animationConfig.AnimatorController;
+            anim.avatar = animationConfig.Avatar;
         }
 
     }

@@ -174,8 +174,9 @@ public class CharacterCombat : MonoBehaviour
 
     public void AnimUseCharacterSkill(int index)
     {
-        SkillData skill = data.CharacterSkills[index];
-        UseSkill(skill);
+        // TODO 
+        //SkillData skill = data.CharacterSkills[index];
+        //UseSkill(skill);
     }
 
     private void UseSkill(SkillData s)

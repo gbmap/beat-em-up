@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Catacumba.Exploration;
 using Frictionless;
 using UnityEngine;
 
@@ -202,7 +201,7 @@ public class CharacterHealth : MonoBehaviour
         if (data.Knockdown && data.CancelAnimation ||
             data.DefenderStats.Health <= 0)
         {
-            characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
+            //characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
         }
 
         OnDamaged?.Invoke(data);

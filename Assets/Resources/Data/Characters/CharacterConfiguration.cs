@@ -21,10 +21,10 @@ namespace Catacumba.Data
         public CharacterSkillConfiguration Skills;
         public CharacterViewConfiguration View;
 
-
         public void Configure(Entity.CharacterData character, int modelIndex = -1)
         {
-            View.Configure(character, modelIndex);
+            if (character.transform.childCount == 0 && View != null)
+                View.Configure(character, modelIndex);
         }
     }
 }

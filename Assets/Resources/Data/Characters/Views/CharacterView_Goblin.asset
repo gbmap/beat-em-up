@@ -19,3 +19,4 @@ MonoBehaviour:
   - {fileID: 173802, guid: 388fa61abd880a549864058f895c8045, type: 3}
   - {fileID: 165754, guid: 9a6b87430c6b2684aa9c1d4616d38a60, type: 3}
   - {fileID: 112422, guid: 8cd752dc36d412b4bba2efd06775153a, type: 3}
+  AnimationConfig: {fileID: 11400000, guid: f2de144c8c2e1744586318d44695c379, type: 2}

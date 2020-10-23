@@ -27,27 +27,6 @@ namespace Catacumba.Entity
             }
         }
 
-        private void OnEnable()
-        {
-            if (!data) return;
-            data.OnCharacterModelUpdated += OnCharacterModelUpdated;
-        }
-
-        private void OnDisable()
-        {
-            if (data)
-            {
-                data.OnCharacterModelUpdated += OnCharacterModelUpdated;
-            }
-
-            System.Array.ForEach(renderers, renderer => renderer.material.SetFloat(hashSelected, 0f));
-        }
-
-        private void OnCharacterModelUpdated(GameObject obj)
-        {
-            renderers = renderers.Append(obj.GetComponent<Renderer>()).ToArray();
-        }
-
         public void OnPlayerInteract(CharacterData player)
         {
             //if (!selected) return;

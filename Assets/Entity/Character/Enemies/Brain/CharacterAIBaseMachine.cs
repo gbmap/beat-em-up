@@ -50,7 +50,7 @@ namespace Catacumba.Entity.AI
 
         protected virtual void Update()
         {
-            if (!data.IsInitialized) return;
+            //if (!data.IsInitialized) return;
             
             if (currentState != null && !health.IsOnGround)
             {

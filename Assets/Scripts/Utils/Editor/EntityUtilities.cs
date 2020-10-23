@@ -177,12 +177,6 @@ namespace Catacumba
                     go.AddComponent<CharacterHealth>();
                 }
 
-                if (!go.GetComponent<SpawnParticleSystemOnDestroy>())
-                {
-                    var spawnParticle = go.AddComponent<SpawnParticleSystemOnDestroy>();
-                    spawnParticle.Particles = param.ParticleSystem;
-                }
-
                 if (param.SpawnObjects.Length > 0)
                 {
                     foreach (var so in param.SpawnObjects)

@@ -189,10 +189,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TypeId: 0
   CharacterCfg: {fileID: 0}
-  CanBeKnockedOut: 1
-  CharacterModelOverride: []
-  StartingItems: []
-  CharacterSkills: []
 --- !u!1 &1176280494
 GameObject:
   m_ObjectHideFlags: 0

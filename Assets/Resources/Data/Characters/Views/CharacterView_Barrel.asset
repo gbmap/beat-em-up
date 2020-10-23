@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 077d2da6891e1584dbd7e4d1156bd705, type: 3}
-  m_Name: CharacterView_Peasant
+  m_Name: CharacterView_Barrel
   m_EditorClassIdentifier: 
   Models:
-  - {fileID: 171706, guid: 0925457c2b2fe9f4a8747c59013d56d4, type: 3}
-  AnimationConfig: {fileID: 11400000, guid: f2de144c8c2e1744586318d44695c379, type: 2}
+  - {fileID: 139238, guid: ea39c929a43fec843a8747fa0f34346e, type: 3}
+  AnimationConfig: {fileID: 0}

@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 077d2da6891e1584dbd7e4d1156bd705, type: 3}
-  m_Name: CharacterView_Peasant
+  m_Script: {fileID: 11500000, guid: d42e239278a09ca438de720656672c99, type: 3}
+  m_Name: AnimationConfig_Character
   m_EditorClassIdentifier: 
-  Models:
-  - {fileID: 171706, guid: 0925457c2b2fe9f4a8747c59013d56d4, type: 3}
-  AnimationConfig: {fileID: 11400000, guid: f2de144c8c2e1744586318d44695c379, type: 2}
+  AnimatorController: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  Avatar: {fileID: 9000000, guid: 3576a08751031504f81000bf1d965b83, type: 3}
