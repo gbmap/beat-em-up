@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
 public class DamagingProp : MonoBehaviour
 {
     public Collider Collider;
@@ -33,4 +35,5 @@ public class DamagingProp : MonoBehaviour
         if (DestroyOnTouch)
             Destroy(gameObject);
     }
+}
 }

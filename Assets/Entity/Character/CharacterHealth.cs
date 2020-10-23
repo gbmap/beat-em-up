@@ -5,6 +5,8 @@ using Catacumba.Exploration;
 using Frictionless;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
 public class MsgOnPlayerDied { public CharacterData player; }
 
 public class CharacterHealth : MonoBehaviour
@@ -256,4 +258,6 @@ public class CharacterHealth : MonoBehaviour
     {
         IgnoreDamage = v;
     }
+}
+
 }

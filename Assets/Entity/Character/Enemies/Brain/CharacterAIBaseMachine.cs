@@ -1,11 +1,10 @@
-﻿using Catacumba.Character.AI;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 
-namespace Catacumba.Character.AI
+namespace Catacumba.Entity.AI
 {
     public abstract class CharacterAIBaseMachine<T> : MonoBehaviour where T : System.Enum
     {

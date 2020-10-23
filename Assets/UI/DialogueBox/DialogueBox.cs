@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Rewired;
 using TMPro;
 using UnityEngine;
+using Catacumba.Entity;
 
 public class DialogueBox : MonoBehaviour
 {

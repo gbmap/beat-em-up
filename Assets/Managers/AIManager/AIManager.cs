@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Catacumba.Entity;
+
+namespace Catacumba.Entity.AI
+{
 
 public class AIManager : SimpleSingleton<AIManager>
 {
@@ -68,4 +72,5 @@ public class AIManager : SimpleSingleton<AIManager>
         if (!mapTargets.TryGetValue(target, out t)) return;
         mapTargets[target].Attackers--;
     }
+}
 }

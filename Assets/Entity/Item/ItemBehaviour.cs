@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
 
 [RequireComponent(typeof(Animator))]
 public class ItemBehaviour : MonoBehaviour
@@ -57,4 +59,5 @@ public class ItemBehaviour : MonoBehaviour
         SetHighlight(playersSelecting.Count > 0);
         //UIManager.Instance.SetItemLabelVisibility(GetComponent<ItemData>(), enterExit);
     }
+}
 }

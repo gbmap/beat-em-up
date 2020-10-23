@@ -4,6 +4,10 @@ using Catacumba.Exploration;
 using Rewired;
 using UnityEngine;
 
+
+namespace Catacumba.Entity 
+{
+
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterPlayerInput : MonoBehaviour
 {
@@ -165,4 +169,5 @@ public class CharacterPlayerInput : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position, transform.position + mo.forward);
     }
+}
 }

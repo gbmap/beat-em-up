@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
+
 /**
   *
   * */
@@ -404,3 +407,4 @@ public class CharacterStats
     }
 }
 
+}

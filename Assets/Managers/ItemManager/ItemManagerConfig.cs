@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Catacumba.Entity;
 
 public class ItemManagerConfig : ScriptableObject
 {

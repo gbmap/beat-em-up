@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Linq;
 using Catacumba.Exploration;
+using Catacumba.Entity;
 
 public class CatacumbaShortcuts : MonoBehaviour
 {

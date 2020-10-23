@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Catacumba.Entity;
 
+namespace Catacumba 
+{
 public class CharacterManager : ConfigurableSingleton<CharacterManager, CharacterManagerConfig>
 {
     protected override string Path => "Data/CharacterManagerConfig";
@@ -46,4 +49,5 @@ public class CharacterManager : ConfigurableSingleton<CharacterManager, Characte
 
         return true;
     }
+}
 }

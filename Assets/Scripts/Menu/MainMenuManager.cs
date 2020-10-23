@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.UI;
+using Catacumba.Entity;
 
 public class MainMenuManager : MonoBehaviour
 {

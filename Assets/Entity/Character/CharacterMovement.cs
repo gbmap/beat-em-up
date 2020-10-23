@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+namespace Catacumba.Entity {
 public class CharacterMovement : MonoBehaviour
 {
     // === REFS
@@ -442,4 +443,5 @@ public class CharacterMovement : MonoBehaviour
         Gizmos.DrawLine(transform.position, transform.position + _speedBumpDir);
     }
 #endif
+}
 }

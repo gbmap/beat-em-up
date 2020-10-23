@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+using Catacumba.Entity;
+
 namespace Catacumba.Data
 {
     public static class EntitySpawner

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+namespace Catacumba.Entity
+{
 public class SpawnerTime : MonoBehaviour
 {
     public GameObject[] Prefabs;
@@ -59,4 +62,5 @@ public class SpawnerTime : MonoBehaviour
 
         return type;
     }
+}
 }

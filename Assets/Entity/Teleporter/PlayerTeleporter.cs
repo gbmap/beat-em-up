@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Catacumba.Entity;
 
 namespace Catacumba
 {

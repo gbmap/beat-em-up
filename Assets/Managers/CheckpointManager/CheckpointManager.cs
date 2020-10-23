@@ -4,7 +4,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.AI;
 using Frictionless;
-using Catacumba.Character.AI;
+using Catacumba.Entity.AI;
+using Catacumba.Entity;
 
 public class CheckpointData
 {

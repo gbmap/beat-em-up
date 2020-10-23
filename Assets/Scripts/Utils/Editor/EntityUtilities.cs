@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
+using Catacumba.Entity;
 
 namespace Catacumba
 {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Catacumba.Entity;
 
 namespace Catacumba.Effects.Skills.RockLine {
     [ExecuteInEditMode]

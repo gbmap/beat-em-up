@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+namespace Catacumba.Entity
+{
+
 public class ItemData : MonoBehaviour /*ConfigurableObject<ItemStats, int>*/
 {
     public ItemConfig itemConfig;
@@ -43,4 +46,6 @@ public class ItemData : MonoBehaviour /*ConfigurableObject<ItemStats, int>*/
         pushDir = direction;
         pushDir.y = 0f;
     }
+}
+
 }

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+namespace Catacumba.Entity
+{
 public class HealingConsumable : MonoBehaviour
 {
     public int HealValue;
@@ -25,4 +27,5 @@ public class HealingConsumable : MonoBehaviour
     {
         Destroy(gameObject);
     }
+}
 }

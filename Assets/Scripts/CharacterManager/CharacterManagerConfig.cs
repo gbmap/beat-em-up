@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using Catacumba.Entity;
 
 [Serializable]
 public class CharacterPrefabConfig
@@ -127,6 +128,11 @@ public class CharacterManagerConfig : ScriptableObject
 
         // MOVE O PACK PRA BAIXO DO ANIMATOR
         var packInstance = Instantiate(packPrefab);
+        var packAnimator = packInstance.GetComponent<Animator>();
+        if (packAnimator != null)
+        {
+
+        }
 
         Avatar prefabAvatar = packInstance.GetComponent<Animator>().avatar;
         Transform characterModel = null;
@@ -174,15 +180,16 @@ public class CharacterManagerConfig : ScriptableObject
 
         // ATUALIZA O AVATAR DO ANIMATOR
         var animator = instance.GetComponent<CharacterAnimator>();
-        animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController, animator.animator.applyRootMotion);
+        if (animator)
+        {
+            animator.RefreshAnimator(prefabAvatar, animator.animator.runtimeAnimatorController, animator.animator.applyRootMotion);
+        }
 
         yield return null;
 
         CharacterModelInfo characterModelInfo = instance.GetComponent<CharacterModelInfo>();
         if (characterModelInfo == null)
-        {
             characterModelInfo = instance.AddComponent<CharacterModelInfo>();
-        }
 
         yield return null;
 

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
+
 public class CharacterCombat : MonoBehaviour
 {
     [HideInInspector] public bool IsOnCombo;
@@ -236,4 +239,5 @@ public class CharacterCombat : MonoBehaviour
     }
 #endif
 
+}
 }

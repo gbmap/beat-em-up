@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Catacumba.Character.AI
+namespace Catacumba.Entity.AI
 {
     public enum EBrawlerAIStates
     {
@@ -35,7 +35,6 @@ namespace Catacumba.Character.AI
         protected override void Awake()
         {
             base.Awake();
-
             SetCurrentState(EBrawlerAIStates.Wander);
         }
  

@@ -1,9 +1,11 @@
-﻿using Catacumba.Character.AI;
-using Frictionless;
+﻿using Frictionless;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+
+using Catacumba.Entity.AI;
+using Catacumba.Entity;
 
 namespace Catacumba
 {

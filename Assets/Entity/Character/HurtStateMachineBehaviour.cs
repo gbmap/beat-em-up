@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using Catacumba.Entity;
 
 public class HurtStateMachineBehaviour : StateMachineBehaviour
 {

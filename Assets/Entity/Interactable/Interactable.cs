@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Catacumba
+namespace Catacumba.Entity
 {
     public class Interactable : MonoBehaviour
     {

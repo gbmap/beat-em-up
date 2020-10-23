@@ -1,6 +1,9 @@
 ﻿using Catacumba.Exploration;
 using UnityEngine;
 
+namespace Catacumba.Entity
+{
+
 [RequireComponent(typeof(CharacterMovement))]
 public class CharacterAnimator : MonoBehaviour
 {
@@ -582,4 +585,5 @@ public class CharacterAnimator : MonoBehaviour
 
 #endif
 
+}
 }

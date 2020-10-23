@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Linq;
+using Catacumba.Entity;
 
 namespace Catacumba.LevelGen.Mesh
 {

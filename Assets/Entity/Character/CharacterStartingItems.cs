@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Linq;
 
+
+namespace Catacumba.Entity
+{
 public class CharacterStartingItems : MonoBehaviour
 {
     [System.Serializable]
@@ -25,4 +28,5 @@ public class CharacterStartingItems : MonoBehaviour
 
         Destroy(this);
     }
+}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Catacumba.Entity;
 
 [RequireComponent(typeof(CharacterHealth))]
 public class EnableCheckpointColliderOnDeath : MonoBehaviour

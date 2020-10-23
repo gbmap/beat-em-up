@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Catacumba.Entity;
 
 [CustomEditor(typeof(CharacterData))]
 public class CharacterDataEditor : Editor
@@ -26,8 +27,6 @@ public class CharacterDataEditor : Editor
 
         if (!GUILayout.Button("Test Models"))
             return;
-
-        d.StartCoroutine(d.Test_AllCharacters());
     }
 
     private static string FindAssetPath(CharacterData d)
