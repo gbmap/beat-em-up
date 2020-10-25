@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Frictionless;
 using UnityEngine;
+using Catacumba.Data;
 
 namespace Catacumba.Entity
 {
 public class MsgOnPlayerDied { public CharacterData player; }
 
-public class CharacterHealth : MonoBehaviour
+public class CharacterHealth : CharacterComponentBase
 {
     public bool CanBeKnockedOut = true;
     public bool IgnoreDamage = false;

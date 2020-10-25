@@ -1,124 +1,160 @@
-﻿using System;
-using Catacumba;
-using Rewired;
+﻿using Rewired;
 using UnityEngine;
+using Catacumba.Data;
 
-namespace Catacumba.Entity 
+namespace Catacumba.Entity
 {
-
-[RequireComponent(typeof(CharacterMovement))]
-public class CharacterPlayerInput : MonoBehaviour
-{
-    [SerializeField] private int playerIndex;
-    public int PlayerIndex
+    public class CharacterPlayerInput : CharacterComponentBase
     {
-        get { return playerIndex; }
-        set { _rewiredPlayer = ReInput.players.GetPlayer(playerIndex = value); }
-    }
-
-    private CharacterData characterData;
-    private CharacterMovement movement;
-    private CharacterCombat combat;
-
-    Player _rewiredPlayer;
-    public Player RewiredInput { get { return _rewiredPlayer; } }
-
-    public System.Action<CharacterData> OnInteract;
-
-    private Vector3 cameraForward;
-    private Vector3 cameraRight;
-    private bool updateCameraDir = true;
-
-    private float dropTimer;
-
-
-    // Start is called before the first frame update
-    void Awake()
-    {
-        characterData = GetComponent<CharacterData>();
-        movement = GetComponent<CharacterMovement>();
-        combat = GetComponent<CharacterCombat>();
-    }
-
-    void Start()
-    {
-        // Get first player as default
-        //_rewiredPlayer = ReInput.players.GetPlayer(0);
-        PlayerIndex = playerIndex;
-    }
-
-    private void OnDisable()
-    {
-        movement.Direction = Vector3.zero;
-
-        //if (!CameraManager.Instance) return;
-        //CameraManager.Instance.OnCameraChange -= OnCameraChange;
-    }
-
-    private void OnCameraChange()
-    {
-        updateCameraDir = false;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        float hAxis = _rewiredPlayer.GetAxis("HorizontalMovement");
-        float vAxis = _rewiredPlayer.GetAxis("VerticalMovement");
-
-        cameraForward = Camera.main.transform.forward;
-        cameraRight = Camera.main.transform.right;
-        
-        Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
-        cFwd.y = 0;
-
-        movement.Direction = cFwd;
-
-        if (_rewiredPlayer.GetButtonDown("WeakAttack"))
+        [SerializeField] private int playerIndex;
+        public int PlayerIndex
         {
-            combat.RequestAttack(EAttackType.Weak);
-        }
-        else if (_rewiredPlayer.GetButtonDown("StrongAttack"))
-        {
-            combat.RequestAttack(EAttackType.Strong);
+            get { return playerIndex; }
+            set { _rewiredPlayer = ReInput.players.GetPlayer(playerIndex = value); }
         }
 
-        if (_rewiredPlayer.GetButtonDown("Submit"))
-        {
-            OnInteract?.Invoke(characterData);
-            characterData.Interact();
+        CharacterMovement movement;
+        CharacterCombat combat;
+
+        Player _rewiredPlayer;
+        public Player RewiredInput 
+        { 
+            get 
+            { 
+                if (_rewiredPlayer == null)
+                    _rewiredPlayer = ReInput.players.GetPlayer(PlayerIndex);
+                return _rewiredPlayer; 
+            } 
         }
 
-        if (_rewiredPlayer.GetButton("Submit"))
+        public System.Action<CharacterData> OnInteract;
+
+        private Vector3 cameraForward;
+        private Vector3 cameraRight;
+        private bool updateCameraDir = true;
+
+        private float dropTimer;
+
+        // Start is called before the first frame update
+        protected override void Awake()
         {
-            if (characterData.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+            base.Awake();
+        }
+
+        void Start()
+        {
+            // Get first player as default
+            //_rewiredPlayer = ReInput.players.GetPlayer(0);
+            PlayerIndex = playerIndex;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            if (movement)
+                movement.Direction = Vector3.zero;
+
+            //if (!CameraManager.Instance) return;
+            //CameraManager.Instance.OnCameraChange -= OnCameraChange;
+        }
+
+        protected override void OnComponentAdded(CharacterComponentBase component)
+        {
+            base.OnComponentAdded(component);
+
+            if (component is CharacterMovement)
             {
-                dropTimer += Time.deltaTime;
-                if (dropTimer > 2f)
-                {
-                    //characterData.UnEquip(EInventorySlot.Weapon);
-                    dropTimer = 0f;
-                }
+                movement = component as CharacterMovement;
+            }
+
+            else if (component is CharacterCombat)
+            {
+                combat = component as CharacterCombat;
             }
         }
-        else
+
+        protected override void OnComponentRemoved(CharacterComponentBase component)
         {
-            dropTimer = 0f;
+            base.OnComponentAdded(component);
+
+            if (component is CharacterMovement)
+            {
+                movement = null;
+            }
+
+            else if (component is CharacterCombat)
+            {
+                combat = null;
+            }
         }
 
-        if (_rewiredPlayer.GetButtonDown("Dodge"))
+        private void OnCameraChange()
         {
-            movement.Roll(cFwd.normalized);
+            updateCameraDir = false;
         }
 
-        if ( Input.GetKeyDown(KeyCode.F6) ||
-            _rewiredPlayer.GetButtonDoublePressHold("Submit") )
+        // Update is called once per frame
+        void Update()
         {
-            characterData.Stats.Attributes.SetAttr(EAttribute.Vigor, 10000);
-            characterData.Stats.Health = characterData.Stats.MaxHealth;
+            if (combat)
+            {
+                if (RewiredInput.GetButtonDown("WeakAttack"))
+                {
+                    combat.RequestAttack(EAttackType.Weak);
+                }
+                else if (RewiredInput.GetButtonDown("StrongAttack"))
+                    combat.RequestAttack(EAttackType.Strong);
+            }
+
+            if (RewiredInput.GetButtonDown("Submit"))
+            {
+                OnInteract?.Invoke(data);
+                data?.Interact();
+            }
+
+            if (RewiredInput.GetButton("Submit"))
+            {
+                if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+                {
+                    dropTimer += Time.deltaTime;
+                    if (dropTimer > 2f)
+                    {
+                        //characterData.UnEquip(EInventorySlot.Weapon);
+                        dropTimer = 0f;
+                    }
+                }
+            }
+            else
+            {
+                dropTimer = 0f;
+            }
+
+            if (movement)
+            {
+                float hAxis = RewiredInput.GetAxis("HorizontalMovement");
+                float vAxis = RewiredInput.GetAxis("VerticalMovement");
+
+                cameraForward = Camera.main.transform.forward;
+                cameraRight = Camera.main.transform.right;
+                
+                Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
+                cFwd.y = 0;
+
+                movement.Direction = cFwd;
+
+                if (RewiredInput.GetButtonDown("Dodge"))
+                    movement.Roll(cFwd.normalized);
+            }
+
+            if ( Input.GetKeyDown(KeyCode.F6) ||
+                RewiredInput.GetButtonDoublePressHold("Submit") )
+            {
+                data.Stats.Attributes.SetAttr(EAttribute.Vigor, 10000);
+                data.Stats.Health = data.Stats.MaxHealth;
+            }
+
         }
 
     }
-
-}
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Catacumba.Entity;
+using Catacumba.Data;
 
 public class ItemManager : ConfigurableSingleton<ItemManager, ItemManagerConfig>
 {

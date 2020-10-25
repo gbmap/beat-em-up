@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
+using Catacumba.Data;
 
 /********
 *  Character component for instance-based data.
@@ -18,16 +19,23 @@ namespace Catacumba.Entity
     }
 
     [Serializable]
-    public class CharacterData : ConfigurableObject<CharacterStats>
+    public class CharacterData : MonoBehaviour
     {
         [Space]
         [Header("Configuration")]
         public Catacumba.Data.CharacterConfiguration CharacterCfg;
 
+        public CharacterStats Stats;
+
         public ECharacterBrainType BrainType { get; private set; }
 
         public List<ItemData> ItemsInRange { get { return itemsInRange; } }
         private List<ItemData> itemsInRange = new List<ItemData>();
+
+        public System.Action<CharacterComponentBase> OnComponentAdded;
+        public System.Action<CharacterComponentBase> OnComponentRemoved;
+
+        public List<CharacterComponentBase> CharacterComponents;
 
         void Awake()
         {
@@ -39,6 +47,28 @@ namespace Catacumba.Entity
 
             // setup attribs
             Stats = new CharacterStats(CharacterCfg.Stats);
+
+            CharacterComponents = new List<CharacterComponentBase>(GetComponentsInChildren<CharacterComponentBase>());
+            OnComponentAdded += Callback_OnComponentAdded;
+            OnComponentRemoved += Callback_OnComponentRemoved;
+        }
+
+        void Destroy()
+        {
+            OnComponentAdded -= Callback_OnComponentAdded;
+            OnComponentRemoved -= Callback_OnComponentRemoved;
+        }
+
+        private void Callback_OnComponentAdded(CharacterComponentBase obj)
+        {
+            if (!CharacterComponents.Contains(obj))
+                CharacterComponents.Add(obj);
+        }
+
+        private void Callback_OnComponentRemoved(CharacterComponentBase obj)
+        {
+            if (CharacterComponents.Contains(obj))
+                CharacterComponents.Remove(obj);
         }
 
         private void Start()

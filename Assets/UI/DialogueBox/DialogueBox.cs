@@ -65,7 +65,4 @@ public class DialogueBox : MonoBehaviour
 
         OnClosedEvent?.Invoke();
     }
-
-    
-
 }

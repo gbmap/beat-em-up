@@ -1,42 +1,45 @@
 ﻿using UnityEngine;
 using Catacumba.Entity;
+using Catacumba.Data;
 
-public enum EWeaponHand
+namespace Catacumba.Data
 {
-    Left, Right
-}
-
-public class ItemConfig : ScriptableObject
-{
-    /*[MenuItem("Assets/Create/Item/ItemConfig")]
-    public static void CreateAsset()
+    public enum EWeaponHand
     {
-        ScriptableObjectUtility.CreateAsset<ItemConfig>();
-    }*/
+        Left, Right
+    }
 
-    [Header("UI Config")]
-    public string Name;
-    public string Description;
+    public class ItemConfig : ScriptableObject
+    {
+        /*[MenuItem("Assets/Create/Item/ItemConfig")]
+        public static void CreateAsset()
+        {
+            ScriptableObjectUtility.CreateAsset<ItemConfig>();
+        }*/
 
-    [Space]
-    [Header("Stats")]
-    public ItemStats Stats;
-    
-    [Space]
-    public GameObject Prefab;
-    public AnimatorOverrideController AnimationOverride;
+        [Header("UI Config")]
+        public string Name;
+        public string Description;
 
-    [Space]
-    [Header("Weapon Configuration")]
+        [Space]
+        [Header("Stats")]
+        public ItemStats Stats;
+        
+        [Space]
+        public GameObject Prefab;
+        public AnimatorOverrideController AnimationOverride;
 
-    public bool CustomSlashColors = false;
-    public Gradient SlashColors;
-    public ParticleSystem.MinMaxCurve StartSize = new ParticleSystem.MinMaxCurve(12, 17);
+        [Space]
+        [Header("Weapon Configuration")]
 
-    public float DistanceFromCharacter = 1.4f;
+        public bool CustomSlashColors = false;
+        public Gradient SlashColors;
+        public ParticleSystem.MinMaxCurve StartSize = new ParticleSystem.MinMaxCurve(12, 17);
 
-    [Space]
-    public bool OverrideHand = false;
-    public EWeaponHand Hand;
+        public float DistanceFromCharacter = 1.4f;
 
+        [Space]
+        public bool OverrideHand = false;
+        public EWeaponHand Hand;
+    }
 }

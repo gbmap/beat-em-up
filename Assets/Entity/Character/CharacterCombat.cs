@@ -1,65 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
+using Catacumba.Data;
 
 namespace Catacumba.Entity
 {
-    public class CharacterCombat : MonoBehaviour
+    public class CharacterCombat : CharacterComponentBase
     {
-        public interface IAttackEventHandler : IEventSystemHandler
+        int _nComboHits;
+        BaseSkill skillBeingCasted;
+
+        CharacterHealth health;
+        CharacterMovement movement;
+        CharacterAnimator animator;
+
+        Vector3 GetAttackColliderPosition()
         {
-            void OnRequestAttack(EAttackType type);
-            void OnAttack(CharacterAttackData attack);
+            return transform.position + (transform.forward*1.25f + Vector3.up);
         }
 
-        public interface ISkillEventHandler : IEventSystemHandler
-        {
-            void OnRequestSkillUse(BaseSkill skill);
-            void OnSkillUSed(BaseSkill skill);
-        }
-
-        public interface IComboEventHandler : IEventSystemHandler
-        {
-            void OnComboStarted();
-            void OnComboEnded();
-        }
-
-        [HideInInspector] public bool IsOnCombo;
-
-        private int _nComboHits;
-
-        public System.Action<EAttackType> OnRequestCharacterAttack;
-        public System.Action<CharacterAttackData> OnCharacterAttack;
-
-        private BaseSkill skillBeingCasted;
-        public System.Action<BaseSkill> OnRequestSkillUse;
-        public System.Action<BaseSkill> OnSkillUsed;
-
-        public System.Action OnComboStarted;
-        public System.Action OnComboEnded;
-
-        private CharacterData data;
-        private CharacterHealth health;
-        private CharacterMovement movement;
-        private CharacterAnimator animator;
-
-        public bool IsOnHeavyAttack;
-
-        private Vector3 attackColliderBasePosition
-        {
-            get { return animator.RealCharacterPosition + transform.forward*1.25f + Vector3.up; }
-        }
-
-        private Vector3 attackColliderSize
-        {
-            get { return (Vector3.one * 0.65f + Vector3.right * 0.65f); }
-        }
-
-        private Vector3 GetAttackColliderSize(EAttackType type)
+        Vector3 GetAttackColliderSize(EAttackType type)
         {
             float weaponScale = 0f;
+            Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
             
             if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
             {
@@ -69,49 +30,117 @@ namespace Catacumba.Entity
             return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
         }
 
-        public CharacterAttackData LastAttackData
+        [HideInInspector] public bool IsOnCombo;
+
+        public bool IsOnHeavyAttack;
+
+        public bool CanAttack
         {
-            get; private set;
+            get 
+            {
+                return !health || (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut));
+            }
         }
 
-        public CharacterAttackData LastDamageData
-        {
-            get; private set;
-        }
+        public CharacterAttackData LastAttackData { get; private set; }
+        public CharacterAttackData LastDamageData { get; private set; }
 
-        private void Awake()
+        ////////////////////////
+        //  Callbacks
+
+        public System.Action<EAttackType> OnRequestAttack;
+        public System.Action<CharacterAttackData> OnAttack;
+
+        public System.Action<BaseSkill> OnRequestSkillUse;
+        public System.Action<BaseSkill> OnSkillUsed;
+
+        public System.Action OnComboStarted;
+        public System.Action OnComboEnded;
+
+        protected override void Awake()
         {
+            base.Awake();
+
             LastDamageData = new CharacterAttackData
             {
                 Time = float.NegativeInfinity
             };
 
-            health = GetComponent<CharacterHealth>();
-            data = GetComponent<CharacterData>();
-            movement = GetComponent<CharacterMovement>();
-            animator = GetComponent<CharacterAnimator>();
+            //health = GetComponent<CharacterHealth>();
+            //movement = GetComponent<CharacterMovement>();
+            //data = GetComponent<CharacterData>();
+            //animator = GetComponent<CharacterAnimator>();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
-
-            health.OnFall += OnFallCallback;
-            health.OnDamaged += OnDamagedCallback;
-
-            movement.OnRoll += OnRollCallback;
         }
         
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+
             OnComboStarted -= OnComboStartedCallback;
             OnComboEnded -= OnComboEndedCallback;
 
-            health.OnFall -= OnFallCallback;
-            health.OnDamaged -= OnDamagedCallback;
+            if (health)
+            {
+                health.OnFall -= OnFallCallback;
+                health.OnDamaged -= OnDamagedCallback;
+            }
 
-            movement.OnRoll -= OnRollCallback;
+            if (movement)
+            {
+                movement.OnRoll -= OnRollCallback;
+            }
+        }
+
+        protected override void OnComponentAdded(CharacterComponentBase component)
+        {
+            base.OnComponentAdded(component);
+            if (component is CharacterHealth)
+            {
+                health = component as CharacterHealth;
+                health.OnFall += OnFallCallback;
+                health.OnDamaged += OnDamagedCallback;
+            }
+
+            else if (component is CharacterMovement)
+            {
+                movement = component as CharacterMovement;
+                movement.OnRoll += OnRollCallback;
+            }
+
+            else if (component is CharacterAnimator)
+            {
+                animator = component as CharacterAnimator;
+            }
+        }
+
+        protected override void OnComponentRemoved(CharacterComponentBase component)
+        {
+            base.OnComponentRemoved(component);
+            if (component is CharacterHealth)
+            {
+                health.OnFall -= OnFallCallback;
+                health.OnDamaged -= OnDamagedCallback;
+                health = null;
+            }
+
+            else if (component is CharacterMovement)
+            {
+                movement.OnRoll -= OnRollCallback;
+                movement = null;
+            }
+
+            else if (component is CharacterAnimator)
+            {
+                animator = null;
+            }
         }
 
         private void OnRollCallback()
@@ -121,23 +150,26 @@ namespace Catacumba.Entity
 
         public void RequestAttack(EAttackType type)
         {
-            if (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut) ) return;
-            
-            gameObject.BroadcastMessage<IAttackEventHandler>(x => x.OnRequestAttack(type));
+            if (!CanAttack) return;
+            if (!animator)
+            {
+                AttackImmediate(new CharacterAttackData(type, gameObject, 0));
+                return;
+            }
+
+            OnRequestAttack?.Invoke(type);
         }
 
-        /*
-        * CALLBACKS
-        */
+        ////////////////////////////////////////
+        //    CALLBACKS HANDLERS
+
         private void OnComboStartedCallback()
         {
-            Debug.Log("Combo started.");
             IsOnCombo = true;
         }
 
         private void OnComboEndedCallback()
         {
-            Debug.Log("Combo ended.");
             IsOnCombo = false;
             _nComboHits = 0;
         }
@@ -160,17 +192,18 @@ namespace Catacumba.Entity
         /*
         *  CHAMADO PELO ANIMATOR!!!1111
         */
-        public void Attack(EAttackType type)
-        {
-            if (health.IsDead || health.IsOnGround) return;
-            Attack(new CharacterAttackData(type, gameObject, ++_nComboHits));
-        }
 
-        private void Attack(CharacterAttackData attack)
+        public void AttackImmediate(CharacterAttackData attack)
         {
-            CombatManager.Attack(ref attack, attackColliderBasePosition, GetAttackColliderSize(attack.Type), transform.rotation);
+            CombatManager.Attack(
+                ref attack, 
+                GetAttackColliderPosition(), 
+                GetAttackColliderSize(attack.Type), 
+                transform.rotation
+            );
 
-            gameObject.BroadcastMessage<IAttackEventHandler>(x => x.OnAttack(attack));
+            OnAttack?.Invoke(attack);
+
             LastAttackData = attack;
         }
 
@@ -179,6 +212,7 @@ namespace Catacumba.Entity
         * */
         public void AnimUseWeaponSkill(int index)
         {
+            /*
             ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
             if (weapon.Skills == null)
             {
@@ -188,6 +222,7 @@ namespace Catacumba.Entity
 
             SkillData skill = weapon.Skills[index];
             UseSkill(skill);
+            */
         }
 
         public void AnimUseCharacterSkill(int index)
@@ -222,7 +257,7 @@ namespace Catacumba.Entity
 
         public void UseSkill(int index)
         {
-            animator.UseSkill(index);
+            //animator.UseSkill(index);
         }
 
         public void AnimSkillUsed()
@@ -232,13 +267,6 @@ namespace Catacumba.Entity
             skillBeingCasted = null;
         }
 
-        public void AnimPlayWoosh()
-        {
-            Vector3 dir = movement.transform.forward;
-
-            movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
-            SoundManager.Instance.PlayWoosh(transform.position);
-        }
 
     #if UNITY_EDITOR
         private void OnDrawGizmos()
@@ -250,7 +278,7 @@ namespace Catacumba.Entity
                 if (Time.time < LastAttackData.Time + 1f)
                 {
                     Gizmos.color = Color.red;
-                    Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, GetAttackColliderSize(LastAttackData.Type));
+                    Gizmos.matrix = Matrix4x4.TRS(GetAttackColliderPosition(), transform.rotation, GetAttackColliderSize(LastAttackData.Type));
                     Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
                 }
             }

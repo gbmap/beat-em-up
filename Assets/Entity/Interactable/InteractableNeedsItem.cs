@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Catacumba.Entity;
+using Catacumba.Data;
 
 namespace Catacumba
 {

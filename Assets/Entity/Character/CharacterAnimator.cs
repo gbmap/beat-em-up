@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
+using Catacumba.Data;
 
 namespace Catacumba.Entity
 {
-    [RequireComponent(typeof(CharacterMovement))]
-    public class CharacterAnimator : MonoBehaviour
+    public class CharacterAnimator : CharacterComponentBase
     {
         public Animator animator;
 
@@ -18,10 +18,9 @@ namespace Catacumba.Entity
             }
         }
 
-        CharacterData data;
+        //CharacterData data;
         CharacterMovement movement;
         CharacterCombat combat;
-        CharacterHealth health;
         CharacterModelInfo modelInfo;
         public CharacterModelInfo ModelInfo
         {
@@ -67,7 +66,6 @@ namespace Catacumba.Entity
         int hashAttackType = Animator.StringToHash("AttackType");
         int hashAttackTrigger = Animator.StringToHash("Attack");
 
-
         GameObject equippedWeapon;
 
         // ====== HEALTH
@@ -90,81 +88,81 @@ namespace Catacumba.Entity
         #region MONOBEHAVIOUR
 
         // Start is called before the first frame update
-        void Awake()
+        protected override void Awake()
         {
-            data = GetComponent<CharacterData>();
-            movement = GetComponent<CharacterMovement>();
-            health = GetComponent<CharacterHealth>();
-            combat = GetComponent<CharacterCombat>();
+            base.Awake();
+
             modelInfo = GetComponent<CharacterModelInfo>();
             renderer = GetComponentInChildren<Renderer>();
 
-            SetupSlashParticles(null);
+            //SetupSlashParticles(null);
         }
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
+
+            animator = GetComponentInChildren<Animator>();
             animator.speed = AnimatorDefaultSpeed;
             animator.SetInteger("BrainType", (int)data.BrainType);
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
-            if (combat != null) 
-            {
-                combat.OnRequestCharacterAttack += OnRequestCharacterAttackCallback;
-                combat.OnRequestSkillUse += OnRequestSkillUseCallback;
-                combat.OnCharacterAttack += OnCharacterAttackCallback;
-            }
+            base.OnEnable();
+        }
 
-            if (health != null)
-            {
-                health.OnDamaged += OnCharacterDamagedCallback;
-                health.OnRecover += OnRecoverCallback;
-            }
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+        }
 
-            if (movement != null)
+        protected override void OnComponentAdded(CharacterComponentBase component)
+        {
+            base.OnComponentAdded(component);
+            if (component is CharacterMovement) 
             {
+                movement = component as CharacterMovement;
                 movement.OnRoll += OnRollCallback;
             }
+
+            else if (component is CharacterCombat)
+            {
+                combat = component as CharacterCombat;
+                combat.OnRequestAttack += OnRequestCharacterAttackCallback;
+                combat.OnRequestSkillUse += OnRequestSkillUseCallback;
+                combat.OnAttack += OnCharacterAttackCallback;
+            }
         }
 
-        private void OnDisable()
+        protected override void OnComponentRemoved(CharacterComponentBase component)
         {
-            if (combat != null)
-            {
-                combat.OnRequestCharacterAttack -= OnRequestCharacterAttackCallback;
-                combat.OnCharacterAttack -= OnCharacterAttackCallback;
-            }
-
-            if (health != null)
-            {
-                health.OnDamaged -= OnCharacterDamagedCallback;
-                health.OnRecover -= OnRecoverCallback;
-            }
-
-            if (movement != null)
+            base.OnComponentRemoved(component);
+            if (component is CharacterMovement) 
             {
                 movement.OnRoll -= OnRollCallback;
+                movement = null; 
+            }
+
+            else if (component is CharacterCombat)
+            {
+                combat.OnRequestAttack -= OnRequestCharacterAttackCallback;
+                combat.OnRequestSkillUse -= OnRequestSkillUseCallback;
+                combat.OnAttack -= OnCharacterAttackCallback;
+                combat = null;
             }
         }
-        
-        // Update is called once per frame
+
         void Update()
         {
             if (movement)
             {
-                if (movement && movement.NavMeshAgent)
-                    animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+                if (movement.NavMeshAgent)
+                    animator.SetBool(hashMoving, movement.Direction.sqrMagnitude > 0.0f && movement.CanMove);
                 
                 if (combat)
-                {
                     UpdateSmokeEmission();
-                }
             }
-
-            if (health && combat && health.IsDead) // pra prevenir o LastDamageData de ser nulo.
-                UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
 
     #if UNITY_EDITOR
             CheckDebugInput();
@@ -173,6 +171,8 @@ namespace Catacumba.Entity
 
         private void UpdateSmokeEmission()
         {
+            if (!ParticlesSmoke) return;
+
             var emission = ParticlesSmoke.emission;
             emission.enabled = movement.IsRolling || combat.IsOnCombo || movement.IsBeingMoved;
 
@@ -269,22 +269,6 @@ namespace Catacumba.Entity
 
         private void OnCharacterDamagedCallback(CharacterAttackData attack)
         {
-            if (attack.Poised && !attack.Dead)
-            {
-                return;
-            }
-
-            animator.ResetTrigger(hashAttackTrigger);
-            animator.ResetTrigger(hashAttackTrigger);
-
-            if (attack.CancelAnimation || attack.Dead)
-            {
-                animator.SetInteger(hashNHits, attack.HitNumber);
-                animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
-            }
-
-            EmitHitImpact(attack);
-            FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
         }
 
         private void OnRequestCharacterAttackCallback(EAttackType type)
@@ -317,7 +301,8 @@ namespace Catacumba.Entity
             {
                 FreezeAnimator();
             }
-            
+
+            if (!ParticlesSlash) return;
             ParticlesSlash.Emit(new ParticleSystem.EmitParams()
             {
                 velocity = transform.forward,
@@ -326,7 +311,6 @@ namespace Catacumba.Entity
 
         private void OnRecoverCallback()
         {
-            animator.SetTrigger(hashRecover);
         }
 
         private void OnRollCallback()
@@ -575,7 +559,56 @@ namespace Catacumba.Entity
             }
         }
 
-    #endif
+        void OnDamaged(CharacterAttackData attack)
+        {
+            if (attack.Poised && !attack.Dead)
+            {
+                return;
+            }
+
+            animator.ResetTrigger(hashAttackTrigger);
+            animator.ResetTrigger(hashAttackTrigger);
+
+            if (attack.CancelAnimation || attack.Dead)
+            {
+                animator.SetInteger(hashNHits, attack.HitNumber);
+                animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
+            }
+
+            EmitHitImpact(attack);
+            FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
+        }
+
+        void OnRecover()
+        {
+            animator.SetTrigger(hashRecover);
+        }
+
+        void OnDodge()
+        {
+            animator.SetTrigger(hashRoll);
+        }
+
+#endif
+
+        public void AnimPlayWoosh()
+        {
+            if (movement)
+            {
+                Vector3 dir = movement.transform.forward;
+                if (movement) movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
+            }
+
+            SoundManager.Instance.PlayWoosh(transform.position);
+        }
+
+        public void Attack(EAttackType type)
+        {
+            if (!combat) return;
+            if (!combat.CanAttack) return;
+
+            combat.AttackImmediate(new CharacterAttackData(type, gameObject, 0));
+        }
 
     }
 }

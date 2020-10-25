@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Catacumba.Entity;
+using Catacumba.Data;
 
 public enum EAttackType
 {

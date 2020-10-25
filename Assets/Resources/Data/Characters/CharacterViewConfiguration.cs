@@ -26,7 +26,6 @@ namespace Catacumba.Data
 
         }
 
-
         private static void RemoveExistingModel(GameObject instance)
         {
             for (int i = 0; i < instance.transform.childCount; i++)
@@ -68,6 +67,10 @@ namespace Catacumba.Data
 
             anim.runtimeAnimatorController = animationConfig.AnimatorController;
             anim.avatar = animationConfig.Avatar;
+            anim.applyRootMotion = false;
+
+            // maybe we should remove this
+            modelInstance.AddComponent<Entity.CharacterAnimator>();
         }
 
     }

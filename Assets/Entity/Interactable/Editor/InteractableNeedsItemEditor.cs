@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
-using Catacumba.Entity;
+using Catacumba.Data;
 
 namespace Catacumba
 {
