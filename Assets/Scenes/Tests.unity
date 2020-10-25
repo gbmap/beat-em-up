@@ -132,8 +132,9 @@ GameObject:
   - component: {fileID: 246744943}
   - component: {fileID: 246744942}
   - component: {fileID: 246744944}
-  - component: {fileID: 246744945}
   - component: {fileID: 246744946}
+  - component: {fileID: 246744947}
+  - component: {fileID: 246744945}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -190,6 +191,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterCfg: {fileID: 11400000, guid: 12a9179c170c94341b6b9e2660fd9454, type: 2}
+  Stats:
+    Attributes:
+      Vigor: 0
+      Strength: 0
+      Dexterity: 0
+      Magic: 0
+    Inventory:
+      inventory: 000000000000000000000000000000000000000000000000
+      keyItems: []
+  CharacterComponents: []
 --- !u!114 &246744945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +214,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Direction: {x: 0, y: 0, z: 0}
-  MoveSpeed: 3
   IgnoreSpeedBump: 0
   SpeedBumpForce: 0.9
 --- !u!114 &246744946
@@ -219,6 +229,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerIndex: 0
+--- !u!114 &246744947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246744941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f624f8e5d881fd04391fa17c689154d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsOnCombo: 0
+  IsOnHeavyAttack: 0
 --- !u!1001 &1110491605
 PrefabInstance:
   m_ObjectHideFlags: 0
