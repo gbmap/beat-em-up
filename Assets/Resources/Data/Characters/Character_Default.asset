@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
   m_Name: Character_Default
   m_EditorClassIdentifier: 
-  Stats: {fileID: 0}
+  Stats: {fileID: 11400000, guid: 2b8343d5306be204886bbe29ffdf9da6, type: 2}
   Skills: {fileID: 0}
-  View: {fileID: 0}
+  View: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}

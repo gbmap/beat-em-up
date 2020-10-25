@@ -1,239 +1,290 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Catacumba.Data;
 
-public class CharacterCombat : MonoBehaviour
+namespace Catacumba.Entity
 {
-    [HideInInspector] public bool IsOnCombo;
-
-    private int _nComboHits;
-
-    public System.Action<EAttackType> OnRequestCharacterAttack;
-    public System.Action<CharacterAttackData> OnCharacterAttack;
-
-    private BaseSkill skillBeingCasted;
-    public System.Action<BaseSkill> OnRequestSkillUse;
-    public System.Action<BaseSkill> OnSkillUsed;
-
-    public System.Action OnComboStarted;
-    public System.Action OnComboEnded;
-
-    private CharacterData data;
-    private CharacterHealth health;
-    private CharacterMovement movement;
-    private CharacterAnimator animator;
-
-    public bool IsOnHeavyAttack;
-
-    private Vector3 attackColliderBasePosition
+    public class CharacterCombat : CharacterComponentBase
     {
-        get { return animator.RealCharacterPosition + transform.forward*1.25f + Vector3.up; }
-    }
+        int _nComboHits;
+        BaseSkill skillBeingCasted;
 
-    private Vector3 attackColliderSize
-    {
-        get { return (Vector3.one * 0.65f + Vector3.right * 0.65f); }
-    }
+        CharacterHealth health;
+        CharacterMovement movement;
+        CharacterAnimator animator;
 
-    private Vector3 GetAttackColliderSize(EAttackType type)
-    {
-        float weaponScale = 0f;
-        
-        if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+        Vector3 GetAttackColliderPosition()
         {
-            weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
+            return transform.position + (transform.forward*1.25f + Vector3.up);
         }
 
-        return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
-    }
-
-    public CharacterAttackData LastAttackData
-    {
-        get; private set;
-    }
-
-    public CharacterAttackData LastDamageData
-    {
-        get; private set;
-    }
-
-    private void Awake()
-    {
-        LastDamageData = new CharacterAttackData
+        Vector3 GetAttackColliderSize(EAttackType type)
         {
-            Time = float.NegativeInfinity
-        };
+            float weaponScale = 0f;
+            Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
+            
+            if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+            {
+                weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
+            }
 
-        health = GetComponent<CharacterHealth>();
-        data = GetComponent<CharacterData>();
-        movement = GetComponent<CharacterMovement>();
-        animator = GetComponent<CharacterAnimator>();
-    }
+            return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
+        }
 
-    private void OnEnable()
-    {
-        OnComboStarted += OnComboStartedCallback;
-        OnComboEnded += OnComboEndedCallback;
+        [HideInInspector] public bool IsOnCombo;
 
-        health.OnFall += OnFallCallback;
-        health.OnDamaged += OnDamagedCallback;
+        public bool IsOnHeavyAttack;
 
-        movement.OnRoll += OnRollCallback;
-    }
-    
-    private void OnDisable()
-    {
-        OnComboStarted -= OnComboStartedCallback;
-        OnComboEnded -= OnComboEndedCallback;
+        public bool CanAttack
+        {
+            get 
+            {
+                return !health || (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut));
+            }
+        }
 
-        health.OnFall -= OnFallCallback;
-        health.OnDamaged -= OnDamagedCallback;
+        public CharacterAttackData LastAttackData { get; private set; }
+        public CharacterAttackData LastDamageData { get; private set; }
 
-        movement.OnRoll -= OnRollCallback;
-    }
+        ////////////////////////
+        //  Callbacks
 
-    private void OnRollCallback()
-    {
-        OnComboEnded?.Invoke();
-    }
+        public System.Action<EAttackType> OnRequestAttack;
+        public System.Action<CharacterAttackData> OnAttack;
 
-    public void RequestAttack(EAttackType type)
-    {
-        if (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut) ) return;
-        OnRequestCharacterAttack?.Invoke(type);
-    }
+        public System.Action<BaseSkill> OnRequestSkillUse;
+        public System.Action<BaseSkill> OnSkillUsed;
 
-    /*
-    * CALLBACKS
-    */
-    private void OnComboStartedCallback()
-    {
-        Debug.Log("Combo started.");
-        IsOnCombo = true;
-    }
+        public System.Action OnComboStarted;
+        public System.Action OnComboEnded;
 
-    private void OnComboEndedCallback()
-    {
-        Debug.Log("Combo ended.");
-        IsOnCombo = false;
-        _nComboHits = 0;
-    }
+        protected override void Awake()
+        {
+            base.Awake();
 
-    private void OnFallCallback()
-    {
-        OnComboEnded?.Invoke();
-    }
+            LastDamageData = new CharacterAttackData
+            {
+                Time = float.NegativeInfinity
+            };
 
-    private void OnDamagedCallback(CharacterAttackData msg)
-    {
-        if (msg.CancelAnimation)
+            //health = GetComponent<CharacterHealth>();
+            //movement = GetComponent<CharacterMovement>();
+            //data = GetComponent<CharacterData>();
+            //animator = GetComponent<CharacterAnimator>();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            OnComboStarted += OnComboStartedCallback;
+            OnComboEnded += OnComboEndedCallback;
+        }
+        
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            OnComboStarted -= OnComboStartedCallback;
+            OnComboEnded -= OnComboEndedCallback;
+
+            if (health)
+            {
+                health.OnFall -= OnFallCallback;
+                health.OnDamaged -= OnDamagedCallback;
+            }
+
+            if (movement)
+            {
+                movement.OnRoll -= OnRollCallback;
+            }
+        }
+
+        protected override void OnComponentAdded(CharacterComponentBase component)
+        {
+            base.OnComponentAdded(component);
+            if (component is CharacterHealth)
+            {
+                health = component as CharacterHealth;
+                health.OnFall += OnFallCallback;
+                health.OnDamaged += OnDamagedCallback;
+            }
+
+            else if (component is CharacterMovement)
+            {
+                movement = component as CharacterMovement;
+                movement.OnRoll += OnRollCallback;
+            }
+
+            else if (component is CharacterAnimator)
+            {
+                animator = component as CharacterAnimator;
+            }
+        }
+
+        protected override void OnComponentRemoved(CharacterComponentBase component)
+        {
+            base.OnComponentRemoved(component);
+            if (component is CharacterHealth)
+            {
+                health.OnFall -= OnFallCallback;
+                health.OnDamaged -= OnDamagedCallback;
+                health = null;
+            }
+
+            else if (component is CharacterMovement)
+            {
+                movement.OnRoll -= OnRollCallback;
+                movement = null;
+            }
+
+            else if (component is CharacterAnimator)
+            {
+                animator = null;
+            }
+        }
+
+        private void OnRollCallback()
         {
             OnComboEnded?.Invoke();
         }
 
-        LastDamageData = msg;
-    }
-
-    /*
-    *  CHAMADO PELO ANIMATOR!!!1111
-    */
-    public void Attack(EAttackType type)
-    {
-        if (health.IsDead || health.IsOnGround) return;
-        Attack(new CharacterAttackData(type, gameObject, ++_nComboHits));
-    }
-
-    private void Attack(CharacterAttackData attack)
-    {
-        CombatManager.Attack(ref attack, attackColliderBasePosition, GetAttackColliderSize(attack.Type), transform.rotation);
-
-        OnCharacterAttack?.Invoke(attack);
-
-        LastAttackData = attack;
-    }
-
-    /*
-     * Skills
-     * */
-    public void AnimUseWeaponSkill(int index)
-    {
-        ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
-        if (weapon.Skills == null)
+        public void RequestAttack(EAttackType type)
         {
-            Debug.LogWarning("No weapon skills found. This shouldn't be happening.");
-            return;
-        }
-
-        SkillData skill = weapon.Skills[index];
-        UseSkill(skill);
-    }
-
-    public void AnimUseCharacterSkill(int index)
-    {
-        SkillData skill = data.CharacterSkills[index];
-        UseSkill(skill);
-    }
-
-    private void UseSkill(SkillData s)
-    {
-        if (s.gameObject == null) // objeto foi destruído por algum motivo, possivelmente o jogo foi ganho?
-        {
-            return;
-        }
-
-        // hack pra determinar se é um prefab
-        if (s.gameObject.scene.rootCount == 0)
-        {
-            var obj = Instantiate(s.gameObject, transform.position + transform.forward * s.Offset.z, transform.rotation);
-            s = obj.GetComponent<SkillData>();
-            s.Caster = data;
-        }
-        s.Cast();
-    }
-    
-    public void RequestSkillUse(BaseSkill skill)
-    {
-        skillBeingCasted = skill;
-        OnRequestSkillUse?.Invoke(skill);
-    }
-
-    public void UseSkill(int index)
-    {
-        animator.UseSkill(index);
-    }
-
-    public void AnimSkillUsed()
-    {
-        // fazer algo com a skill sendo castada.
-        OnSkillUsed?.Invoke(skillBeingCasted);
-        skillBeingCasted = null;
-    }
-
-    public void AnimPlayWoosh()
-    {
-        Vector3 dir = movement.transform.forward;
-
-        movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
-        SoundManager.Instance.PlayWoosh(transform.position);
-    }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying) return;
-
-        try
-        {
-            if (Time.time < LastAttackData.Time + 1f)
+            if (!CanAttack) return;
+            if (!animator)
             {
-                Gizmos.color = Color.red;
-                Gizmos.matrix = Matrix4x4.TRS(attackColliderBasePosition, transform.rotation, GetAttackColliderSize(LastAttackData.Type));
-                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+                AttackImmediate(new CharacterAttackData(type, gameObject, 0));
+                return;
             }
-        }
-        catch { }
-    }
-#endif
 
+            OnRequestAttack?.Invoke(type);
+        }
+
+        ////////////////////////////////////////
+        //    CALLBACKS HANDLERS
+
+        private void OnComboStartedCallback()
+        {
+            IsOnCombo = true;
+        }
+
+        private void OnComboEndedCallback()
+        {
+            IsOnCombo = false;
+            _nComboHits = 0;
+        }
+
+        private void OnFallCallback()
+        {
+            OnComboEnded?.Invoke();
+        }
+
+        private void OnDamagedCallback(CharacterAttackData msg)
+        {
+            if (msg.CancelAnimation)
+            {
+                OnComboEnded?.Invoke();
+            }
+
+            LastDamageData = msg;
+        }
+
+        /*
+        *  CHAMADO PELO ANIMATOR!!!1111
+        */
+
+        public void AttackImmediate(CharacterAttackData attack)
+        {
+            CombatManager.Attack(
+                ref attack, 
+                GetAttackColliderPosition(), 
+                GetAttackColliderSize(attack.Type), 
+                transform.rotation
+            );
+
+            OnAttack?.Invoke(attack);
+
+            LastAttackData = attack;
+        }
+
+        /*
+        * Skills
+        * */
+        public void AnimUseWeaponSkill(int index)
+        {
+            /*
+            ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
+            if (weapon.Skills == null)
+            {
+                Debug.LogWarning("No weapon skills found. This shouldn't be happening.");
+                return;
+            }
+
+            SkillData skill = weapon.Skills[index];
+            UseSkill(skill);
+            */
+        }
+
+        public void AnimUseCharacterSkill(int index)
+        {
+            // TODO 
+            //SkillData skill = data.CharacterSkills[index];
+            //UseSkill(skill);
+        }
+
+        private void UseSkill(SkillData s)
+        {
+            if (s.gameObject == null) // objeto foi destruído por algum motivo, possivelmente o jogo foi ganho?
+            {
+                return;
+            }
+
+            // hack pra determinar se é um prefab
+            if (s.gameObject.scene.rootCount == 0)
+            {
+                var obj = Instantiate(s.gameObject, transform.position + transform.forward * s.Offset.z, transform.rotation);
+                s = obj.GetComponent<SkillData>();
+                s.Caster = data;
+            }
+            s.Cast();
+        }
+        
+        public void RequestSkillUse(BaseSkill skill)
+        {
+            skillBeingCasted = skill;
+            OnRequestSkillUse?.Invoke(skill);
+        }
+
+        public void UseSkill(int index)
+        {
+            //animator.UseSkill(index);
+        }
+
+        public void AnimSkillUsed()
+        {
+            // fazer algo com a skill sendo castada.
+            OnSkillUsed?.Invoke(skillBeingCasted);
+            skillBeingCasted = null;
+        }
+
+
+    #if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (!Application.isPlaying) return;
+
+            try
+            {
+                if (Time.time < LastAttackData.Time + 1f)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.matrix = Matrix4x4.TRS(GetAttackColliderPosition(), transform.rotation, GetAttackColliderSize(LastAttackData.Type));
+                    Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+                }
+            }
+            catch { }
+        }
+    #endif
+
+    }
 }

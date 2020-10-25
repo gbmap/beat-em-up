@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+using Catacumba.Entity;
 namespace Catacumba.Data
 {
     [CreateAssetMenu()]
@@ -19,5 +20,11 @@ namespace Catacumba.Data
         public CharacterStatConfiguration Stats;
         public CharacterSkillConfiguration Skills;
         public CharacterViewConfiguration View;
+
+        public void Configure(Entity.CharacterData character, int modelIndex = -1)
+        {
+            if (character.transform.childCount == 0 && View != null)
+                View.Configure(character, modelIndex);
+        }
     }
 }

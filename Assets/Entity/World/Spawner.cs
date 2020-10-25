@@ -22,26 +22,11 @@ namespace Catacumba
 
         public bool OneShot = true;
 
-        public Checkpoint DestroyIfCheckpoint;
-
         private List<Spawner> childSpawners;
-
         private List<GameObject> spawnInstances;
 
         private void Awake()
         {
-            if (DestroyIfCheckpoint)
-            {
-                int targetIndex = DestroyIfCheckpoint.Index;
-                int currentIndex = CheckpointManager.CheckpointIndex;
-
-                bool destroy = currentIndex >= targetIndex;
-                if (destroy)
-                {
-                    Destroy(this);
-                }
-            }
-
             childSpawners = new List<Spawner>();
             for (int i = 0; i < transform.childCount; i++)
             {

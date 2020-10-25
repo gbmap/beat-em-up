@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Catacumba.Data;
 
 
-namespace Catacumba.Character.AI
+namespace Catacumba.Entity.AI
 {
     // ================= STATES
     public struct StateResult

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Catacumba.Entity;
 
 public class AttackStateMachineBehaviour : StateMachineBehaviour
 {
@@ -15,6 +16,8 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
         Animator.StringToHash("H 1")
     };
 
+    CharacterCombat combat;
+
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -23,7 +26,8 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
 
         if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
         {
-            animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = true;
+            if (!combat) return;
+            combat.IsOnHeavyAttack = true;
         }
     }
 
@@ -36,10 +40,8 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
-        {
-            animator.GetComponent<CharacterCombat>().IsOnHeavyAttack = false;
-        }
+        if (combat && heavyAttackHashes.Contains(stateInfo.shortNameHash))
+            combat.IsOnHeavyAttack = false;
     }
 
     // OnStateMove is called before OnStateMove is called on any state inside this state machine
@@ -57,13 +59,16 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
     override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        animator.GetComponent<CharacterCombat>().OnComboStarted?.Invoke();
+        if (!combat) combat = animator.GetComponent<CharacterCombat>(); 
+        if (combat)
+            combat.OnComboStarted?.Invoke();
     }
 
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
-        animator.GetComponent<CharacterCombat>().OnComboEnded?.Invoke();
+        if (combat)
+            combat.OnComboEnded?.Invoke();
 
         animator.ResetTrigger(hashAttackTrigger);
         animator.ResetTrigger(hashAttackTrigger);

@@ -660,8 +660,6 @@ namespace Catacumba.LevelGen
 
             // Setar câmera
             Camera.main.transform.position = cellSize;
-            var c = Camera.main.gameObject.AddComponent<CameraHideEnvironmentInFront>();
-            c.Target = player.transform;
 
             GameObject virtualCamera = new GameObject("VCam");
             Cinemachine.CinemachineVirtualCamera vcam = virtualCamera.AddComponent<Cinemachine.CinemachineVirtualCamera>();

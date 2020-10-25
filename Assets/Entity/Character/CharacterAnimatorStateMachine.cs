@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Catacumba.Entity;
+
 public class CharacterAnimatorStateMachine : StateMachineBehaviour
 {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (stateInfo.shortNameHash == Animator.StringToHash("Roll"))
         {
-            animator.GetComponent<CharacterMovement>().BeginRoll();
+            animator.GetComponentInParent<CharacterMovement>().BeginRoll();
         }
     }
 
@@ -16,7 +18,7 @@ public class CharacterAnimatorStateMachine : StateMachineBehaviour
     {
         if (stateInfo.shortNameHash == Animator.StringToHash("Roll"))
         {
-            animator.GetComponent<CharacterMovement>().EndRoll();
+            animator.GetComponentInParent<CharacterMovement>().EndRoll();
         }
     }
 }

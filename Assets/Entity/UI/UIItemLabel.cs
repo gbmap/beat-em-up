@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Catacumba.Entity;
+using Catacumba.Data;
 
 public class UIItemLabel : MonoBehaviour
 {
@@ -66,6 +68,4 @@ public class UIItemLabel : MonoBehaviour
                FormatAttributeString(DamageScaleToString, dmgScaling.Dexterity, " Dexterity") +
                FormatAttributeString(DamageScaleToString, dmgScaling.Magic, " Magic", true);
     }
-
-
 }

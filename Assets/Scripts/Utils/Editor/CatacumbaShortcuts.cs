@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using Catacumba.Exploration;
+using Catacumba.Entity;
 
 public class CatacumbaShortcuts : MonoBehaviour
 {
@@ -84,7 +84,5 @@ public class CatacumbaShortcuts : MonoBehaviour
         player.transform.position = startPosition.transform.position;
 
         EditorApplication.ExecuteMenuItem("Edit/Play");
-
-        CameraManager.Instance.ChangeCamera(targetCamera.gameObject);
     }
 }

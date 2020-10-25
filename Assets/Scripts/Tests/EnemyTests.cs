@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Catacumba.Data;
 using UnityEngine.AI;
+using Catacumba.Entity;
 
 namespace Tests
 {

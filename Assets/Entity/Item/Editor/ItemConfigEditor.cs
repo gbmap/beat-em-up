@@ -1,4 +1,6 @@
 ﻿using UnityEditor;
+using Catacumba.Entity;
+using Catacumba.Data;
 
 namespace Catacumba
 {

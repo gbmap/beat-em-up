@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Catacumba.Character.AI
+namespace Catacumba.Entity.AI
 {
     public enum EHealerAIStates
     {

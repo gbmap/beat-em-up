@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.AI;
+using Catacumba.Entity;
 
 namespace Catacumba
 {
@@ -174,12 +175,6 @@ namespace Catacumba
                 if (!go.GetComponent<CharacterHealth>())
                 {
                     go.AddComponent<CharacterHealth>();
-                }
-
-                if (!go.GetComponent<SpawnParticleSystemOnDestroy>())
-                {
-                    var spawnParticle = go.AddComponent<SpawnParticleSystemOnDestroy>();
-                    spawnParticle.Particles = param.ParticleSystem;
                 }
 
                 if (param.SpawnObjects.Length > 0)

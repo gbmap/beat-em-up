@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using Catacumba.Entity;
+using Catacumba.Data;
 
 public class CombatManagerConfig : ScriptableObject
 {

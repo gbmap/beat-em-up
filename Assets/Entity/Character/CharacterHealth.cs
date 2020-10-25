@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Catacumba.Exploration;
 using Frictionless;
 using UnityEngine;
+using Catacumba.Data;
 
+namespace Catacumba.Entity
+{
 public class MsgOnPlayerDied { public CharacterData player; }
 
-public class CharacterHealth : MonoBehaviour
+public class CharacterHealth : CharacterComponentBase
 {
     public bool CanBeKnockedOut = true;
     public bool IgnoreDamage = false;
@@ -200,7 +202,7 @@ public class CharacterHealth : MonoBehaviour
         if (data.Knockdown && data.CancelAnimation ||
             data.DefenderStats.Health <= 0)
         {
-            characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
+            //characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
         }
 
         OnDamaged?.Invoke(data);
@@ -256,4 +258,6 @@ public class CharacterHealth : MonoBehaviour
     {
         IgnoreDamage = v;
     }
+}
+
 }

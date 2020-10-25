@@ -1,5 +1,16 @@
 ﻿using UnityEngine;
 
+
+namespace Catacumba.Entity
+{
+
+[System.Serializable]
+public class BaseSkill
+{
+    public GameObject Prefab;
+    public float forwardOffset = 1.5f;
+}
+
 /****
 *   Skill Component that holds instance data for casted skills.
 ***/
@@ -23,4 +34,5 @@ public class SkillData : MonoBehaviour
     }
 
     public virtual void Cast() { }
+}
 }

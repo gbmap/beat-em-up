@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using Utilities;
 
-namespace Catacumba.Character.AI
+namespace Catacumba.Entity.AI
 {
     public class MsgOnBossDied { }
 
