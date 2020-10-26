@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Frictionless;
 using UnityEngine;
 using Catacumba.Data;
+using Catacumba.Effects;
 
 namespace Catacumba.Entity
 {
@@ -14,20 +15,20 @@ public class CharacterHealth : CharacterComponentBase
     public bool CanBeKnockedOut = true;
     public bool IgnoreDamage = false;
 
+    public ParticleEffectConfiguration HitEffect;
+
     public System.Action<CharacterAttackData> OnDamaged;
     public System.Action OnFall;
     public System.Action OnRecover;
     public System.Action OnGetUp;
     public System.Action<CharacterHealth> OnDeath;
 
-    private Rigidbody _rigidbody;
-    private Collider collider;
+    private new Collider collider;
 
     public MeshRenderer HealthQuad;
 
     private float lastHit;
-    private CharacterData characterData;
-    private CharacterAnimator characterAnimator;
+    private CharacterAnimator animator;
 
     /// ============ HEALTH
     private Material[] Materials
@@ -54,7 +55,7 @@ public class CharacterHealth : CharacterComponentBase
 
     public int Health
     {
-        get { return characterData.Stats.Health; }
+        get { return data.Stats.Health; }
     }
 
     public bool IsDead
@@ -64,7 +65,7 @@ public class CharacterHealth : CharacterComponentBase
 
     public float HealthNormalized
     {
-        get { return characterData.Stats.HealthNormalized; }
+        get { return data.Stats.HealthNormalized; }
     }
 
     // hora q caiu no chão do Knockdown
@@ -74,22 +75,50 @@ public class CharacterHealth : CharacterComponentBase
     public bool IsOnGround { get; private set; }
     public bool IsBeingDamaged; // rolando animação de dano
 
-    private void Awake()
+    protected override void OnComponentAdded(CharacterComponentBase component)
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        base.OnComponentAdded(component);
+
+        if (component is CharacterAnimator)
+        {
+            animator = component as CharacterAnimator;
+            animator.OnRefreshAnimator += RefreshMaterials; 
+        }
+    }
+
+    protected override void OnComponentRemoved(CharacterComponentBase component)
+    {
+        base.OnComponentRemoved(component);
+
+        if (component is CharacterAnimator)
+        {
+            animator.OnRefreshAnimator -= RefreshMaterials; 
+            animator = null;
+        }
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
         collider = GetComponent<Collider>();
-        characterData = GetComponent<CharacterData>();
-        characterAnimator = GetComponent<CharacterAnimator>();
-        RefreshMaterials(characterAnimator?.animator);
+        RefreshMaterials(animator?.animator);
 
         UpdateHealthQuad(1f, 1f);
+
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        HitEffect?.Setup(this);
     }
 
     private void Update()
     {
         if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
         {
-            characterData.Stats.CurrentStamina = characterData.Stats.Stamina;
+            data.Stats.CurrentStamina = data.Stats.Stamina;
             UpdatePoise(1f);
         }
 
@@ -101,9 +130,9 @@ public class CharacterHealth : CharacterComponentBase
             {
                 if (IsDead)
                 {
-                    if (characterData.BrainType == ECharacterBrainType.Input)
+                    if (data.BrainType == ECharacterBrainType.Input)
                     {
-                        ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = characterData });
+                        ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = data });
                     }
 
                     Destroy(gameObject);
@@ -118,7 +147,7 @@ public class CharacterHealth : CharacterComponentBase
         UpdateHitFactor();
     }
 
-    private void UpdateHitFactor()
+    void UpdateHitFactor()
     {
         if (!Mathf.Approximately(HitEffectFactor, 0f))
         {
@@ -126,28 +155,24 @@ public class CharacterHealth : CharacterComponentBase
         }
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         OnFall += OnFallCallback;
         OnGetUp += OnGetUpAnimationEnd;
-        characterData.Stats.OnStatsChanged += OnStatsChangedCallback;
-        
-        if (characterAnimator)
-        {
-            characterAnimator.OnRefreshAnimator += RefreshMaterials;
-        }
+
+        data.Stats.OnStatsChanged += OnStatsChangedCallback;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+
         OnFall -= OnFallCallback;
         OnGetUp -= OnGetUpAnimationEnd;
-        characterData.Stats.OnStatsChanged -= OnStatsChangedCallback;
 
-        if (characterAnimator)
-        {
-            characterAnimator.OnRefreshAnimator -= RefreshMaterials;
-        }
+        data.Stats.OnStatsChanged -= OnStatsChangedCallback;
     }
 
     private void OnStatsChangedCallback(CharacterStats stats)
@@ -157,16 +182,12 @@ public class CharacterHealth : CharacterComponentBase
 
     public void OnGetUpAnimationEnd()
     {
-        //_rigidbody.isKinematic = false;
-        //_rigidbody.useGravity = true;
         IsOnGround = false;
         collider.enabled = true;
     }
 
     private void OnFallCallback()
     {
-        //_rigidbody.isKinematic = true;
-        //_rigidbody.useGravity = false;
         collider.enabled = false;
         IsOnGround = true;
         recoverTimer = recoverCooldown;
@@ -186,13 +207,13 @@ public class CharacterHealth : CharacterComponentBase
         if (data.Attacker == null)
         {
             data.Attacker = gameObject;
-            data.AttackerStats = characterData.Stats;
+            data.AttackerStats = this.data.Stats;
         }
 
         if (data.Defender == null)
         {
             data.Defender = gameObject;
-            data.DefenderStats = characterData.Stats;
+            data.DefenderStats = this.data.Stats;
         }
 
         lastHit = Time.time;
@@ -205,6 +226,9 @@ public class CharacterHealth : CharacterComponentBase
             //characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
         }
 
+        if (HitEffect)
+            HitEffect.EmitBurst(this, 20);
+
         OnDamaged?.Invoke(data);
 
         if (IsDead)
@@ -212,11 +236,12 @@ public class CharacterHealth : CharacterComponentBase
             collider.enabled = false;
             OnDeath?.Invoke(this);
 
-            if (!characterAnimator)
+            if (!animator)
             {
                 Destroy(gameObject);
             }
         }
+
 
         HitEffectFactor = 1f;
     }

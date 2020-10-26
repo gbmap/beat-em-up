@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 246744946}
   - component: {fileID: 246744947}
   - component: {fileID: 246744945}
+  - component: {fileID: 246744948}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -243,6 +244,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsOnCombo: 0
   IsOnHeavyAttack: 0
+--- !u!114 &246744948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246744941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CanBeKnockedOut: 1
+  IgnoreDamage: 0
+  HitEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
+  HealthQuad: {fileID: 0}
+  IsBeingDamaged: 0
 --- !u!1001 &1110491605
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -41,8 +41,9 @@ namespace Catacumba.Entity
             base.Awake();
         }
 
-        void Start()
+        protected override void Start()
         {
+            base.Start();
             // Get first player as default
             //_rewiredPlayer = ReInput.players.GetPlayer(0);
             PlayerIndex = playerIndex;
