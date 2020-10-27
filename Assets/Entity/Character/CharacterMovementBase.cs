@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Catacumba.Effects;
 
 namespace Catacumba.Entity
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public abstract class CharacterMovementBase : CharacterComponentBase
     {
-        // interface
+        public ParticleEffectConfiguration MovementEffect;
+
         public Vector3 Direction;
         public float SpeedBumpForce = 0.9f;
 
@@ -35,6 +37,7 @@ namespace Catacumba.Entity
         private ECharacterBrainType brainType { get { return data.BrainType; } }
 
         private CharacterHealth health;
+        //private 
 
         private Vector3 forward; // where the character is facing
 
@@ -42,17 +45,35 @@ namespace Catacumba.Entity
         private float speedBumpT;
         private const float speedBumpScale = 7f;
 
+        protected abstract Vector3 UpdateVelocityWithDesiredDirection(Vector3 vel, Vector3 direction);
+
+        protected virtual void UpdateEffect()
+        {
+            if (!MovementEffect) return;
+
+            MovementEffect.SetEmission(this, IsBeingMoved);
+            bool emission = MovementEffect.IsEmitting(this);
+            if (emission)
+                MovementEffect.PointSystemTowards(this, -SpeedBumpDir);
+        }
+
         protected override void Awake()
         {
             base.Awake();
-
             NavMeshAgent = GetComponent<NavMeshAgent>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            SetupEffect();
         }
 
         protected virtual void Update()
         {
             NavMeshAgent.enabled = GetNavMeshEnabled(health, speedBumpT);
             Move();
+            UpdateEffect();
         }
 
         private bool GetNavMeshEnabled(CharacterHealth health, float speedBump)
@@ -88,7 +109,6 @@ namespace Catacumba.Entity
 
             this.forward = CalculateAndUpdateForward(this.forward, direction);
             NavMeshAgent.isStopped = IsAgentStopped;
-
         }
 
         private Vector3 UpdateVelocityWithBump(Vector3 vel)
@@ -97,7 +117,6 @@ namespace Catacumba.Entity
             return speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
         }
 
-        protected abstract Vector3 UpdateVelocityWithDesiredDirection(Vector3 vel, Vector3 direction);
 
         private Vector3 CalculateAndUpdateForward(Vector3 fwd, Vector3 dir)
         {
@@ -109,6 +128,14 @@ namespace Catacumba.Entity
         private void UpdateSpeedBump()
         {
             speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 5f);
+        }
+
+        private void SetupEffect()
+        {
+            if (!MovementEffect)
+                MovementEffect = data.CharacterCfg.View.MovementEffect;
+
+            MovementEffect?.Setup(this);
         }
 
         /*

@@ -97,6 +97,19 @@ namespace Catacumba.Effects
             system.Stop();
         }
 
+        public bool IsEmitting(MonoBehaviour obj) 
+        {
+            ParticleSystem system = systemPool.Get(obj);
+            return system.isEmitting;
+        }
+
+        public void SetEmission(MonoBehaviour obj, bool v)
+        {
+            ParticleSystem system = systemPool.Get(obj);
+            var emission = system.emission;
+            emission.enabled = v;
+        }
+
         public void EmitRing(MonoBehaviour instance, 
                              int nParticles, 
                              int nDeviation = 10, 
