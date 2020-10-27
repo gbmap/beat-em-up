@@ -13,7 +13,7 @@ namespace Catacumba.Entity
             set { _rewiredPlayer = ReInput.players.GetPlayer(playerIndex = value); }
         }
 
-        CharacterMovement movement;
+        CharacterMovementBase movement;
         CharacterCombat combat;
 
         Player _rewiredPlayer;
@@ -64,9 +64,9 @@ namespace Catacumba.Entity
         {
             base.OnComponentAdded(component);
 
-            if (component is CharacterMovement)
+            if (component is CharacterMovementBase)
             {
-                movement = component as CharacterMovement;
+                movement = component as CharacterMovementBase;
             }
 
             else if (component is CharacterCombat)
@@ -79,7 +79,7 @@ namespace Catacumba.Entity
         {
             base.OnComponentAdded(component);
 
-            if (component is CharacterMovement)
+            if (component is CharacterMovementBase)
             {
                 movement = null;
             }
@@ -144,8 +144,10 @@ namespace Catacumba.Entity
 
                 movement.Direction = cFwd;
 
+                /*
                 if (RewiredInput.GetButtonDown("Dodge"))
                     movement.Roll(cFwd.normalized);
+                */
             }
 
             if ( Input.GetKeyDown(KeyCode.F6) ||

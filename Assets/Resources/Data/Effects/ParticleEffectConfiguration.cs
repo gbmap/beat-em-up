@@ -123,5 +123,12 @@ namespace Catacumba.Effects
             ParticleSystem systemInstance = systemPool.Get(instance);
             systemInstance.Emit(nParticles);
         }
+
+        public void PointSystemTowards(MonoBehaviour instance, Vector3 direction)
+        {
+            ParticleSystem systemInstance = systemPool.Get(instance);
+            systemInstance.transform.rotation = Quaternion.LookRotation(direction);
+        }
+
     }
 }

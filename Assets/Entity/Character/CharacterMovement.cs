@@ -1,59 +1,26 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.AI;
+using Catacumba.Effects;
 
 namespace Catacumba.Entity 
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class CharacterMovement : CharacterComponentBase
     {
-        // === REFS
-        CharacterHealth health;
-        CharacterCombat combat;
-        // CharacterData data;
+        public ParticleEffectConfiguration MovementEffect;
 
         // ==== MOVEMENT
         [HideInInspector]
         public Vector3 Direction;
-        /*private Vector3 velocity;*/
         public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? NavMeshAgent.velocity : Direction; } }
+        public float MoveSpeed { get { return data.Stats.MoveSpeed; } }
+        public Vector3 SpeedBumpDir { get; private set; }
 
-        private Vector3 forward;
+        public bool IsBeingMoved { get { return speedBumpT > 0f; } }
 
-        public float MoveSpeed
-        {
-            get
-            {
-                return data.Stats.MoveSpeed;
-            }
-        }
-
-        private float speedFactor = 1f;
-
-        private Rigidbody _rigidbody;
-
-        private float speedBumpT;
-        private Vector3 _speedBumpDir;
-        public Vector3 SpeedBumpDir
-        {
-            get { return _speedBumpDir; }
-        }
-
-        public System.Action OnJump;
-        public System.Action OnRoll;
-        public System.Action OnRollEnded;
-
-        private bool isRolling;
-        public bool IsRolling
-        {
-            get { return isRolling; }
-        }
-
-        private float rollSpeedT;
-        private float lastRoll;
-        private Vector3 rollDirection;
-
-        private Bitmask canMoveMask;
+        //public bool IsRolling { get; private set; }
+        public bool IsRolling { get { return rollSpeedT > 0f; } }
 
         public bool CanMove
         {
@@ -68,9 +35,11 @@ namespace Catacumba.Entity
                 */
             }
         }
-        public bool IsBeingMoved { get { return speedBumpT > 0f; } }
 
         public bool IgnoreSpeedBump = false;
+
+        [Header("Dash when attacks")]
+        public float SpeedBumpForce = 0.9f;
 
         #region INTERFACE WITH NAVMESH
 
@@ -119,8 +88,22 @@ namespace Catacumba.Entity
 
         #endregion
 
-        [Header("Dash when attacks")]
-        public float SpeedBumpForce = 0.9f;
+        public System.Action OnRoll;
+        public System.Action OnRollEnded;
+
+        // === REFS
+        private CharacterHealth health;
+        private CharacterCombat combat;
+
+        private Vector3 forward;
+
+        private float speedBumpT;
+
+        private float rollSpeedT;
+        private float lastRoll;
+        private Vector3 rollDirection;
+
+        private Bitmask canMoveMask;
         
         private const float speedBumpScale = 7f;
 
@@ -209,7 +192,7 @@ namespace Catacumba.Entity
             {
                 // applies dash on attack
                 float t = 1f - speedBumpT;
-                var dir = speedBumpScale * _speedBumpDir * Mathf.Pow(-t + 1f, 3f);
+                var dir = speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
                 //dir.y = velocity.y;
                 velocity = dir;
 
@@ -221,7 +204,7 @@ namespace Catacumba.Entity
                 float rollSpeed = 1f + Mathf.Clamp01(rollSpeedT * (1f - rollSpeedT) * 8f);
 
                 var dir = Direction.normalized;
-                if (isRolling)
+                if (IsRolling)
                 {
                     float a = 1f - rollSpeedT;
                     a = a * a;
@@ -263,7 +246,7 @@ namespace Catacumba.Entity
         {
             //transform.LookAt(transform.position + direction);
             speedBumpT = 1f;
-            _speedBumpDir = direction.normalized * force;
+            SpeedBumpDir = direction.normalized * force;
         }
 
         private void OnDamagedCallback(CharacterAttackData attack)
@@ -322,28 +305,28 @@ namespace Catacumba.Entity
             }
 
             if (direction.sqrMagnitude < 0.01f)
-            {
                 direction = transform.forward;
-            }
 
             //combat.IsOnCombo = false;
             OnRoll?.Invoke();
-            rollSpeedT = 1f;
-            speedBumpT = 0f;
+
+            rollSpeedT    = 1f;
+            speedBumpT    = 0f;
             rollDirection = direction;
-            forward = rollDirection;
-            lastRoll = Time.time;
+            forward       = rollDirection;
+            lastRoll      = Time.time;
+
             transform.LookAt(transform.position + direction);
         }
 
         public void BeginRoll()
         {
-            isRolling = true;
+            //IsRolling = true;
         }
 
         public void EndRoll()
         {
-            isRolling = false;
+            //IsRolling = false;
             //rollSpeedT = 0f;
         }
 
@@ -414,7 +397,7 @@ namespace Catacumba.Entity
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, transform.position + _speedBumpDir);
+            Gizmos.DrawLine(transform.position, transform.position + SpeedBumpDir);
         }
 
     #endif

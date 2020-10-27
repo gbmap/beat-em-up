@@ -111,6 +111,14 @@ public class CharacterHealth : CharacterComponentBase
     protected override void Start()
     {
         base.Start();
+        SetupDamageEffect();
+    }
+
+    private void SetupDamageEffect()
+    {
+        if (!HitEffect)
+            HitEffect = data.CharacterCfg.View.DamageEffect;
+
         HitEffect?.Setup(this);
     }
 

@@ -38,7 +38,7 @@ namespace Catacumba.Entity
         {
             get 
             {
-                return !health || (health.IsDead || (health.IsBeingDamaged && health.CanBeKnockedOut));
+                return !health || (!health.IsDead && !health.IsBeingDamaged);
             }
         }
 
@@ -267,6 +267,10 @@ namespace Catacumba.Entity
             skillBeingCasted = null;
         }
 
+        public override string GetDebugString()
+        {
+            return "Is on combo: " + IsOnCombo;
+        }
 
     #if UNITY_EDITOR
         private void OnDrawGizmos()

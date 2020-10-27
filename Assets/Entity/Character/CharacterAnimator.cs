@@ -19,7 +19,7 @@ namespace Catacumba.Entity
         }
 
         //CharacterData data;
-        CharacterMovement movement;
+        CharacterMovementBase movement;
         CharacterCombat combat;
         CharacterModelInfo modelInfo;
         public CharacterModelInfo ModelInfo
@@ -120,10 +120,10 @@ namespace Catacumba.Entity
         protected override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
-            if (component is CharacterMovement) 
+            if (component is CharacterMovementBase) 
             {
-                movement = component as CharacterMovement;
-                movement.OnRoll += OnRollCallback;
+                movement = component as CharacterMovementBase;
+                // movement.OnRoll += OnRollCallback;
             }
 
             else if (component is CharacterCombat)
@@ -138,9 +138,9 @@ namespace Catacumba.Entity
         protected override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
-            if (component is CharacterMovement) 
+            if (component is CharacterMovementBase) 
             {
-                movement.OnRoll -= OnRollCallback;
+                // movement.OnRoll -= OnRollCallback;
                 movement = null; 
             }
 
@@ -160,8 +160,10 @@ namespace Catacumba.Entity
                 if (movement.NavMeshAgent)
                     animator.SetBool(hashMoving, movement.Direction.sqrMagnitude > 0.0f && movement.CanMove);
                 
+                /*
                 if (combat)
                     UpdateSmokeEmission();
+                */
             }
 
     #if UNITY_EDITOR
@@ -169,6 +171,7 @@ namespace Catacumba.Entity
     #endif
         }
 
+        /*
         private void UpdateSmokeEmission()
         {
             if (!ParticlesSmoke) return;
@@ -203,6 +206,7 @@ namespace Catacumba.Entity
             }
             
         }
+        */
 
         private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
         {
@@ -272,6 +276,7 @@ namespace Catacumba.Entity
 
         private void OnRequestCharacterAttackCallback(EAttackType type)
         {
+            Debug.Log("!!!!!");
             AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
             AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
 

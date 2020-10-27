@@ -53,6 +53,7 @@ namespace Catacumba.Entity
             OnComponentRemoved += Callback_OnComponentRemoved;
         }
 
+
         void Destroy()
         {
             OnComponentAdded -= Callback_OnComponentAdded;
@@ -119,5 +120,34 @@ namespace Catacumba.Entity
             }
             return r;
         }
+
+    #if UNITY_EDITOR
+        private bool showDebug = false;
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F4))
+                showDebug = !showDebug;
+        }
+
+        private void OnGUI()
+        {
+            if (!showDebug) return;
+
+            /*if (data.BrainType != ECharacterBrainType.Input)
+                return;*/
+
+            Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (CharacterComponentBase component in CharacterComponents)
+            { 
+                sb.AppendFormat("--- {0} ---\n", component.GetType().Name);
+                sb.AppendLine(component.GetDebugString());
+            }
+
+            GUI.Label(r, sb.ToString());
+        }
+    #endif
     }
 }

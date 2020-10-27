@@ -40,5 +40,9 @@ namespace Catacumba.Entity
 
         protected virtual void OnComponentAdded(CharacterComponentBase component) {}
         protected virtual void OnComponentRemoved(CharacterComponentBase component) {}
+
+#if UNITY_EDITOR
+        public virtual string GetDebugString() { return string.Empty; }
+#endif
     }
 }

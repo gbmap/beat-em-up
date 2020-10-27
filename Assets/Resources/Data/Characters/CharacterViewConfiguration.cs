@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Catacumba.Effects;
 
 namespace Catacumba.Data
 {
@@ -7,6 +8,9 @@ namespace Catacumba.Data
     {
         public GameObject[] Models;
         public AnimationConfig AnimationConfig;
+
+        public ParticleEffectConfiguration DamageEffect;
+        public ParticleEffectConfiguration MovementEffect;
 
         public GameObject GetRandomModel()
         {
@@ -23,7 +27,6 @@ namespace Catacumba.Data
 
             if (AnimationConfig != null)
                 SetupModelAnimator(modelInstance, AnimationConfig);
-
         }
 
         private static void RemoveExistingModel(GameObject instance)
@@ -72,6 +75,5 @@ namespace Catacumba.Data
             // maybe we should remove this
             modelInstance.AddComponent<Entity.CharacterAnimator>();
         }
-
     }
 }
