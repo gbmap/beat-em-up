@@ -11,6 +11,7 @@ namespace Catacumba.Data
 
         public ParticleEffectConfiguration DamageEffect;
         public ParticleEffectConfiguration MovementEffect;
+        public ParticleEffectConfiguration AttackEffect;
 
         public GameObject GetRandomModel()
         {

@@ -75,6 +75,12 @@ public class CharacterHealth : CharacterComponentBase
     public bool IsOnGround { get; private set; }
     public bool IsBeingDamaged; // rolando animação de dano
 
+    public override void OnConfigurationEnded()
+    {
+        base.OnConfigurationEnded();
+        SetupDamageEffect();
+    }
+
     protected override void OnComponentAdded(CharacterComponentBase component)
     {
         base.OnComponentAdded(component);
@@ -106,12 +112,6 @@ public class CharacterHealth : CharacterComponentBase
 
         UpdateHealthQuad(1f, 1f);
 
-    }
-
-    protected override void Start()
-    {
-        base.Start();
-        SetupDamageEffect();
     }
 
     private void SetupDamageEffect()

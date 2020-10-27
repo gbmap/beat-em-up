@@ -55,18 +55,51 @@ namespace Catacumba.Entity
             bool emission = MovementEffect.IsEmitting(this);
             if (emission)
                 MovementEffect.PointSystemTowards(this, -SpeedBumpDir);
+
+            /*
+             DONT DELETE THIS WILL BE USED EVENTUALLY 
+
+            private void UpdateSmokeEmission()
+            {
+                if (!ParticlesSmoke) return;
+
+                var emission = ParticlesSmoke.emission;
+                emission.enabled = movement.IsRolling || combat.IsOnCombo || movement.IsBeingMoved;
+
+                if (!emission.enabled) return;
+
+                if (movement.IsRolling || combat.IsOnCombo)
+                {
+                    ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-transform.forward);
+                }
+                else if (movement.IsBeingMoved)
+                {
+                    ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-movement.SpeedBumpDir);
+                }
+
+                var main = ParticlesSmoke.main;
+                ParticleSystem.MinMaxCurve sz = ParticlesSmoke.main.startSize;
+                if (movement.IsRolling)
+                {
+                    main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
+                    emission.rateOverDistanceMultiplier = 2f;
+                }
+                else
+                {
+                    main.startSize = new ParticleSystem.MinMaxCurve(1, 2);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
+                    emission.rateOverDistanceMultiplier = 5f;
+                }
+                
+            }
+            */
         }
 
         protected override void Awake()
         {
             base.Awake();
             NavMeshAgent = GetComponent<NavMeshAgent>();
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            SetupEffect();
         }
 
         protected virtual void Update()
@@ -130,13 +163,6 @@ namespace Catacumba.Entity
             speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 5f);
         }
 
-        private void SetupEffect()
-        {
-            if (!MovementEffect)
-                MovementEffect = data.CharacterCfg.View.MovementEffect;
-
-            MovementEffect?.Setup(this);
-        }
 
         /*
         private void UpdateRollSpeedT()
@@ -148,6 +174,20 @@ namespace Catacumba.Entity
             }
         }
         */
+
+        public override void OnConfigurationEnded()
+        {
+            base.OnConfigurationEnded();
+            SetupEffect();
+        }
+
+        private void SetupEffect()
+        {
+            if (!MovementEffect)
+                MovementEffect = data.CharacterCfg.View.MovementEffect;
+
+            MovementEffect?.Setup(this);
+        }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
         {

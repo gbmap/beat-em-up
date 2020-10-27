@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Catacumba.Effects
 {
@@ -46,30 +47,86 @@ namespace Catacumba.Effects
     public class ParticleEffectParams : EffectParams
     {
         public MonoBehaviour component;
+
     }
 
     [CreateAssetMenu(menuName="Effects/Particle Effect Configuration")]
     public class ParticleEffectConfiguration : EffectConfiguration<ParticleEffectParams, ParticleSystem>
     {
-        // TODO: particle system changing should be supported on runtime.
+        public enum EStartingPosition
+        {
+            TransformOrigin,
+            RendererBoundsOrigin,
+            ColliderOrigin,
+            NavMeshOrigin
+        }
 
+        // TODO: particle system changing should be supported on runtime.
         public ParticleSystem ParticleSystem;
 
         [Header("Local position inside the first-found renderer's bounding box.")]
         public Vector3 LocalPosition;
+        public EStartingPosition StartingPosition = EStartingPosition.TransformOrigin;
 
         private static SystemPool<ParticleSystem> systemPool = new SystemPool<ParticleSystem>();
 
-        /*
-            Gets local position inside first-fount renderer.
-        */
         private Vector3 CalculatePosition(MonoBehaviour obj, Vector3 pos)
         {
+            switch (StartingPosition)
+            {
+                case EStartingPosition.RendererBoundsOrigin:
+                    return CalculateRendererPosition(obj, pos);
+                case EStartingPosition.TransformOrigin:
+                    return CalculateTransformPosition(obj, pos);
+                case EStartingPosition.NavMeshOrigin:
+                    return CalculateNavAgentOrigin(obj, pos);
+                case EStartingPosition.ColliderOrigin:
+                    return CalculateColliderPosition(obj, pos);
+                default:
+                    return CalculateTransformPosition(obj, pos);
+            }
+        }
+
+        private Vector3 CalculateRendererPosition(MonoBehaviour obj, Vector3 pos)
+        {                
             var renderer = obj.GetComponentInChildren<Renderer>();
-            float x = pos.x * renderer.bounds.extents.x;
-            float y = pos.y * renderer.bounds.extents.y;
-            float z = pos.z * renderer.bounds.extents.z;
-            return renderer.bounds.center + new Vector3(x,y,z);
+            return CalculateBoundsPosition(renderer.bounds, pos);
+        }
+
+        private Vector3 CalculateBoundsPosition(Bounds bounds, Vector3 pos)
+        {
+            float x = pos.x * bounds.extents.x;
+            float y = pos.y * bounds.extents.y;
+            float z = pos.z * bounds.extents.z;
+
+            Vector3 origin = new Vector3(0f, bounds.extents.y, 0f);
+            return origin + new Vector3(x,y,z);
+        }
+
+        private Vector3 CalculateTransformPosition(MonoBehaviour obj, Vector3 pos)
+        {
+            return pos; 
+        }
+
+        private Vector3 CalculateColliderPosition(MonoBehaviour obj, Vector3 pos)
+        {                
+            var collider = obj.GetComponent<Collider>();
+            return CalculateBoundsPosition(collider.bounds, pos);
+        }
+
+        private Vector3 CalculateNavAgentOrigin(MonoBehaviour obj, Vector3 pos)
+        {
+            var navAgent = obj.GetComponentInParent<NavMeshAgent>();
+
+            float r = navAgent.radius;
+            float h = navAgent.height;
+
+            float x = pos.x * r;
+            float y = pos.y * h;
+            float z = pos.z * r;
+
+            Vector3 origin = new Vector3(0f, h/2, 0f);
+            return origin + new Vector3(x,y,z);
         }
 
         public override ParticleSystem Setup(MonoBehaviour obj)
@@ -79,10 +136,21 @@ namespace Catacumba.Effects
             ParticleSystem system = Instantiate(ParticleSystem);
             system.gameObject.name = string.Format("{0}_{1}", system.gameObject.name, obj.name); 
             system.transform.parent = obj.transform;
-            system.transform.position = CalculatePosition(obj, LocalPosition);
+            system.transform.localPosition = CalculatePosition(obj, LocalPosition);
+            system.transform.localRotation = Quaternion.identity;
 
             systemPool.Add(obj, system);
             return system;
+        }
+
+        public override void Destroy(MonoBehaviour obj)
+        {
+            ParticleSystem system = systemPool.Get(obj);
+            if (system)
+            {
+                systemPool.Remove(obj);
+                Destroy(system.gameObject);
+            }
         }
 
         public override void Play(ParticleEffectParams parameters)

@@ -3,7 +3,11 @@ guid: 077d2da6891e1584dbd7e4d1156bd705
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - AnimationConfig: {instanceID: 0}
+  - DamageEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
+  - MovementEffect: {fileID: 11400000, guid: 860f51fa350b5a4428121b9eb4a99b1f, type: 2}
+  - AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

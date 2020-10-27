@@ -15,6 +15,7 @@ namespace Catacumba.Effects
         public abstract Q Setup(MonoBehaviour component);
         public abstract void Play(T parameters);
         public abstract void Stop(T parameters);
+        public abstract void Destroy(MonoBehaviour component);
 
     }
 }

@@ -132,10 +132,10 @@ GameObject:
   - component: {fileID: 246744943}
   - component: {fileID: 246744942}
   - component: {fileID: 246744944}
-  - component: {fileID: 246744946}
   - component: {fileID: 246744947}
-  - component: {fileID: 246744945}
   - component: {fileID: 246744948}
+  - component: {fileID: 246744945}
+  - component: {fileID: 246744946}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -211,11 +211,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 246744941}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca624ae7593e5634787d6ab0333a41dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 42e813cf5e25e0d49a2aafaed6ec77fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MovementEffect: {fileID: 0}
   Direction: {x: 0, y: 0, z: 0}
-  IgnoreSpeedBump: 0
   SpeedBumpForce: 0.9
 --- !u!114 &246744946
 MonoBehaviour:
@@ -242,8 +242,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f624f8e5d881fd04391fa17c689154d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AttackEffect: {fileID: 0}
   IsOnCombo: 0
-  IsOnHeavyAttack: 0
 --- !u!114 &246744948
 MonoBehaviour:
   m_ObjectHideFlags: 0

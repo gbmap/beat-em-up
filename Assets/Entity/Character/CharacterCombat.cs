@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using Catacumba.Data;
+using Catacumba.Effects;
 
 namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
+        public ParticleEffectConfiguration AttackEffect;
+
         int _nComboHits;
         BaseSkill skillBeingCasted;
 
@@ -12,28 +15,9 @@ namespace Catacumba.Entity
         CharacterMovement movement;
         CharacterAnimator animator;
 
-        Vector3 GetAttackColliderPosition()
-        {
-            return transform.position + (transform.forward*1.25f + Vector3.up);
-        }
-
-        Vector3 GetAttackColliderSize(EAttackType type)
-        {
-            float weaponScale = 0f;
-            Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
-            
-            if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
-            {
-                weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
-            }
-
-            return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
-        }
-
         [HideInInspector] public bool IsOnCombo;
 
-        public bool IsOnHeavyAttack;
-
+        public bool IsOnHeavyAttack { get; set; }
         public bool CanAttack
         {
             get 
@@ -57,6 +41,24 @@ namespace Catacumba.Entity
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
 
+        Vector3 GetAttackColliderPosition()
+        {
+            return transform.position + (transform.forward*1.25f + Vector3.up);
+        }
+
+        Vector3 GetAttackColliderSize(EAttackType type)
+        {
+            float weaponScale = 0f;
+            Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
+            
+            if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+            {
+                weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
+            }
+
+            return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
+        }
+
         protected override void Awake()
         {
             base.Awake();
@@ -65,11 +67,6 @@ namespace Catacumba.Entity
             {
                 Time = float.NegativeInfinity
             };
-
-            //health = GetComponent<CharacterHealth>();
-            //movement = GetComponent<CharacterMovement>();
-            //data = GetComponent<CharacterData>();
-            //animator = GetComponent<CharacterAnimator>();
         }
 
         protected override void OnEnable()
@@ -97,6 +94,20 @@ namespace Catacumba.Entity
             {
                 movement.OnRoll -= OnRollCallback;
             }
+        }
+
+        protected void OnDestroy()
+        {
+            AttackEffect?.Destroy(this);
+        }
+
+        public override void OnConfigurationEnded()
+        {
+            base.OnConfigurationEnded();
+
+            if (!AttackEffect)
+                AttackEffect = data.CharacterCfg.View.AttackEffect;
+            AttackEffect?.Setup(this);
         }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
@@ -192,7 +203,6 @@ namespace Catacumba.Entity
         /*
         *  CHAMADO PELO ANIMATOR!!!1111
         */
-
         public void AttackImmediate(CharacterAttackData attack)
         {
             CombatManager.Attack(
@@ -202,9 +212,16 @@ namespace Catacumba.Entity
                 transform.rotation
             );
 
+            EmitAttackEffect();
             OnAttack?.Invoke(attack);
 
             LastAttackData = attack;
+        }
+
+        private void EmitAttackEffect()
+        {
+            if (!AttackEffect) return;
+            AttackEffect.EmitBurst(this, 1);
         }
 
         /*
@@ -269,7 +286,8 @@ namespace Catacumba.Entity
 
         public override string GetDebugString()
         {
-            return "Is on combo: " + IsOnCombo;
+            return "Is on combo: " + IsOnCombo + "\n" +
+                   "Can attack: " + CanAttack;
         }
 
     #if UNITY_EDITOR

@@ -159,5 +159,12 @@ namespace Catacumba.Entity
 
         }
 
+#if UNITY_EDITOR
+        public override string GetDebugString()
+        {
+            return "Movement ref: " + (movement != null) + "\n" +
+                   "Combat ref: " + (combat != null);
+        }
+#endif
     }
 }
