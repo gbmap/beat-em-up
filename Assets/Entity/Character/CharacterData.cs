@@ -76,7 +76,6 @@ namespace Catacumba.Entity
                 // It was most likely added after the object's initialization.
                 if (IsConfigured)
                     obj.OnConfigurationEnded();
-
             }
         }
 

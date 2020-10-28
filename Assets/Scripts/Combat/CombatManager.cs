@@ -171,7 +171,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 
-            colliderSize, 
+            colliderSize/2f, 
             colliderRot, 
             1 << LayerMask.NameToLayer(layer)
         );

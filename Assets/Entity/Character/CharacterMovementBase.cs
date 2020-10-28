@@ -225,8 +225,8 @@ namespace Catacumba.Entity
                 transform.LookAt(lookAt);
             }
 
-            if (attack.Knockdown && attack.AttackerStats != data.Stats)
-                ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
+            // if (attack.Knockdown && attack.AttackerStats != data.Stats)
+            ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
         }
 
         private void OnGetUpCallback()
@@ -251,13 +251,12 @@ namespace Catacumba.Entity
 
         public float GetSpeedBumpForce(CharacterAttackData attack, bool ignoreSpeedBump = false)
         {
-            if (!ignoreSpeedBump) return 0f;
-            return (attack.Type == EAttackType.Weak ? 3f : 6f);
+            if (ignoreSpeedBump) return 0f;
 
             float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);
-            modifier = attack.Knockdown ? 1f : modifier;
+            modifier = attack.Knockdown ? 3f : modifier;
 
-            return Mathf.Min(7f, ((float)attack.Damage / 25) * modifier);
+            return SpeedBumpForce * modifier;
         }
 
         public override string GetDebugString()

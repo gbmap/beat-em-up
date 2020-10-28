@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7579cee4c9a0abf43adff1e675dd18a2, type: 3}
-  m_Name: ParticleEffect_Attack_Melee
+  m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
+  m_Name: Prop_Barrel
   m_EditorClassIdentifier: 
-  ParticleSystem: {fileID: 2006145276305323388, guid: 07da1ef48d51ee848b3bd9a33dffc3af,
-    type: 3}
-  LocalPosition: {x: 0, y: 0, z: 3}
-  StartingPosition: 3
+  Stats: {fileID: 11400000, guid: 2b8343d5306be204886bbe29ffdf9da6, type: 2}
+  Skills: {fileID: 0}
+  View: {fileID: 11400000, guid: 679035cdd9bde324f970d13fc13a1222, type: 2}
