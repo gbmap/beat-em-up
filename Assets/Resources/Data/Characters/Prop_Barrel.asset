@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
+  m_Name: Prop_Barrel
+  m_EditorClassIdentifier: 
+  Stats: {fileID: 11400000, guid: 2b8343d5306be204886bbe29ffdf9da6, type: 2}
+  Skills: {fileID: 0}
+  View: {fileID: 11400000, guid: 679035cdd9bde324f970d13fc13a1222, type: 2}

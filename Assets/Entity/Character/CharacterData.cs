@@ -37,6 +37,8 @@ namespace Catacumba.Entity
 
         public List<CharacterComponentBase> CharacterComponents;
 
+        private bool IsConfigured = false;
+
         void Awake()
         {
             BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
@@ -48,6 +50,11 @@ namespace Catacumba.Entity
             // setup attribs
             Stats = new CharacterStats(CharacterCfg.Stats);
 
+            SetupCharacterComponentReferences();
+        }
+
+        private void SetupCharacterComponentReferences()
+        {
             CharacterComponents = new List<CharacterComponentBase>(GetComponentsInChildren<CharacterComponentBase>());
             OnComponentAdded += Callback_OnComponentAdded;
             OnComponentRemoved += Callback_OnComponentRemoved;
@@ -62,7 +69,14 @@ namespace Catacumba.Entity
         private void Callback_OnComponentAdded(CharacterComponentBase obj)
         {
             if (!CharacterComponents.Contains(obj))
+            {
                 CharacterComponents.Add(obj);
+
+                // If initial configuration has been run, we should signal the newly added component.
+                // It was most likely added after the object's initialization.
+                if (IsConfigured)
+                    obj.OnConfigurationEnded();
+            }
         }
 
         private void Callback_OnComponentRemoved(CharacterComponentBase obj)
@@ -73,7 +87,15 @@ namespace Catacumba.Entity
 
         private void Start()
         {
-            CharacterCfg.Configure(this);
+            CharacterCfg.Configure(this, OnCharacterConfigurationEnded);
+        }
+
+        private void OnCharacterConfigurationEnded()
+        {
+            foreach (CharacterComponentBase component in CharacterComponents)
+                component.OnConfigurationEnded();
+
+            IsConfigured = true;
         }
 
         private bool ValidItem(ItemData item, bool enterExit)
@@ -119,5 +141,34 @@ namespace Catacumba.Entity
             }
             return r;
         }
+
+    #if UNITY_EDITOR
+        private bool showDebug = false;
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F4))
+                showDebug = !showDebug;
+        }
+
+        private void OnGUI()
+        {
+            if (!showDebug) return;
+
+            /*if (data.BrainType != ECharacterBrainType.Input)
+                return;*/
+
+            Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
+
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            foreach (CharacterComponentBase component in CharacterComponents)
+            { 
+                sb.AppendFormat("--- {0} ---\n", component.GetType().Name);
+                sb.AppendLine(component.GetDebugString());
+            }
+
+            GUI.Label(r, sb.ToString());
+        }
+    #endif
     }
 }

@@ -19,7 +19,7 @@ namespace Catacumba.Entity
         }
 
         //CharacterData data;
-        CharacterMovement movement;
+        CharacterMovementBase movement;
         CharacterCombat combat;
         CharacterModelInfo modelInfo;
         public CharacterModelInfo ModelInfo
@@ -45,39 +45,30 @@ namespace Catacumba.Entity
         public ParticleSystem.MinMaxGradient StrongHitStartColor;
 
         [Space]
-        [Header("FX Smoke")]
-        public ParticleSystem ParticlesSmoke;
-
-        [Space]
         [Header("FX Slash")]
         public ParticleSystem ParticlesSlash;
         public ParticleSystem.MinMaxGradient UnarmedGradient;
         public ParticleSystem.MinMaxCurve UnarmedStartSize;
         public float UnarmedDistanceFromCharacter = 0.7f;
 
-        // ==== MOVEMENT
-        int hashMoving = Animator.StringToHash("Moving");
-        int hashRoll = Animator.StringToHash("Roll");
-
-        // ===== COMBAT
-        int hashWeakAttack = Animator.StringToHash("WeakAttack");
-        int hashStrongAttack = Animator.StringToHash("StrongAttack");
-
-        int hashAttackType = Animator.StringToHash("AttackType");
-        int hashAttackTrigger = Animator.StringToHash("Attack");
-
         GameObject equippedWeapon;
 
-        // ====== HEALTH
-        int hashDamaged = Animator.StringToHash("Damaged");
-        int hashKnockdown = Animator.StringToHash("Knockdown");
-        int hashNHits = Animator.StringToHash("DamagedHits");
-        int hashRecover = Animator.StringToHash("Recovered");
-        int hashCastSkill = Animator.StringToHash("Cast");
+        ////////////////////////////////////////
+        //      ANIMATOR PARAMETER HASHES
 
-        // ======= SKILL
-        int hashUseSkill = Animator.StringToHash("UseSkill");
-        int hashSkillIndex = Animator.StringToHash("SkillIndex");
+        int hashMoving        = Animator.StringToHash("Moving");
+        int hashRoll          = Animator.StringToHash("Roll");
+        int hashWeakAttack    = Animator.StringToHash("WeakAttack");
+        int hashStrongAttack  = Animator.StringToHash("StrongAttack");
+        int hashAttackType    = Animator.StringToHash("AttackType");
+        int hashAttackTrigger = Animator.StringToHash("Attack");
+        int hashDamaged       = Animator.StringToHash("Damaged");
+        int hashKnockdown     = Animator.StringToHash("Knockdown");
+        int hashNHits         = Animator.StringToHash("DamagedHits");
+        int hashRecover       = Animator.StringToHash("Recovered");
+        int hashCastSkill     = Animator.StringToHash("Cast");
+        int hashUseSkill      = Animator.StringToHash("UseSkill");
+        int hashSkillIndex    = Animator.StringToHash("SkillIndex");
 
         // ============ EVENTS
         public System.Action<Animator> OnRefreshAnimator;
@@ -120,10 +111,10 @@ namespace Catacumba.Entity
         protected override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
-            if (component is CharacterMovement) 
+            if (component is CharacterMovementBase) 
             {
-                movement = component as CharacterMovement;
-                movement.OnRoll += OnRollCallback;
+                movement = component as CharacterMovementBase;
+                // movement.OnRoll += OnRollCallback;
             }
 
             else if (component is CharacterCombat)
@@ -138,9 +129,9 @@ namespace Catacumba.Entity
         protected override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
-            if (component is CharacterMovement) 
+            if (component is CharacterMovementBase) 
             {
-                movement.OnRoll -= OnRollCallback;
+                // movement.OnRoll -= OnRollCallback;
                 movement = null; 
             }
 
@@ -160,8 +151,10 @@ namespace Catacumba.Entity
                 if (movement.NavMeshAgent)
                     animator.SetBool(hashMoving, movement.Direction.sqrMagnitude > 0.0f && movement.CanMove);
                 
+                /*
                 if (combat)
                     UpdateSmokeEmission();
+                */
             }
 
     #if UNITY_EDITOR
@@ -169,41 +162,6 @@ namespace Catacumba.Entity
     #endif
         }
 
-        private void UpdateSmokeEmission()
-        {
-            if (!ParticlesSmoke) return;
-
-            var emission = ParticlesSmoke.emission;
-            emission.enabled = movement.IsRolling || combat.IsOnCombo || movement.IsBeingMoved;
-
-            if (!emission.enabled) return;
-
-            if (movement.IsRolling || combat.IsOnCombo)
-            {
-                ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-transform.forward);
-            }
-            else if (movement.IsBeingMoved)
-            {
-                ParticlesSmoke.transform.rotation = Quaternion.LookRotation(-movement.SpeedBumpDir);
-            }
-
-            var main = ParticlesSmoke.main;
-            ParticleSystem.MinMaxCurve sz = ParticlesSmoke.main.startSize;
-            if (movement.IsRolling)
-            {
-                main.startSize = new ParticleSystem.MinMaxCurve(2, 4);
-                main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
-                emission.rateOverDistanceMultiplier = 2f;
-                
-            }
-            else
-            {
-                main.startSize = new ParticleSystem.MinMaxCurve(1, 2);
-                main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, 0.75f);
-                emission.rateOverDistanceMultiplier = 5f;
-            }
-            
-        }
 
         private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
         {
@@ -214,25 +172,6 @@ namespace Catacumba.Entity
             float y = Mathf.Cos(Time.time * timeFactor);
             bool enabled = y > 0.0f;
             renderer.enabled = enabled;
-        }
-
-        private void EmitSmokeRadius()
-        {
-            if (!ParticlesSmoke) return;
-
-            int range = UnityEngine.Random.Range(15, 20);
-            for (int i = 0; i < range; i++)
-            {
-                Vector3 vel = UnityEngine.Random.insideUnitSphere;
-                vel.y = 0f;
-                vel.Normalize();
-                vel *= 13f;
-                ParticlesSmoke.Emit(new ParticleSystem.EmitParams
-                {
-                    startSize = UnityEngine.Random.Range(2, 4),
-                    velocity = vel
-                }, 1);
-            }
         }
 
         private void EmitHitImpact(CharacterAttackData attack)
@@ -273,6 +212,7 @@ namespace Catacumba.Entity
 
         private void OnRequestCharacterAttackCallback(EAttackType type)
         {
+            Debug.Log("!!!!!");
             AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
             AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
 
@@ -315,7 +255,6 @@ namespace Catacumba.Entity
 
         private void OnRollCallback()
         {
-            
             animator.speed = AnimatorDefaultSpeed;
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);
@@ -474,7 +413,7 @@ namespace Catacumba.Entity
 
         public void FreezeAnimator()
         {
-            GetComponent<FreezeAnimator>().Freeze();
+            GetComponent<FreezeAnimator>()?.Freeze();
         }
 
         // gambiarra 
@@ -527,12 +466,6 @@ namespace Catacumba.Entity
         }
 
     #if UNITY_EDITOR
-
-        private void OnGUI()
-        {
-            //Rect r = UIManager.WorldSpaceGUI(transform.position + Vector3.down, Vector2.one * 100f);
-            //GUI.Label(r, animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
-        }
 
         private bool showDeltaHips = false;
 
