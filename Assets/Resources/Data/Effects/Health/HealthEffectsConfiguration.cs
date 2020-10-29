@@ -1,4 +1,5 @@
-﻿using Catacumba.Entity;
+﻿using System.Collections.Generic;
+using Catacumba.Entity;
 using UnityEngine;
 
 namespace Catacumba.Effects

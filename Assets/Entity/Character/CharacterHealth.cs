@@ -14,6 +14,7 @@ namespace Catacumba.Entity
     {
         public ParticleEffectConfiguration HitEffect;
         public HealthEffectsConfiguration HealthEffects;
+        private HitEffect shaderHitEffect; 
 
         //////////////////////////// 
         //     EVENTS 
@@ -36,73 +37,42 @@ namespace Catacumba.Entity
         private new Collider collider;
         private CharacterAnimator animator;
 
-        // hora q caiu no chão do Knockdown
+
         private float recoverTimer;
         private float recoverCooldown = 2f;
 
         private float lastHit;
 
-        private Material[] Materials { get; set; }
-
-        private float hitEffectFactor;
-        private float HitEffectFactor
-        {
-            get { return hitEffectFactor; }
-            set
-            {
-                hitEffectFactor = value;
-                if (Materials == null) return;
-                for (int i = 0; i < Materials.Length; i++)
-                {
-                    Material m = Materials[i];
-                    if (m == null) continue;
-                    m.SetFloat("_HitFactor", value);
-                }
-            }
-        }
 
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
-            SetupDamageEffect();
+            SetupEffects();
         }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
-
-            if (component is CharacterAnimator)
-            {
-                animator = component as CharacterAnimator;
-                animator.OnRefreshAnimator += RefreshMaterials; 
-            }
         }
 
         protected override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
-
-            if (component is CharacterAnimator)
-            {
-                animator.OnRefreshAnimator -= RefreshMaterials; 
-                animator = null;
-            }
         }
 
         protected override void Awake()
         {
             base.Awake();
-
             collider = GetComponent<Collider>();
-            RefreshMaterials(animator?.animator);
         }
 
-        private void SetupDamageEffect()
+        private void SetupEffects()
         {
             if (!HitEffect)
                 HitEffect = data.CharacterCfg.View.DamageEffect;
 
             HitEffect?.Setup(this);
+            shaderHitEffect = new HitEffect(this);
             
             if (HealthEffects)
             {
@@ -129,26 +99,16 @@ namespace Catacumba.Entity
                     if (IsDead)
                     {
                         if (data.BrainType == ECharacterBrainType.Input)
-                        {
                             ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = data });
-                        }
 
                         Destroy(gameObject);
                     }
                     else
-                    {
                         OnRecover?.Invoke();
-                    }
                 }
             }
 
-            UpdateHitFactor();
-        }
-
-        void UpdateHitFactor()
-        {
-            if (!Mathf.Approximately(HitEffectFactor, 0f))
-                HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
+            shaderHitEffect.Update();
         }
 
         protected override void OnEnable()
@@ -198,24 +158,13 @@ namespace Catacumba.Entity
         public void TakeDamage(CharacterAttackData data)
         {
             if (IsOnGround /* && characterMovement.IsOnAir */)
-            {
                 return;
-            }
 
             lastHit = Time.time;
 
-            // UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.StaminaBar);
-
-            if (data.Knockdown && data.CancelAnimation ||
-                data.DefenderStats.Health <= 0)
-            {
-                //characterData.UnEquip(EInventorySlot.Weapon, data.Attacker.transform.forward);
-            }
-
             if (HitEffect)
                 HitEffect.EmitBurst(this, 20);
-
-            HitEffectFactor = 1f;
+            shaderHitEffect.OnHit();
 
             OnDamaged?.Invoke(data);
 
@@ -229,16 +178,6 @@ namespace Catacumba.Entity
             }
         }
 
-        void RefreshMaterials(Animator animator)
-        {
-            List<Material> materials = new List<Material>();
-            foreach (var r in GetComponentsInChildren<Renderer>())
-            {
-                materials.Add(r.material);
-            }
-
-            Materials = materials.ToArray();
-        }
     }
 
 }
