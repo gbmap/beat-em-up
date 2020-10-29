@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using Catacumba.Data;
 using Catacumba.Effects;
+using Catacumba.Data.Items.Characteristic;
 
 namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
         public ParticleEffectConfiguration AttackEffect;
+
+        public CharacteristicWeaponizable Weapon;
 
         int _nComboHits;
 
@@ -36,24 +39,6 @@ namespace Catacumba.Entity
 
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
-
-        Vector3 GetAttackColliderPosition()
-        {
-            return transform.position + (transform.forward*1.25f + Vector3.up);
-        }
-
-        Vector3 GetAttackColliderSize(EAttackType type)
-        {
-            float weaponScale = 0f;
-            Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
-            
-            if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
-            {
-                weaponScale = data.Stats.Inventory[EInventorySlot.Weapon].WeaponColliderScaling;
-            }
-
-            return attackColliderSize * (type == EAttackType.Weak ? 1.0f : 1.5f) + Vector3.one * weaponScale;
-        }
 
         protected override void Awake()
         {
@@ -196,14 +181,7 @@ namespace Catacumba.Entity
         */
         public void AttackImmediate(EAttackType type)
         {
-            CharacterAttackData[] results = CombatManager.Attack(
-                data,
-                type, 
-                GetAttackColliderPosition(), 
-                GetAttackColliderSize(type), 
-                transform.rotation
-            );
-
+            CharacterAttackData[] results = Weapon.Attack(data, type);
             EmitAttackEffect();
 
             if (results == null) return;
@@ -232,9 +210,8 @@ namespace Catacumba.Entity
             {
                 if (Time.time < LastAttackData.Time + 1f)
                 {
-                    Gizmos.color = Color.red;
-                    Gizmos.matrix = Matrix4x4.TRS(GetAttackColliderPosition(), transform.rotation, GetAttackColliderSize(LastAttackData.Type));
-                    Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+                    if (Weapon && data)
+                        Weapon.DebugDraw(data, LastAttackData.Type);
                 }
             }
             catch { }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Item_Fists
+  m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:Item
+  Name: Fist
+  Description: Useful when someone out-argued you and you are low on Intelligence.
+  Rarity: 0
+  Attributes:
+    Vigor: 0
+    Strength: 0
+    Dexterity: 0
+    Magic: 0
+  Characteristics:
+  - {fileID: 0}
