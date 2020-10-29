@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ShaderEffect_Character
-  m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Effects:ShaderEffectConfiguration
-  CacheType: 0
-  test: 0
+  m_Script: {fileID: 11500000, guid: 2977ef55325e45445ad9219197e6f05d, type: 3}
+  m_Name: HealthEffects_Default
+  m_EditorClassIdentifier: 
+  HealthQuad: {fileID: 11400000, guid: 089dc3e8be886be4fa5af02b03f4145a, type: 2}

@@ -201,7 +201,6 @@ MonoBehaviour:
     Inventory:
       inventory: 000000000000000000000000000000000000000000000000
       keyItems: []
-  CharacterComponents: []
 --- !u!114 &246744945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,8 +256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HitEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
+  HealthEffects: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}
   IsBeingDamaged: 0
-  HealthQuad: {fileID: 0}
 --- !u!1001 &1110491605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -408,7 +407,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: -1134714066672644336, guid: 45b660b290834cc4fb2bf5f0219ef47b, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -691,8 +690,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HitEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
+  HealthEffects: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}
   IsBeingDamaged: 0
-  HealthQuad: {fileID: 0}
 --- !u!114 &1930224176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,7 +714,6 @@ MonoBehaviour:
     Inventory:
       inventory: 000000000000000000000000000000000000000000000000
       keyItems: []
-  CharacterComponents: []
 --- !u!195 &1930224177
 NavMeshAgent:
   m_ObjectHideFlags: 0

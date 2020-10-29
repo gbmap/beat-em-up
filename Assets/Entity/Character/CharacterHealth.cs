@@ -13,6 +13,7 @@ namespace Catacumba.Entity
     public class CharacterHealth : CharacterComponentBase
     {
         public ParticleEffectConfiguration HitEffect;
+        public HealthEffectsConfiguration HealthEffects;
 
         //////////////////////////// 
         //     EVENTS 
@@ -31,8 +32,6 @@ namespace Catacumba.Entity
         public bool IsDead { get { return Health <= 0; } }
         public bool IsOnGround { get; private set; }
         [HideInInspector] public bool IsBeingDamaged; 
-
-        public MeshRenderer HealthQuad;
 
         private new Collider collider;
         private CharacterAnimator animator;
@@ -96,8 +95,6 @@ namespace Catacumba.Entity
 
             collider = GetComponent<Collider>();
             RefreshMaterials(animator?.animator);
-
-            UpdateHealthQuad(1f, 1f);
         }
 
         private void SetupDamageEffect()
@@ -106,6 +103,13 @@ namespace Catacumba.Entity
                 HitEffect = data.CharacterCfg.View.DamageEffect;
 
             HitEffect?.Setup(this);
+            
+            if (HealthEffects)
+            {
+                HealthEffects.Setup(this);
+                HealthEffects.SetHealth(this, data.Stats.HealthNormalized);
+                HealthEffects.SetStamina(this, data.Stats.StaminaBar);
+            }
         }
 
         private void Update()
@@ -113,7 +117,7 @@ namespace Catacumba.Entity
             if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
             {
                 data.Stats.CurrentStamina = data.Stats.Stamina;
-                UpdatePoise(1f);
+                // UpdatePoise(1f);
             }
 
             // timer pra se recuperar
@@ -144,9 +148,7 @@ namespace Catacumba.Entity
         void UpdateHitFactor()
         {
             if (!Mathf.Approximately(HitEffectFactor, 0f))
-            {
                 HitEffectFactor = Mathf.Max(0f, HitEffectFactor - Time.deltaTime * 2f);
-            }
         }
 
         protected override void OnEnable()
@@ -171,7 +173,9 @@ namespace Catacumba.Entity
 
         private void OnStatsChangedCallback(CharacterStats stats)
         {
-            UpdateHealthQuad(stats.HealthNormalized, stats.StaminaBar);
+            // UpdateHealthQuad(stats.HealthNormalized, stats.StaminaBar);
+            HealthEffects.SetHealth(this, stats.HealthNormalized);
+            HealthEffects.SetStamina(this, stats.StaminaBar);
         }
 
         public void OnGetUpAnimationEnd()
@@ -200,7 +204,7 @@ namespace Catacumba.Entity
 
             lastHit = Time.time;
 
-            UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.StaminaBar);
+            // UpdateHealthQuad(data.DefenderStats.HealthNormalized, data.DefenderStats.StaminaBar);
 
             if (data.Knockdown && data.CancelAnimation ||
                 data.DefenderStats.Health <= 0)
@@ -211,6 +215,8 @@ namespace Catacumba.Entity
             if (HitEffect)
                 HitEffect.EmitBurst(this, 20);
 
+            HitEffectFactor = 1f;
+
             OnDamaged?.Invoke(data);
 
             if (IsDead)
@@ -219,35 +225,8 @@ namespace Catacumba.Entity
                 OnDeath?.Invoke(this);
 
                 if (!animator)
-                {
                     Destroy(gameObject);
-                }
             }
-
-
-            HitEffectFactor = 1f;
-        }
-
-        private void UpdateHealthQuad(float healthPercentage, float poiseBar)
-        {
-            if (!HealthQuad) return;
-
-            UpdateHealth(healthPercentage);
-            UpdatePoise(poiseBar);
-        }
-
-        private void UpdateHealth(float healthPercentage)
-        {
-            if (!HealthQuad) return;
-
-            HealthQuad.material.SetFloat("_Health", healthPercentage);
-        }
-
-        private void UpdatePoise(float poiseBar)
-        {
-            if (!HealthQuad) return;
-
-            HealthQuad.material.SetFloat("_Poise", poiseBar);
         }
 
         void RefreshMaterials(Animator animator)

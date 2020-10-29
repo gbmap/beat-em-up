@@ -182,9 +182,9 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             CharacterAttackData attackData = AttackCharacter(request);
             if (attackData == null) continue;
 
-            hits++;
             lastAttack = attackData;
             attackResults[hits] = attackData;
+            hits++;
         }
 
         /*

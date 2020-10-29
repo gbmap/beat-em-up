@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_EnemyHighlight
+  m_Name: M_HealthQuad
   m_Shader: {fileID: -6465566751694194690, guid: f128d1cc17714f34b8f3d70b71300b95,
     type: 3}
   m_ShaderKeywords: 
@@ -108,7 +108,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_6C5040F5: 1
-    - Vector1_BDDD254: 0.612
+    - Vector1_BDDD254: 0.859
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -231,11 +231,11 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Color_35CF6FB9: {r: 1, g: 0.25459793, b: 0.21226418, a: 0}
+    - Color_35CF6FB9: {r: 0.05301448, g: 1, b: 0, a: 1}
     - Color_9DA4022: {r: 1, g: 0.9220883, b: 0.41981128, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.1745283, g: 1, b: 0.2107, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
