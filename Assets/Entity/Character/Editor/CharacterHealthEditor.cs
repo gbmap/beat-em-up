@@ -17,7 +17,9 @@ public class CharacterHealthEditor : Editor
 
             CharacterData cd = health.GetComponent<CharacterData>();
             AttackRequest ar = new AttackRequest(cd, cd, EAttackType.Weak);
-            health.TakeDamage(new CharacterAttackData(ar));
+
+            CombatManager.AttackCharacter(ar);
+            //health.TakeDamage(new CharacterAttackData(ar) { Damage = 100 });
 
             //health.TakeDamage();
             //health.TakeDamage(new CharacterAttackData(new AttackRequest(health)))

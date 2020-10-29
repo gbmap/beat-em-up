@@ -159,16 +159,15 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         Vector3 colliderSize, 
         Quaternion colliderRot)
     {
-        string layer = "Entities";
-
-        Collider[] colliders = Physics.OverlapBox(
+        Collider[] colliders = CollectDefenders(
+            attacker, 
             colliderPos, 
-            colliderSize/2f, 
-            colliderRot, 
-            1 << LayerMask.NameToLayer(layer)
+            colliderSize, 
+            colliderRot
         );
 
-        if (colliders.Length == 0 ) return null;
+        if (colliders == null) 
+            return null;
 
         CharacterAttackData[] attackResults = new CharacterAttackData[colliders.Length];
 
@@ -179,30 +178,62 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
             CharacterData defender = c.GetComponent<CharacterData>();
 
-            bool hasCharacterData = defender != null;
-            if (!hasCharacterData) continue;
-            if (!defender.Components.Health) continue;
+            AttackRequest request = new AttackRequest(attacker, defender, attackType);
+            CharacterAttackData attackData = AttackCharacter(request);
+            if (attackData == null) continue;
 
-            Vector3 fwd = attacker.transform.forward;
-            Vector3 dir2Collider = (c.transform.position - attacker.transform.position).normalized;
-            bool isValidAttackAngle = Vector3.Angle(fwd, dir2Collider) >= 60f; 
-            if (!isValidAttackAngle) continue;
-
-            AttackRequest attackRequest = new AttackRequest(attacker, defender, attackType);
-            CharacterAttackData attackData = new CharacterAttackData(attackRequest);
-            CalculateAttackStats(ref attackData);
-
-            defender.Components.Health.TakeDamage(attackData);
             hits++;
-
             lastAttack = attackData;
             attackResults[hits] = attackData;
         }
 
+        /*
         if (hits > 0)
             SoundManager.Instance.PlayHit(colliderPos);
+        */
 
         return attackResults;
+    }
+
+    public static Collider[] CollectDefenders(
+        CharacterData attacker, 
+        Vector3 colliderPos,
+        Vector3 colliderSize,
+        Quaternion colliderRot)
+    {
+        string layer = "Entities";
+
+        Collider[] colliders = Physics.OverlapBox(
+            colliderPos, 
+            colliderSize/2f, 
+            colliderRot, 
+            1 << LayerMask.NameToLayer(layer)
+        );
+
+        if (colliders.Length == 0 ) return null;
+        return colliders;
+    }
+
+    public static CharacterAttackData AttackCharacter(AttackRequest request)
+    {
+        CharacterData attacker = request.AttackerData;
+        CharacterData defender = request.DefenderData;
+
+        bool hasCharacterData = defender != null;
+        if (!hasCharacterData) return null;
+        if (!defender.Components.Health) return null;
+
+        Vector3 fwd = attacker.transform.forward;
+        Vector3 dir2Collider = (defender.transform.position - attacker.transform.position).normalized;
+        float attackAngle = Vector3.Angle(fwd, dir2Collider);
+        bool isValidAttackAngle = attackAngle <= 60f; 
+        if (!isValidAttackAngle) return null;
+
+        CharacterAttackData attackData = new CharacterAttackData(request);
+        CalculateAttackStats(ref attackData);
+
+        defender.Components.Health.TakeDamage(attackData);
+        return attackData;
     }
 
     public static void Heal(CharacterStats healer, CharacterStats healed)
