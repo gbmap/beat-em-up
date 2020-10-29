@@ -35,9 +35,6 @@ namespace Catacumba.Entity.AI
         [Range(1f, 10f)]
         public float Cooldown = 2f;
 
-        [Header("Skill References")]
-        public SkillSpawnEnemies SpawnSkill;
-
         private GameObject target;
         private ShuffleBag<EBossSkills> SkillWeights;
         private int tier = 0;
@@ -118,6 +115,7 @@ namespace Catacumba.Entity.AI
                 case EBossAIStates.UseSkill:
                     switch (result.code)
                     {
+                        /*
                         case UseSkillState.RES_CASTED:
                             if ((currentState as UseSkillState).SkilIndex == (int)EBossSkills.SpawnMinions ||
                                 SpawnSkill.Minions.Count > 0)
@@ -130,6 +128,7 @@ namespace Catacumba.Entity.AI
                                 SetCurrentState(EBossAIStates.Wait, Cooldown);
                                 break;
                             }
+                        */
                         default:
                             break;
                     }
@@ -187,6 +186,7 @@ namespace Catacumba.Entity.AI
 
             if (data.DefenderStats.Health <= 0)
             {
+                /*
                 SpawnSkill.StopAllCoroutines();
 
                 foreach (GameObject minion in SpawnSkill.Minions)
@@ -204,6 +204,7 @@ namespace Catacumba.Entity.AI
                 }
                 
                 Destroy(SpawnSkill);
+                */
             }
         }
 

@@ -15,9 +15,7 @@ namespace Catacumba.Entity
 
         protected virtual void Start()
         {
-            foreach (var component in data.CharacterComponents)
-                this.OnComponentAdded(component);
-
+            data.Components.ForEachComponent(c => this.OnComponentAdded(c));
             data.OnComponentAdded?.Invoke(this);
         }
 

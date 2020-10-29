@@ -256,11 +256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanBeKnockedOut: 1
-  IgnoreDamage: 0
   HitEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
-  HealthQuad: {fileID: 0}
   IsBeingDamaged: 0
+  HealthQuad: {fileID: 0}
 --- !u!1001 &1110491605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -488,7 +486,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -673,7 +671,6 @@ GameObject:
   - component: {fileID: 1930224176}
   - component: {fileID: 1930224175}
   - component: {fileID: 1930224179}
-  - component: {fileID: 1930224180}
   m_Layer: 10
   m_Name: GameObject (1)
   m_TagString: Untagged
@@ -693,11 +690,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5193d57683733234dae91bb55b834d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CanBeKnockedOut: 1
-  IgnoreDamage: 0
   HitEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
-  HealthQuad: {fileID: 0}
   IsBeingDamaged: 0
+  HealthQuad: {fileID: 0}
 --- !u!114 &1930224176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -771,18 +766,3 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &1930224180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1930224174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e813cf5e25e0d49a2aafaed6ec77fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MovementEffect: {fileID: 0}
-  Direction: {x: 0, y: 0, z: 0}
-  SpeedBumpForce: 0.9

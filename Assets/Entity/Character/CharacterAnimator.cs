@@ -121,8 +121,6 @@ namespace Catacumba.Entity
             {
                 combat = component as CharacterCombat;
                 combat.OnRequestAttack += OnRequestCharacterAttackCallback;
-                combat.OnRequestSkillUse += OnRequestSkillUseCallback;
-                combat.OnAttack += OnCharacterAttackCallback;
             }
         }
 
@@ -138,8 +136,6 @@ namespace Catacumba.Entity
             else if (component is CharacterCombat)
             {
                 combat.OnRequestAttack -= OnRequestCharacterAttackCallback;
-                combat.OnRequestSkillUse -= OnRequestSkillUseCallback;
-                combat.OnAttack -= OnCharacterAttackCallback;
                 combat = null;
             }
         }
@@ -228,11 +224,6 @@ namespace Catacumba.Entity
             animator.SetInteger(hashAttackType, (int)type);
             animator.SetTrigger(hashAttackTrigger);
             // animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
-        }
-
-        private void OnRequestSkillUseCallback(BaseSkill obj)
-        {
-            animator.SetTrigger(hashCastSkill);
         }
 
         private void OnCharacterAttackCallback(CharacterAttackData attack)
@@ -494,11 +485,6 @@ namespace Catacumba.Entity
 
         void OnDamaged(CharacterAttackData attack)
         {
-            if (attack.Poised && !attack.Dead)
-            {
-                return;
-            }
-
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);
 
@@ -540,7 +526,7 @@ namespace Catacumba.Entity
             if (!combat) return;
             if (!combat.CanAttack) return;
 
-            combat.AttackImmediate(new CharacterAttackData(type, gameObject, 0));
+            combat.AttackImmediate(type);
         }
 
     }

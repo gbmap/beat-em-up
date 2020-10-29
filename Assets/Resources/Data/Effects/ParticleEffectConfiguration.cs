@@ -51,7 +51,7 @@ namespace Catacumba.Effects
     }
 
     [CreateAssetMenu(menuName="Effects/Particle Effect Configuration")]
-    public class ParticleEffectConfiguration : EffectConfiguration<ParticleEffectParams, ParticleSystem>
+    public class ParticleEffectConfiguration : EffectConfiguration
     {
         public enum EStartingPosition
         {
@@ -129,7 +129,7 @@ namespace Catacumba.Effects
             return origin + new Vector3(x,y,z);
         }
 
-        public override ParticleSystem Setup(MonoBehaviour obj)
+        public override bool Setup(MonoBehaviour obj)
         {
             systemPool.CleanPool();
 
@@ -153,15 +153,15 @@ namespace Catacumba.Effects
             }
         }
 
-        public override void Play(ParticleEffectParams parameters)
+        public override void Play(MonoBehaviour component)
         {
-            ParticleSystem system = systemPool.Get(parameters.component);
+            ParticleSystem system = systemPool.Get(component);
             system.Play(true);
         }
 
-        public override void Stop(ParticleEffectParams parameters)
+        public override void Stop(MonoBehaviour component)
         {
-            ParticleSystem system = systemPool.Get(parameters.component);
+            ParticleSystem system = systemPool.Get(component);
             system.Stop();
         }
 

@@ -21,6 +21,85 @@ namespace Catacumba.Entity
     [Serializable]
     public class CharacterData : MonoBehaviour
     {
+        public class ComponentsCache
+        {
+            // Most referenced components
+            public CharacterData Owner { get; private set; }
+            public CharacterMovementBase Movement { get; private set; }
+            public CharacterCombat Combat { get; private set; }
+            public CharacterHealth Health { get; private set; }
+            public List<CharacterComponentBase> CharacterComponents { get; private set; }
+
+            public ComponentsCache(
+                CharacterData owner, 
+                CharacterComponentBase[] components)
+            {
+                CharacterComponents = new List<CharacterComponentBase>();
+
+                foreach (CharacterComponentBase component in components)
+                    Cache(component);
+
+                Owner = owner;
+                Owner.OnComponentAdded += Callback_OnComponentAdded;
+                Owner.OnComponentRemoved += Callback_OnComponentRemoved;
+            }
+
+            ~ComponentsCache()
+            {
+                Owner.OnComponentAdded -= Callback_OnComponentAdded;
+                Owner.OnComponentRemoved -= Callback_OnComponentRemoved;
+            }
+
+            public void Cache(CharacterComponentBase component)
+            {
+                if (component is CharacterHealth)
+                    Health = component as CharacterHealth;
+                else if (component is CharacterCombat)
+                    Combat = component as CharacterCombat;
+                else if (component is CharacterMovementBase)
+                    Movement = component as CharacterMovementBase;
+            }
+
+            public void Decache(CharacterComponentBase component)
+            {
+                if (component is CharacterHealth)
+                    Health = null;
+                else if (component is CharacterCombat)
+                    Combat = null;
+                else if (component is CharacterMovementBase)
+                    Movement = null;
+            }
+
+            private void Callback_OnComponentAdded(CharacterComponentBase obj)
+            {
+                if (!CharacterComponents.Contains(obj))
+                {
+                    CharacterComponents.Add(obj);
+
+                    // If initial configuration has been run, we should signal the newly added component.
+                    // It was most likely added after the object's initialization.
+                    if (Owner.IsConfigured)
+                        obj.OnConfigurationEnded();
+                }
+
+                Cache(obj);
+            }
+
+            private void Callback_OnComponentRemoved(CharacterComponentBase obj)
+            {
+                if (CharacterComponents.Contains(obj))
+                    CharacterComponents.Remove(obj);
+
+                Decache(obj);
+            }
+
+            public void ForEachComponent(System.Action<CharacterComponentBase> function)
+            {
+                foreach (CharacterComponentBase component in CharacterComponents)
+                    function(component);
+            }
+        }
+
         [Space]
         [Header("Configuration")]
         public Catacumba.Data.CharacterConfiguration CharacterCfg;
@@ -35,9 +114,9 @@ namespace Catacumba.Entity
         public System.Action<CharacterComponentBase> OnComponentAdded;
         public System.Action<CharacterComponentBase> OnComponentRemoved;
 
-        public List<CharacterComponentBase> CharacterComponents;
-
         private bool IsConfigured = false;
+
+        public ComponentsCache Components { get; private set; }
 
         void Awake()
         {
@@ -50,39 +129,17 @@ namespace Catacumba.Entity
             // setup attribs
             Stats = new CharacterStats(CharacterCfg.Stats);
 
-            SetupCharacterComponentReferences();
+            SetupCharacterComponentsCache();
         }
 
-        private void SetupCharacterComponentReferences()
+        private void SetupCharacterComponentsCache()
         {
-            CharacterComponents = new List<CharacterComponentBase>(GetComponentsInChildren<CharacterComponentBase>());
-            OnComponentAdded += Callback_OnComponentAdded;
-            OnComponentRemoved += Callback_OnComponentRemoved;
+            Components = new ComponentsCache(this, GetComponentsInChildren<CharacterComponentBase>());
         }
 
         void Destroy()
         {
-            OnComponentAdded -= Callback_OnComponentAdded;
-            OnComponentRemoved -= Callback_OnComponentRemoved;
-        }
-
-        private void Callback_OnComponentAdded(CharacterComponentBase obj)
-        {
-            if (!CharacterComponents.Contains(obj))
-            {
-                CharacterComponents.Add(obj);
-
-                // If initial configuration has been run, we should signal the newly added component.
-                // It was most likely added after the object's initialization.
-                if (IsConfigured)
-                    obj.OnConfigurationEnded();
-            }
-        }
-
-        private void Callback_OnComponentRemoved(CharacterComponentBase obj)
-        {
-            if (CharacterComponents.Contains(obj))
-                CharacterComponents.Remove(obj);
+            Components = null;
         }
 
         private void Start()
@@ -92,8 +149,7 @@ namespace Catacumba.Entity
 
         private void OnCharacterConfigurationEnded()
         {
-            foreach (CharacterComponentBase component in CharacterComponents)
-                component.OnConfigurationEnded();
+            Components.ForEachComponent(c => c.OnConfigurationEnded());
 
             IsConfigured = true;
         }
@@ -161,11 +217,7 @@ namespace Catacumba.Entity
             Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            foreach (CharacterComponentBase component in CharacterComponents)
-            { 
-                sb.AppendFormat("--- {0} ---\n", component.GetType().Name);
-                sb.AppendLine(component.GetDebugString());
-            }
+            Components.ForEachComponent(c => sb.AppendFormat("--- {0} ---\n{1}\n", c.GetType().Name, c.GetDebugString()));
 
             GUI.Label(r, sb.ToString());
         }

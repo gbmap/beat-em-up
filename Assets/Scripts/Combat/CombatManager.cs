@@ -9,47 +9,67 @@ public enum EAttackType
     Skill
 }
 
-public struct CharacterAttackData
+public class AttackRequest
 {
-    public CharacterAttackData(EAttackType type, GameObject attacker, int hitNumber = 0)
+    public CharacterData AttackerData { get; private set; }
+    public CharacterStats AttackerStats { get { return AttackerData.Stats; } }
+    public GameObject Attacker { get { return AttackerData.gameObject; }}
+
+    public CharacterData DefenderData { get; private set; }
+    public CharacterStats DefenderStats { get { return DefenderData.Stats; } }
+    public GameObject Defender { get { return DefenderData.gameObject; } }
+
+    public EAttackType Type;
+
+    public AttackRequest(CharacterData attacker, CharacterData defender, EAttackType attackType)
     {
-        Type = type;
-        Attacker = attacker;
-
-        Time = UnityEngine.Time.time;
-        AttackerStats = null;
-        Defender = null;
-        DefenderStats = null;
-        Damage = 0;
-        HitNumber = hitNumber;
-        Poised = false;
-        Knockdown = false;
-        CancelAnimation = false;
-        Dead = false;
-
-        ColliderPos = Vector3.zero;
-        ColliderSz = Vector3.zero;
-        ColliderRot = Quaternion.identity;
-        
+        AttackerData = attacker;
+        DefenderData = defender;
+        Type = attackType;
     }
+}
+
+public class CharacterAttackData
+{
+    public AttackRequest Request { get; private set; }
+
+    public CharacterData AttackerData { get { return Request.AttackerData; } }
+    public CharacterStats AttackerStats { get { return AttackerData.Stats; } }
+    public GameObject Attacker { get { return AttackerData.gameObject; } }
+
+    public CharacterData DefenderData { get { return Request.DefenderData; } }
+    public CharacterStats DefenderStats { get { return DefenderData.Stats; } }
+    public GameObject Defender { get { return DefenderData.gameObject; } }
+
+    public EAttackType Type { get { return Request.Type; } }
 
     public float Time;
-    public EAttackType Type;
-    public GameObject Attacker;
-    public CharacterStats AttackerStats;
-    public GameObject Defender;
-    public CharacterStats DefenderStats;
+
     public int Damage;
     public int HitNumber;
     public bool Dead;
 
-    public bool Poised;
     public bool Knockdown;
     public bool CancelAnimation;
 
     public Vector3 ColliderPos;
     public Vector3 ColliderSz;
     public Quaternion ColliderRot;
+
+    public CharacterAttackData(AttackRequest request)
+    {
+        Request         = request;
+        Time            = UnityEngine.Time.time;
+        Damage          = 0;
+        HitNumber       = 0;
+        Knockdown       = false;
+        CancelAnimation = false;
+        Dead            = false;
+
+        ColliderPos = Vector3.zero;
+        ColliderSz  = Vector3.zero;
+        ColliderRot = Quaternion.identity;
+    }
 }
 
 public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
@@ -101,73 +121,45 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
         return Mathf.RoundToInt((str+(str*backstab)) * crit);
     }
 
-
-    public static void CalculateAttackStats(GameObject attacker, GameObject defender, ref CharacterAttackData attackData)
+    public static void CalculateAttackStats(ref CharacterAttackData attackData)
     {
-        CharacterStats attackerStats = attacker.GetComponent<CharacterData>()?.Stats;
-        CharacterStats defenderStats = defender.GetComponent<CharacterData>().Stats;
+        CharacterStats attacker = attackData.AttackerStats;
+        CharacterStats defender = attackData.DefenderStats;
 
-        CalculateAttackStats(
-            attackerStats,
-            defenderStats,
-            ref attackData
-        );
-    }
-
-    public static void CalculateAttackStats(CharacterStats attacker, CharacterStats defender, ref CharacterAttackData attackData)
-    {
-        attackData.AttackerStats = attacker;
-        attackData.DefenderStats = defender;
-
-        // calcula dano cru
         int damage = 0;
         if (attacker == null || attackData.Type == EAttackType.Skill)
         {
             damage = attackData.Damage;
         }
         else
-        {
             damage = GetDamage(attacker, defender, attackData.Attacker.transform.forward, attackData.Defender.transform.forward, attackData.Type);
-        }
 
-        // rola o dado pra poise
-        attackData.Poised = Random.value < defender.PoiseChance;
-        if (attackData.Poised)
-        {
-            damage = (int)(damage * 0.9f);
-        }
-
-        defender.CurrentStamina -= attackData.Type == EAttackType.Weak ? 1 : 3;
-
-        // reduz vida
         defender.Health -= damage;
-
-        // vê se derrubou o BONECO
+        defender.CurrentStamina -= attackData.Type == EAttackType.Weak ? 1 : 3;
         attackData.Dead = defender.Health <= 0;
         attackData.Knockdown = defender.CanBeKnockedOut && (Mathf.Approximately(defender.StaminaBar, 0) || attackData.Dead);
-
-        // atualiza o pod pra conter o dano que foi gerado
         attackData.Damage = damage;
+
+        CharacterCombat defenderCombat = attackData.DefenderData.Components.Combat; 
+        bool canBeKnockedOut = defender.CanBeKnockedOut;
+        bool IsOnHeavyAttack = defenderCombat && defenderCombat.IsOnHeavyAttack;
+        bool IsStrongAttack = attackData.Type == EAttackType.Strong;
+        bool IsLowOnStamina = defender.StaminaBar < 0.25f;
+        attackData.CancelAnimation = (canBeKnockedOut && 
+                                     (!IsOnHeavyAttack 
+                                     || IsStrongAttack 
+                                     || attackData.Dead 
+                                     || IsLowOnStamina));
     }
 
-    public static void Attack(ref CharacterAttackData attack,
+    public static CharacterAttackData[] Attack(
+        CharacterData attacker,
+        EAttackType attackType,
         Vector3 colliderPos, 
         Vector3 colliderSize, 
         Quaternion colliderRot)
     {
-        attack.ColliderPos = colliderPos;
-        attack.ColliderSz = colliderSize;
-        attack.ColliderRot = colliderRot;
-
         string layer = "Entities";
-        if (attack.Attacker)
-        {
-            layer = attack.Attacker.layer == LayerMask.NameToLayer("Entities") ? "Player" : "Entities";
-        }
-        else
-        {
-            Debug.LogWarning("SkillData with no caster. Defaulting attack to entities layer. This shouldn't be happening.");
-        }
 
         Collider[] colliders = Physics.OverlapBox(
             colliderPos, 
@@ -176,44 +168,41 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
             1 << LayerMask.NameToLayer(layer)
         );
 
-        int hits = 0;
+        if (colliders.Length == 0 ) return null;
 
+        CharacterAttackData[] attackResults = new CharacterAttackData[colliders.Length];
+
+        int hits = 0;
         foreach (var c in colliders)
         {
-            Vector3 fwd = attack.Attacker.transform.forward;
-            Vector3 dir2Collider = (c.transform.position - attack.Attacker.transform.position).normalized;
+            if (c.gameObject == attacker.gameObject) continue;
 
-            var movement = c.gameObject.GetComponent<CharacterMovement>();
-            var health = c.gameObject.GetComponent<CharacterHealth>();
-            if (movement && movement.IsRolling || !health || health && health.IgnoreDamage ||
-                Vector3.Angle(fwd, dir2Collider) >= 60f)
-            {
-                continue;
-            }
+            CharacterData defender = c.GetComponent<CharacterData>();
 
-            if (c.gameObject == attack.Attacker) continue;
-            attack.Defender = c.gameObject;
-            CalculateAttackStats(attack.Attacker, c.gameObject, ref attack);
+            bool hasCharacterData = defender != null;
+            if (!hasCharacterData) continue;
+            if (!defender.Components.Health) continue;
 
-            var combat = c.gameObject.GetComponent<CharacterCombat>();
+            Vector3 fwd = attacker.transform.forward;
+            Vector3 dir2Collider = (c.transform.position - attacker.transform.position).normalized;
+            bool isValidAttackAngle = Vector3.Angle(fwd, dir2Collider) >= 60f; 
+            if (!isValidAttackAngle) continue;
 
-            attack.CancelAnimation = (attack.DefenderStats.CanBeKnockedOut && ((combat && !combat.IsOnHeavyAttack) ||
-                                                                                attack.Type == EAttackType.Strong ||
-                                                                                attack.DefenderStats.Health == 0))
-                                      || attack.DefenderStats.StaminaBar < 0.25f;  
-            //attack.CancelAnimation |= attack.Type == EAttackType.Strong;
+            AttackRequest attackRequest = new AttackRequest(attacker, defender, attackType);
+            CharacterAttackData attackData = new CharacterAttackData(attackRequest);
+            CalculateAttackStats(ref attackData);
 
-            c.gameObject.GetComponent<CharacterHealth>()?.TakeDamage(attack);
-
+            defender.Components.Health.TakeDamage(attackData);
             hits++;
+
+            lastAttack = attackData;
+            attackResults[hits] = attackData;
         }
 
         if (hits > 0)
-        {
             SoundManager.Instance.PlayHit(colliderPos);
-        }
 
-        lastAttack = attack;
+        return attackResults;
     }
 
     public static void Heal(CharacterStats healer, CharacterStats healed)

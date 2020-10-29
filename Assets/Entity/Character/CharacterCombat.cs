@@ -9,7 +9,6 @@ namespace Catacumba.Entity
         public ParticleEffectConfiguration AttackEffect;
 
         int _nComboHits;
-        BaseSkill skillBeingCasted;
 
         CharacterHealth health;
         CharacterMovement movement;
@@ -33,10 +32,7 @@ namespace Catacumba.Entity
         //  Callbacks
 
         public System.Action<EAttackType> OnRequestAttack;
-        public System.Action<CharacterAttackData> OnAttack;
-
-        public System.Action<BaseSkill> OnRequestSkillUse;
-        public System.Action<BaseSkill> OnSkillUsed;
+        public System.Action<CharacterAttackData[]> OnAttack;
 
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
@@ -62,11 +58,6 @@ namespace Catacumba.Entity
         protected override void Awake()
         {
             base.Awake();
-
-            LastDamageData = new CharacterAttackData
-            {
-                Time = float.NegativeInfinity
-            };
         }
 
         protected override void OnEnable()
@@ -164,7 +155,7 @@ namespace Catacumba.Entity
             if (!CanAttack) return;
             if (!animator)
             {
-                AttackImmediate(new CharacterAttackData(type, gameObject, 0));
+                AttackImmediate(type);
                 return;
             }
 
@@ -203,85 +194,27 @@ namespace Catacumba.Entity
         /*
         *  CHAMADO PELO ANIMATOR!!!1111
         */
-        public void AttackImmediate(CharacterAttackData attack)
+        public void AttackImmediate(EAttackType type)
         {
-            CombatManager.Attack(
-                ref attack, 
+            CharacterAttackData[] results = CombatManager.Attack(
+                data,
+                type, 
                 GetAttackColliderPosition(), 
-                GetAttackColliderSize(attack.Type), 
+                GetAttackColliderSize(type), 
                 transform.rotation
             );
 
             EmitAttackEffect();
-            OnAttack?.Invoke(attack);
 
-            LastAttackData = attack;
+            if (results == null) return;
+            OnAttack?.Invoke(results);
+            LastAttackData = results[results.Length-1];
         }
 
         private void EmitAttackEffect()
         {
             if (!AttackEffect) return;
             AttackEffect.EmitBurst(this, 1);
-        }
-
-        /*
-        * Skills
-        * */
-        public void AnimUseWeaponSkill(int index)
-        {
-            /*
-            ItemStats weapon = data.Stats.Inventory[EInventorySlot.Weapon];
-            if (weapon.Skills == null)
-            {
-                Debug.LogWarning("No weapon skills found. This shouldn't be happening.");
-                return;
-            }
-
-            SkillData skill = weapon.Skills[index];
-            UseSkill(skill);
-            */
-        }
-
-        public void AnimUseCharacterSkill(int index)
-        {
-            // TODO 
-            //SkillData skill = data.CharacterSkills[index];
-            //UseSkill(skill);
-        }
-
-        private void UseSkill(SkillData s)
-        {
-            if (s.gameObject == null) // objeto foi destruído por algum motivo, possivelmente o jogo foi ganho?
-            {
-                return;
-            }
-
-            // hack pra determinar se é um prefab
-            if (s.gameObject.scene.rootCount == 0)
-            {
-                var obj = Instantiate(s.gameObject, transform.position + transform.forward * s.Offset.z, transform.rotation);
-                s = obj.GetComponent<SkillData>();
-                s.Caster = data;
-            }
-            s.Cast();
-        }
-        
-        public void RequestSkillUse(BaseSkill skill)
-        {
-            skillBeingCasted = skill;
-            OnRequestSkillUse?.Invoke(skill);
-        }
-
-        public void UseSkill(int index)
-        {
-            //animator.UseSkill(index);
-        }
-
-        public void AnimSkillUsed()
-        {
-            // fazer algo com a skill sendo castada.
-            OnSkillUsed?.Invoke(skillBeingCasted);
-            skillBeingCasted = null;
         }
 
         public override string GetDebugString()

@@ -342,12 +342,6 @@ namespace Catacumba.Entity.AI
 
         protected void OnDamagedCallback(CharacterAttackData attackData)
         {
-            if (!health.CanBeKnockedOut)
-            {
-                //lastAttack -= 0.2f; // HACK
-                return;
-            }
-
             if (attackData.Type == EAttackType.Strong)
             {
                 lastAttack = Time.time + 0.2f;
@@ -554,30 +548,18 @@ namespace Catacumba.Entity.AI
         {
             base.OnEnter();
             health.OnDamaged += OnDamagedCallback;
-            combat.OnSkillUsed += OnSkillUsedCallback;
         }
 
         public override void OnExit()
         {
             base.OnExit();
             health.OnDamaged -= OnDamagedCallback;
-            combat.OnSkillUsed -= OnSkillUsedCallback;
         }
 
         private void OnDamagedCallback(CharacterAttackData obj)
         {
             healCastT = 0f;
             isCasting = false;
-        }
-
-        private void OnSkillUsedCallback(BaseSkill skill)
-        {
-            isHealing = false;
-            isCasting = false;
-            LastHeal = Time.time;
-            FX.Instance.EmitHealEffect(Target);
-            
-            CombatManager.Heal(data.Stats, Target.GetComponent<CharacterData>().Stats);
         }
 
         public override StateResult Update()
@@ -612,7 +594,6 @@ namespace Catacumba.Entity.AI
                         movement.IsAgentStopped = false;
                         FX.Instance.EmitHealFlame(animator.ModelInfo.LeftHandBone.Bone.gameObject);
                         FX.Instance.EmitHealFlame(animator.ModelInfo.RightHandBone.Bone.gameObject);
-                        combat.RequestSkillUse(new BaseSkill());
                         isCasting = true;
                     }
 
@@ -736,7 +717,7 @@ namespace Catacumba.Entity.AI
             animator.OnStartUsingSkill += OnStartUsingSkill;
             animator.OnEndUsingSkill += OnEndUsingSkill;
 
-            combat.UseSkill(SkilIndex);
+            //combat.UseSkill(SkilIndex);
         }
 
         public override void OnExit()
