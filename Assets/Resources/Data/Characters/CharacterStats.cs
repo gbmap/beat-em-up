@@ -14,20 +14,6 @@ namespace Catacumba.Data
         public int Level { get; set; }
 
         public CharAttributesI Attributes;
-        public int GetAttributeTotal(EAttribute attribute)
-        {
-            switch (attribute)
-            {
-                case EAttribute.Dexterity: return (Attributes.Dexterity + Inventory.GetTotalAttributes().Dexterity);
-                case EAttribute.Magic: return (Attributes.Magic + Inventory.GetTotalAttributes().Magic);
-                case EAttribute.Strength: return (Attributes.Strength + Inventory.GetTotalAttributes().Strength);
-                case EAttribute.Vigor: return (Attributes.Vigor + Inventory.GetTotalAttributes().Vigor);
-                default: throw new NotImplementedException("Requested attributed not implemented!");
-            }
-        }
-
-        public Inventory Inventory;
-
 
         private int health;
         public int Health
@@ -66,7 +52,6 @@ namespace Catacumba.Data
                 Vigor = Mathf.RoundToInt(stats.VigorCurve.Evaluate(UnityEngine.Random.value)),
                 Magic = Mathf.RoundToInt(stats.MagicCurve.Evaluate(UnityEngine.Random.value))
             };
-            Inventory = new Inventory();
 
             Health = MaxHealth;
             Mana = MaxMana;

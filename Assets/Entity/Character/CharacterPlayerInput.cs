@@ -111,11 +111,12 @@ namespace Catacumba.Entity
             if (RewiredInput.GetButtonDown("Submit"))
             {
                 OnInteract?.Invoke(data);
-                data?.Interact();
+                // data?.Interact();
             }
 
             if (RewiredInput.GetButton("Submit"))
             {
+                /*
                 if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
                 {
                     dropTimer += Time.deltaTime;
@@ -125,6 +126,7 @@ namespace Catacumba.Entity
                         dropTimer = 0f;
                     }
                 }
+                */
             }
             else
             {

@@ -96,7 +96,7 @@ namespace Catacumba.Entity.AI
         {
             if (!Application.isEditor || !debug) return;
 
-            Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 100f);
+            Rect r = CharacterData.WorldSpaceGUI(transform.position, Vector2.one * 100f);
             GUI.Label(r, "State: " + CurrentAIState);
 
             if (currentState != null)

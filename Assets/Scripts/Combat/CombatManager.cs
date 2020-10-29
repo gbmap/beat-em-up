@@ -72,10 +72,8 @@ public class CharacterAttackData
     }
 }
 
-public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
+public class CombatManager : SimpleSingleton<CombatManager>
 {
-    protected override string Path => "Data/CombatManagerConfig";
-
     private static CharacterAttackData lastAttack;
 
     public static float GetCritFactor(CharacterStats c)
@@ -85,8 +83,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static float GetCritChance(CharacterStats c)
     {
-        var attr = c.Inventory.GetTotalAttributes();
-        float d = c.Attributes.Dexterity + attr.Dexterity;
+        float d = c.Attributes.Dexterity;
 
         // esse 256 é arbitrário e significa o valor de destreza que equivale a 50% de chance de crit.
         return 1f - (1f / (Mathf.Pow(d/256, 2f)+1f));
@@ -95,26 +92,23 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static float GetPoiseChance(CharacterStats c)
     {
-        var attr = c.Inventory.GetTotalAttributes();
-        float d = c.Attributes.Dexterity + attr.Dexterity;
+        float d = c.Attributes.Dexterity;
         return 1f - (1f / (Mathf.Pow(d / 256, 2f) + 1f));
     }
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Vigor+c.Inventory.GetTotalAttributes().Vigor) * 19;
+        return (c.Attributes.Vigor) * 19;
     }
 
     public static int GetMaxMana(CharacterStats c)
     {
-        return (c.Attributes.Magic+c.Inventory.GetTotalAttributes().Magic) * 19;
+        return (c.Attributes.Magic) * 19;
     }
 
     public static int GetDamage(CharacterStats attacker, CharacterStats defender, Vector3 attackerForward, Vector3 defenderForward, EAttackType attackType)
     {
-        var dmgScaling = attacker.Inventory.GetTotalDamageScaling();
-
-        float str = (attacker.GetAttributeTotal(EAttribute.Strength)) * (1f + dmgScaling.Strength) * (attackType == EAttackType.Weak ? 1f : 4f);
+        float str = (attacker.Attributes.Strength) * (attackType == EAttackType.Weak ? 1f : 4f);
         float crit = Random.value < GetCritChance(attacker) ? GetCritFactor(attacker) : 1f;
         float backstab = Mathf.Max(0f, Vector3.Dot(attackerForward, defenderForward));
 
@@ -238,7 +232,7 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
     public static void Heal(CharacterStats healer, CharacterStats healed)
     {
-        healed.Health += (int)(healer.GetAttributeTotal(EAttribute.Magic) * 0.5f);
+        healed.Health += (int)(healer.Attributes.Magic * 0.5f);
     }
 
     private void OnDrawGizmos()

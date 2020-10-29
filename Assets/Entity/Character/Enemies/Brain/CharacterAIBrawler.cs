@@ -54,7 +54,9 @@ namespace Catacumba.Entity.AI
 
             if (Time.time > lastItemCheck + itemCheckTime)
             {
+                
                 /* OTIMIZAR ISSO AQUI >>>>EVENTUALMENTE<<<< */
+                /*
                 ItemData[] items = FindObjectsOfType<ItemData>().Where(item => Vector3.Distance(gameObject.transform.position, item.transform.position) < 5.0f).ToArray();
                 //List<ItemData> itemsInRange = characterData.ItemsInRange;
 
@@ -69,6 +71,7 @@ namespace Catacumba.Entity.AI
                         }
                     }
                 }
+                */
                 lastItemCheck = Time.time;
             }
         }
@@ -96,7 +99,7 @@ namespace Catacumba.Entity.AI
                 case EBrawlerAIStates.Attack:
                     return new AttackState(gameObject, AttackStateConfig, data[0] as GameObject, newState == EBrawlerAIStates.OrbitAttack);
                 case EBrawlerAIStates.EquipItem:
-                    return new EquipItemState(gameObject, data[0] as ItemData);
+                    return new EquipItemState(gameObject);
                 default:
                     return new WanderState(gameObject, WanderStateConfig);
             }

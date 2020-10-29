@@ -183,8 +183,11 @@ namespace Catacumba.Entity.AI
 
         protected virtual bool IsInAttackPosition(float distanceToTarget)
         {
+            /*
             bool rangedAttack = data.Stats.Inventory.HasEquip(EInventorySlot.Weapon) &&
                    data.Stats.Inventory[EInventorySlot.Weapon].IsRanged;
+            */
+            bool rangedAttack = false;
 
             if (rangedAttack)
             {
@@ -315,8 +318,11 @@ namespace Catacumba.Entity.AI
 
         protected virtual void UpdateDesiredDestination()
         {
+            /*
             bool rangedAttack = data.Stats.Inventory.HasEquip(EInventorySlot.Weapon) &&
                 data.Stats.Inventory[EInventorySlot.Weapon].IsRanged;
+            */
+            bool rangedAttack = false;
 
             Vector3 targetPosition;
 
@@ -626,10 +632,12 @@ namespace Catacumba.Entity.AI
 
         public override void OnGUI()
         {
+            /*
             base.OnGUI();
             Rect r = UIManager.WorldSpaceGUI(gameObject.transform.position + Vector3.down * 2f, 
                 new Vector2(100f*(healCastT/Cfg.HealCastTime), 15f));
             GUI.Box(r, "HealingProgress");
+            */
         }
     }
 
@@ -644,15 +652,16 @@ namespace Catacumba.Entity.AI
         public const int RES_ITEM_EQUIPPED = 2;
         public const int RES_CANCEL = 3;
 
-        private ItemData targetItem;
+        //private ItemData targetItem;
 
-        public EquipItemState(GameObject gameObject, ItemData targetItem) : base(gameObject)
+        public EquipItemState(GameObject gameObject) : base(gameObject)
         {
-            this.targetItem = targetItem;
+            //this.targetItem = targetItem;
         }
 
         public override StateResult Update()
         {
+            /*
             if (targetItem == null)
             {
                 return new StateResult(RES_ITEM_DESTROYED);
@@ -676,6 +685,8 @@ namespace Catacumba.Entity.AI
                 movement.IsAgentStopped = false;
                 return new StateResult(RES_CONTINUE);
             }
+            */
+            return new StateResult(RES_ITEM_DESTROYED);
         }
     }
 

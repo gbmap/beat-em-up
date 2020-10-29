@@ -384,7 +384,7 @@ namespace Catacumba.Entity
             /*if (data.BrainType != ECharacterBrainType.Input)
                 return;*/
 
-            Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
+            Rect r = CharacterData.WorldSpaceGUI(transform.position, Vector2.one * 200f);
             GUI.Label(r, "NavMeshAgent: " + NavAgentValid +
                         //"\nIsOnCombo: " + combat.IsOnCombo +
                         "\nspeedBumpT: " + speedBumpT +

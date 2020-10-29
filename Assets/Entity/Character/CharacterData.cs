@@ -108,9 +108,6 @@ namespace Catacumba.Entity
 
         public ECharacterBrainType BrainType { get; private set; }
 
-        public List<ItemData> ItemsInRange { get { return itemsInRange; } }
-        private List<ItemData> itemsInRange = new List<ItemData>();
-
         public System.Action<CharacterComponentBase> OnComponentAdded;
         public System.Action<CharacterComponentBase> OnComponentRemoved;
 
@@ -154,50 +151,6 @@ namespace Catacumba.Entity
             IsConfigured = true;
         }
 
-        private bool ValidItem(ItemData item, bool enterExit)
-        {
-            return itemsInRange.Contains(item) ^ enterExit;
-        }
-
-        public void OnItemInRange(ItemData item)
-        {
-            if (ValidItem(item, true))
-                itemsInRange.Add(item);
-        }
-
-        public void OnItemOutOfRange(ItemData item)
-        {
-            if (ValidItem(item, false))
-                itemsInRange.Remove(item);
-        }
-
-        public bool Interact()
-        {
-            if (itemsInRange.Count == 0) return false;
-
-            var item = itemsInRange[0];
-            while (item == null)
-            {
-                itemsInRange.RemoveAt(0);
-
-                if (itemsInRange.Count == 0)
-                {
-                    return false;
-                }
-
-                item = itemsInRange[0];
-            }
-
-            bool r = true;
-
-            if (r)
-            {
-                OnItemOutOfRange(item);
-                Destroy(item.gameObject);
-            }
-            return r;
-        }
-
     #if UNITY_EDITOR
         private bool showDebug = false;
 
@@ -214,13 +167,26 @@ namespace Catacumba.Entity
             /*if (data.BrainType != ECharacterBrainType.Input)
                 return;*/
 
-            Rect r = UIManager.WorldSpaceGUI(transform.position, Vector2.one * 200f);
+            Rect r = WorldSpaceGUI(transform.position, Vector2.one * 200f);
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             Components.ForEachComponent(c => sb.AppendFormat("--- {0} ---\n{1}\n", c.GetType().Name, c.GetDebugString()));
 
             GUI.Label(r, sb.ToString());
         }
+
+        public static Rect WorldSpaceGUI(Vector3 worldPosition, Vector2 size)
+        {
+            Vector3 posW = worldPosition;
+            //posW.y = -posW.y;
+
+            Vector2 pos = Camera.main.WorldToScreenPoint(posW);
+
+            Rect r = new Rect(pos, size);
+            r.y = Screen.height - pos.y;
+            return r;
+        }
+
     #endif
     }
 }
