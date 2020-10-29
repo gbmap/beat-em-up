@@ -146,68 +146,6 @@ public class CombatManager : SimpleSingleton<CombatManager>
                                      || IsLowOnStamina));
     }
 
-    public static CharacterAttackData[] Attack(
-        CharacterData attacker,
-        EAttackType attackType,
-        Vector3 colliderPos, 
-        Vector3 colliderSize, 
-        Quaternion colliderRot)
-    {
-        Collider[] colliders = CollectDefenders(
-            attacker, 
-            colliderPos, 
-            colliderSize, 
-            colliderRot
-        );
-
-        if (colliders == null) 
-            return null;
-
-        CharacterAttackData[] attackResults = new CharacterAttackData[colliders.Length];
-
-        int hits = 0;
-        foreach (var c in colliders)
-        {
-            if (c.gameObject == attacker.gameObject) continue;
-
-            CharacterData defender = c.GetComponent<CharacterData>();
-
-            AttackRequest request = new AttackRequest(attacker, defender, attackType);
-            CharacterAttackData attackData = AttackCharacter(request);
-            if (attackData == null) continue;
-
-            lastAttack = attackData;
-            attackResults[hits] = attackData;
-            hits++;
-        }
-
-        /*
-        if (hits > 0)
-            SoundManager.Instance.PlayHit(colliderPos);
-        */
-
-        return attackResults;
-    }
-
-    public static Collider[] CollectDefenders(
-        CharacterData attacker, 
-        Vector3 colliderPos,
-        Vector3 colliderSize,
-        Quaternion colliderRot)
-    {
-        string layer = "Entities";
-
-        Collider[] colliders = Physics.OverlapBox(
-            colliderPos, 
-            colliderSize/2f, 
-            colliderRot, 
-            1 << LayerMask.NameToLayer(layer)
-        );
-
-        if (colliders.Length == 0 ) return null;
-        return colliders;
-    }
-
     public static CharacterAttackData AttackCharacter(AttackRequest request)
     {
         CharacterData attacker = request.AttackerData;
@@ -228,11 +166,6 @@ public class CombatManager : SimpleSingleton<CombatManager>
 
         defender.Components.Health.TakeDamage(attackData);
         return attackData;
-    }
-
-    public static void Heal(CharacterStats healer, CharacterStats healed)
-    {
-        healed.Health += (int)(healer.Attributes.Magic * 0.5f);
     }
 
     private void OnDrawGizmos()
