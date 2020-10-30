@@ -30,6 +30,20 @@ namespace Catacumba.Data.Items
 
         public GameObject Model;
 
+        public bool Equip(CharacterData character, BodyPart slot)
+        {
+            if (!HasCharacteristic<EquippableCharacteristic>())
+                return false;
+
+            EquippableCharacteristic[] equippables = GetCharacteristics<EquippableCharacteristic>();
+            equippables = equippables.Where(e => e.EquipsOnSlot(slot)).ToArray();
+            if (equippables == null || equippables.Length == 0)
+                return false;
+
+            EquippableCharacteristic characteristic = equippables[0];
+            return characteristic.Equip(character, this, slot);
+        }
+
         public TItemCharacteristic[] GetCharacteristics<TItemCharacteristic>()
             where TItemCharacteristic : ItemCharacteristic
         {
@@ -41,6 +55,12 @@ namespace Catacumba.Data.Items
             {
                 return null;
             }
+        }
+
+        public bool HasCharacteristic<TCharacteristic>() 
+            where TCharacteristic : ItemCharacteristic
+        {
+            return Characteristics.Any(c => c is TCharacteristic);
         }
     }
 

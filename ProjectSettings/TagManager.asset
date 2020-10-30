@@ -19,7 +19,7 @@ TagManager:
   - FX
   - Entities
   - Level
-  - Consumables
+  - Item
   - Player
   - Projectiles
   - 

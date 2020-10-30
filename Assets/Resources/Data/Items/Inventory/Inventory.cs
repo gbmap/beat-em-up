@@ -6,7 +6,10 @@ using UnityEngine;
 namespace Catacumba.Data.Items
 {
     [CreateAssetMenu(menuName="Data/Inventory/Body Part", fileName="BodyPart")]
-    public class BodyPart : ScriptableObject { }
+    public class BodyPart : ScriptableObject 
+    { 
+        public string BoneName = "";
+    }
 
     [CreateAssetMenu(menuName="Data/Inventory/Inventory", fileName="Inventory")]
     public class Inventory : ScriptableObject

@@ -14,14 +14,17 @@ namespace Catacumba.Entity
         private static int hashHighlighted = Animator.StringToHash("Highlighted");
         private static int hashTaken       = Animator.StringToHash("Taken");
 
+        private float lastCollisionStay = float.NegativeInfinity;
+
         private bool highlighted;
         public bool Highlighted
         {
             get { return highlighted; }
             set 
             {
+                if (highlighted != value)
+                    animator?.SetBool(hashHighlighted, value);
                 highlighted = value;
-                animator?.SetBool(hashHighlighted, highlighted);
             }
         }
 
@@ -41,21 +44,33 @@ namespace Catacumba.Entity
 
             for (int i = 0; i < modelRoot.transform.childCount; i++)
             {
-                Transform t = transform.GetChild(i);
+                Transform t = modelRoot.GetChild(i);
                 Destroy(t.gameObject);
             }
 
             instance = Instantiate(Item.Model, Vector3.zero, Quaternion.identity, modelRoot);
+            instance.transform.localPosition = Vector3.zero;
+        }
+
+        void Update()
+        {
+            Highlighted = Mathf.Abs(Time.time - lastCollisionStay) < 0.05f;
+        }
+
+        void OnTriggerStay(Collider other)
+        {
+            lastCollisionStay = Time.time;
         }
 
         public void Take()
         {
-            animator.SetTrigger(hashTaken);
+            animator?.SetTrigger(hashTaken);
         }
 
         public void AnimTakenAnimationEnded()
         {
             Destroy(this.gameObject);
         }
+
     }
 }

@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
+using Catacumba.Entity;
 
 namespace Catacumba.Data.Items
 {
@@ -13,6 +12,11 @@ namespace Catacumba.Data.Items
         public bool EquipsOnSlot(BodyPart part)
         {
             return Slots.Any(s => s == part);
+        }
+
+        public bool Equip(CharacterData data, Item item, BodyPart slot)
+        {
+            return false;
         }
     }
 }
