@@ -1,22 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-namespace Catacumba.Data
+namespace Catacumba.Data.Items
 {
     [CreateAssetMenu(menuName="Data/Inventory/Body Part", fileName="BodyPart")]
     public class BodyPart : ScriptableObject { }
 
+    [CreateAssetMenu(menuName="Data/Inventory/Inventory", fileName="Inventory")]
     public class Inventory : ScriptableObject
     {
-        public List<BodyPart> Slots; 
+        [SerializeField] private List<BodyPart> Slots; 
+        private Dictionary<BodyPart, Item> EquippedItems = new Dictionary<BodyPart, Item>();
+
+        public Item Amputate(BodyPart part)
+        {
+            if (!Slots.Contains(part))
+                return null;
+
+            Slots.Remove(part);
+
+            Item item;
+            if (!EquippedItems.TryGetValue(part, out item))
+                return null;
+            
+            return item;
+        }
+
+        public bool IsSlotEmpty(BodyPart slot)
+        {
+            return !EquippedItems.ContainsKey(slot) || EquippedItems[slot] == null;
+        }
+
+        public bool Equip(Item item, BodyPart slot, bool checkEquippable = true)
+        {
+            if (!CanEquipOnSlot(slot))
+                return false;
+
+            EquippableCharacteristic[] characteristics = item.GetCharacteristics<EquippableCharacteristic>();
+            if (characteristics == null || characteristics.Length == 0)
+                return false;
+
+            if (!characteristics.Any(c => c.EquipsOnSlot(slot)))
+                return false;
+
+            return CacheEquip(item, slot);
+        }
+
+        public bool Equip(Item item)
+        {
+            BodyPart[] slots = GetBodyParts(item);
+            if (slots == null)
+                return false;
+
+            BodyPart slotToEquip = slots.FirstOrDefault(s => !EquippedItems.ContainsKey(s));
+            if (!slotToEquip)
+                return false;
+
+            return CacheEquip(item, slotToEquip);
+        }
+
+        private bool CacheEquip(Item item, BodyPart slot)
+        {
+            if (!IsSlotEmpty(slot))
+            {
+                return false; // TODO: maybe drop item 
+            }
+
+            EquippedItems[slot] = item;
+            return true;
+        }
+
+        private bool CanEquipOnSlot(BodyPart slot)
+        {
+            return Slots.Contains(slot);
+        }
+
+        private static BodyPart[] GetBodyParts(Item item)
+        {
+            EquippableCharacteristic[] characteristics = item.GetCharacteristics<EquippableCharacteristic>();
+            if (characteristics == null || characteristics.Length == 0)
+                return null;
+
+            return characteristics.SelectMany(c => c.Slots).ToArray();
+        }
+
     }
 
-    public enum EItemRarity
-    {
-        Common,
-        Uncommon,
-        Rare,
-        Legendary
-    }
 }

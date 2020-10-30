@@ -1,18 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Catacumba.Entity;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+namespace Catacumba.Data.Items
 {
-    // Start is called before the first frame update
-    void Start()
+    public enum EItemRarity
     {
-        
+        Common,
+        Uncommon,
+        Rare,
+        Legendary
     }
 
-    // Update is called once per frame
-    void Update()
+    public abstract class ItemCharacteristic : ScriptableObject { }
+
+    [CreateAssetMenu(menuName="Data/Item", fileName="Item")]
+    public class Item : ScriptableObject
     {
-        
+        public string Name;
+
+        [Multiline]
+        public string Description;
+        public EItemRarity Rarity;
+        public CharAttributesI Attributes;
+
+        public ItemCharacteristic[] Characteristics;
+
+        public GameObject Model;
+
+        public TItemCharacteristic[] GetCharacteristics<TItemCharacteristic>()
+            where TItemCharacteristic : ItemCharacteristic
+        {
+            try
+            {
+                return Characteristics.Where(c => c is TItemCharacteristic).Cast<TItemCharacteristic>().ToArray();
+            }
+            catch (System.NullReferenceException)
+            {
+                return null;
+            }
+        }
     }
+
 }
