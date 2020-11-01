@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Enemy_Goblin_Weak
   m_EditorClassIdentifier: 
   Stats: {fileID: 11400000, guid: 282ce180d6f3db34fb65e3c1032c3304, type: 2}
+  Inventory: {fileID: 11400000, guid: 0c3d9513ab4f24044aee499b5bd29df4, type: 2}
   Skills: {fileID: 0}
   View: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}
