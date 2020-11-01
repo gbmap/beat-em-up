@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 754141948fb78f841b20702f985cf461, type: 3}
-  m_Name: Equippable
-  m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:EquippableCharacteristic
-  Slots: []
+  m_Script: {fileID: 11500000, guid: e2e86f0c2681408468ae07d2c9dd9ca1, type: 3}
+  m_Name: WeaponType_Sword
+  m_EditorClassIdentifier: 
+  animatorController: {fileID: 22100000, guid: 2706458cdb705804f8ce6ecbb63edea8, type: 2}

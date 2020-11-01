@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Catacumba.Data.Character;
 using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace Catacumba.Data.Items
 
     public abstract class ItemCharacteristic : ScriptableObject { }
 
-    [CreateAssetMenu(menuName="Data/Item", fileName="Item")]
+    [CreateAssetMenu(menuName="Data/Item/Item", fileName="Item")]
     public class Item : ScriptableObject
     {
         public string Name;

@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a5f6cc92a24f2741a1b29ac4571207a, type: 3}
   m_Name: WeaponizableMelee
   m_EditorClassIdentifier: 
+  Slots:
+  - {fileID: 0}
+  - {fileID: 0}
+  WeaponType: {fileID: 11400000, guid: 93375d4c360623d4e90e500df838f51e, type: 2}
   AttackColliderSize: {fileID: 11400000, guid: 76092a344ef27944b96f46bdcbb6369c, type: 2}

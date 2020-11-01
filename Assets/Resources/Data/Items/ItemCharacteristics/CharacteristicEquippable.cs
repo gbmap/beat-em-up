@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 using Catacumba.Entity;
+using Catacumba.Data.Character;
 
 namespace Catacumba.Data.Items.Characteristics
 {
