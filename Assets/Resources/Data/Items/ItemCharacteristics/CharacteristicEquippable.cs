@@ -2,10 +2,10 @@
 using UnityEngine;
 using Catacumba.Entity;
 
-namespace Catacumba.Data.Items
+namespace Catacumba.Data.Items.Characteristics
 {
     [CreateAssetMenu(menuName="Data/Item Characteristic/Equippable", fileName="Equippable")]
-    public class EquippableCharacteristic : ItemCharacteristic
+    public class CharacteristicEquippable : ItemCharacteristic
     {
         public BodyPart[] Slots;
 

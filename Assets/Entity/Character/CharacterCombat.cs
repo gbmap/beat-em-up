@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Catacumba.Data;
 using Catacumba.Effects;
-using Catacumba.Data.Items.Characteristic;
+using Catacumba.Data.Items.Characteristics;
 
 namespace Catacumba.Entity
 {

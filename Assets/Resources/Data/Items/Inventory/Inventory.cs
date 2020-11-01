@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Catacumba.Data.Items.Characteristics;
 using UnityEngine;
 
 namespace Catacumba.Data.Items
@@ -41,7 +41,7 @@ namespace Catacumba.Data.Items
             if (!CanEquipOnSlot(slot))
                 return false;
 
-            EquippableCharacteristic[] characteristics = item.GetCharacteristics<EquippableCharacteristic>();
+            CharacteristicEquippable[] characteristics = item.GetCharacteristics<CharacteristicEquippable>();
             if (characteristics == null || characteristics.Length == 0)
                 return false;
 
@@ -82,7 +82,7 @@ namespace Catacumba.Data.Items
 
         private static BodyPart[] GetBodyParts(Item item)
         {
-            EquippableCharacteristic[] characteristics = item.GetCharacteristics<EquippableCharacteristic>();
+            CharacteristicEquippable[] characteristics = item.GetCharacteristics<CharacteristicEquippable>();
             if (characteristics == null || characteristics.Length == 0)
                 return null;
 

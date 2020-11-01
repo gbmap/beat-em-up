@@ -1,7 +1,7 @@
 using Catacumba.Entity;
 using UnityEngine;
 
-namespace Catacumba.Data.Items.Characteristic
+namespace Catacumba.Data.Items.Characteristics
 {
     [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Melee", fileName = "Weaponizable")]
     public class CharacteristicWeaponizableMelee : CharacteristicWeaponizable

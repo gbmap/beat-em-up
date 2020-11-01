@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
 using UnityEngine;
 
@@ -32,15 +31,15 @@ namespace Catacumba.Data.Items
 
         public bool Equip(CharacterData character, BodyPart slot)
         {
-            if (!HasCharacteristic<EquippableCharacteristic>())
+            if (!HasCharacteristic<CharacteristicEquippable>())
                 return false;
 
-            EquippableCharacteristic[] equippables = GetCharacteristics<EquippableCharacteristic>();
+            CharacteristicEquippable[] equippables = GetCharacteristics<CharacteristicEquippable>();
             equippables = equippables.Where(e => e.EquipsOnSlot(slot)).ToArray();
             if (equippables == null || equippables.Length == 0)
                 return false;
 
-            EquippableCharacteristic characteristic = equippables[0];
+            CharacteristicEquippable characteristic = equippables[0];
             return characteristic.Equip(character, this, slot);
         }
 
