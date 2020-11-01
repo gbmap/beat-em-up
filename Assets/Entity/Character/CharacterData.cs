@@ -28,6 +28,7 @@ namespace Catacumba.Entity
             public CharacterMovementBase Movement { get; private set; }
             public CharacterCombat Combat { get; private set; }
             public CharacterHealth Health { get; private set; }
+            public CharacterAnimator Animator { get; private set; }
             public List<CharacterComponentBase> CharacterComponents { get; private set; }
 
             public ComponentsCache(
@@ -58,6 +59,8 @@ namespace Catacumba.Entity
                     Combat = component as CharacterCombat;
                 else if (component is CharacterMovementBase)
                     Movement = component as CharacterMovementBase;
+                else if (component is CharacterAnimator)
+                    Animator = component as CharacterAnimator;
             }
 
             public void Decache(CharacterComponentBase component)
@@ -68,6 +71,8 @@ namespace Catacumba.Entity
                     Combat = null;
                 else if (component is CharacterMovementBase)
                     Movement = null;
+                else if (component is CharacterAnimator)
+                    Animator = null;
             }
 
             private void Callback_OnComponentAdded(CharacterComponentBase obj)
@@ -124,7 +129,7 @@ namespace Catacumba.Entity
                 CharacterCfg = Catacumba.Data.CharacterConfiguration.Default;
 
             // setup attribs
-            Stats = new CharacterStats(CharacterCfg.Stats);
+            Stats = new CharacterStats(CharacterCfg.Stats, CharacterCfg.Inventory);
 
             SetupCharacterComponentsCache();
         }

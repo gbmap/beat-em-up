@@ -15,9 +15,11 @@ namespace Catacumba.Data.Items.Characteristics
             return Slots.Any(s => s == part);
         }
 
-        public bool Equip(CharacterData data, Item item, BodyPart slot)
+        public virtual bool Equip(CharacterData data, Item item, BodyPart slot)
         {
-            return false;
+            if (!EquipsOnSlot(slot))
+                return false;
+            return true;
         }
     }
 }

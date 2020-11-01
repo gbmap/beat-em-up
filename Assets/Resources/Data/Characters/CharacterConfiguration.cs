@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 using Catacumba.Entity;
+using Catacumba.Data.Items;
+
 namespace Catacumba.Data
 {
     [CreateAssetMenu()]
@@ -18,6 +20,7 @@ namespace Catacumba.Data
         }
 
         public CharacterStatConfiguration Stats;
+        public Inventory Inventory;
         public CharacterSkillConfiguration Skills;
         public CharacterViewConfiguration View;
 
