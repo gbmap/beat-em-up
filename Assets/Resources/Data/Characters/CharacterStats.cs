@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
+using Catacumba.Data.Items;
 
 namespace Catacumba.Data
 {
@@ -12,7 +12,6 @@ namespace Catacumba.Data
         public System.Action<CharacterStats> OnStatsChanged = delegate { };
 
         public int Level { get; set; }
-
         public CharAttributesI Attributes;
 
         private int health;
@@ -26,7 +25,6 @@ namespace Catacumba.Data
             }
         }
         public int MaxHealth { get { return CombatManager.GetMaxHealth(this); } }
-
         public float HealthNormalized { get { return ((float)Health / MaxHealth); } }
 
         public int Mana { get; set; }
@@ -37,12 +35,13 @@ namespace Catacumba.Data
         public float StaminaBar { get { return ((float)CurrentStamina)/Stamina; } }
 
         public float PoiseChance { get { return CombatManager.GetPoiseChance(this); } }
+        public float MoveSpeed { get { return 5f; } }
 
         public bool CanBeKnockedOut { get; set; }
 
-        public float MoveSpeed { get { return 5f; } }
+        public Inventory Inventory { get; private set; }
 
-        public CharacterStats(Catacumba.Data.CharacterStatConfiguration stats)
+        public CharacterStats(Catacumba.Data.CharacterStatConfiguration stats, Inventory inventory=null)
         {
             Level = 1;
             Attributes = new CharAttributesI()
@@ -52,6 +51,12 @@ namespace Catacumba.Data
                 Vigor = Mathf.RoundToInt(stats.VigorCurve.Evaluate(UnityEngine.Random.value)),
                 Magic = Mathf.RoundToInt(stats.MagicCurve.Evaluate(UnityEngine.Random.value))
             };
+
+            if (inventory == null)
+                Inventory = ScriptableObject.CreateInstance<Inventory>();
+            else
+                // shallow copy is fine in this case
+                Inventory = ScriptableObject.Instantiate(inventory);
 
             Health = MaxHealth;
             Mana = MaxMana;

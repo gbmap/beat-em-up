@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 using Catacumba.Data;
+using Catacumba.Data.Items;
+using System;
+using Catacumba.Data.Items.Characteristics;
+using System.Linq;
 
 namespace Catacumba.Entity
 {
@@ -43,13 +47,6 @@ namespace Catacumba.Entity
         public ParticleSystem.MinMaxGradient WeakHitStartColor;
         public ParticleSystem.MinMaxCurve StrongHitStartSize;
         public ParticleSystem.MinMaxGradient StrongHitStartColor;
-
-        [Space]
-        [Header("FX Slash")]
-        public ParticleSystem ParticlesSlash;
-        public ParticleSystem.MinMaxGradient UnarmedGradient;
-        public ParticleSystem.MinMaxCurve UnarmedStartSize;
-        public float UnarmedDistanceFromCharacter = 0.7f;
 
         GameObject equippedWeapon;
 
@@ -101,11 +98,15 @@ namespace Catacumba.Entity
         protected override void OnEnable()
         {
             base.OnEnable();
+
+            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
         }
+
 
         protected override void OnDisable()
         {
             base.OnDisable();
+            data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
         }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
@@ -200,7 +201,19 @@ namespace Catacumba.Entity
 
         #endregion
 
-        #region CALLBACKS
+        #region CALLBACKS 
+
+        private void Cb_OnItemEquipped(InventoryEquipResult result)
+        {
+            var weapon = result.Params.Item.GetCharacteristics<CharacteristicWeaponizable>().FirstOrDefault();
+            if (!weapon)
+            {
+                Debug.Log("Not weapon");
+                return;
+            }
+
+            UpdateAnimator(weapon.WeaponType.animatorController);
+        }
 
         private void OnCharacterDamagedCallback(CharacterAttackData attack)
         {
@@ -208,7 +221,6 @@ namespace Catacumba.Entity
 
         private void OnRequestCharacterAttackCallback(EAttackType type)
         {
-            Debug.Log("!!!!!");
             AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
             AnimatorClipInfo[] clips = animator.GetCurrentAnimatorClipInfo(0);
 
@@ -229,15 +241,7 @@ namespace Catacumba.Entity
         private void OnCharacterAttackCallback(CharacterAttackData attack)
         {
             if (attack.Defender != null)
-            {
                 FreezeAnimator();
-            }
-
-            if (!ParticlesSlash) return;
-            ParticlesSlash.Emit(new ParticleSystem.EmitParams()
-            {
-                velocity = transform.forward,
-            }, 1);
         }
 
         private void OnRecoverCallback()
@@ -294,6 +298,12 @@ namespace Catacumba.Entity
             renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
             OnRefreshAnimator?.Invoke(animator);
+        }
+
+        public void UpdateAnimator(RuntimeAnimatorController controller)
+        {
+            animator.runtimeAnimatorController = controller;
+            animator.SetInteger("BrainType", (int)data.BrainType);
         }
 
         public void SetRootMotion(bool v)

@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Catacumba.Entity;
 using Catacumba.Data;
+using Catacumba.Data.Items;
 
 [CustomEditor(typeof(CharacterData))]
 public class CharacterDataEditor : Editor
@@ -35,6 +36,18 @@ public class CharacterDataEditor : Editor
         sb.AppendFormat("Stamina: {0}/{1}\n", stats.CurrentStamina, stats.Stamina);
         sb.AppendFormat("Health: {0}/{1}\n", stats.Health, stats.MaxHealth);
         sb.AppendFormat("Mana: {0}\n", stats.Mana, stats.MaxMana);
+        sb.AppendLine("-----");
+        if (stats.Inventory)
+        {
+            foreach (var slot in stats.Inventory.Slots)
+            {
+                Item item;
+                stats.Inventory.EquippedItems.TryGetValue(slot, out item);
+                
+                string itemName = item ? item.Name : "Empty";
+                sb.AppendFormat("{0}: {1}\n", slot.name, itemName);
+            }
+        }
         return sb.ToString();
     }
 

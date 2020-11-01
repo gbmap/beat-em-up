@@ -6,11 +6,41 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items
 {
+    public class InventoryEquipParams
+    {
+        public Item Item;
+        public BodyPart Slot;
+
+        // bool = success or not
+        public System.Action<InventoryEquipResult> Callback;
+    }
+
+    public class InventoryEquipResult : Interactions.InteractionResult
+    {
+        public enum EEquipResult
+        {
+            Success,
+            ItemCantEquipOnSlot,
+            ItemNotEquippable,
+            NoSlotsAvailable
+        }
+
+        public InventoryEquipParams Params;
+        public EEquipResult Result;
+    }
+
     [CreateAssetMenu(menuName="Data/Inventory/Inventory", fileName="Inventory")]
     public class Inventory : ScriptableObject
     {
-        [SerializeField] private List<BodyPart> Slots; 
-        private Dictionary<BodyPart, Item> EquippedItems = new Dictionary<BodyPart, Item>();
+        public List<BodyPart> Slots; 
+        public Dictionary<BodyPart, Item> EquippedItems = new Dictionary<BodyPart, Item>();
+
+        void Awake()
+        {
+
+        }
+
+        public System.Action<InventoryEquipResult> OnItemEquipped;
 
         public Item Amputate(BodyPart part)
         {
@@ -31,43 +61,80 @@ namespace Catacumba.Data.Items
             return !EquippedItems.ContainsKey(slot) || EquippedItems[slot] == null;
         }
 
-        public bool Equip(Item item, BodyPart slot, bool checkEquippable = true)
+        public InventoryEquipResult.EEquipResult Equip(InventoryEquipParams parameters) 
+        {
+            if (parameters.Slot == null)
+                return EquipAnySlot(parameters);
+
+            return EquipOnSlot(parameters);
+        }
+
+        /*
+        private InventoryEquipResult.EEquipResult Equip(Item item, BodyPart slot, bool checkEquippable = true)
         {
             if (!CanEquipOnSlot(slot))
-                return false;
+            {
+                return InventoryEquipResult.EEquipResult.ItemCantEquipOnSlot;
+            }
 
             CharacteristicEquippable[] characteristics = item.GetCharacteristics<CharacteristicEquippable>();
+
             if (characteristics == null || characteristics.Length == 0)
                 return false;
 
             if (!characteristics.Any(c => c.EquipsOnSlot(slot)))
                 return false;
 
+            foreach (CharacteristicEquippable equippable in characteristics)
+            {
+                //if (equippable.Equip())
+
+            }
             return CacheEquip(item, slot);
         }
+        */
 
-        public bool Equip(Item item)
+        public InventoryEquipResult.EEquipResult EquipOnSlot(InventoryEquipParams parameters)
         {
-            BodyPart[] slots = GetBodyParts(item);
-            if (slots == null)
-                return false;
+            if (!IsSlotEmpty(parameters.Slot))
+                return EquipResult(parameters, InventoryEquipResult.EEquipResult.NoSlotsAvailable);
 
-            BodyPart slotToEquip = slots.FirstOrDefault(s => !EquippedItems.ContainsKey(s));
-            if (!slotToEquip)
-                return false;
-
-            return CacheEquip(item, slotToEquip);
+            return EquipItem(parameters);
         }
 
-        private bool CacheEquip(Item item, BodyPart slot)
+        public InventoryEquipResult.EEquipResult EquipAnySlot(InventoryEquipParams parameters)
         {
-            if (!IsSlotEmpty(slot))
-            {
-                return false; // TODO: maybe drop item 
-            }
+            BodyPart[] slots = GetBodyParts(parameters.Item);
+            if (slots == null || slots.Length == 0)
+                return EquipResult(parameters, InventoryEquipResult.EEquipResult.ItemCantEquipOnSlot);
 
-            EquippedItems[slot] = item;
-            return true;
+            BodyPart slotToEquip = slots.FirstOrDefault(s => s != null && !EquippedItems.ContainsKey(s));
+            if (!slotToEquip)
+                return EquipResult(parameters, InventoryEquipResult.EEquipResult.NoSlotsAvailable);
+
+            parameters.Slot = slotToEquip;
+            return EquipItem(parameters);
+        }
+
+        private InventoryEquipResult.EEquipResult EquipItem(InventoryEquipParams parameters)
+        {
+            EquippedItems[parameters.Slot] = parameters.Item;
+            return EquipResult(parameters, InventoryEquipResult.EEquipResult.Success);
+        }
+
+        private InventoryEquipResult.EEquipResult EquipResult(InventoryEquipParams parameters, InventoryEquipResult.EEquipResult result)
+        {
+            InventoryEquipResult res = new InventoryEquipResult()
+            {
+                Params = parameters,
+                Result = result
+            };
+
+            if (result == InventoryEquipResult.EEquipResult.Success)
+                OnItemEquipped?.Invoke(res);
+
+            parameters.Callback?.Invoke(res);
+            return result;
         }
 
         private bool CanEquipOnSlot(BodyPart slot)
