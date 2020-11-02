@@ -2,29 +2,31 @@
 using Catacumba.Data;
 using Catacumba.Effects;
 using Catacumba.Data.Items.Characteristics;
+using Catacumba.Data.Items;
+using System;
+using System.Linq;
 
 namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
-        public ParticleEffectConfiguration AttackEffect;
+        private int _nComboHits;
 
-        public CharacteristicWeaponizable Weapon;
-
-        int _nComboHits;
-
-        CharacterHealth health;
-        CharacterMovement movement;
-        CharacterAnimator animator;
+        private CharacterHealth health;
+        private CharacterMovement movement;
+        private CharacterAnimator animator;
 
         [HideInInspector] public bool IsOnCombo;
+
+        public ParticleEffectConfiguration AttackEffect { get; private set; }
+        public CharacteristicWeaponizable Weapon { get; private set; }
 
         public bool IsOnHeavyAttack { get; set; }
         public bool CanAttack
         {
             get 
             {
-                return !health || (!health.IsDead && !health.IsBeingDamaged);
+                return Weapon && (!health || (!health.IsDead && !health.IsBeingDamaged));
             }
         }
 
@@ -51,6 +53,8 @@ namespace Catacumba.Entity
 
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
+
+            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
         }
         
         protected override void OnDisable()
@@ -60,15 +64,26 @@ namespace Catacumba.Entity
             OnComboStarted -= OnComboStartedCallback;
             OnComboEnded -= OnComboEndedCallback;
 
-            if (health)
+            data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
+        }
+
+        private void Cb_OnItemEquipped(InventoryEquipResult result)
+        {
+            var weapon = result.Params.Item.GetCharacteristics<CharacteristicWeaponizable>().FirstOrDefault();
+            if (!weapon)
             {
-                health.OnFall -= OnFallCallback;
-                health.OnDamaged -= OnDamagedCallback;
+                Debug.Log("Not weapon");
+                return;
             }
 
-            if (movement)
+            Weapon = weapon;
+            if (AttackEffect)
+                AttackEffect.Destroy(this);
+
+            if (weapon.AttackEffect)
             {
-                movement.OnRoll -= OnRollCallback;
+                AttackEffect = weapon.AttackEffect;
+                AttackEffect.Setup(this);
             }
         }
 
@@ -81,9 +96,11 @@ namespace Catacumba.Entity
         {
             base.OnConfigurationEnded();
 
+            /*
             if (!AttackEffect)
                 AttackEffect = data.CharacterCfg.View.AttackEffect;
             AttackEffect?.Setup(this);
+            */
         }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
@@ -181,6 +198,8 @@ namespace Catacumba.Entity
         */
         public void AttackImmediate(EAttackType type)
         {
+            if (!Weapon) return;
+
             CharacterAttackData[] results = Weapon.Attack(data, type);
             EmitAttackEffect();
 

@@ -23,3 +23,4 @@ MonoBehaviour:
   Characteristics:
   - {fileID: 11400000, guid: ac8a4ba2f61e8b94198da86230a530ce, type: 2}
   Model: {fileID: 0}
+  OccupiesSlot: 0

@@ -152,6 +152,7 @@ namespace Catacumba.Entity
         private void OnCharacterConfigurationEnded()
         {
             Components.ForEachComponent(c => c.OnConfigurationEnded());
+            Stats.Inventory.DispatchItemEquippedForAllItems();
 
             IsConfigured = true;
         }

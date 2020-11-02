@@ -41,11 +41,9 @@ public class CharacterDataEditor : Editor
         {
             foreach (var slot in stats.Inventory.Slots)
             {
-                Item item;
-                stats.Inventory.EquippedItems.TryGetValue(slot, out item);
-                
+                Item item = slot.Item;
                 string itemName = item ? item.Name : "Empty";
-                sb.AppendFormat("{0}: {1}\n", slot.name, itemName);
+                sb.AppendFormat("{0}: {1}\n", slot.Part.name, itemName);
             }
         }
         return sb.ToString();

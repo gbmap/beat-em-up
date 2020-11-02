@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Catacumba.Data.Character;
+using Catacumba.Effects;
 using Catacumba.Entity;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Catacumba.Data.Items.Characteristics
 {
     public abstract class CharacteristicWeaponizable : CharacteristicEquippable
     {
+        public ParticleEffectConfiguration AttackEffect;
         public WeaponType WeaponType;
 
         public abstract CharacterAttackData[] Attack(CharacterData data, EAttackType attackType);

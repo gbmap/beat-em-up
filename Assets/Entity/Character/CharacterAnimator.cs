@@ -212,6 +212,9 @@ namespace Catacumba.Entity
                 return;
             }
 
+            if (!weapon.WeaponType.animatorController)
+                return;
+
             UpdateAnimator(weapon.WeaponType.animatorController);
         }
 
@@ -302,6 +305,9 @@ namespace Catacumba.Entity
 
         public void UpdateAnimator(RuntimeAnimatorController controller)
         {
+            if (!animator)
+                return; 
+
             animator.runtimeAnimatorController = controller;
             animator.SetInteger("BrainType", (int)data.BrainType);
         }

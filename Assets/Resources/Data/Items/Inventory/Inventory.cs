@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Catacumba.Data.Character;
 using Catacumba.Data.Items.Characteristics;
@@ -29,28 +30,106 @@ namespace Catacumba.Data.Items
         public EEquipResult Result;
     }
 
+
+    [System.Serializable]
+    public class InventorySlot
+    {
+        public BodyPart Part;
+        public Item Item;
+
+        public bool IsEmpty()
+        {
+            return Item == null || !Item.OccupiesSlot;
+        }
+    }
+    
+    [System.Serializable]
+    public class InventorySlots : IEnumerable<InventorySlot> 
+    {
+        [SerializeField] List<InventorySlot> slots;
+        public InventorySlot GetSlot(BodyPart part)
+        {
+            return slots.FirstOrDefault(s => s.Part == part);
+        }
+
+        public bool HasSlot(BodyPart part)
+        {
+            return slots.Any(s => s.Part == part);
+        }
+
+        public int IndexOf(BodyPart slot)
+        {
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (slots[i].Part == slot)
+                    return i;
+            }
+
+            return -1;
+        }
+
+        public void Remove(BodyPart slot)
+        {
+            int index = IndexOf(slot);
+            slots.RemoveAt(index);
+        }
+
+        public bool IsEmpty(BodyPart part)
+        {
+            InventorySlot s = GetSlot(part);
+            if (s == null)
+                throw new KeyNotFoundException();
+
+            return s.IsEmpty();
+        }
+
+        public IEnumerator<InventorySlot> GetEnumerator()
+        {
+            return slots.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return slots.GetEnumerator();
+        }
+    }
+
     [CreateAssetMenu(menuName="Data/Inventory/Inventory", fileName="Inventory")]
     public class Inventory : ScriptableObject
     {
-        public List<BodyPart> Slots; 
-        public Dictionary<BodyPart, Item> EquippedItems = new Dictionary<BodyPart, Item>();
-
-        void Awake()
-        {
-
-        }
+        public InventorySlots Slots;
 
         public System.Action<InventoryEquipResult> OnItemEquipped;
+        public void DispatchItemEquippedForAllItems()
+        {
+            foreach (var slot in Slots)
+            {
+                if (slot.Item == null)
+                    continue;
+
+                OnItemEquipped?.Invoke(new InventoryEquipResult
+                {
+                    Params = new InventoryEquipParams
+                    {
+                        Item = slot.Item,
+                        Slot = slot.Part,
+                        Callback = null
+                    },
+                    Result = InventoryEquipResult.EEquipResult.Success
+                });
+            }
+        }
 
         public Item Amputate(BodyPart part)
         {
-            if (!Slots.Contains(part))
+            InventorySlot slot = Slots.GetSlot(part);
+            if (slot == null)
                 return null;
 
-            Slots.Remove(part);
+            Slots.Remove(slot.Part);
 
-            Item item;
-            if (!EquippedItems.TryGetValue(part, out item))
+            Item item = slot.Item;
+            if (!item)
                 return null;
             
             return item;
@@ -58,7 +137,7 @@ namespace Catacumba.Data.Items
 
         public bool IsSlotEmpty(BodyPart slot)
         {
-            return !EquippedItems.ContainsKey(slot) || EquippedItems[slot] == null;
+            return Slots.IsEmpty(slot);
         }
 
         public InventoryEquipResult.EEquipResult Equip(InventoryEquipParams parameters) 
@@ -68,31 +147,6 @@ namespace Catacumba.Data.Items
 
             return EquipOnSlot(parameters);
         }
-
-        /*
-        private InventoryEquipResult.EEquipResult Equip(Item item, BodyPart slot, bool checkEquippable = true)
-        {
-            if (!CanEquipOnSlot(slot))
-            {
-                return InventoryEquipResult.EEquipResult.ItemCantEquipOnSlot;
-            }
-
-            CharacteristicEquippable[] characteristics = item.GetCharacteristics<CharacteristicEquippable>();
-
-            if (characteristics == null || characteristics.Length == 0)
-                return false;
-
-            if (!characteristics.Any(c => c.EquipsOnSlot(slot)))
-                return false;
-
-            foreach (CharacteristicEquippable equippable in characteristics)
-            {
-                //if (equippable.Equip())
-
-            }
-            return CacheEquip(item, slot);
-        }
-        */
 
         public InventoryEquipResult.EEquipResult EquipOnSlot(InventoryEquipParams parameters)
         {
@@ -108,7 +162,7 @@ namespace Catacumba.Data.Items
             if (slots == null || slots.Length == 0)
                 return EquipResult(parameters, InventoryEquipResult.EEquipResult.ItemCantEquipOnSlot);
 
-            BodyPart slotToEquip = slots.FirstOrDefault(s => s != null && !EquippedItems.ContainsKey(s));
+            BodyPart slotToEquip = slots.FirstOrDefault(s => s != null && Slots.HasSlot(s));
             if (!slotToEquip)
                 return EquipResult(parameters, InventoryEquipResult.EEquipResult.NoSlotsAvailable);
 
@@ -118,7 +172,8 @@ namespace Catacumba.Data.Items
 
         private InventoryEquipResult.EEquipResult EquipItem(InventoryEquipParams parameters)
         {
-            EquippedItems[parameters.Slot] = parameters.Item;
+            InventorySlot slot = Slots.GetSlot(parameters.Slot);
+            slot.Item = parameters.Item;
             return EquipResult(parameters, InventoryEquipResult.EEquipResult.Success);
         }
 
@@ -139,7 +194,7 @@ namespace Catacumba.Data.Items
 
         private bool CanEquipOnSlot(BodyPart slot)
         {
-            return Slots.Contains(slot);
+            return Slots.HasSlot(slot);
         }
 
         private static BodyPart[] GetBodyParts(Item item)

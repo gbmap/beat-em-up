@@ -30,6 +30,8 @@ namespace Catacumba.Data.Items
 
         public GameObject Model;
 
+        public bool OccupiesSlot = true;
+
         public bool Equip(CharacterData character, BodyPart slot)
         {
             if (!HasCharacteristic<CharacteristicEquippable>())

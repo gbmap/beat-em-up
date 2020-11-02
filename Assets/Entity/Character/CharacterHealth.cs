@@ -108,7 +108,7 @@ namespace Catacumba.Entity
                 }
             }
 
-            shaderHitEffect.Update();
+            shaderHitEffect?.Update();
         }
 
         protected override void OnEnable()
