@@ -134,7 +134,10 @@ namespace Catacumba.Effects
             SystemPool.CleanPool();
 
             ParticleSystem system = Instantiate(ParticleSystem);
-            system.gameObject.name = string.Format("{0}_{1}", system.gameObject.name, obj.name); 
+            
+            string psName = system.gameObject.name.Replace("(Clone)", "");
+            string systemName = string.Format("{0}_{1}", psName, obj.GetType().Name);
+            system.gameObject.name = systemName; 
             system.transform.parent = obj.transform;
             system.transform.localPosition = CalculatePosition(obj.gameObject, LocalPosition);
             system.transform.localRotation = Quaternion.identity;

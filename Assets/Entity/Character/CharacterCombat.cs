@@ -79,7 +79,10 @@ namespace Catacumba.Entity
 
             Weapon = weapon;
             if (AttackEffect)
+            {
                 AttackEffect.Destroy(this);
+                AttackEffect = null;
+            }
 
             if (weapon.AttackEffect)
             {
@@ -88,7 +91,10 @@ namespace Catacumba.Entity
             }
 
             if (HitEffect)
+            {
                 HitEffect.Destroy(this);
+                HitEffect = null;
+            }
             
             if (weapon.HitEffect)
             {
