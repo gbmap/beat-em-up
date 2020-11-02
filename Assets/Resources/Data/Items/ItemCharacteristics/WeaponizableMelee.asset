@@ -15,5 +15,7 @@ MonoBehaviour:
   Slots:
   - {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
   - {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+  AttackEffect: {fileID: 0}
+  HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
   WeaponType: {fileID: 11400000, guid: 93375d4c360623d4e90e500df838f51e, type: 2}
   AttackColliderSize: {fileID: 11400000, guid: 76092a344ef27944b96f46bdcbb6369c, type: 2}

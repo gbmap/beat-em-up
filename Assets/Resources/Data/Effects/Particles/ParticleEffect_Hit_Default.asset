@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7579cee4c9a0abf43adff1e675dd18a2, type: 3}
-  m_Name: ParticleEffect_Attack_Melee
+  m_Name: ParticleEffect_Hit_Default
   m_EditorClassIdentifier: 
-  ParticleSystem: {fileID: 2006145276305323388, guid: 07da1ef48d51ee848b3bd9a33dffc3af,
+  ParticleSystem: {fileID: 3878711662271008036, guid: 489702f12e5d0ea4aba16a7970f6ab7b,
     type: 3}
-  LocalPosition: {x: 0, y: 0, z: 3}
-  StartingPosition: 3
+  LocalPosition: {x: 0, y: 0, z: 0}
+  StartingPosition: 1

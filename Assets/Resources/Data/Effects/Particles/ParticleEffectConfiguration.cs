@@ -68,7 +68,11 @@ namespace Catacumba.Effects
         public Vector3 LocalPosition;
         public EStartingPosition StartingPosition = EStartingPosition.TransformOrigin;
 
-        private static SystemPool<ParticleSystem> systemPool = new SystemPool<ParticleSystem>();
+        private SystemPool<ParticleSystem> systemPool = new SystemPool<ParticleSystem>();
+        private SystemPool<ParticleSystem> SystemPool
+        {
+            get { return systemPool ?? (systemPool = new SystemPool<ParticleSystem>()); }
+        }
 
         public Vector3 CalculatePosition(GameObject obj, Vector3 pos)
         {
@@ -127,7 +131,7 @@ namespace Catacumba.Effects
 
         public override bool Setup(MonoBehaviour obj)
         {
-            systemPool.CleanPool();
+            SystemPool.CleanPool();
 
             ParticleSystem system = Instantiate(ParticleSystem);
             system.gameObject.name = string.Format("{0}_{1}", system.gameObject.name, obj.name); 
@@ -135,41 +139,41 @@ namespace Catacumba.Effects
             system.transform.localPosition = CalculatePosition(obj.gameObject, LocalPosition);
             system.transform.localRotation = Quaternion.identity;
 
-            systemPool.Add(obj, system);
+            SystemPool.Add(obj, system);
             return system;
         }
 
         public override void Destroy(MonoBehaviour obj)
         {
-            ParticleSystem system = systemPool.Get(obj);
+            ParticleSystem system = SystemPool.Get(obj);
             if (system)
             {
-                systemPool.Remove(obj);
+                SystemPool.Remove(obj);
                 Destroy(system.gameObject);
             }
         }
 
         public override void Play(MonoBehaviour component)
         {
-            ParticleSystem system = systemPool.Get(component);
+            ParticleSystem system = SystemPool.Get(component);
             system.Play(true);
         }
 
         public override void Stop(MonoBehaviour component)
         {
-            ParticleSystem system = systemPool.Get(component);
+            ParticleSystem system = SystemPool.Get(component);
             system.Stop();
         }
 
         public bool IsEmitting(MonoBehaviour obj) 
         {
-            ParticleSystem system = systemPool.Get(obj);
+            ParticleSystem system = SystemPool.Get(obj);
             return system.isEmitting;
         }
 
         public void SetEmission(MonoBehaviour obj, bool v)
         {
-            ParticleSystem system = systemPool.Get(obj);
+            ParticleSystem system = SystemPool.Get(obj);
             var emission = system.emission;
             emission.enabled = v;
         }
@@ -179,7 +183,7 @@ namespace Catacumba.Effects
                              int nDeviation = 10, 
                              float velocity = 13f)
         {
-            ParticleSystem systemInstance = systemPool.Get(instance);
+            ParticleSystem systemInstance = SystemPool.Get(instance);
 
             int range = UnityEngine.Random.Range(nParticles-nDeviation, nParticles+nDeviation);
             for (int i = 0; i < range; i++)
@@ -193,17 +197,17 @@ namespace Catacumba.Effects
                     velocity = vel
                 }, 1);
             }
-        }
+        } 
 
         public void EmitBurst(MonoBehaviour instance, int nParticles)
         {
-            ParticleSystem systemInstance = systemPool.Get(instance);
+            ParticleSystem systemInstance = SystemPool.Get(instance);
             systemInstance.Emit(nParticles);
         }
 
         public void EmitBurst(MonoBehaviour instance, int nParticles, Vector3 position)
         {
-            ParticleSystem systemInstance = systemPool.Get(instance);
+            ParticleSystem systemInstance = SystemPool.Get(instance);
             systemInstance.Emit(new ParticleSystem.EmitParams
             {
                 position = position
@@ -212,7 +216,7 @@ namespace Catacumba.Effects
 
         public void PointSystemTowards(MonoBehaviour instance, Vector3 direction)
         {
-            ParticleSystem systemInstance = systemPool.Get(instance);
+            ParticleSystem systemInstance = SystemPool.Get(instance);
             systemInstance.transform.rotation = Quaternion.LookRotation(direction);
         }
 
