@@ -23,7 +23,7 @@ namespace Catacumba.Data.Items
 
         [Multiline]
         public string Description;
-        public EItemRarity Rarity;
+        public ItemRarity Rarity;
         public CharAttributesI Attributes;
 
         public ItemCharacteristic[] Characteristics;

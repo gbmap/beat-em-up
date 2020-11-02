@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:Item
   Name: Fists
   Description: For when intellectual discourse has failed and you are low on INT.
-  Rarity: 0
+  Rarity: {fileID: 11400000, guid: d874133fb075b7f488939554ae63a99f, type: 2}
   Attributes:
     Vigor: 0
     Strength: 0

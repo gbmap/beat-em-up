@@ -46,7 +46,7 @@ namespace Catacumba.Data.Items
     [System.Serializable]
     public class InventorySlots : IEnumerable<InventorySlot> 
     {
-        [SerializeField] List<InventorySlot> slots;
+        [SerializeField] List<InventorySlot> slots = new List<InventorySlot>();
         public InventorySlot GetSlot(BodyPart part)
         {
             return slots.FirstOrDefault(s => s.Part == part);
@@ -97,7 +97,7 @@ namespace Catacumba.Data.Items
     [CreateAssetMenu(menuName="Data/Inventory/Inventory", fileName="Inventory")]
     public class Inventory : ScriptableObject
     {
-        public InventorySlots Slots;
+        public InventorySlots Slots = new InventorySlots();
 
         public System.Action<InventoryEquipResult> OnItemEquipped;
         public void DispatchItemEquippedForAllItems()

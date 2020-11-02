@@ -70,26 +70,25 @@ namespace Catacumba.Effects
 
         private static SystemPool<ParticleSystem> systemPool = new SystemPool<ParticleSystem>();
 
-        private Vector3 CalculatePosition(MonoBehaviour obj, Vector3 pos)
+        public Vector3 CalculatePosition(GameObject obj, Vector3 pos)
         {
             switch (StartingPosition)
             {
                 case EStartingPosition.RendererBoundsOrigin:
-                    return CalculateRendererPosition(obj, pos);
+                    return CalculateRendererPosition(obj.GetComponentInChildren<Renderer>(), pos);
                 case EStartingPosition.TransformOrigin:
-                    return CalculateTransformPosition(obj, pos);
+                    return CalculateTransformPosition(pos);
                 case EStartingPosition.NavMeshOrigin:
-                    return CalculateNavAgentOrigin(obj, pos);
+                    return CalculateNavAgentOrigin(obj.GetComponentInParent<NavMeshAgent>(), pos);
                 case EStartingPosition.ColliderOrigin:
-                    return CalculateColliderPosition(obj, pos);
+                    return CalculateColliderPosition(obj.GetComponent<Collider>(), pos);
                 default:
-                    return CalculateTransformPosition(obj, pos);
+                    return CalculateTransformPosition(pos);
             }
         }
 
-        private Vector3 CalculateRendererPosition(MonoBehaviour obj, Vector3 pos)
+        private Vector3 CalculateRendererPosition(Renderer renderer, Vector3 pos)
         {                
-            var renderer = obj.GetComponentInChildren<Renderer>();
             return CalculateBoundsPosition(renderer.bounds, pos);
         }
 
@@ -103,21 +102,18 @@ namespace Catacumba.Effects
             return origin + new Vector3(x,y,z);
         }
 
-        private Vector3 CalculateTransformPosition(MonoBehaviour obj, Vector3 pos)
+        private Vector3 CalculateTransformPosition(Vector3 pos)
         {
             return pos; 
         }
 
-        private Vector3 CalculateColliderPosition(MonoBehaviour obj, Vector3 pos)
+        private Vector3 CalculateColliderPosition(Collider collider, Vector3 pos)
         {                
-            var collider = obj.GetComponent<Collider>();
             return CalculateBoundsPosition(collider.bounds, pos);
         }
 
-        private Vector3 CalculateNavAgentOrigin(MonoBehaviour obj, Vector3 pos)
+        private Vector3 CalculateNavAgentOrigin(NavMeshAgent navAgent, Vector3 pos)
         {
-            var navAgent = obj.GetComponentInParent<NavMeshAgent>();
-
             float r = navAgent.radius;
             float h = navAgent.height;
 
@@ -136,7 +132,7 @@ namespace Catacumba.Effects
             ParticleSystem system = Instantiate(ParticleSystem);
             system.gameObject.name = string.Format("{0}_{1}", system.gameObject.name, obj.name); 
             system.transform.parent = obj.transform;
-            system.transform.localPosition = CalculatePosition(obj, LocalPosition);
+            system.transform.localPosition = CalculatePosition(obj.gameObject, LocalPosition);
             system.transform.localRotation = Quaternion.identity;
 
             systemPool.Add(obj, system);
@@ -203,6 +199,15 @@ namespace Catacumba.Effects
         {
             ParticleSystem systemInstance = systemPool.Get(instance);
             systemInstance.Emit(nParticles);
+        }
+
+        public void EmitBurst(MonoBehaviour instance, int nParticles, Vector3 position)
+        {
+            ParticleSystem systemInstance = systemPool.Get(instance);
+            systemInstance.Emit(new ParticleSystem.EmitParams
+            {
+                position = position
+            }, nParticles);
         }
 
         public void PointSystemTowards(MonoBehaviour instance, Vector3 direction)

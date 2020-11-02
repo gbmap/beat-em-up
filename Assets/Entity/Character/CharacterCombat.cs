@@ -19,6 +19,7 @@ namespace Catacumba.Entity
         [HideInInspector] public bool IsOnCombo;
 
         public ParticleEffectConfiguration AttackEffect { get; private set; }
+        public ParticleEffectConfiguration HitEffect { get; private set; }
         public CharacteristicWeaponizable Weapon { get; private set; }
 
         public bool IsOnHeavyAttack { get; set; }
@@ -85,6 +86,15 @@ namespace Catacumba.Entity
                 AttackEffect = weapon.AttackEffect;
                 AttackEffect.Setup(this);
             }
+
+            if (HitEffect)
+                HitEffect.Destroy(this);
+            
+            if (weapon.HitEffect)
+            {
+                HitEffect = weapon.HitEffect;
+                HitEffect.Setup(this);
+            }
         }
 
         protected void OnDestroy()
@@ -95,12 +105,6 @@ namespace Catacumba.Entity
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
-
-            /*
-            if (!AttackEffect)
-                AttackEffect = data.CharacterCfg.View.AttackEffect;
-            AttackEffect?.Setup(this);
-            */
         }
 
         protected override void OnComponentAdded(CharacterComponentBase component)
@@ -147,10 +151,6 @@ namespace Catacumba.Entity
             }
         }
 
-        private void OnRollCallback()
-        {
-            OnComboEnded?.Invoke();
-        }
 
         public void RequestAttack(EAttackType type)
         {
@@ -162,6 +162,20 @@ namespace Catacumba.Entity
             }
 
             OnRequestAttack?.Invoke(type);
+        }
+
+        public void AttackImmediate(EAttackType type)
+        {
+            if (!Weapon) return;
+
+            CharacterAttackData[] results = Weapon.Attack(data, type);
+            EmitAttackEffect();
+
+            if (results == null) return;
+            EmitHitEffects(results);
+            OnAttack?.Invoke(results);
+
+            LastAttackData = results[results.Length-1];
         }
 
         ////////////////////////////////////////
@@ -193,20 +207,13 @@ namespace Catacumba.Entity
             LastDamageData = msg;
         }
 
-        /*
-        *  CHAMADO PELO ANIMATOR!!!1111
-        */
-        public void AttackImmediate(EAttackType type)
+        private void OnRollCallback()
         {
-            if (!Weapon) return;
-
-            CharacterAttackData[] results = Weapon.Attack(data, type);
-            EmitAttackEffect();
-
-            if (results == null) return;
-            OnAttack?.Invoke(results);
-            LastAttackData = results[results.Length-1];
+            OnComboEnded?.Invoke();
         }
+
+        /////////////////////////////////
+        //      EFFECTS HANDLER
 
         private void EmitAttackEffect()
         {
@@ -214,11 +221,32 @@ namespace Catacumba.Entity
             AttackEffect.EmitBurst(this, 1);
         }
 
+        private void EmitHitEffects(CharacterAttackData[] attacks)
+        {
+            if (!HitEffect) return;
+            if (attacks == null) return;
+            foreach (var result in attacks)
+            {
+                if (result == null) continue;
+
+                Vector3 effectLocalPosition = HitEffect.CalculatePosition(result.Defender, HitEffect.LocalPosition);
+                Vector3 position = result.Defender.transform.position + effectLocalPosition;
+                HitEffect.EmitBurst(
+                    this, 
+                    1, 
+                    position
+                );
+            }
+        }
+
         public override string GetDebugString()
         {
             return "Is on combo: " + IsOnCombo + "\n" +
                    "Can attack: " + CanAttack;
         }
+
+        /////////////////////////////////
+        //      DEBUG
 
     #if UNITY_EDITOR
         private void OnDrawGizmos()
