@@ -100,6 +100,7 @@ namespace Catacumba.Entity
         {
             base.OnEnable();
             data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
+            data.Stats.Inventory.OnItemDropped += Cb_OnItemDropped;
         }
 
 
@@ -107,7 +108,9 @@ namespace Catacumba.Entity
         {
             base.OnDisable();
             data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
+            data.Stats.Inventory.OnItemDropped -= Cb_OnItemDropped;
         }
+
 
         public override void OnComponentAdded(CharacterComponentBase component)
         {
@@ -219,6 +222,14 @@ namespace Catacumba.Entity
             AddItemToBone(result.Params.Item, result.Params.Slot);
         }
 
+        private void Cb_OnItemDropped(InventoryDropResult result)
+        {
+            Item item = result.Item;
+            ItemTemplate.Create(item, transform.position);
+
+            RemoveItemFromBone(result.Params.Slot);
+        }
+
         private void OnCharacterDamagedCallback(CharacterAttackData attack)
         {
         }
@@ -321,13 +332,43 @@ namespace Catacumba.Entity
             if (!equippables.Any(e => e.Slots.Contains(slot)))
                 return;
 
-            Transform childBone = gameObject.transform.GetFirstChildByNameRecursive(slot.BoneName);
+            Transform childBone = GetBone(gameObject, slot);
+            if (!childBone)
+                return;
+
+            DestroyItemsInBone(childBone);
+
+            GameObject model = Instantiate(item.Model, Vector3.zero, Quaternion.identity);
+            model.transform.SetParent(childBone, true);
+            model.transform.localPosition = slot.LocalPosition;
+            model.transform.localRotation = Quaternion.Euler(slot.LocalRotationEuler);
+        }
+
+        private void RemoveItemFromBone(BodyPart slot)
+        {
+            Transform childBone = GetBone(gameObject, slot);
             if (!childBone)
             {
                 Debug.LogErrorFormat("Couldn't find bone: {0}", slot.BoneName);
                 return;
             }
 
+            DestroyItemsInBone(childBone);
+        }
+        
+        private static Transform GetBone(GameObject obj, BodyPart slot)
+        {
+            Transform childBone = obj.transform.GetFirstChildByNameRecursive(slot.BoneName);
+            if (!childBone)
+            {
+                Debug.LogErrorFormat("Couldn't find bone: {0}", slot.BoneName);
+                return null;
+            }
+            return childBone;
+        }
+
+        private static void DestroyItemsInBone(Transform childBone)
+        {
             // Clean items that might already be equipped.
             for (int i = 0; i < childBone.childCount; i++)
             {
@@ -335,11 +376,6 @@ namespace Catacumba.Entity
                 if (subObject.GetComponent<Renderer>())
                     Destroy(subObject.gameObject);
             }
-
-            GameObject model = Instantiate(item.Model, Vector3.zero, Quaternion.identity);
-            model.transform.SetParent(childBone, true);
-            model.transform.localPosition = slot.LocalPosition;
-            model.transform.localRotation = Quaternion.Euler(slot.LocalRotationEuler);
         }
 
         public void SetRootMotion(bool v)

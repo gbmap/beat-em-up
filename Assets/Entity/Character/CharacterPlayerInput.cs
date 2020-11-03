@@ -1,6 +1,7 @@
 ﻿using Rewired;
 using UnityEngine;
 using Catacumba.Data;
+using Catacumba.Data.Items;
 
 namespace Catacumba.Entity
 {
@@ -117,17 +118,19 @@ namespace Catacumba.Entity
 
             if (RewiredInput.GetButton("Submit"))
             {
-                /*
-                if (data.Stats.Inventory.HasEquip(EInventorySlot.Weapon))
+                dropTimer += Time.deltaTime;
+                if (dropTimer > 2f)
                 {
-                    dropTimer += Time.deltaTime;
-                    if (dropTimer > 2f)
+                    InventorySlot slot = data.Stats.Inventory.GetWeaponSlot();
+                    if (slot != null)
                     {
-                        //characterData.UnEquip(EInventorySlot.Weapon);
+                        data.Stats.Inventory.Drop(new Data.Items.InventoryDropParams
+                        {
+                            Slot = slot.Part
+                        });
                         dropTimer = 0f;
                     }
                 }
-                */
             }
             else
             {

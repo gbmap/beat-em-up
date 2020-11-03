@@ -30,6 +30,17 @@ namespace Catacumba.Data.Items
         public EEquipResult Result;
     }
 
+    public class InventoryDropParams
+    {
+        public BodyPart Slot;
+        public System.Action<InventoryDropResult> Callback;
+    }
+
+    public class InventoryDropResult
+    {
+        public InventoryDropParams Params;
+        public Item Item;
+    }
 
     [System.Serializable]
     public class InventorySlot
@@ -47,9 +58,21 @@ namespace Catacumba.Data.Items
     public class InventorySlots : IEnumerable<InventorySlot> 
     {
         [SerializeField] List<InventorySlot> slots = new List<InventorySlot>();
+        public int WeaponSlotIndex = 0;
+
         public InventorySlot GetSlot(BodyPart part)
         {
             return slots.FirstOrDefault(s => s.Part == part);
+        }
+
+        public InventorySlot GetSlot(string partName)
+        {
+            return slots.FirstOrDefault(s => s.Part.name.Equals(partName));
+        }
+
+        public InventorySlot GetWeaponSlot()
+        {
+            return slots[WeaponSlotIndex];
         }
 
         public bool HasSlot(BodyPart part)
@@ -100,6 +123,8 @@ namespace Catacumba.Data.Items
         public InventorySlots Slots = new InventorySlots();
 
         public System.Action<InventoryEquipResult> OnItemEquipped;
+        public System.Action<InventoryDropResult> OnItemDropped;
+
         public void DispatchItemEquippedForAllItems()
         {
             foreach (var slot in Slots)
@@ -135,6 +160,16 @@ namespace Catacumba.Data.Items
             return item;
         }
 
+        public InventorySlot GetSlotByString(string name)
+        {
+            return Slots.GetSlot(name);
+        }
+
+        public InventorySlot GetWeaponSlot()
+        {
+            return Slots.GetWeaponSlot();
+        }
+
         public bool IsSlotEmpty(BodyPart slot)
         {
             return Slots.IsEmpty(slot);
@@ -154,6 +189,47 @@ namespace Catacumba.Data.Items
                 return EquipResult(parameters, InventoryEquipResult.EEquipResult.NoSlotsAvailable);
 
             return EquipItem(parameters);
+        }
+
+        public InventoryDropResult Drop(InventoryDropParams parameters)
+        {
+            if (parameters.Slot == null)
+                return DropResult(parameters, null);
+
+            InventorySlot s = Slots.GetSlot(parameters.Slot);
+
+            if (s == null || s.IsEmpty())
+                return DropResult(parameters, null);
+
+            Item item = s.Item;
+            s.Item = null;
+
+            // EQUIP DEFAULT WEAPON
+            if (GetWeaponSlot().Part == s.Part)
+            {
+                EquipOnSlot(new InventoryEquipParams
+                {
+                    Item = Resources.Load<Item>("Data/Items/Item_Fists"), 
+                    Slot = s.Part
+                });
+            }
+
+            return DropResult(parameters, item);
+        }
+
+        private InventoryDropResult DropResult(InventoryDropParams parameters, Item item)
+        {
+            var res = new InventoryDropResult
+            {
+                Params = parameters,
+                Item = item
+            };
+
+            if (item != null)
+                OnItemDropped?.Invoke(res);
+
+            parameters.Callback?.Invoke(res);
+            return res;
         }
 
         public InventoryEquipResult.EEquipResult EquipAnySlot(InventoryEquipParams parameters)
@@ -177,7 +253,9 @@ namespace Catacumba.Data.Items
             return EquipResult(parameters, InventoryEquipResult.EEquipResult.Success);
         }
 
-        private InventoryEquipResult.EEquipResult EquipResult(InventoryEquipParams parameters, InventoryEquipResult.EEquipResult result)
+        private InventoryEquipResult.EEquipResult EquipResult(
+            InventoryEquipParams parameters, 
+            InventoryEquipResult.EEquipResult result)
         {
             InventoryEquipResult res = new InventoryEquipResult()
             {

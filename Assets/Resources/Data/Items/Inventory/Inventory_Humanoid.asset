@@ -19,10 +19,11 @@ MonoBehaviour:
     - Part: {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
       Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
-      Item: {fileID: 11400000, guid: 3f0b7d724f94b0344bdefa6d459b843b, type: 2}
+      Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: cd6edefdcadcefa4f8ac2f065d6bba5d, type: 2}
       Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
-      Item: {fileID: 0}
+      Item: {fileID: 11400000, guid: 3f0b7d724f94b0344bdefa6d459b843b, type: 2}
     - Part: {fileID: 11400000, guid: b1ee5ff38c596b746b3a7b9fc2cec2df, type: 2}
       Item: {fileID: 0}
+    WeaponSlotIndex: 4
