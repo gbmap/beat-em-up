@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdb2dbf47162c5b42a42442dc1435a4e, type: 3}
   m_Name: Chest
   m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:BodyPart
-  BoneName: 
+  BoneName: Spine_02

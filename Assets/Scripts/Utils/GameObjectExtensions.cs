@@ -50,4 +50,24 @@ public static class GameObjectExtensions
         }
         return interfaces.ToArray();
     }
+
+    public static Transform GetFirstChildByNameRecursive (this Transform transform, string childName)
+    {       
+        Transform foundChild = null;
+        for (int i = 0; i < transform.childCount; i ++)
+        {
+            Transform child = transform.GetChild(i);
+
+            if (child.name == childName) {
+                foundChild = child;
+            }           
+            
+            if (foundChild == null) {
+                foundChild = GetFirstChildByNameRecursive (child, childName);               
+            }
+            
+        }   
+        return foundChild;
+    }
+
 }

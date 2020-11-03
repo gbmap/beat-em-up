@@ -8,5 +8,7 @@ namespace Catacumba.Data.Character
     public class BodyPart : ScriptableObject 
     { 
         public string BoneName = "";
+        public Vector3 LocalPosition = Vector3.zero;
+        public Vector3 LocalRotationEuler = Vector3.zero;
     }
 }

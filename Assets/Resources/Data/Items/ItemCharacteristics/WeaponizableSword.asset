@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: WeaponizableSword
   m_EditorClassIdentifier: 
   Slots:
-  - {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
   - {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
   AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
+  HitEffect: {fileID: 0}
   WeaponType: {fileID: 11400000, guid: 8b395ba24e2bd8146a0ebbf86dedcd6f, type: 2}
   AttackColliderSize: {fileID: 11400000, guid: 76092a344ef27944b96f46bdcbb6369c, type: 2}

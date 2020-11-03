@@ -4,6 +4,7 @@ using Catacumba.Data.Items;
 using System;
 using Catacumba.Data.Items.Characteristics;
 using System.Linq;
+using Catacumba.Data.Character;
 
 namespace Catacumba.Entity
 {
@@ -215,6 +216,7 @@ namespace Catacumba.Entity
                 return;
 
             UpdateAnimator(weapon.WeaponType.animatorController);
+            AddItemToBone(result.Params.Item, result.Params.Slot);
         }
 
         private void OnCharacterDamagedCallback(CharacterAttackData attack)
@@ -309,6 +311,35 @@ namespace Catacumba.Entity
 
             animator.runtimeAnimatorController = controller;
             animator.SetInteger("BrainType", (int)data.BrainType);
+        }
+
+        private void AddItemToBone(Item item, BodyPart slot)
+        {
+            if (item.Model == null) return;
+
+            var equippables = item.GetCharacteristics<CharacteristicEquippable>();
+            if (!equippables.Any(e => e.Slots.Contains(slot)))
+                return;
+
+            Transform childBone = gameObject.transform.GetFirstChildByNameRecursive(slot.BoneName);
+            if (!childBone)
+            {
+                Debug.LogErrorFormat("Couldn't find bone: {0}", slot.BoneName);
+                return;
+            }
+
+            // Clean items that might already be equipped.
+            for (int i = 0; i < childBone.childCount; i++)
+            {
+                Transform subObject = childBone.GetChild(i);
+                if (subObject.GetComponent<Renderer>())
+                    Destroy(subObject.gameObject);
+            }
+
+            GameObject model = Instantiate(item.Model, Vector3.zero, Quaternion.identity);
+            model.transform.SetParent(childBone, true);
+            model.transform.localPosition = slot.LocalPosition;
+            model.transform.localRotation = Quaternion.Euler(slot.LocalRotationEuler);
         }
 
         public void SetRootMotion(bool v)
