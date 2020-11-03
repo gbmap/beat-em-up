@@ -29,7 +29,7 @@ public class AttackRequest
     }
 }
 
-public class CharacterAttackData
+public class AttackResult
 {
     public AttackRequest Request { get; private set; }
 
@@ -56,7 +56,7 @@ public class CharacterAttackData
     public Vector3 ColliderSz;
     public Quaternion ColliderRot;
 
-    public CharacterAttackData(AttackRequest request)
+    public AttackResult(AttackRequest request)
     {
         Request         = request;
         Time            = UnityEngine.Time.time;
@@ -74,7 +74,7 @@ public class CharacterAttackData
 
 public class CombatManager : SimpleSingleton<CombatManager>
 {
-    private static CharacterAttackData lastAttack;
+    private static AttackResult lastAttack;
 
     public static float GetCritFactor(CharacterStats c)
     {
@@ -115,7 +115,7 @@ public class CombatManager : SimpleSingleton<CombatManager>
         return Mathf.RoundToInt((str+(str*backstab)) * crit);
     }
 
-    public static void CalculateAttackStats(ref CharacterAttackData attackData)
+    public static void CalculateAttackStats(ref AttackResult attackData)
     {
         CharacterStats attacker = attackData.AttackerStats;
         CharacterStats defender = attackData.DefenderStats;
@@ -146,7 +146,7 @@ public class CombatManager : SimpleSingleton<CombatManager>
                                      || IsLowOnStamina));
     }
 
-    public static CharacterAttackData AttackCharacter(AttackRequest request)
+    public static AttackResult AttackCharacter(AttackRequest request)
     {
         CharacterData attacker = request.AttackerData;
         CharacterData defender = request.DefenderData;
@@ -161,7 +161,7 @@ public class CombatManager : SimpleSingleton<CombatManager>
         bool isValidAttackAngle = attackAngle <= 60f; 
         if (!isValidAttackAngle) return null;
 
-        CharacterAttackData attackData = new CharacterAttackData(request);
+        AttackResult attackData = new AttackResult(request);
         CalculateAttackStats(ref attackData);
 
         defender.Components.Health.TakeDamage(attackData);

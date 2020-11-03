@@ -36,7 +36,7 @@ public class SpawnObjectOnDeath : MonoBehaviour
         Health.OnDamaged -= OnDamaged;
     }
 
-    private void OnDamaged(CharacterAttackData obj)
+    private void OnDamaged(AttackResult obj)
     {
         if (!Health.IsDead) return;
 

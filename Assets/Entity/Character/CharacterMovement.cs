@@ -250,7 +250,7 @@ namespace Catacumba.Entity
             SpeedBumpDir = direction.normalized * force;
         }
 
-        private void OnDamagedCallback(CharacterAttackData attack)
+        private void OnDamagedCallback(AttackResult attack)
         {
             if (attack.CancelAnimation)
             {
@@ -270,7 +270,7 @@ namespace Catacumba.Entity
             forward = Direction.normalized;
         }
 
-        void OnAttack(CharacterAttackData attack)
+        void OnAttack(AttackResult attack)
         {
             ApplySpeedBump(transform.forward, GetSpeedBumpForce(attack) * 0.5f);
         }
@@ -285,7 +285,7 @@ namespace Catacumba.Entity
             canMoveMask.Set(0, false);
         }
 
-        public float GetSpeedBumpForce(CharacterAttackData attack)
+        public float GetSpeedBumpForce(AttackResult attack)
         {
             if (IgnoreSpeedBump) return 0f;
             return (attack.Type == EAttackType.Weak ? 3f : 6f);

@@ -174,7 +174,7 @@ namespace Catacumba.Entity
             renderer.enabled = enabled;
         }
 
-        private void EmitHitImpact(CharacterAttackData attack)
+        private void EmitHitImpact(AttackResult attack)
         {
             var main = ParticlesHit.main;
 
@@ -230,7 +230,7 @@ namespace Catacumba.Entity
             RemoveItemFromBone(result.Params.Slot);
         }
 
-        private void OnCharacterDamagedCallback(CharacterAttackData attack)
+        private void OnCharacterDamagedCallback(AttackResult attack)
         {
         }
 
@@ -253,7 +253,7 @@ namespace Catacumba.Entity
             // animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
         }
 
-        private void OnCharacterAttackCallback(CharacterAttackData attack)
+        private void OnCharacterAttackCallback(AttackResult attack)
         {
             if (attack.Defender != null)
                 FreezeAnimator();
@@ -423,7 +423,7 @@ namespace Catacumba.Entity
             }
         }
 
-        void OnDamaged(CharacterAttackData attack)
+        void OnDamaged(AttackResult attack)
         {
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);

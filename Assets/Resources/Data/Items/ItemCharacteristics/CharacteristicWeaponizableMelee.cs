@@ -8,7 +8,7 @@ namespace Catacumba.Data.Items.Characteristics
     {
         public AttackColliderSize AttackColliderSize;
 
-        public override CharacterAttackData[] Attack(CharacterData character, EAttackType attackType)
+        public override AttackResult[] Attack(CharacterData character, EAttackType attackType)
         {
             string layer = "Entities";
 
@@ -21,7 +21,7 @@ namespace Catacumba.Data.Items.Characteristics
 
             if (colliders.Length == 0) return null;
 
-            CharacterAttackData[] attackResults = new CharacterAttackData[colliders.Length];
+            AttackResult[] attackResults = new AttackResult[colliders.Length];
 
             int hits = 0;
             foreach (var c in colliders)
@@ -31,7 +31,7 @@ namespace Catacumba.Data.Items.Characteristics
                 CharacterData defender = c.GetComponent<CharacterData>();
 
                 AttackRequest request = new AttackRequest(character, defender, attackType);
-                CharacterAttackData attackData = CombatManager.AttackCharacter(request);
+                AttackResult attackData = CombatManager.AttackCharacter(request);
                 if (attackData == null) continue;
 
                 attackResults[hits] = attackData;

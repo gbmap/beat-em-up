@@ -76,7 +76,7 @@ namespace Catacumba.Entity.AI
             }
         }
 
-        private void OnDamagedCallback(CharacterAttackData obj)
+        private void OnDamagedCallback(AttackResult obj)
         {
             if (CurrentAIState == EBrawlerAIStates.Orbit)
             {

@@ -25,14 +25,14 @@ namespace Catacumba.Entity
             }
         }
 
-        public CharacterAttackData LastAttackData { get; private set; }
-        public CharacterAttackData LastDamageData { get; private set; }
+        public AttackResult LastAttackData { get; private set; }
+        public AttackResult LastDamageData { get; private set; }
 
         ////////////////////////
         //  Callbacks
 
         public System.Action<EAttackType> OnRequestAttack;
-        public System.Action<CharacterAttackData[]> OnAttack;
+        public System.Action<AttackResult[]> OnAttack;
 
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
@@ -162,7 +162,7 @@ namespace Catacumba.Entity
         {
             if (!Weapon) return;
 
-            CharacterAttackData[] results = Weapon.Attack(data, type);
+            AttackResult[] results = Weapon.Attack(data, type);
             EmitAttackEffect();
 
             if (results == null) return;
@@ -191,7 +191,7 @@ namespace Catacumba.Entity
             OnComboEnded?.Invoke();
         }
 
-        private void OnDamagedCallback(CharacterAttackData msg)
+        private void OnDamagedCallback(AttackResult msg)
         {
             if (msg.CancelAnimation)
             {
@@ -215,7 +215,7 @@ namespace Catacumba.Entity
             AttackEffect.EmitBurst(this, 1);
         }
 
-        private void EmitHitEffects(CharacterAttackData[] attacks)
+        private void EmitHitEffects(AttackResult[] attacks)
         {
             if (!HitEffect) return;
             if (attacks == null) return;

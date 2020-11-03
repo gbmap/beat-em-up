@@ -209,7 +209,7 @@ namespace Catacumba.Entity
         ////////////////////////////////////////
         //      CALLBACKS
 
-        private void OnDamagedCallback(CharacterAttackData attack)
+        private void OnDamagedCallback(AttackResult attack)
         {
             if (attack.CancelAnimation)
             {
@@ -242,7 +242,7 @@ namespace Catacumba.Entity
             SpeedBumpDir = direction.normalized * force;
         }
 
-        public float GetSpeedBumpForce(CharacterAttackData attack, bool ignoreSpeedBump = false)
+        public float GetSpeedBumpForce(AttackResult attack, bool ignoreSpeedBump = false)
         {
             if (ignoreSpeedBump) return 0f;
 

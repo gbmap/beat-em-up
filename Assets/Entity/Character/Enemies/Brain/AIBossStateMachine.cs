@@ -150,7 +150,7 @@ namespace Catacumba.Entity.AI
             }
         }
 
-        private void OnDamagedCallback(CharacterAttackData data)
+        private void OnDamagedCallback(AttackResult data)
         {
             if (health.HealthNormalized <= nextTier)
             {

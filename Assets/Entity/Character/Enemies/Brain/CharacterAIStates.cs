@@ -346,7 +346,7 @@ namespace Catacumba.Entity.AI
             }
         }
 
-        protected void OnDamagedCallback(CharacterAttackData attackData)
+        protected void OnDamagedCallback(AttackResult attackData)
         {
             if (attackData.Type == EAttackType.Strong)
             {
@@ -562,7 +562,7 @@ namespace Catacumba.Entity.AI
             health.OnDamaged -= OnDamagedCallback;
         }
 
-        private void OnDamagedCallback(CharacterAttackData obj)
+        private void OnDamagedCallback(AttackResult obj)
         {
             healCastT = 0f;
             isCasting = false;

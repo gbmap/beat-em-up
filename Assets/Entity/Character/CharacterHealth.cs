@@ -19,7 +19,7 @@ namespace Catacumba.Entity
         //////////////////////////// 
         //     EVENTS 
 
-        public System.Action<CharacterAttackData> OnDamaged;
+        public System.Action<AttackResult> OnDamaged;
         public System.Action OnFall;
         public System.Action OnRecover;
         public System.Action OnGetUp;
@@ -82,7 +82,7 @@ namespace Catacumba.Entity
         ////////////////////////////////////////
         //          INTERFACE
 
-        public void TakeDamage(CharacterAttackData attack)
+        public void TakeDamage(AttackResult attack)
         {
             if (IsOnGround /* && characterMovement.IsOnAir */)
                 return;
