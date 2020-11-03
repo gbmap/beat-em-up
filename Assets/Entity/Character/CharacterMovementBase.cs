@@ -109,6 +109,12 @@ namespace Catacumba.Entity
             UpdateEffect();
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            MovementEffect?.Destroy(this);
+        }
+
         private bool GetNavMeshEnabled(CharacterHealth health, float speedBump)
         {
             bool ret = true;
@@ -150,7 +156,6 @@ namespace Catacumba.Entity
             return speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
         }
 
-
         private Vector3 CalculateAndUpdateForward(Vector3 fwd, Vector3 dir)
         {
             fwd = Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
@@ -162,18 +167,6 @@ namespace Catacumba.Entity
         {
             speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 5f);
         }
-
-
-        /*
-        private void UpdateRollSpeedT()
-        {
-            rollSpeedT = Mathf.Clamp01(rollSpeedT - Time.deltaTime);
-            if (Mathf.Approximately(rollSpeedT, 0f))
-            {
-                OnRollEnded?.Invoke();
-            }
-        }
-        */
 
         public override void OnConfigurationEnded()
         {
@@ -189,7 +182,7 @@ namespace Catacumba.Entity
             MovementEffect?.Setup(this);
         }
 
-        protected override void OnComponentAdded(CharacterComponentBase component)
+        public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
             if (component is CharacterHealth)
@@ -201,7 +194,7 @@ namespace Catacumba.Entity
             }
         }
 
-        protected override void OnComponentRemoved(CharacterComponentBase component)
+        public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
             if (component is CharacterHealth)
@@ -239,7 +232,7 @@ namespace Catacumba.Entity
             NavMeshAgent.enabled = false;
         }
 
-        ////////////////////////////////////////
+        ////////////////////////////////
         //      UTILITY
 
         public void ApplySpeedBump(Vector3 direction, float force)

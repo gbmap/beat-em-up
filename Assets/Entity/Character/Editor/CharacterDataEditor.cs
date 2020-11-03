@@ -21,7 +21,7 @@ public class CharacterDataEditor : Editor
         if (data.Stats != null)
         {
             EditorGUILayout.LabelField("Stats");
-            EditorGUILayout.LabelField(StatsToString(data.Stats), GUILayout.Height(200f));
+            EditorGUILayout.LabelField(StatsToString(data.Stats), GUILayout.Height(300f));
 
         }
     }

@@ -35,20 +35,11 @@ namespace Catacumba.Entity
                 CharacterData owner, 
                 CharacterComponentBase[] components)
             {
-                CharacterComponents = new List<CharacterComponentBase>();
+                Owner = owner;
+                CharacterComponents = new List<CharacterComponentBase>(components);
 
                 foreach (CharacterComponentBase component in components)
                     Cache(component);
-
-                Owner = owner;
-                Owner.OnComponentAdded += Callback_OnComponentAdded;
-                Owner.OnComponentRemoved += Callback_OnComponentRemoved;
-            }
-
-            ~ComponentsCache()
-            {
-                Owner.OnComponentAdded -= Callback_OnComponentAdded;
-                Owner.OnComponentRemoved -= Callback_OnComponentRemoved;
             }
 
             public void Cache(CharacterComponentBase component)
@@ -61,6 +52,9 @@ namespace Catacumba.Entity
                     Movement = component as CharacterMovementBase;
                 else if (component is CharacterAnimator)
                     Animator = component as CharacterAnimator;
+
+                if (!CharacterComponents.Contains(component))
+                    CharacterComponents.Add(component);
             }
 
             public void Decache(CharacterComponentBase component)
@@ -73,29 +67,39 @@ namespace Catacumba.Entity
                     Movement = null;
                 else if (component is CharacterAnimator)
                     Animator = null;
+
+                if (CharacterComponents.Contains(component))
+                    CharacterComponents.Remove(component);
             }
 
-            private void Callback_OnComponentAdded(CharacterComponentBase obj)
+            public void OnComponentAdded(CharacterComponentBase newComponent)
             {
-                if (!CharacterComponents.Contains(obj))
-                {
-                    CharacterComponents.Add(obj);
+                ForEachComponent(c => c.OnComponentAdded(newComponent));
 
-                    // If initial configuration has been run, we should signal the newly added component.
-                    // It was most likely added after the object's initialization.
+                // If initial configuration has been run, we should signal the newly added component.
+                // It was most likely added after the object's initialization.
+                if (!CharacterComponents.Contains(newComponent))
+                {
                     if (Owner.IsConfigured)
-                        obj.OnConfigurationEnded();
+                    {
+                        // Fire OnComponentAdded for each existing component
+                        // on the new component.
+                        ForEachComponent(c => newComponent.OnComponentAdded(c));
+                        newComponent.OnConfigurationEnded();
+                    }
                 }
 
-                Cache(obj);
+
+                Cache(newComponent);
             }
 
-            private void Callback_OnComponentRemoved(CharacterComponentBase obj)
+            public void OnComponentRemoved(CharacterComponentBase removedComponent)
             {
-                if (CharacterComponents.Contains(obj))
-                    CharacterComponents.Remove(obj);
+                ForEachComponent(c => c.OnComponentRemoved(removedComponent));
 
-                Decache(obj);
+                // Make sure removedComponent's events are unsubscribed from other components
+                ForEachComponent(c => removedComponent.OnComponentRemoved(c));
+                Decache(removedComponent);
             }
 
             public void ForEachComponent(System.Action<CharacterComponentBase> function)
@@ -113,25 +117,26 @@ namespace Catacumba.Entity
 
         public ECharacterBrainType BrainType { get; private set; }
 
-        public System.Action<CharacterComponentBase> OnComponentAdded;
-        public System.Action<CharacterComponentBase> OnComponentRemoved;
-
-        private bool IsConfigured = false;
+        public bool IsConfigured 
+        {
+            get; private set;
+        }
 
         public ComponentsCache Components { get; private set; }
 
         void Awake()
         {
             BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
+            SetupCharacterStats();
+            SetupCharacterComponentsCache();
+        }
 
-            // Load basic cfg if no configuration is set.
+        private void SetupCharacterStats()
+        {
             if (CharacterCfg == null) 
                 CharacterCfg = Catacumba.Data.CharacterConfiguration.Default;
 
-            // setup attribs
             Stats = new CharacterStats(CharacterCfg.Stats, CharacterCfg.Inventory);
-
-            SetupCharacterComponentsCache();
         }
 
         private void SetupCharacterComponentsCache()
@@ -154,7 +159,20 @@ namespace Catacumba.Entity
             Components.ForEachComponent(c => c.OnConfigurationEnded());
             Stats.Inventory.DispatchItemEquippedForAllItems();
 
-            IsConfigured = true;
+            IsConfigured = true; 
+            // This is set after firing the event on all CharacterComponents
+            // because it might be useful for them to know that this
+            // character has just been instantiated.
+        }
+
+        public void SignalComponentAdded(CharacterComponentBase component)
+        {
+            Components.OnComponentAdded(component);        
+        }
+
+        public void SignalComponentRemoved(CharacterComponentBase component)
+        {
+            Components.OnComponentRemoved(component);        
         }
 
     #if UNITY_EDITOR

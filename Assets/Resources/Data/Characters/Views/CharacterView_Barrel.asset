@@ -18,3 +18,4 @@ MonoBehaviour:
   DamageEffect: {fileID: 11400000, guid: 860f51fa350b5a4428121b9eb4a99b1f, type: 2}
   MovementEffect: {fileID: 0}
   AttackEffect: {fileID: 0}
+  HealthQuad: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}

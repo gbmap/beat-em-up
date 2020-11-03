@@ -15,3 +15,7 @@ MonoBehaviour:
   Models:
   - {fileID: 171706, guid: 0925457c2b2fe9f4a8747c59013d56d4, type: 3}
   AnimationConfig: {fileID: 11400000, guid: f2de144c8c2e1744586318d44695c379, type: 2}
+  DamageEffect: {fileID: 0}
+  MovementEffect: {fileID: 0}
+  AttackEffect: {fileID: 0}
+  HealthQuad: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}

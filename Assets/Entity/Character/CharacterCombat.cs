@@ -10,12 +10,6 @@ namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
-        private int _nComboHits;
-
-        private CharacterHealth health;
-        private CharacterMovement movement;
-        private CharacterAnimator animator;
-
         [HideInInspector] public bool IsOnCombo;
 
         public ParticleEffectConfiguration AttackEffect { get; private set; }
@@ -27,7 +21,7 @@ namespace Catacumba.Entity
         {
             get 
             {
-                return Weapon && (!health || (!health.IsDead && !health.IsBeingDamaged));
+                return Weapon && (!Health || (!Health.IsDead && !Health.IsBeingDamaged));
             }
         }
 
@@ -43,10 +37,10 @@ namespace Catacumba.Entity
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
 
-        protected override void Awake()
-        {
-            base.Awake();
-        }
+        private int _nComboHits;
+        private CharacterHealth Health { get { return data.Components.Health; } }
+        private CharacterMovementBase Movement { get { return data.Components.Movement; } }
+        private CharacterAnimator Animator { get { return data.Components.Animator; } }
 
         protected override void OnEnable()
         {
@@ -70,12 +64,14 @@ namespace Catacumba.Entity
 
         private void Cb_OnItemEquipped(InventoryEquipResult result)
         {
-            var weapon = result.Params.Item.GetCharacteristics<CharacteristicWeaponizable>().FirstOrDefault();
+            SetupWeaponEquip(result.Params.Item);
+        }
+
+        private void SetupWeaponEquip(Item item)
+        {
+            var weapon = item.GetCharacteristics<CharacteristicWeaponizable>().FirstOrDefault();
             if (!weapon)
-            {
-                Debug.Log("Not weapon");
                 return;
-            }
 
             Weapon = weapon;
             if (AttackEffect)
@@ -103,65 +99,57 @@ namespace Catacumba.Entity
             }
         }
 
-        protected void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             AttackEffect?.Destroy(this);
         }
 
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
+            if (data.IsConfigured)
+            // If this is not the object's startup
+            {
+                foreach (var slot in data.Stats.Inventory.Slots)
+                {
+                    if (slot.Item == null) continue;
+
+                    var weapons = slot.Item.GetCharacteristics<CharacteristicWeaponizable>();
+                    if (weapons == null || weapons.Length == 0) continue;
+
+                    SetupWeaponEquip(slot.Item);
+                    break;
+                }
+            }
         }
 
-        protected override void OnComponentAdded(CharacterComponentBase component)
+        public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
             if (component is CharacterHealth)
             {
-                health = component as CharacterHealth;
+                var health = component as CharacterHealth;
                 health.OnFall += OnFallCallback;
                 health.OnDamaged += OnDamagedCallback;
             }
-
-            else if (component is CharacterMovement)
-            {
-                movement = component as CharacterMovement;
-                movement.OnRoll += OnRollCallback;
-            }
-
-            else if (component is CharacterAnimator)
-            {
-                animator = component as CharacterAnimator;
-            }
         }
 
-        protected override void OnComponentRemoved(CharacterComponentBase component)
+        public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
             if (component is CharacterHealth)
             {
+                var health = component as CharacterHealth;
                 health.OnFall -= OnFallCallback;
                 health.OnDamaged -= OnDamagedCallback;
-                health = null;
-            }
-
-            else if (component is CharacterMovement)
-            {
-                movement.OnRoll -= OnRollCallback;
-                movement = null;
-            }
-
-            else if (component is CharacterAnimator)
-            {
-                animator = null;
             }
         }
-
 
         public void RequestAttack(EAttackType type)
         {
             if (!CanAttack) return;
-            if (!animator)
+            if (!Animator)
             {
                 AttackImmediate(type);
                 return;

@@ -36,10 +36,10 @@ namespace Catacumba.Effects
             T[] components = key.GetComponentsInChildren<T>();
             foreach (T component in components)
             {
-                if (component.gameObject.name.Contains(key.name))
+                if (component.gameObject.name.Contains(key.GetType().Name))
                     return component;
             }
-
+ 
             return default(T);
         }
     }
@@ -47,7 +47,6 @@ namespace Catacumba.Effects
     public class ParticleEffectParams : EffectParams
     {
         public MonoBehaviour component;
-
     }
 
     [CreateAssetMenu(menuName="Effects/Particle Effect Configuration")]

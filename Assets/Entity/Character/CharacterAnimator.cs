@@ -98,7 +98,6 @@ namespace Catacumba.Entity
         protected override void OnEnable()
         {
             base.OnEnable();
-
             data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
         }
 
@@ -109,7 +108,7 @@ namespace Catacumba.Entity
             data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
         }
 
-        protected override void OnComponentAdded(CharacterComponentBase component)
+        public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
             if (component is CharacterMovementBase) 
@@ -125,7 +124,7 @@ namespace Catacumba.Entity
             }
         }
 
-        protected override void OnComponentRemoved(CharacterComponentBase component)
+        public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
             if (component is CharacterMovementBase) 

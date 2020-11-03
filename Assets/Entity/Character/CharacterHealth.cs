@@ -35,35 +35,19 @@ namespace Catacumba.Entity
         [HideInInspector] public bool IsBeingDamaged; 
 
         private new Collider collider;
-        private CharacterAnimator animator;
-
 
         private float recoverTimer;
         private float recoverCooldown = 2f;
 
         private float lastHit;
 
+        ///////////////////////////////////
+        //          OVERRIDES
 
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
             SetupEffects();
-        }
-
-        protected override void OnComponentAdded(CharacterComponentBase component)
-        {
-            base.OnComponentAdded(component);
-        }
-
-        protected override void OnComponentRemoved(CharacterComponentBase component)
-        {
-            base.OnComponentRemoved(component);
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
-            collider = GetComponent<Collider>();
         }
 
         private void SetupEffects()
@@ -73,6 +57,9 @@ namespace Catacumba.Entity
 
             HitEffect?.Setup(this);
             shaderHitEffect = new HitEffect(this);
+
+            if (!HealthEffects)
+                HealthEffects = data.CharacterCfg.View.HealthQuad;
             
             if (HealthEffects)
             {
@@ -80,6 +67,61 @@ namespace Catacumba.Entity
                 HealthEffects.SetHealth(this, data.Stats.HealthNormalized);
                 HealthEffects.SetStamina(this, data.Stats.StaminaBar);
             }
+        }
+
+        public override void OnComponentAdded(CharacterComponentBase component)
+        {
+            base.OnComponentAdded(component);
+        }
+
+        public override void OnComponentRemoved(CharacterComponentBase component)
+        {
+            base.OnComponentRemoved(component);
+        }
+
+        ////////////////////////////////////////
+        //          INTERFACE
+
+        public void TakeDamage(CharacterAttackData attack)
+        {
+            if (IsOnGround /* && characterMovement.IsOnAir */)
+                return;
+
+            lastHit = Time.time;
+
+            if (HitEffect)
+                HitEffect.EmitBurst(this, 20);
+            shaderHitEffect.OnHit();
+
+            OnDamaged?.Invoke(attack);
+
+            if (IsDead)
+            {
+                collider.enabled = false;
+                OnDeath?.Invoke(this);
+
+                if (!data.Components.Animator)
+                    Destroy(gameObject);
+            }
+        }
+
+        ////////////////////////////////////////
+        //        LIFECYCLE
+
+        protected override void Awake()
+        {
+            base.Awake();
+            collider = GetComponent<Collider>();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            OnFall += OnFallCallback;
+            OnGetUp += OnGetUpAnimationEnd;
+
+            data.Stats.OnStatsChanged += OnStatsChangedCallback;
         }
 
         private void Update()
@@ -111,15 +153,6 @@ namespace Catacumba.Entity
             shaderHitEffect?.Update();
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-
-            OnFall += OnFallCallback;
-            OnGetUp += OnGetUpAnimationEnd;
-
-            data.Stats.OnStatsChanged += OnStatsChangedCallback;
-        }
 
         protected override void OnDisable()
         {
@@ -131,11 +164,29 @@ namespace Catacumba.Entity
             data.Stats.OnStatsChanged -= OnStatsChangedCallback;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            DestroyEffects();
+        }
+
+        private void DestroyEffects()
+        {
+            HitEffect?.Destroy(this);
+            HealthEffects?.Destroy(this);
+        }
+
+        ////////////////////////////////////////
+        //      CALLBACKS
+
         private void OnStatsChangedCallback(CharacterStats stats)
         {
             // UpdateHealthQuad(stats.HealthNormalized, stats.StaminaBar);
-            HealthEffects.SetHealth(this, stats.HealthNormalized);
-            HealthEffects.SetStamina(this, stats.StaminaBar);
+            if (HealthEffects)
+            {
+                HealthEffects.SetHealth(this, stats.HealthNormalized);
+                HealthEffects.SetStamina(this, stats.StaminaBar);
+            }
         }
 
         public void OnGetUpAnimationEnd()
@@ -152,29 +203,6 @@ namespace Catacumba.Entity
             if (IsDead)
             {
                 recoverTimer *= 2f;
-            }
-        }
-
-        public void TakeDamage(CharacterAttackData data)
-        {
-            if (IsOnGround /* && characterMovement.IsOnAir */)
-                return;
-
-            lastHit = Time.time;
-
-            if (HitEffect)
-                HitEffect.EmitBurst(this, 20);
-            shaderHitEffect.OnHit();
-
-            OnDamaged?.Invoke(data);
-
-            if (IsDead)
-            {
-                collider.enabled = false;
-                OnDeath?.Invoke(this);
-
-                if (!animator)
-                    Destroy(gameObject);
             }
         }
 

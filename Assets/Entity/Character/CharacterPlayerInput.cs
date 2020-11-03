@@ -60,7 +60,7 @@ namespace Catacumba.Entity
             //CameraManager.Instance.OnCameraChange -= OnCameraChange;
         }
 
-        protected override void OnComponentAdded(CharacterComponentBase component)
+        public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
 
@@ -75,7 +75,7 @@ namespace Catacumba.Entity
             }
         }
 
-        protected override void OnComponentRemoved(CharacterComponentBase component)
+        public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
 
@@ -112,6 +112,7 @@ namespace Catacumba.Entity
             {
                 OnInteract?.Invoke(data);
                 // data?.Interact();
+                GetComponent<CharacterInteract>()?.Interact();
             }
 
             if (RewiredInput.GetButton("Submit"))

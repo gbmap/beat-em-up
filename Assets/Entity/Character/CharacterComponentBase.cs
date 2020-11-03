@@ -6,40 +6,41 @@ namespace Catacumba.Entity
 {
     public abstract class CharacterComponentBase : MonoBehaviour
     {
-        protected CharacterData data;
+        private CharacterData _data;
+        protected CharacterData data
+        {
+            get { return _data ?? (_data = GetComponentInParent<CharacterData>()); }
+        }
 
         protected virtual void Awake()
         {
-            data = GetComponentInParent<CharacterData>();
+            //data = GetComponentInParent<CharacterData>();
         }
 
         protected virtual void Start()
         {
-            data.Components.ForEachComponent(c => this.OnComponentAdded(c));
-            data.OnComponentAdded?.Invoke(this);
+            data.SignalComponentAdded(this);
         }
 
-        protected virtual void Destroy()
+        protected virtual void OnDestroy()
         {
-            data.OnComponentRemoved?.Invoke(this);
+            data.SignalComponentRemoved(this);
         }
 
         protected virtual void OnEnable()
         {
-            data.OnComponentAdded += OnComponentAdded;
-            data.OnComponentRemoved += OnComponentRemoved;
+            //data.SignalComponentAdded(this);
         }
 
         protected virtual void OnDisable()
         {
-            data.OnComponentAdded -= OnComponentAdded;
-            data.OnComponentRemoved -= OnComponentRemoved;
+            //data.SignalComponentRemoved(this);
         }
 
         public virtual void OnConfigurationEnded() {}
 
-        protected virtual void OnComponentAdded(CharacterComponentBase component) {}
-        protected virtual void OnComponentRemoved(CharacterComponentBase component) {}
+        public virtual void OnComponentAdded(CharacterComponentBase component) {}
+        public virtual void OnComponentRemoved(CharacterComponentBase component) {}
 
 #if UNITY_EDITOR
         public virtual string GetDebugString() { return string.Empty; }

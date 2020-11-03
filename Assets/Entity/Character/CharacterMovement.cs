@@ -115,7 +115,7 @@ namespace Catacumba.Entity
             }
         }
 
-        protected override void OnComponentAdded(CharacterComponentBase component)
+        public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
             if (component is CharacterHealth)
@@ -127,7 +127,7 @@ namespace Catacumba.Entity
             }
         }
 
-        protected override void OnComponentRemoved(CharacterComponentBase component)
+        public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
             if (component is CharacterHealth)
@@ -143,7 +143,8 @@ namespace Catacumba.Entity
         {
             base.Awake();
 
-            data = GetComponent<CharacterData>();
+
+            //data = GetComponent<CharacterData>();
             NavMeshAgent = GetComponent<NavMeshAgent>();
             combat = GetComponent<CharacterCombat>();
         }
