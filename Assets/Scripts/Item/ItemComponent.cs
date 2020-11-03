@@ -1,8 +1,10 @@
-﻿using Catacumba.Data.Items;
+﻿using Catacumba.Data.Interactions;
+using Catacumba.Data.Items;
 using UnityEngine;
 
 namespace Catacumba.Entity
 {
+    [RequireComponent(typeof(CharacterInteractive))]
     public class ItemComponent : MonoBehaviour
     {
         public Item Item;
@@ -28,9 +30,25 @@ namespace Catacumba.Entity
             }
         }
 
+        private CharacterInteractive interactive;
+
         void Awake()
         {
             animator = GetComponent<Animator>();
+            interactive = GetComponent<CharacterInteractive>();
+            interactive.OnInteraction += OnInteraction;
+        }
+
+        void OnInteraction(InteractionResult result)
+        {
+            if (result is InventoryEquipResult)
+            {
+                InventoryEquipResult equip = result as InventoryEquipResult;
+                if (equip.Result != InventoryEquipResult.EEquipResult.Success)
+                    return;
+
+                Take();
+            }
         }
 
         void Start()
