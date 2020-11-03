@@ -27,10 +27,7 @@ namespace Catacumba.Entity
         public bool IsAgentStopped
         {
             get { return !CanMove || isAgentStopped; }
-            set
-            {
-                isAgentStopped = value;
-            }
+            set { isAgentStopped = value; }
         }
 
         // references
@@ -38,13 +35,11 @@ namespace Catacumba.Entity
 
         private CharacterHealth health;
 
-        private Vector3 forward; // where the character is facing
+        protected Vector3 forward; // where the character is facing
 
         // speed bump
         private float speedBumpT;
         private const float speedBumpScale = 7f;
-
-        protected abstract Vector3 UpdateVelocityWithDesiredDirection(Vector3 vel, Vector3 direction);
 
         protected virtual void UpdateEffect()
         {
@@ -104,8 +99,17 @@ namespace Catacumba.Entity
         protected virtual void Update()
         {
             NavMeshAgent.enabled = GetNavMeshEnabled(health, speedBumpT);
-            Move();
+            NavMeshAgent.isStopped = IsAgentStopped;
+
+            Vector3 velocity = MoveNavAgent();
+            UpdateFacingDirection(velocity);
             UpdateEffect();
+        }
+
+        private void UpdateFacingDirection(Vector3 velocity)
+        {
+            forward = GetForwardVector(velocity.normalized);
+            transform.LookAt(transform.position + forward);
         }
 
         protected override void OnDestroy()
@@ -126,27 +130,32 @@ namespace Catacumba.Entity
             return ret;
         }
 
-        private void Move()
+        private Vector3 MoveNavAgent()
         {
             UpdateSpeedBump();
 
             if (!NavAgentValid)
-                return;
+                return Vector3.zero;
 
             Vector3 velocity = Vector3.zero;
             Vector3 direction = Direction.normalized;
 
-            if (IsBeingMoved)
-                velocity = UpdateVelocityWithBump(velocity);
-            else if (CanMove && Direction.sqrMagnitude > 0f)
-                velocity = UpdateVelocityWithDesiredDirection(velocity, direction);
+            bool updatedVelocity = false;
+            velocity = UpdateVelocity(velocity, ref updatedVelocity);
 
             bool isPlayer = brainType == ECharacterBrainType.Input;
             if (isPlayer || IsBeingMoved)
                 NavMeshAgent.Move(velocity * Time.deltaTime);
 
-            this.forward = CalculateAndUpdateForward(this.forward, direction);
-            NavMeshAgent.isStopped = IsAgentStopped;
+            return velocity;
+        }
+
+        protected virtual Vector3 UpdateVelocity(Vector3 velocity, ref bool updatedValue)
+        {
+            updatedValue = IsBeingMoved;
+            if (updatedValue)
+                velocity = UpdateVelocityWithBump(velocity);
+            return velocity;
         }
 
         private Vector3 UpdateVelocityWithBump(Vector3 vel)
@@ -155,11 +164,9 @@ namespace Catacumba.Entity
             return speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
         }
 
-        private Vector3 CalculateAndUpdateForward(Vector3 fwd, Vector3 dir)
+        protected virtual Vector3 GetForwardVector(Vector3 dir)
         {
-            fwd = Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
-            transform.LookAt(transform.position + fwd);
-            return fwd;
+            return Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
         }
 
         private void UpdateSpeedBump()
@@ -205,7 +212,7 @@ namespace Catacumba.Entity
             }
         }
 
-        ////////////////////////////////////////
+        //////////////////////////////////
         //      CALLBACKS
 
         private void OnDamagedCallback(AttackResult attack)

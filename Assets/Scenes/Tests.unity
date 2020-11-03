@@ -134,11 +134,11 @@ GameObject:
   - component: {fileID: 246744944}
   - component: {fileID: 246744947}
   - component: {fileID: 246744948}
-  - component: {fileID: 246744945}
   - component: {fileID: 246744946}
   - component: {fileID: 246744949}
   - component: {fileID: 246744950}
   - component: {fileID: 246744951}
+  - component: {fileID: 246744945}
   m_Layer: 13
   m_Name: GameObject
   m_TagString: Untagged
@@ -210,7 +210,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 246744941}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e813cf5e25e0d49a2aafaed6ec77fe, type: 3}
+  m_Script: {fileID: 11500000, guid: af4b7960d0da18d4c9054ff0631888ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MovementEffect: {fileID: 0}

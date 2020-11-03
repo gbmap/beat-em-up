@@ -150,10 +150,8 @@ namespace Catacumba.Entity
 
                 movement.Direction = cFwd;
 
-                /*
                 if (RewiredInput.GetButtonDown("Dodge"))
-                    movement.Roll(cFwd.normalized);
-                */
+                    (movement as CharacterMovementWalkDodge)?.Dodge(cFwd);
             }
 
             if ( Input.GetKeyDown(KeyCode.F6) ||

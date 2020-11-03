@@ -118,6 +118,12 @@ namespace Catacumba.Entity
             if (component is CharacterMovementBase) 
             {
                 movement = component as CharacterMovementBase;
+                if (movement is CharacterMovementWalkDodge)
+                {
+                    (movement as CharacterMovementWalkDodge).OnDodge += OnRollCallback;
+                }
+
+
                 // movement.OnRoll += OnRollCallback;
             }
 
@@ -133,7 +139,9 @@ namespace Catacumba.Entity
             base.OnComponentRemoved(component);
             if (component is CharacterMovementBase) 
             {
-                // movement.OnRoll -= OnRollCallback;
+                if (component is CharacterMovementWalkDodge)
+                    (component as CharacterMovementWalkDodge).OnDodge -= OnRollCallback;
+
                 movement = null; 
             }
 
@@ -150,11 +158,6 @@ namespace Catacumba.Entity
             {
                 if (movement.NavMeshAgent)
                     animator.SetBool(hashMoving, movement.Direction.sqrMagnitude > 0.0f && movement.CanMove);
-                
-                /*
-                if (combat)
-                    UpdateSmokeEmission();
-                */
             }
 
     #if UNITY_EDITOR
@@ -265,7 +268,7 @@ namespace Catacumba.Entity
 
         private void OnRollCallback()
         {
-            animator.speed = AnimatorDefaultSpeed;
+            //animator.speed = AnimatorDefaultSpeed;
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);
             animator.SetTrigger(hashRoll);

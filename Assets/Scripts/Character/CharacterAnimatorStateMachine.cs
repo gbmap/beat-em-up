@@ -10,7 +10,7 @@ public class CharacterAnimatorStateMachine : StateMachineBehaviour
     {
         if (stateInfo.shortNameHash == Animator.StringToHash("Roll"))
         {
-            animator.GetComponentInParent<CharacterMovement>().BeginRoll();
+            animator.GetComponentInParent<CharacterMovementWalkDodge>()?.AnimationBeginDodge();
         }
     }
 
@@ -18,7 +18,7 @@ public class CharacterAnimatorStateMachine : StateMachineBehaviour
     {
         if (stateInfo.shortNameHash == Animator.StringToHash("Roll"))
         {
-            animator.GetComponentInParent<CharacterMovement>().EndRoll();
+            animator.GetComponentInParent<CharacterMovementWalkDodge>()?.AnimationEndDodge();
         }
     }
 }
