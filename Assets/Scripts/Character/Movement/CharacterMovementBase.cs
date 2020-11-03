@@ -37,7 +37,6 @@ namespace Catacumba.Entity
         private ECharacterBrainType brainType { get { return data.BrainType; } }
 
         private CharacterHealth health;
-        //private 
 
         private Vector3 forward; // where the character is facing
 
