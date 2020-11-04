@@ -126,7 +126,12 @@ namespace Catacumba.Entity
 
         void Awake()
         {
-            BrainType = GetComponent<CharacterPlayerInput>() != null ? ECharacterBrainType.Input : ECharacterBrainType.AI;
+            ControllerComponent controller = GetComponent<ControllerComponent>(); 
+            if (controller && controller.Controller)
+                BrainType = controller.Controller.BrainType;
+            else
+                BrainType = ECharacterBrainType.AI;
+
             SetupCharacterStats();
             SetupCharacterComponentsCache();
         }

@@ -111,8 +111,6 @@ namespace Catacumba.Entity
 
             if (RewiredInput.GetButtonDown("Submit"))
             {
-                OnInteract?.Invoke(data);
-                // data?.Interact();
                 GetComponent<CharacterInteract>()?.Interact();
             }
 
