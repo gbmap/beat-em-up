@@ -45,10 +45,11 @@ namespace Catacumba.Entity
 
 		public void SetDestination(Vector3 position)
 		{
-			if (brainType != EBrainType.AI)
-				return;
-		}
+            if (brainType != ECharacterBrainType.AI)
+                return;
 
+            NavMeshAgent.SetDestination(position);
+		}
 
         protected virtual void UpdateEffect()
         {

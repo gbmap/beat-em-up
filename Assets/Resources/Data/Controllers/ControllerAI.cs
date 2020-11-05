@@ -14,7 +14,7 @@ namespace Catacumba.Data.Controllers
         public abstract void OnEnter(ControllerComponent component);
         public abstract void OnUpdate(ControllerComponent component);
         public abstract void OnExit(ControllerComponent component);
-        public abstract void OnDestroy(ControllerComponent component);
+        public abstract void Destroy(ControllerComponent component);
     }
 
     [CreateAssetMenu(menuName="Data/Controllers/ControllerAI", fileName="ControllerAI")]
@@ -37,7 +37,7 @@ namespace Catacumba.Data.Controllers
             currentState?.OnExit(controller);
 
             foreach (ControllerAIState state in States)
-                state.OnDestroy(controller);
+                state.Destroy(controller);
         }
 
         public override void OnUpdate(ControllerComponent controller)
@@ -67,7 +67,11 @@ namespace Catacumba.Data.Controllers
             States = new List<ControllerAIState>();
 
             foreach(ControllerAIState state in statesBlueprint)
-                States.Add(Instantiate(state));
+            {
+                var stateInstance = Instantiate(state);
+                stateInstance.OnCreate(controller);
+                States.Add(stateInstance);
+            }
 
             currentState = States[0];
             currentStateIndex = 0;

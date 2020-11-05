@@ -61,7 +61,7 @@ namespace Catacumba.Data.Controllers
 
         private void UpdateInteraction(ControllerComponent controller)
         {
-            if (!RewiredInput.GetButton("Submit"))
+            if (RewiredInput.GetButton("Submit"))
                 controller.GetComponent<CharacterInteract>()?.Interact();
         }
     }
