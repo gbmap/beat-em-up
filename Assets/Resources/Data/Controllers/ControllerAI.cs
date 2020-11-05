@@ -17,6 +17,7 @@ namespace Catacumba.Data.Controllers
         public abstract void OnDestroy(ControllerComponent component);
     }
 
+    [CreateAssetMenu(menuName="Data/Controllers/ControllerAI", fileName="ControllerAI")]
     public class ControllerAI : ControllerBase
     {
         public override ECharacterBrainType BrainType => ECharacterBrainType.AI;
