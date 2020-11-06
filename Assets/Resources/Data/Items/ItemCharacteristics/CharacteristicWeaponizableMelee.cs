@@ -10,13 +10,11 @@ namespace Catacumba.Data.Items.Characteristics
 
         public override AttackResult[] Attack(CharacterData character, EAttackType attackType)
         {
-            string layer = "Entities";
-
             Collider[] colliders = Physics.OverlapBox(
                 GetColliderPosition(character), 
                 GetColliderSize(character, attackType), 
                 GetColliderRotation(character),
-                1 << LayerMask.NameToLayer(layer)
+                character.Components.Combat.TargetLayer.value
             );
 
             if (colliders.Length == 0) return null;

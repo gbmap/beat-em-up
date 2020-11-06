@@ -157,7 +157,7 @@ namespace Catacumba.Entity
             if (movement)
             {
                 if (movement.NavMeshAgent)
-                    animator.SetBool(hashMoving, movement.Direction.sqrMagnitude > 0.0f && movement.CanMove);
+                    animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
             }
 
     #if UNITY_EDITOR

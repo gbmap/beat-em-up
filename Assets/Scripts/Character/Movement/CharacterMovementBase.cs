@@ -108,6 +108,9 @@ namespace Catacumba.Entity
             if (!NavAgentValid)
                 return Vector3.zero;
 
+            if (NavMeshAgent.hasPath)
+                return NavMeshAgent.velocity;
+
             Vector3 velocity = Vector3.zero;
             Vector3 direction = Direction.normalized;
 

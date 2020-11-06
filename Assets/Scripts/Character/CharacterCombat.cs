@@ -10,6 +10,8 @@ namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
+        public LayerMask TargetLayer;
+
         [HideInInspector] public bool IsOnCombo;
 
         public ParticleEffectConfiguration AttackEffect { get; private set; }
