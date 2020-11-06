@@ -218,6 +218,8 @@ namespace Catacumba.Effects
 
         public void PointSystemTowards(MonoBehaviour instance, Vector3 direction)
         {
+            if (direction.sqrMagnitude == 0f) return;
+
             ParticleSystem systemInstance = SystemPool.Get(instance);
             systemInstance.transform.rotation = Quaternion.LookRotation(direction);
         }

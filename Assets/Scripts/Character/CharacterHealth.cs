@@ -34,12 +34,14 @@ namespace Catacumba.Entity
         public bool IsOnGround { get; private set; }
         [HideInInspector] public bool IsBeingDamaged; 
 
+        public float LastHit { get; private set; }
+        public AttackResult LastHitData { get; private set; }
+
         private new Collider collider;
 
         private float recoverTimer;
         private float recoverCooldown = 2f;
 
-        private float lastHit;
 
         ///////////////////////////////////
         //          OVERRIDES
@@ -87,7 +89,8 @@ namespace Catacumba.Entity
             if (IsOnGround /* && characterMovement.IsOnAir */)
                 return;
 
-            lastHit = Time.time;
+            LastHit = Time.time;
+            LastHitData = attack;
 
             if (HitEffect)
                 HitEffect.EmitBurst(this, 20);
@@ -126,7 +129,7 @@ namespace Catacumba.Entity
 
         private void Update()
         {
-            if (Time.time > lastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
+            if (Time.time > LastHit + 2f) // TODO: especificar o tempo pra reiniciar o poise
             {
                 data.Stats.CurrentStamina = data.Stats.Stamina;
                 // UpdatePoise(1f);

@@ -12,11 +12,11 @@ public class HurtStateMachineBehaviour : StateMachineBehaviour
         if (stateInfo.shortNameHash == Animator.StringToHash("Knockdown"))
         {
             Debug.Log("Fall");
-            animator.GetComponent<CharacterHealth>().OnFall?.Invoke();
+            animator.GetComponentInParent<CharacterHealth>().OnFall?.Invoke();
         }
         else
         {
-            animator.GetComponent<CharacterAnimator>().FreezeAnimator();
+            animator.GetComponentInParent<CharacterAnimator>().FreezeAnimator();
         }
     }
 
@@ -26,18 +26,18 @@ public class HurtStateMachineBehaviour : StateMachineBehaviour
         if (stateInfo.shortNameHash == Animator.StringToHash("StandUp"))
         {
             Debug.Log("GetUp");
-            animator.GetComponent<CharacterHealth>().OnGetUp?.Invoke();
+            animator.GetComponentInParent<CharacterHealth>().OnGetUp?.Invoke();
         }
     }
 
     public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        animator.GetComponent<CharacterHealth>().IsBeingDamaged = true;
+        animator.GetComponentInParent<CharacterHealth>().IsBeingDamaged = true;
     }
 
     public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
         //base.OnStateMachineExit(animator, stateMachinePathHash);
-        animator.GetComponent<CharacterHealth>().IsBeingDamaged = false;
+        animator.GetComponentInParent<CharacterHealth>().IsBeingDamaged = false;
     }
 }

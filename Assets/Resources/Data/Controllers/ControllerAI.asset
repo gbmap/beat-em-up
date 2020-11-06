@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62e9b738d5f55a74dbc88401f93778af, type: 3}
   m_Name: ControllerAI
   m_EditorClassIdentifier: 
-  States: []
+  States:
+  - {fileID: 11400000, guid: 1655a292cbfee144695b5f2c6187ab69, type: 2}
+  - {fileID: 11400000, guid: 02490f42a69b83a4581b283d8f7d2fe5, type: 2}

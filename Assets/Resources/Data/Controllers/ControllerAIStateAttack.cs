@@ -66,7 +66,6 @@ namespace Catacumba.Data.Controllers
 
         public override void OnUpdate(ControllerComponent component)
         {
-
             if (Target)
             {
                 UpdateTargetPosition(component);
@@ -91,7 +90,7 @@ namespace Catacumba.Data.Controllers
         {
             float destinationToTargetDistance = Vector3.Distance(Target.transform.position, movement.NavMeshAgent.destination);
             if (destinationToTargetDistance > 1f)
-                movement.NavMeshAgent.SetDestination(Target.transform.position);
+                movement.SetDestination(Target.transform.position);
         }
 
         private void UpdateShouldAttack(ControllerComponent component)

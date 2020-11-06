@@ -26,6 +26,8 @@ namespace Catacumba.Entity
         //CharacterData data;
         CharacterMovementBase movement;
         CharacterCombat combat;
+        CharacterHealth health;
+
         CharacterModelInfo modelInfo;
         public CharacterModelInfo ModelInfo
         {
@@ -40,14 +42,6 @@ namespace Catacumba.Entity
         private new Renderer renderer;
 
         public float animatorSpeed = 1f;
-
-        [Space]
-        [Header("FX Impact")]
-        public ParticleSystem ParticlesHit;
-        public ParticleSystem.MinMaxCurve WeakHitStartSize;
-        public ParticleSystem.MinMaxGradient WeakHitStartColor;
-        public ParticleSystem.MinMaxCurve StrongHitStartSize;
-        public ParticleSystem.MinMaxGradient StrongHitStartColor;
 
         GameObject equippedWeapon;
 
@@ -83,8 +77,6 @@ namespace Catacumba.Entity
 
             modelInfo = GetComponent<CharacterModelInfo>();
             renderer = GetComponentInChildren<Renderer>();
-
-            //SetupSlashParticles(null);
         }
 
         protected override void Start()
@@ -111,7 +103,6 @@ namespace Catacumba.Entity
             data.Stats.Inventory.OnItemDropped -= Cb_OnItemDropped;
         }
 
-
         public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
@@ -122,15 +113,18 @@ namespace Catacumba.Entity
                 {
                     (movement as CharacterMovementWalkDodge).OnDodge += OnRollCallback;
                 }
-
-
-                // movement.OnRoll += OnRollCallback;
             }
 
             else if (component is CharacterCombat)
             {
                 combat = component as CharacterCombat;
                 combat.OnRequestAttack += OnRequestCharacterAttackCallback;
+            }
+
+            else if (component is CharacterHealth)
+            {
+                health = component as CharacterHealth;
+                health.OnDamaged += Cb_OnDamaged;
             }
         }
 
@@ -149,6 +143,12 @@ namespace Catacumba.Entity
             {
                 combat.OnRequestAttack -= OnRequestCharacterAttackCallback;
                 combat = null;
+            }
+
+            else if (component is CharacterHealth)
+            {
+                health.OnDamaged -= Cb_OnDamaged;
+                health = null;
             }
         }
 
@@ -175,34 +175,6 @@ namespace Catacumba.Entity
             float y = Mathf.Cos(Time.time * timeFactor);
             bool enabled = y > 0.0f;
             renderer.enabled = enabled;
-        }
-
-        private void EmitHitImpact(AttackResult attack)
-        {
-            var main = ParticlesHit.main;
-
-            if (attack.Type == EAttackType.Weak)
-            {
-                main.startSize = WeakHitStartSize;
-                main.startColor = WeakHitStartColor;
-            }
-            else
-            {
-                main.startSize = StrongHitStartSize;
-                main.startColor = StrongHitStartColor;
-            }
-        
-            ParticlesHit.Emit(1);
-        }
-
-        public void ToggleWeaponTrailVisibility()
-        {
-            var pss = equippedWeapon.GetComponentsInChildren<ParticleSystem>();
-            foreach (var ps in pss)
-            {
-                var emission = ps.emission;
-                emission.enabled = !emission.enabled;
-            }
         }
 
         #endregion
@@ -273,7 +245,32 @@ namespace Catacumba.Entity
             animator.ResetTrigger(hashAttackTrigger);
             animator.SetTrigger(hashRoll);
         }
+
+        private void Cb_OnDamaged(AttackResult attack)
+        {
+            animator.ResetTrigger(hashAttackTrigger);
+            animator.ResetTrigger(hashAttackTrigger);
+
+            if (attack.CancelAnimation || attack.Dead)
+            {
+                animator.SetInteger(hashNHits, attack.HitNumber);
+                animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
+            }
+
+            // EmitHitImpact(attack);
+            // FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
+        }
         
+        void OnRecover()
+        {
+            animator.SetTrigger(hashRecover);
+        }
+
+        void OnDodge()
+        {
+            animator.SetTrigger(hashRoll);
+        }
+
         #endregion
 
         public void ResetAttackTrigger()
@@ -424,31 +421,6 @@ namespace Catacumba.Entity
             {
                 showDeltaHips = !showDeltaHips;
             }
-        }
-
-        void OnDamaged(AttackResult attack)
-        {
-            animator.ResetTrigger(hashAttackTrigger);
-            animator.ResetTrigger(hashAttackTrigger);
-
-            if (attack.CancelAnimation || attack.Dead)
-            {
-                animator.SetInteger(hashNHits, attack.HitNumber);
-                animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
-            }
-
-            EmitHitImpact(attack);
-            FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
-        }
-
-        void OnRecover()
-        {
-            animator.SetTrigger(hashRecover);
-        }
-
-        void OnDodge()
-        {
-            animator.SetTrigger(hashRoll);
         }
 
 #endif
