@@ -17,7 +17,15 @@ namespace Catacumba.Entity
         {
             velocity = base.UpdateVelocity(velocity, ref updatedValue);
             if (!updatedValue)
-                velocity = UpdateVelocityWithDesiredDirection(velocity, Direction.normalized);
+            {
+                /*
+                if (brainType == ECharacterBrainType.AI)
+                    Direction = NavMeshAgent.desiredVelocity * NavMeshAgent.remainingDistance;
+                */
+
+                Direction = Vector3.ClampMagnitude(Direction, 1f);
+                velocity = UpdateVelocityWithDesiredDirection(velocity, Vector3.ClampMagnitude(Direction, 1f));
+            }
             return velocity;
         }
     }

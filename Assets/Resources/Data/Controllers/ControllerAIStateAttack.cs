@@ -2,6 +2,7 @@
 using System.Linq;
 using Catacumba.Entity;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Catacumba.Data.Controllers
 {
@@ -64,12 +65,12 @@ namespace Catacumba.Data.Controllers
         {
         }
 
-        public override void OnUpdate(ControllerComponent component)
+        public override void OnUpdate(ControllerComponent component, ref ControllerCharacterInput input)
         {
             if (Target)
             {
-                UpdateTargetPosition(component);
-                UpdateShouldAttack(component);
+                input.Direction = UpdateTargetPosition(component);
+                input.Attack = UpdateShouldAttack(component, out input.AttackType);
             }
         }
 
@@ -86,7 +87,7 @@ namespace Catacumba.Data.Controllers
             }
         }
 
-        private void UpdateTargetPosition(ControllerComponent component)
+        private Vector3 UpdateTargetPosition(ControllerComponent component)
         {
             float destinationToTargetDistance = Vector3.Distance(Target.transform.position, movement.NavMeshAgent.destination);
             if (destinationToTargetDistance > 1f)
@@ -95,10 +96,13 @@ namespace Catacumba.Data.Controllers
                 Vector3 targetPosition = component.transform.position + (delta - delta.normalized * 2f);
                 movement.SetDestination(Target.transform.position);
             }
+
+            return movement.NavMeshAgent.desiredVelocity;
         }
 
-        private void UpdateShouldAttack(ControllerComponent component)
+        private bool UpdateShouldAttack(ControllerComponent component, out EAttackType attackType)
         {
+            attackType = EAttackType.Weak;
             float distanceToTarget = Vector3.Distance(Target.transform.position, component.transform.position);
 
             bool isCloseToTarget = distanceToTarget < 2.5f;
@@ -107,11 +111,13 @@ namespace Catacumba.Data.Controllers
             if (isCloseToTarget && canAttack)
             {
                 movement.StopForTime(1f);
-                combat?.RequestAttack(EAttackType.Weak);
+                //combat?.RequestAttack(EAttackType.Weak);
                 attackTimer = 0f;
+                return true;
             }
 
             attackTimer += Time.deltaTime;
+            return false;
         }
 
         public override int UpdatePriority(ControllerComponent component)

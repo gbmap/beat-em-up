@@ -14,7 +14,8 @@ namespace Catacumba.Entity
         public Vector3 Direction;
         public float SpeedBumpForce = 0.9f;
 
-        public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? NavMeshAgent.velocity : Direction; } }
+        // public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? NavMeshAgent.velocity : Direction; } }
+        public Vector3 Velocity { get { return Direction; } }
 
         public NavMeshAgent NavMeshAgent { get; private set; }
         public bool NavAgentValid { get { return NavMeshAgent && NavMeshAgent.enabled; } }
@@ -25,7 +26,7 @@ namespace Catacumba.Entity
         public Vector3 SpeedBumpDir { get; private set; }
 
         // references
-        private ECharacterBrainType brainType { get { return data.BrainType; } }
+        protected ECharacterBrainType brainType { get { return data.BrainType; } }
         private CharacterHealth health;
         private CharacterCombat combat;
 
@@ -88,6 +89,7 @@ namespace Catacumba.Entity
 
             // Prohibits characters from walking when taking damage or attacking.
             UpdateNavMeshStopped(speedBumpT);
+            NavMeshAgent.velocity = Vector3.zero;
 
             // Performs actual movement for the character.
             // Used for everything except AI navigation.
@@ -105,7 +107,7 @@ namespace Catacumba.Entity
             bool stopped = GetNavMeshStopped(speedBumpT);
             if (NavMeshAgent.isStopped == stopped) return; 
 
-            NavMeshAgent.isStopped = GetNavMeshStopped(speedBumpT);
+            NavMeshAgent.isStopped = stopped;
             if (NavMeshAgent.isStopped)
                 NavMeshAgent.velocity = Vector3.zero;
         }
@@ -151,14 +153,11 @@ namespace Catacumba.Entity
                 return Vector3.zero;
 
             Vector3 velocity = Vector3.zero;
-            Vector3 direction = Direction.normalized;
 
             bool updatedVelocity = false;
             velocity = UpdateVelocity(velocity, ref updatedVelocity);
 
-            bool isPlayer = brainType == ECharacterBrainType.Input;
-            if (isPlayer || IsBeingMoved)
-                NavMeshAgent.Move(velocity * Time.deltaTime);
+            NavMeshAgent.Move(velocity * Time.deltaTime);
 
             return velocity;
         }
@@ -188,8 +187,10 @@ namespace Catacumba.Entity
                 if (LastHitWasRecent)
                     return (health.LastHitData.Attacker.transform.position - transform.position).normalized;
 
+                /*
                 if (NavMeshAgent.hasPath)
                     return (NavMeshAgent.pathEndPosition - transform.position).normalized;
+                */
             }
             return Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
         }

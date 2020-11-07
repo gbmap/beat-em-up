@@ -36,17 +36,17 @@ namespace Catacumba.Data.Controllers
 		{
 		}
 
-        public override void OnUpdate(ControllerComponent component)
+        public override void OnUpdate(ControllerComponent component, ref ControllerCharacterInput input)
 		{
-			if (movement.NavMeshAgent.remainingDistance > 0.1f)
-				return;
-
 			_movementTimer += Time.deltaTime;
 			if (_movementTimer >= TimeStopped)		
 			{
 				ChangePosition(movement);
 				_movementTimer = 0f;
 			}
+
+			float remainingDist = movement.NavMeshAgent.remainingDistance;
+			input.Direction = movement.NavMeshAgent.desiredVelocity * remainingDist;
 		}
 
 		public void ChangePosition(CharacterMovementBase movement)

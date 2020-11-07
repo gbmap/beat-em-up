@@ -12,9 +12,14 @@ namespace Catacumba.Data.Controllers
 
         public abstract void OnCreate(ControllerComponent component);
         public abstract void OnEnter(ControllerComponent component);
-        public abstract void OnUpdate(ControllerComponent component);
+        public abstract void OnUpdate(ControllerComponent component, ref ControllerCharacterInput input);
         public abstract void OnExit(ControllerComponent component);
         public abstract void Destroy(ControllerComponent component);
+
+        public virtual Vector3 GetMovementDirection(ControllerComponent component) 
+        {
+            return component.Data.Components.Movement.NavMeshAgent.desiredVelocity;
+        }
     }
 
     [CreateAssetMenu(menuName="Data/Controllers/ControllerAI", fileName="ControllerAI")]
@@ -40,7 +45,7 @@ namespace Catacumba.Data.Controllers
                 state.Destroy(controller);
         }
 
-        public override void OnUpdate(ControllerComponent controller)
+        public override void OnUpdate(ControllerComponent controller, ref ControllerCharacterInput input)
         {
             int maxPriority = CurrentStatePriority; 
             int maxPriorityIndex = currentStateIndex;
@@ -58,7 +63,7 @@ namespace Catacumba.Data.Controllers
             if (maxPriorityIndex != currentStateIndex)
                 ChangeState(controller, States[maxPriorityIndex], maxPriorityIndex);
 
-            currentState.OnUpdate(controller);
+            currentState.OnUpdate(controller, ref input);
         }
 
         public override void Setup(ControllerComponent controller)

@@ -1,4 +1,5 @@
 ﻿using Catacumba.Data.Controllers;
+using Catacumba.Data.Items;
 using Catacumba.Entity;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Catacumba.Entity
     {
         public ControllerBase Controller;
         public CharacterData Data { get { return data; } }
+
+        private ControllerCharacterInput input;
 
         public void SetController(ControllerBase newController)
         {
@@ -32,11 +35,48 @@ namespace Catacumba.Entity
                 SetController(Controller);   
             else
                 Debug.LogError("ControllerComponent with no Controller set.");
+
+            input = new ControllerCharacterInput();
         }
 
         void Update()
         {
-            Controller?.OnUpdate(this);
+            if (!Controller) return;
+            Controller?.OnUpdate(this, ref input);
+
+            var movement = Data.Components.Movement; 
+            if (movement)
+            {
+                movement.Direction = input.Direction;
+                if (input.Dodge)
+                    (movement as CharacterMovementWalkDodge)?.Dodge(input.Direction);
+            }
+
+            if (input.Attack)
+            {
+                var combat = Data.Components.Combat;
+                if (combat)
+                {
+                        combat.RequestAttack(input.AttackType);
+                }
+            }
+
+            if (input.Interact)
+                Data.GetComponent<CharacterInteract>()?.Interact();
+
+            if (input.DropItem)
+            {
+                InventorySlot slot = Data.Stats.Inventory.GetWeaponSlot();
+                if (slot != null)
+                {
+                    data.Stats.Inventory.Drop(new Data.Items.InventoryDropParams
+                    {
+                        Slot = slot.Part
+                    });
+                }
+            }
+
+            input.Reset();
         }
 
         protected override void OnDestroy()
