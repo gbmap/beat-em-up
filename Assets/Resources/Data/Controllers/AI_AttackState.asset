@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AI_AttackState
   m_EditorClassIdentifier: 
   InitialTargetPriority: 10
-  AttackDelay: 3
+  AttackDelay: 1
   SearchRadius: 3
   SearchLayers:
     serializedVersion: 2

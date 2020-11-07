@@ -20,19 +20,31 @@ namespace Catacumba.Entity
         public bool NavAgentValid { get { return NavMeshAgent && NavMeshAgent.enabled; } }
 
         public bool CanMove { get { return true; } }
+        public bool IsTimerStopped { get { return stopTimer < stopTime; } }
         public bool IsBeingMoved { get { return speedBumpT > 0f; } }
         public Vector3 SpeedBumpDir { get; private set; }
 
         // references
         private ECharacterBrainType brainType { get { return data.BrainType; } }
         private CharacterHealth health;
+        private CharacterCombat combat;
 
         protected Vector3 forward; // where the character is facing
 
         private float speedBumpT;
         private const float speedBumpScale = 7f;
 
-        private bool LastHitWasRecent { get { return Time.time < health.LastHit + 1f; } }
+        private float stopTimer = 0f;
+        private float stopTime = 0f;
+
+        private bool LastHitWasRecent 
+        { 
+            get 
+            { 
+                if (!health || health.LastHitData == null) return false;
+                return Time.time < health.LastHit + 1f; 
+            } 
+        }
 
 		//////////////////////////////
 		///		INTERFACE
@@ -44,6 +56,12 @@ namespace Catacumba.Entity
 
             NavMeshAgent.SetDestination(position);
 		}
+
+        public void StopForTime(float time)
+        {
+            stopTime = time;
+            stopTimer = 0f;
+        }
 
         protected virtual void UpdateEffect()
         {
@@ -65,23 +83,39 @@ namespace Catacumba.Entity
         {
             // Used for when characters are on the ground, Unity 
             // shouldn't do avoidance when characters are laying on the floor.
-            NavMeshAgent.enabled = GetNavMeshEnabled(health, speedBumpT); 
+            NavMeshAgent.enabled = GetNavMeshEnabled(health, speedBumpT);
 
             // Prohibits characters from walking when taking damage or attacking.
-            NavMeshAgent.isStopped = GetNavMeshStopped(speedBumpT);
+            UpdateNavMeshStopped(speedBumpT);
 
             // Performs actual movement for the character.
             // Used for everything except AI navigation.
             Vector3 velocity = MoveNavAgent();
 
+            UpdateStopTimer();
             UpdateFacingDirection(velocity);
             UpdateEffect();
+        }
+
+        private void UpdateNavMeshStopped(float speedBumpT)
+        {
+            bool stopped = GetNavMeshStopped(speedBumpT);
+            if (NavMeshAgent.isStopped == stopped) return; 
+
+            NavMeshAgent.isStopped = GetNavMeshStopped(speedBumpT);
+            if (NavMeshAgent.isStopped)
+                NavMeshAgent.velocity = Vector3.zero;
         }
 
         private void UpdateFacingDirection(Vector3 velocity)
         {
             forward = GetForwardVector(velocity.normalized);
             transform.LookAt(transform.position + forward);
+        }
+
+        private void UpdateStopTimer()
+        {
+            stopTimer += Time.deltaTime;
         }
 
         protected override void OnDestroy()
@@ -101,7 +135,9 @@ namespace Catacumba.Entity
 
         private bool GetNavMeshStopped(float speedBumpT)
         {
-            return speedBumpT > 0f || LastHitWasRecent; 
+            bool speedBumpPause = speedBumpT > 0f;
+            bool comboPause = combat ? combat.IsOnCombo : false;
+            return speedBumpPause || LastHitWasRecent || comboPause || IsTimerStopped; 
         }
 
         private Vector3 MoveNavAgent()
@@ -140,12 +176,18 @@ namespace Catacumba.Entity
 
         protected virtual Vector3 GetForwardVector(Vector3 dir)
         {
-            if (health && LastHitWasRecent && health.LastHitData != null)
-                return (health.LastHitData.Attacker.transform.position - transform.position).normalized;
+            //return transform.forward;
+            if (brainType == ECharacterBrainType.AI)
+            {
+                if (combat && combat.IsOnCombo)
+                    return transform.forward;
 
-            if (NavMeshAgent.hasPath)
-                return (NavMeshAgent.pathEndPosition - transform.position).normalized;
-            
+                if (LastHitWasRecent)
+                    return (health.LastHitData.Attacker.transform.position - transform.position).normalized;
+
+                if (NavMeshAgent.hasPath)
+                    return (NavMeshAgent.pathEndPosition - transform.position).normalized;
+            }
             return Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
         }
 
@@ -178,6 +220,11 @@ namespace Catacumba.Entity
                 health.OnFall += OnFallCallback;
                 health.OnGetUp += OnGetUpCallback;
             }
+
+            if (component is CharacterCombat)
+            {
+                combat = component as CharacterCombat;
+            }
         }
 
         public override void OnComponentRemoved(CharacterComponentBase component)
@@ -189,6 +236,11 @@ namespace Catacumba.Entity
                 health.OnFall -= OnFallCallback;
                 health.OnGetUp -= OnGetUpCallback;
                 health = null;
+            }
+
+            if (component is CharacterCombat)
+            {
+                combat = null;
             }
         }
 

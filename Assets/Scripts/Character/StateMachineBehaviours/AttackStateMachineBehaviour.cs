@@ -16,7 +16,11 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
         Animator.StringToHash("H 1")
     };
 
-    CharacterCombat combat;
+    CharacterCombat _combat;
+    private CharacterCombat GetCombat(Animator animator)
+    {
+        return _combat ?? (_combat = animator.GetComponentInParent<CharacterCombat>());
+    }
 
     // OnStateEnter is called before OnStateEnter is called on any state inside this state machine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -26,6 +30,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
 
         if (heavyAttackHashes.Contains(stateInfo.shortNameHash))
         {
+            var combat = GetCombat(animator);
             if (!combat) return;
             combat.IsOnHeavyAttack = true;
         }
@@ -40,6 +45,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateExit is called before OnStateExit is called on any state inside this state machine
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        var combat = GetCombat(animator);
         if (combat && heavyAttackHashes.Contains(stateInfo.shortNameHash))
             combat.IsOnHeavyAttack = false;
     }
@@ -59,7 +65,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateMachineEnter is called when entering a state machine via its Entry Node
     override public void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
     {
-        if (!combat) combat = animator.GetComponent<CharacterCombat>(); 
+        var combat = GetCombat(animator);
         if (combat)
             combat.OnComboStarted?.Invoke();
     }
@@ -67,6 +73,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
     // OnStateMachineExit is called when exiting a state machine via its Exit Node
     override public void OnStateMachineExit(Animator animator, int stateMachinePathHash)
     {
+        var combat = GetCombat(animator);
         if (combat)
             combat.OnComboEnded?.Invoke();
 

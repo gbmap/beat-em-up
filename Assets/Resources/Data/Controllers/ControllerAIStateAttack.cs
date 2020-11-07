@@ -90,18 +90,23 @@ namespace Catacumba.Data.Controllers
         {
             float destinationToTargetDistance = Vector3.Distance(Target.transform.position, movement.NavMeshAgent.destination);
             if (destinationToTargetDistance > 1f)
+            {
+                Vector3 delta = (Target.transform.position - component.transform.position);
+                Vector3 targetPosition = component.transform.position + (delta - delta.normalized * 2f);
                 movement.SetDestination(Target.transform.position);
+            }
         }
 
         private void UpdateShouldAttack(ControllerComponent component)
         {
             float distanceToTarget = Vector3.Distance(Target.transform.position, component.transform.position);
 
-            bool isCloseToTarget = distanceToTarget < 1f;
+            bool isCloseToTarget = distanceToTarget < 2.5f;
             bool canAttack = attackTimer >= AttackDelay;
 
             if (isCloseToTarget && canAttack)
             {
+                movement.StopForTime(1f);
                 combat?.RequestAttack(EAttackType.Weak);
                 attackTimer = 0f;
             }
