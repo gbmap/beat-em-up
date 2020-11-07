@@ -30,7 +30,7 @@ namespace Catacumba.Data
         public int Mana { get; set; }
         public int MaxMana { get { return CombatManager.GetMaxMana(this); } }
 
-        public int Stamina { get { return Attributes.Dexterity; } }
+        public int Stamina { get { return MaxHealth/5; } }
         public int CurrentStamina { get; set; }
         public float StaminaBar { get { return ((float)CurrentStamina)/Stamina; } }
 
@@ -46,10 +46,10 @@ namespace Catacumba.Data
             Level = 1;
             Attributes = new CharAttributesI()
             {
-                Strength = Mathf.RoundToInt(stats.StrengthCurve.Evaluate(UnityEngine.Random.value)),
+                Strength  = Mathf.RoundToInt(stats.StrengthCurve.Evaluate(UnityEngine.Random.value)),
                 Dexterity = Mathf.RoundToInt(stats.DexterityCurve.Evaluate(UnityEngine.Random.value)),
-                Vigor = Mathf.RoundToInt(stats.VigorCurve.Evaluate(UnityEngine.Random.value)),
-                Magic = Mathf.RoundToInt(stats.MagicCurve.Evaluate(UnityEngine.Random.value))
+                Vigor     = Mathf.RoundToInt(stats.VigorCurve.Evaluate(UnityEngine.Random.value)),
+                Magic     = Mathf.RoundToInt(stats.MagicCurve.Evaluate(UnityEngine.Random.value))
             };
 
             if (inventory == null)
@@ -58,10 +58,10 @@ namespace Catacumba.Data
                 // shallow copy is fine in this case
                 Inventory = ScriptableObject.Instantiate(inventory);
 
-            Health = MaxHealth;
-            Mana = MaxMana;
+            Health          = MaxHealth;
+            Mana            = MaxMana;
+            CurrentStamina  = Stamina;
             CanBeKnockedOut = true;
-            CurrentStamina = Stamina;
         }
     }
 

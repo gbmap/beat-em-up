@@ -165,7 +165,6 @@ namespace Catacumba.Entity
     #endif
         }
 
-
         private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
         {
             if (!isDead || renderer == null) return;
@@ -175,6 +174,11 @@ namespace Catacumba.Entity
             float y = Mathf.Cos(Time.time * timeFactor);
             bool enabled = y > 0.0f;
             renderer.enabled = enabled;
+        }
+
+        public void EmitSmokeRadius()
+        {
+            movement?.EmitSmokeRadius();
         }
 
         #endregion

@@ -143,9 +143,10 @@ namespace Catacumba.Entity
                 {
                     if (IsDead)
                     {
+                        /*
                         if (data.BrainType == ECharacterBrainType.Input)
                             ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new MsgOnPlayerDied { player = data });
-
+                        */
                         Destroy(gameObject);
                     }
                     else

@@ -51,7 +51,8 @@ namespace Catacumba.Entity
 
 		public void SetDestination(Vector3 position)
 		{
-            if (brainType != ECharacterBrainType.AI)
+            if (brainType != ECharacterBrainType.AI ||
+                !NavAgentValid)
                 return;
 
             NavMeshAgent.SetDestination(position);
@@ -99,6 +100,8 @@ namespace Catacumba.Entity
 
         private void UpdateNavMeshStopped(float speedBumpT)
         {
+            if (!NavAgentValid) return;
+            
             bool stopped = GetNavMeshStopped(speedBumpT);
             if (NavMeshAgent.isStopped == stopped) return; 
 
@@ -268,6 +271,11 @@ namespace Catacumba.Entity
         private void OnFallCallback()
         {
             NavMeshAgent.enabled = false;
+        }
+
+        public void EmitSmokeRadius()
+        {
+            MovementEffect?.EmitRing(this, 15);
         }
 
         ////////////////////////////////
