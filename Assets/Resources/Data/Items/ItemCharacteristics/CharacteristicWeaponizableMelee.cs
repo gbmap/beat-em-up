@@ -3,20 +3,14 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items.Characteristics
 {
-    [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Melee", fileName = "Weaponizable")]
+    [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Melee", fileName = "WeaponizableMelee")]
     public class CharacteristicWeaponizableMelee : CharacteristicWeaponizable
     {
         public AttackColliderSize AttackColliderSize;
 
-        public override AttackResult[] Attack(CharacterData character, EAttackType attackType)
+        public override AttackResult[] Attack(CharacterData character, Transform origin,  EAttackType attackType)
         {
-            Collider[] colliders = Physics.OverlapBox(
-                GetColliderPosition(character), 
-                GetColliderSize(character, attackType), 
-                GetColliderRotation(character),
-                character.Components.Combat.TargetLayer.value
-            );
-
+            Collider[] colliders = CollectColliders(character, origin, attackType);
             if (colliders.Length == 0) return null;
 
             AttackResult[] attackResults = new AttackResult[colliders.Length];
@@ -39,9 +33,21 @@ namespace Catacumba.Data.Items.Characteristics
             return attackResults;
         }
 
-        private Vector3 GetColliderPosition(CharacterData character)
+        protected Collider[] CollectColliders(CharacterData character, Transform origin, EAttackType attackType)
         {
-            return character.transform.position + (character.transform.forward*1.25f + Vector3.up);
+            Collider[] colliders = Physics.OverlapBox(
+                GetColliderPosition(origin), 
+                GetColliderSize(character, attackType), 
+                GetColliderRotation(origin),
+                character.Components.Combat.TargetLayer.value
+            );
+
+            return colliders;
+        }
+
+        protected Vector3 GetColliderPosition(Transform origin)
+        {
+            return origin.transform.position + (origin.transform.forward*1.25f + Vector3.up);
         }
 
         private Vector3 GetColliderSize(CharacterData character, EAttackType attackType)
@@ -55,17 +61,17 @@ namespace Catacumba.Data.Items.Characteristics
             return (attackColliderSize + Vector3.one)/2f;
         }
 
-        private Quaternion GetColliderRotation(CharacterData character)
+        private Quaternion GetColliderRotation(Transform origin)
         {
-            return character.transform.rotation;
+            return origin.transform.rotation;
         }
         
         public override void DebugDraw(CharacterData data, EAttackType type)
         {
             Gizmos.color = Color.red;
             Gizmos.matrix = Matrix4x4.TRS(
-                GetColliderPosition(data),
-                GetColliderRotation(data),
+                GetColliderPosition(data.transform),
+                GetColliderRotation(data.transform),
                 GetColliderSize(data, type)
             );
             Gizmos.DrawWireCube(Vector3.zero, Vector3.one);

@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf7841e092af2114faf8d85e68f5acb4, type: 3}
-  m_Name: WeaponAttackStrategyRanged
+  m_Script: {fileID: 11500000, guid: e2e86f0c2681408468ae07d2c9dd9ca1, type: 3}
+  m_Name: Weapon Type_Bow
   m_EditorClassIdentifier: 
-  DistanceToAttack: 5
+  animatorController: {fileID: 22100000, guid: 6e16f21952ec2a34b9191651247f648e, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: d072fbed943d5e143a94ca48a4977ae0, type: 2}

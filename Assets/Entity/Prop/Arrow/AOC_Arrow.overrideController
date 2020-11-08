@@ -7,7 +7,5 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: AOC_Arrow
-  m_Controller: {fileID: 9100000, guid: b585f79edde300d498de03c33a9f7a24, type: 2}
-  m_Clips:
-  - m_OriginalClip: {fileID: 7400000, guid: 731d17a5914e50d4ab9e249b4ce9a1c4, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: fea1f58a717303d44ae45c3241e58881, type: 2}
+  m_Controller: {fileID: 9100000, guid: cf5e0238a8a313f408a64f262d59b9bb, type: 2}
+  m_Clips: []

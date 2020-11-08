@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf7841e092af2114faf8d85e68f5acb4, type: 3}
-  m_Name: WeaponAttackStrategyRanged
+  m_Script: {fileID: 11500000, guid: 50194bcaede13cb43b09e1700f466f51, type: 3}
+  m_Name: AttackColliderSize_Projectile
   m_EditorClassIdentifier: 
-  DistanceToAttack: 5
+  Size: {x: 0.5, y: 0.5, z: 0.5}

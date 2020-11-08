@@ -13,7 +13,7 @@ namespace Catacumba.Data.Items.Characteristics
         public ParticleEffectConfiguration HitEffect;
         public WeaponType WeaponType;
 
-        public abstract AttackResult[] Attack(CharacterData data, EAttackType attackType);
+        public abstract AttackResult[] Attack(CharacterData data, Transform origin, EAttackType attackType);
         public virtual void DebugDraw(CharacterData data, EAttackType type) {}
 
         public override bool Equip(CharacterData data, Item item, BodyPart slot)

@@ -50,6 +50,7 @@ namespace Catacumba.Entity
 
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
+            OnAttack += EmitHitEffects;
 
             data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
         }
@@ -60,6 +61,7 @@ namespace Catacumba.Entity
 
             OnComboStarted -= OnComboStartedCallback;
             OnComboEnded -= OnComboEndedCallback;
+            OnAttack -= EmitHitEffects;
 
             data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
         }
@@ -164,11 +166,11 @@ namespace Catacumba.Entity
         {
             if (!Weapon) return;
 
-            AttackResult[] results = Weapon.Attack(data, type);
+            AttackResult[] results = Weapon.Attack(data, transform, type);
             EmitAttackEffect();
 
             if (results == null) return;
-            EmitHitEffects(results);
+            // EmitHitEffects(results);
             OnAttack?.Invoke(results);
 
             LastAttackData = results[results.Length-1];
