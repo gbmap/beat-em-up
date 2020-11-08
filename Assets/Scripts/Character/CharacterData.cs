@@ -113,7 +113,7 @@ namespace Catacumba.Entity
         [Header("Configuration")]
         public Catacumba.Data.CharacterConfiguration CharacterCfg;
 
-        public CharacterStats Stats;
+        [HideInInspector] public CharacterStats Stats;
 
         public ECharacterBrainType BrainType { get; private set; }
 
@@ -193,10 +193,7 @@ namespace Catacumba.Entity
         {
             if (!showDebug) return;
 
-            /*if (data.BrainType != ECharacterBrainType.Input)
-                return;*/
-
-            Rect r = WorldSpaceGUI(transform.position, Vector2.one * 200f);
+            Rect r = WorldSpaceGUI(transform.position, Vector2.one * 500f);
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             Components.ForEachComponent(c => sb.AppendFormat("--- {0} ---\n{1}\n", c.GetType().Name, c.GetDebugString()));
@@ -207,8 +204,6 @@ namespace Catacumba.Entity
         public static Rect WorldSpaceGUI(Vector3 worldPosition, Vector2 size)
         {
             Vector3 posW = worldPosition;
-            //posW.y = -posW.y;
-
             Vector2 pos = Camera.main.WorldToScreenPoint(posW);
 
             Rect r = new Rect(pos, size);

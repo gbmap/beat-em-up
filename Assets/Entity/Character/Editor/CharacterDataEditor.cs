@@ -9,9 +9,7 @@ using Catacumba.Data.Items;
 [CustomEditor(typeof(CharacterData))]
 public class CharacterDataEditor : Editor
 {
-    private void Awake()
-    {
-    }
+    bool componentsFold = false;
 
     public override void OnInspectorGUI()
     {
@@ -22,8 +20,12 @@ public class CharacterDataEditor : Editor
         {
             EditorGUILayout.LabelField("Stats");
             EditorGUILayout.LabelField(StatsToString(data.Stats), GUILayout.Height(300f));
-
         }
+
+        componentsFold = EditorGUILayout.Foldout(componentsFold, "Character Components");
+        if (componentsFold)
+            data.Components.ForEachComponent(c => EditorGUILayout.LabelField(c.GetType().Name));
+
     }
 
     private string StatsToString(CharacterStats stats) 

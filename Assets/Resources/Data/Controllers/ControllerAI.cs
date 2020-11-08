@@ -20,6 +20,8 @@ namespace Catacumba.Data.Controllers
         {
             return component.Data.Components.Movement.NavMeshAgent.desiredVelocity;
         }
+
+        public virtual string GetDebugString(ControllerComponent component) { return string.Empty; }
     }
 
     [CreateAssetMenu(menuName="Data/Controllers/ControllerAI", fileName="ControllerAI")]
@@ -90,5 +92,12 @@ namespace Catacumba.Data.Controllers
             currentState.OnEnter(controller);
             return currentState;
         }
+
+        public override string GetDebugString(ControllerComponent controller)
+        {
+            if (!currentState) return string.Empty;
+            return currentState.GetDebugString(controller);
+        }
+
     }
 }

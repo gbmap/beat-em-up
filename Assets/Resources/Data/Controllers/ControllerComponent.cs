@@ -42,6 +42,7 @@ namespace Catacumba.Entity
         void Update()
         {
             if (!Controller) return;
+            input.Reset();
             Controller?.OnUpdate(this, ref input);
 
             var movement = Data.Components.Movement; 
@@ -50,6 +51,8 @@ namespace Catacumba.Entity
                 movement.Direction = input.Direction;
                 if (input.Dodge)
                     (movement as CharacterMovementWalkDodge)?.Dodge(input.Direction);
+
+                movement.LookDir = input.LookDir;
             }
 
             if (input.Attack)
@@ -75,8 +78,6 @@ namespace Catacumba.Entity
                     });
                 }
             }
-
-            input.Reset();
         }
 
         protected override void OnDestroy()
@@ -85,7 +86,14 @@ namespace Catacumba.Entity
             Controller?.Destroy(this);
         }
 
-#endregion
+        #endregion
+
+        public override string GetDebugString()
+        {
+            if (!Controller) return string.Empty;
+            return input?.ToString();
+            //return Controller.GetDebugString(this);
+        }
 
     }
 }

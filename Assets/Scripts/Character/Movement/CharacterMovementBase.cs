@@ -12,6 +12,7 @@ namespace Catacumba.Entity
         public ParticleEffectConfiguration MovementEffect;
 
         public Vector3 Direction;
+        public Vector3 LookDir;
         public float SpeedBumpForce = 0.9f;
 
         // public Vector3 Velocity { get { return brainType == ECharacterBrainType.AI ? NavMeshAgent.velocity : Direction; } }
@@ -114,7 +115,8 @@ namespace Catacumba.Entity
 
         private void UpdateFacingDirection(Vector3 velocity)
         {
-            forward = GetForwardVector(velocity.normalized);
+            Vector3 lookDir = Vector3.Slerp(transform.forward, LookDir, Mathf.Clamp01(LookDir.sqrMagnitude));
+            forward = GetForwardVector(velocity.normalized, lookDir);
             transform.LookAt(transform.position + forward);
         }
 
@@ -176,7 +178,7 @@ namespace Catacumba.Entity
             return speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
         }
 
-        protected virtual Vector3 GetForwardVector(Vector3 dir)
+        protected virtual Vector3 GetForwardVector(Vector3 dir, Vector3 lookDir)
         {
             //return transform.forward;
             if (brainType == ECharacterBrainType.AI)
@@ -192,7 +194,9 @@ namespace Catacumba.Entity
                     return (NavMeshAgent.pathEndPosition - transform.position).normalized;
                 */
             }
-            return Vector3.Slerp(forward, dir, 0.5f * Time.deltaTime * 30f).normalized;
+
+            Vector3 fwrd = Vector3.Slerp(lookDir, dir, Mathf.Clamp01(dir.sqrMagnitude));
+            return Vector3.Slerp(forward, fwrd, 0.5f * Time.deltaTime * 30f).normalized;
         }
 
         private void UpdateSpeedBump()

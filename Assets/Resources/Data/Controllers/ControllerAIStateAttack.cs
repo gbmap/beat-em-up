@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Catacumba.Entity;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,6 +16,7 @@ namespace Catacumba.Data.Controllers
         public int InitialTargetPriority = 10;
         public float AttackDelay = 3f;
         public float SearchRadius = 3f;
+        public float DistanceToAttack = 2.5f;
         public LayerMask SearchLayers;
 
         private CharacterData Target;
@@ -69,8 +71,13 @@ namespace Catacumba.Data.Controllers
         {
             if (Target)
             {
-                input.Direction = UpdateTargetPosition(component);
+                Vector3 deltaToTarget = Target.transform.position - component.transform.position; 
+
+                input.Direction = UpdateTargetPosition(component, deltaToTarget);
+                input.LookDir = UpdateLookDirection(component, deltaToTarget);
                 input.Attack = UpdateShouldAttack(component, out input.AttackType);
+
+                UpdateNavMeshDestination(component);
             }
         }
 
@@ -87,17 +94,26 @@ namespace Catacumba.Data.Controllers
             }
         }
 
-        private Vector3 UpdateTargetPosition(ControllerComponent component)
+        private Vector3 UpdateTargetPosition(ControllerComponent component, Vector3 deltaToTarget)
+        {
+            if (movement.NavAgentValid && movement.NavMeshAgent.remainingDistance > DistanceToAttack)
+            {
+                float velocityLimit = Mathf.Clamp01(movement.NavMeshAgent.remainingDistance);
+                return movement.NavMeshAgent.desiredVelocity * velocityLimit;
+            }
+            return Vector3.zero; 
+        }
+
+        private void UpdateNavMeshDestination(ControllerComponent component)
         {
             float destinationToTargetDistance = Vector3.Distance(Target.transform.position, movement.NavMeshAgent.destination);
             if (destinationToTargetDistance > 1f)
-            {
-                Vector3 delta = (Target.transform.position - component.transform.position);
-                Vector3 targetPosition = component.transform.position + (delta - delta.normalized * 2f);
                 movement.SetDestination(Target.transform.position);
-            }
+        }
 
-            return movement.NavMeshAgent.desiredVelocity;
+        private Vector3 UpdateLookDirection(ControllerComponent component, Vector3 deltaToTarget)
+        {
+            return deltaToTarget.normalized;
         }
 
         private bool UpdateShouldAttack(ControllerComponent component, out EAttackType attackType)
@@ -105,7 +121,7 @@ namespace Catacumba.Data.Controllers
             attackType = EAttackType.Weak;
             float distanceToTarget = Vector3.Distance(Target.transform.position, component.transform.position);
 
-            bool isCloseToTarget = distanceToTarget < 2.5f;
+            bool isCloseToTarget = distanceToTarget < DistanceToAttack;
             bool canAttack = attackTimer >= AttackDelay;
 
             if (isCloseToTarget && canAttack)
@@ -131,6 +147,15 @@ namespace Catacumba.Data.Controllers
                 _currentPriority = 0;
 
             return _currentPriority;
+        }
+
+        public override string GetDebugString(ControllerComponent component)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (Target)
+                sb.AppendLine("Target: {Target.name}");
+
+            return sb.ToString();
         }
     }
 }
