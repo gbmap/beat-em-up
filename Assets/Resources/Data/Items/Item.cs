@@ -59,6 +59,19 @@ namespace Catacumba.Data.Items
             }
         }
 
+        public TItemCharacteristic GetCharacteristic<TItemCharacteristic>()
+            where TItemCharacteristic : ItemCharacteristic
+        {
+            try
+            {
+                return Characteristics.FirstOrDefault(c => c is TItemCharacteristic) as TItemCharacteristic;
+            }
+            catch (System.NullReferenceException)
+            {
+                return null;
+            }
+        }
+
         public bool HasCharacteristic<TCharacteristic>() 
             where TCharacteristic : ItemCharacteristic
         {

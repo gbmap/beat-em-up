@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Catacumba.Data.Character;
@@ -72,6 +73,11 @@ namespace Catacumba.Data.Items
 
         public InventorySlot GetWeaponSlot()
         {
+            if (slots.Count == 0 || WeaponSlotIndex < 0 || WeaponSlotIndex > slots.Count)
+            {
+                return null;
+            }
+
             return slots[WeaponSlotIndex];
         }
 
@@ -124,6 +130,13 @@ namespace Catacumba.Data.Items
 
         public System.Action<InventoryEquipResult> OnItemEquipped;
         public System.Action<InventoryDropResult> OnItemDropped;
+
+        public System.Action<InventoryEquipResult, CharacteristicWeaponizable> OnWeaponEquipped;
+
+        void Awake()
+        {
+            OnItemEquipped += Cb_OnItemEquipped;
+        }
 
         public void DispatchItemEquippedForAllItems()
         {
@@ -275,6 +288,13 @@ namespace Catacumba.Data.Items
             return Slots.HasSlot(slot);
         }
 
+        private void Cb_OnItemEquipped(InventoryEquipResult res)
+        {
+            var weapon = res.Params.Item.GetCharacteristic<CharacteristicWeaponizable>();
+            if (weapon != null)
+                OnWeaponEquipped?.Invoke(res, weapon);
+        }
+
         private static BodyPart[] GetBodyParts(Item item)
         {
             CharacteristicEquippable[] characteristics = item.GetCharacteristics<CharacteristicEquippable>();
@@ -283,6 +303,7 @@ namespace Catacumba.Data.Items
 
             return characteristics.SelectMany(c => c.Slots).ToArray();
         }
+
 
     }
 

@@ -9,13 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aed4679711224e49b1ec140a0865f62, type: 3}
-  m_Name: AI_AttackState
+  m_Script: {fileID: 11500000, guid: bf7841e092af2114faf8d85e68f5acb4, type: 3}
+  m_Name: WeaponAttackStrategyMelee
   m_EditorClassIdentifier: 
-  InitialTargetPriority: 10
-  AttackDelay: 1
-  SearchRadius: 3
-  DistanceToAttack: 2
-  SearchLayers:
-    serializedVersion: 2
-    m_Bits: 8192
+  DistanceToAttack: 1.5

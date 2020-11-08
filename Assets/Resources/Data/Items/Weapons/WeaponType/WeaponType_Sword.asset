@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: WeaponType_Sword
   m_EditorClassIdentifier: 
   animatorController: {fileID: 22100000, guid: 2706458cdb705804f8ce6ecbb63edea8, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: 68cda3b71e7974c49850079e8d25771b, type: 2}

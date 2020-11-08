@@ -195,6 +195,9 @@ namespace Catacumba.Entity
                 */
             }
 
+            if (health && health.IsDead)
+                return transform.forward;
+
             Vector3 fwrd = Vector3.Slerp(lookDir, dir, Mathf.Clamp01(dir.sqrMagnitude));
             return Vector3.Slerp(forward, fwrd, 0.5f * Time.deltaTime * 30f).normalized;
         }
