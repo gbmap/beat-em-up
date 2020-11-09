@@ -32,7 +32,6 @@ namespace Catacumba.Entity
 
         private Vector3 cameraForward;
         private Vector3 cameraRight;
-        private bool updateCameraDir = true;
 
         private float dropTimer;
 
@@ -89,11 +88,6 @@ namespace Catacumba.Entity
             {
                 combat = null;
             }
-        }
-
-        private void OnCameraChange()
-        {
-            updateCameraDir = false;
         }
 
         // Update is called once per frame

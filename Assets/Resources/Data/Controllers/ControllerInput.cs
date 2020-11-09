@@ -70,7 +70,7 @@ namespace Catacumba.Data.Controllers
 
         private bool UpdateInteraction(ControllerComponent controller)
         {
-            return RewiredInput.GetButton("Submit");
+            return RewiredInput.GetButtonDown("Submit");
         }
 
         private bool UpdateDropItem(ControllerComponent controller)

@@ -103,7 +103,7 @@ namespace Catacumba.Entity
         private float lastRoll;
         private Vector3 rollDirection;
 
-        private Bitmask canMoveMask;
+        // private Bitmask canMoveMask;
         
         private const float speedBumpScale = 7f;
 
@@ -277,12 +277,12 @@ namespace Catacumba.Entity
 
         void OnComboStarted()
         {
-            canMoveMask.Set(0, true);
+            //canMoveMask.Set(0, true);
         }
 
         void OnComboEnded()
         {
-            canMoveMask.Set(0, false);
+            //canMoveMask.Set(0, false);
         }
 
         public float GetSpeedBumpForce(AttackResult attack)
@@ -290,10 +290,12 @@ namespace Catacumba.Entity
             if (IgnoreSpeedBump) return 0f;
             return (attack.Type == EAttackType.Weak ? 3f : 6f);
 
+            /*
             float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);
             modifier = attack.Knockdown ? 1f : modifier;
 
             return Mathf.Min(7f, ((float)attack.Damage / 25) * modifier);
+            */
         }
 
         public void Roll(Vector3 direction)

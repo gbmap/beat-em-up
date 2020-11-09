@@ -43,7 +43,7 @@ namespace Catacumba.Data
             // endtodo
 
             CharacterData characterData = instance.AddComponent<CharacterData>();
-            characterData.CharacterCfg = p.Configuration;
+            //characterData.CharacterCfg = p.Configuration;
 
             return characterData;
         }

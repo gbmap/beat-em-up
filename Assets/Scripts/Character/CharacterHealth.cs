@@ -55,13 +55,13 @@ namespace Catacumba.Entity
         private void SetupEffects()
         {
             if (!HitEffect)
-                HitEffect = data.CharacterCfg.View.DamageEffect;
+                HitEffect = data.ConfigurationView.DamageEffect;
 
             HitEffect?.Setup(this);
             shaderHitEffect = new HitEffect(this);
 
             if (!HealthEffects)
-                HealthEffects = data.CharacterCfg.View.HealthQuad;
+                HealthEffects = data.ConfigurationView.HealthQuad;
             
             if (HealthEffects)
             {

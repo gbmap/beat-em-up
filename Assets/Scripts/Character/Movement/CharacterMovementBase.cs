@@ -216,7 +216,7 @@ namespace Catacumba.Entity
         private void SetupEffect()
         {
             if (!MovementEffect)
-                MovementEffect = data.CharacterCfg.View.MovementEffect;
+                MovementEffect = data.ConfigurationView.MovementEffect;
 
             MovementEffect?.Setup(this);
         }

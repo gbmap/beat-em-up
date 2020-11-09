@@ -39,7 +39,6 @@ namespace Catacumba.Entity
         public System.Action OnComboStarted;
         public System.Action OnComboEnded;
 
-        private int _nComboHits;
         private CharacterHealth Health { get { return data.Components.Health; } }
         private CharacterMovementBase Movement { get { return data.Components.Movement; } }
         private CharacterAnimator Animator { get { return data.Components.Animator; } }
@@ -187,7 +186,6 @@ namespace Catacumba.Entity
         private void OnComboEndedCallback()
         {
             IsOnCombo = false;
-            _nComboHits = 0;
         }
 
         private void OnFallCallback()

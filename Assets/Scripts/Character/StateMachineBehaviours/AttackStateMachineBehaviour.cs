@@ -8,7 +8,7 @@ public class AttackStateMachineBehaviour : StateMachineBehaviour
 {
     // int hashWeakAttack = Animator.StringToHash("WeakAttack");
     // int hashStrongAttack = Animator.StringToHash("StrongAttack");
-    int hashAttackTrigger = Animator.StringToHash("AttackType");
+    int hashAttackTrigger = Animator.StringToHash("Attack");
 
     int[] heavyAttackHashes = {
         Animator.StringToHash("H"),

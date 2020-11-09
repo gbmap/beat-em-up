@@ -77,15 +77,33 @@ namespace Catacumba.Entity
 
             modelInfo = GetComponent<CharacterModelInfo>();
             renderer = GetComponentInChildren<Renderer>();
+            animator = GetComponentInChildren<Animator>();
         }
 
         protected override void Start()
         {
             base.Start();
 
-            animator = GetComponentInChildren<Animator>();
             animator.speed = AnimatorDefaultSpeed;
             animator.SetInteger("BrainType", (int)data.BrainType);
+
+            /*
+            foreach (InventorySlot slot in data.Stats.Inventory.Slots)
+            {
+                if (slot.IsEmpty())
+                    continue;
+
+                Cb_OnItemEquipped(new InventoryEquipResult
+                {
+                    Params = new InventoryEquipParams
+                    {
+                        Item = slot.Item,
+                        Slot = slot.Part
+                    },
+                    Result = InventoryEquipResult.EEquipResult.Success
+                });
+            }
+            */
         }
 
         protected override void OnEnable()
@@ -110,9 +128,7 @@ namespace Catacumba.Entity
             {
                 movement = component as CharacterMovementBase;
                 if (movement is CharacterMovementWalkDodge)
-                {
                     (movement as CharacterMovementWalkDodge).OnDodge += OnRollCallback;
-                }
             }
 
             else if (component is CharacterCombat)
@@ -187,18 +203,16 @@ namespace Catacumba.Entity
 
         private void Cb_OnItemEquipped(InventoryEquipResult result)
         {
+            AddItemToBone(result.Params.Item, result.Params.Slot);
+
             var weapon = result.Params.Item.GetCharacteristics<CharacteristicWeaponizable>().FirstOrDefault();
             if (!weapon)
-            {
-                Debug.Log("Not weapon");
                 return;
-            }
 
             if (!weapon.WeaponType.animatorController)
                 return;
 
             UpdateAnimator(weapon.WeaponType.animatorController);
-            AddItemToBone(result.Params.Item, result.Params.Slot);
         }
 
         private void Cb_OnItemDropped(InventoryDropResult result)
@@ -333,7 +347,11 @@ namespace Catacumba.Entity
             if (item.Model == null) return;
 
             var equippables = item.GetCharacteristics<CharacteristicEquippable>();
-            if (!equippables.Any(e => e.Slots.Contains(slot)))
+            var equippable = equippables.FirstOrDefault(e => e.Slots.Any(s => s.BodyPart == slot));
+            if (!equippable)
+                return;
+
+            if (string.IsNullOrEmpty(slot.BoneName))
                 return;
 
             Transform childBone = GetBone(gameObject, slot);
@@ -342,10 +360,27 @@ namespace Catacumba.Entity
 
             DestroyItemsInBone(childBone);
 
+            CharacteristicEquippable.SlotData slotData = equippable.GetSlot(slot);
+
             GameObject model = Instantiate(item.Model, Vector3.zero, Quaternion.identity);
             model.transform.SetParent(childBone, true);
-            model.transform.localPosition = slot.LocalPosition;
-            model.transform.localRotation = Quaternion.Euler(slot.LocalRotationEuler);
+
+            Vector3 position = Vector3.zero;
+            Vector3 rotation = Vector3.zero;
+            if (slotData.ModelOffset)
+            {
+                position = slotData.ModelOffset.Position;
+                rotation = slotData.ModelOffset.Rotation;
+            }
+
+            // This is used to fix difference in scales from different model packs
+            // in polygon's models.
+            position.x *= model.transform.localScale.x;
+            position.y *= model.transform.localScale.y;
+            position.z *= model.transform.localScale.z;
+
+            model.transform.localPosition = position;
+            model.transform.localRotation = Quaternion.Euler(rotation);
         }
 
         private void RemoveItemFromBone(BodyPart slot)

@@ -301,7 +301,7 @@ namespace Catacumba.Data.Items
             if (characteristics == null || characteristics.Length == 0)
                 return null;
 
-            return characteristics.SelectMany(c => c.Slots).ToArray();
+            return characteristics.SelectMany(c => c.Slots.Select(s => s.BodyPart)).ToArray();
         }
 
 

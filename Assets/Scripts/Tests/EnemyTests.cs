@@ -36,7 +36,8 @@ namespace Tests
             });
 
             GameObject instance = EntitySpawner.InstantiateEmptyEntity("test", Vector3.zero, Quaternion.identity);
-            instance.GetComponent<CharacterData>().CharacterCfg = cfg;
+            CharacterData data = instance.GetComponent<CharacterData>();
+            data.SetConfigurations(cfg.Stats, cfg.View, cfg.Inventory);
 
             yield return new WaitForSeconds(5f);
 

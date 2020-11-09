@@ -74,8 +74,6 @@ public class AttackResult
 
 public class CombatManager : SimpleSingleton<CombatManager>
 {
-    private static AttackResult lastAttack;
-
     public static float GetCritFactor(CharacterStats c)
     {
         return 2f;
@@ -166,14 +164,5 @@ public class CombatManager : SimpleSingleton<CombatManager>
 
         defender.Components.Health.TakeDamage(attackData);
         return attackData;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (!Application.isPlaying || lastAttack.Time == 0f) return;
-
-        Gizmos.color = Color.red;
-        Gizmos.matrix = Matrix4x4.TRS(lastAttack.ColliderPos, lastAttack.ColliderRot, lastAttack.ColliderSz);
-        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
     }
 }

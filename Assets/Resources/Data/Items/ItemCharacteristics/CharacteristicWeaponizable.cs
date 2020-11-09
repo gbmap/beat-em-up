@@ -20,12 +20,15 @@ namespace Catacumba.Data.Items.Characteristics
         {
             bool equips = base.Equip(data, item, slot);
             if (!equips) return false;
+            return true;
 
+            /*
             if (WeaponType.animatorController == null)
                 return true;
 
             data.Components.Animator.UpdateAnimator(WeaponType.animatorController);
             return true;
+            */
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 using Catacumba.Data;
+using Catacumba.Data.Items;
 
 /********
 *  Character component for instance-based data.
@@ -111,7 +112,9 @@ namespace Catacumba.Entity
 
         [Space]
         [Header("Configuration")]
-        public Catacumba.Data.CharacterConfiguration CharacterCfg;
+        public CharacterStatConfiguration ConfigurationStats;
+        public CharacterViewConfiguration ConfigurationView;
+        public Inventory ConfigurationInventory;
 
         [HideInInspector] public CharacterStats Stats;
 
@@ -138,10 +141,7 @@ namespace Catacumba.Entity
 
         private void SetupCharacterStats()
         {
-            if (CharacterCfg == null) 
-                CharacterCfg = Catacumba.Data.CharacterConfiguration.Default;
-
-            Stats = new CharacterStats(CharacterCfg.Stats, CharacterCfg.Inventory);
+            Stats = new CharacterStats(ConfigurationStats, ConfigurationInventory);
         }
 
         private void SetupCharacterComponentsCache()
@@ -156,7 +156,10 @@ namespace Catacumba.Entity
 
         private void Start()
         {
-            CharacterCfg.Configure(this, OnCharacterConfigurationEnded);
+            if (ConfigurationView != null && transform.childCount == 0)
+                ConfigurationView.Configure(this);
+            
+            OnCharacterConfigurationEnded();
         }
 
         private void OnCharacterConfigurationEnded()
@@ -178,6 +181,13 @@ namespace Catacumba.Entity
         public void SignalComponentRemoved(CharacterComponentBase component)
         {
             Components.OnComponentRemoved(component);        
+        }
+
+        public void SetConfigurations(CharacterStatConfiguration stats, CharacterViewConfiguration view, Inventory inventory)
+        {
+            ConfigurationStats = stats;
+            ConfigurationView = view;
+            ConfigurationInventory = inventory;
         }
 
     #if UNITY_EDITOR

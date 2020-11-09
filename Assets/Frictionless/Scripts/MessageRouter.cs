@@ -22,7 +22,7 @@ namespace Frictionless
 				delegates = new List<MessageHandler>();
 				handlers[typeof(T)] = delegates;
 			}
-			if (delegates.Find(x => x.Delegate == handler) == null)
+			if (delegates.Find(x => x.Delegate.Equals(handler)) == null)
 				delegates.Add(new MessageHandler() { Target = handler.Target, Delegate = handler });
 		}
 
@@ -31,7 +31,7 @@ namespace Frictionless
 			List<MessageHandler> delegates = null;
 			if (handlers.TryGetValue(typeof(T), out delegates))
 			{
-				MessageHandler existingHandler = delegates.Find(x => x.Delegate == handler);
+				MessageHandler existingHandler = delegates.Find(x => x.Delegate.Equals(handler));
 				if (existingHandler != null)
 				{
 					if (isRaisingMessage)

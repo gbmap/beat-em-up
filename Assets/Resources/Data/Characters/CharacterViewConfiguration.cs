@@ -28,7 +28,8 @@ namespace Catacumba.Data
             GameObject modelInstance = AddModelToInstance(instance, modelPrefab);
 
             if (AnimationConfig != null)
-                SetupModelAnimator(modelInstance, AnimationConfig);
+                SetupModelAnimator(modelInstance, modelPrefab, AnimationConfig);
+            
         }
 
         private static void RemoveExistingModel(GameObject instance)
@@ -56,22 +57,23 @@ namespace Catacumba.Data
             GameObject modelInstance = Instantiate(
                 model, 
                 Vector3.zero, 
-                Quaternion.identity, 
-                instance.transform
+                Quaternion.identity 
             );
+            modelInstance.transform.SetParent(instance.transform);
             modelInstance.transform.localPosition = Vector3.zero; // Somehow Instantiate with Vector3.zero is not working.
+            modelInstance.transform.localRotation = Quaternion.identity;
 
             return modelInstance;
         }
 
-        private void SetupModelAnimator(GameObject modelInstance, AnimationConfig animationConfig)
+        private void SetupModelAnimator(GameObject modelInstance, GameObject modelPrefab, AnimationConfig animationConfig)
         {
             var anim = modelInstance.GetComponent<Animator>();
             if (anim == null)
                 anim = modelInstance.AddComponent<Animator>();
 
             anim.runtimeAnimatorController = animationConfig.AnimatorController;
-            anim.avatar = animationConfig.Avatar;
+            anim.avatar = modelPrefab.GetComponent<Animator>()?.avatar ?? animationConfig.Avatar;
             anim.applyRootMotion = false;
 
             // maybe we should remove this
