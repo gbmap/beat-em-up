@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: RightLeg
   m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:BodyPart
   BoneName: LowerLeg_R
+  LocalPosition: {x: 0, y: 0, z: 0}
+  LocalRotationEuler: {x: 0, y: 0, z: 0}

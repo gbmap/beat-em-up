@@ -10,10 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bdd4b1ced840134793406ef4dd8a9fc, type: 3}
-  m_Name: WeaponizableRanged
+  m_Name: Weaponizable_Ranged
   m_EditorClassIdentifier: 
   Slots:
-  - {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+  - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
+  - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 0}
   WeaponType: {fileID: 11400000, guid: d879026e1fc0e6e41be6cad1d05f3d33, type: 2}

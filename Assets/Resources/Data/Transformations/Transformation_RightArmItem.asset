@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f534bf16ba2a1594c8512c9ce3d992fb, type: 3}
-  m_Name: Transformation_Equippable_RightArm
+  m_Name: Transformation_RightArmItem
   m_EditorClassIdentifier: 
-  Position: {x: 0, y: 0, z: 0}
-  Rotation: {x: 0, y: 0, z: 0}
-  Scale: {x: 0, y: 0, z: 0}
+  Position: {x: 12.3, y: 1.98, z: 12.66}
+  Rotation: {x: -90, y: -16.5, z: 0}
+  Scale: {x: 1, y: 1, z: 1}

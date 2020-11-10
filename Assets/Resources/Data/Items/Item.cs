@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Catacumba.Data.Character;
 using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
@@ -6,14 +7,6 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items
 {
-    public enum EItemRarity
-    {
-        Common,
-        Uncommon,
-        Rare,
-        Legendary
-    }
-
     public abstract class ItemCharacteristic : ScriptableObject { }
 
     [CreateAssetMenu(menuName="Data/Item/Item", fileName="Item")]
@@ -25,8 +18,9 @@ namespace Catacumba.Data.Items
         public string Description;
         public ItemRarity Rarity;
         public CharAttributesI Attributes;
+        public List<AttributeValueI> AttributeStats;
 
-        public ItemCharacteristic[] Characteristics;
+        public List<ItemCharacteristic> Characteristics;
 
         public GameObject Model;
 

@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 754141948fb78f841b20702f985cf461, type: 3}
-  m_Name: Equippable_Head
+  m_Script: {fileID: 11500000, guid: e74f5dbca2d3c74429834d00233c2885, type: 3}
+  m_Name: Strength
   m_EditorClassIdentifier: 
-  Slots:
-  - BodyPart: {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
-    ModelOffset: {fileID: 11400000, guid: 53a278a40f545ac4788148c1c32c47b0, type: 2}
+  Identifier: STR
+  Description: 

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0df125eb3a3892148a2349f2619eb9c3, type: 3}
-  m_Name: Item_Helm
+  m_Name: Item_ElmsHelm
   m_EditorClassIdentifier: 
   Name: Elm's Helm
   Description: 
@@ -20,6 +20,7 @@ MonoBehaviour:
     Strength: 0
     Dexterity: 0
     Magic: 0
+  AttributeStats: []
   Characteristics:
   - {fileID: 11400000, guid: 6658ba7e2a16fea438d284382b184c81, type: 2}
   Model: {fileID: 1368336966237704, guid: 80ff80d022e536746b4ca482b96acca4, type: 3}

@@ -1,0 +1,14 @@
+
+
+.root {
+    flex-direction: row;
+}
+
+.items-list {
+    flex-grow: 1;
+}
+
+.object-window {
+    flex-direction: column;
+    flex-grow: 3;
+}

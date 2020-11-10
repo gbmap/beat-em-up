@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a5f6cc92a24f2741a1b29ac4571207a, type: 3}
-  m_Name: WeaponizableMelee
+  m_Name: Weaponizable_Melee
   m_EditorClassIdentifier: 
   Slots:
-  - {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+  - BodyPart: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+    ModelOffset: {fileID: 11400000, guid: 5fe9f5e03e853d7428e5433dfa745fc2, type: 2}
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
   WeaponType: {fileID: 11400000, guid: 93375d4c360623d4e90e500df838f51e, type: 2}

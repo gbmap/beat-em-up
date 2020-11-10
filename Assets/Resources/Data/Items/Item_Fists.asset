@@ -20,6 +20,7 @@ MonoBehaviour:
     Strength: 0
     Dexterity: 0
     Magic: 0
+  AttributeStats: []
   Characteristics:
   - {fileID: 11400000, guid: ac8a4ba2f61e8b94198da86230a530ce, type: 2}
   Model: {fileID: 0}

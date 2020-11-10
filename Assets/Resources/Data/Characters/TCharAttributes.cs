@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Catacumba.Data
 {
@@ -12,6 +13,8 @@ namespace Catacumba.Data
 
     public class TCharAttributes<T>
     {
+        private Dictionary<string, AttributeData> Attributes = new Dictionary<string, AttributeData>();
+
         public T Vigor;
         public T Strength;
         public T Dexterity;

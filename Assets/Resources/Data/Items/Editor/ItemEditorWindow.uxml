@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <engine:VisualElement class="root" style="width: 800; height: 600;">
+    <engine:ListView name="item-list" class="items-list"/>
+    <engine:Box class="object-window">
+        <engine:TextField label="Name" name="item-name" />
+        <engine:TextField label="Description" name="item-description" />
+        <engine:VisualElement label="Rarity" name="item-rarity" />
+        <engine:VisualElement style="flex-direction: row; margin: 2px;">
+            <engine:VisualElement name="item-attribs" style="flex-grow: 1; margin :2px;" />
+            <engine:VisualElement name="item-characteristics" style="flex-grow: 1; margin: 2px;" />
+        </engine:VisualElement>
+        <engine:Label label="View"/>
+    </engine:Box>
+    </engine:VisualElement>
+
+</engine:UXML>
