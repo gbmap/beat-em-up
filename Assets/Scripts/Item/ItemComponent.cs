@@ -30,6 +30,8 @@ namespace Catacumba.Entity
             }
         }
 
+        private bool _wasTaken;
+
         private CharacterInteractive interactive;
 
         void Awake()
@@ -82,6 +84,9 @@ namespace Catacumba.Entity
 
         public void Take()
         {
+            if (_wasTaken) return;
+
+            _wasTaken = true;
             animator?.SetTrigger(hashTaken);
         }
 
@@ -89,6 +94,5 @@ namespace Catacumba.Entity
         {
             Destroy(this.gameObject);
         }
-
     }
 }

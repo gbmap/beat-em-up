@@ -472,7 +472,7 @@ namespace Catacumba.Entity
                 if (movement) movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
             }
 
-            SoundManager.Instance.PlayWoosh(transform.position);
+            // SoundManager.Instance.PlayWoosh(transform.position);
         }
 
         public void Attack(EAttackType type)

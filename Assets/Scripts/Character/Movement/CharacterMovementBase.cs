@@ -20,6 +20,7 @@ namespace Catacumba.Entity
 
         public NavMeshAgent NavMeshAgent { get; private set; }
         public bool NavAgentValid { get { return NavMeshAgent && NavMeshAgent.enabled; } }
+        public Vector3 Destination { get { return NavMeshAgent.destination; }}
 
         public bool CanMove { get { return true; } }
         public bool IsTimerStopped { get { return stopTimer < stopTime; } }

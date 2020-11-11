@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f534bf16ba2a1594c8512c9ce3d992fb, type: 3}
-  m_Name: Transformation_RightArmItem
+  m_Script: {fileID: 11500000, guid: 8fcc3a54d45ca6b4f8e356dda2ff1706, type: 3}
+  m_Name: AI_GetItemState
   m_EditorClassIdentifier: 
-  Position: {x: 0, y: 0, z: 0}
-  Rotation: {x: 0, y: 0, z: 0}
-  Scale: {x: 0, y: 0, z: 0}
+  SearchRadius: 3
+  SearchLayers:
+    serializedVersion: 2
+    m_Bits: 4096
+  TargetPriority: 10

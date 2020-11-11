@@ -10,7 +10,7 @@ namespace Catacumba.Data
         Magic
     }
 
-    public class TCharAttributes<T>
+    public abstract class TCharAttributes<T>
     {
         public T Vigor;
         public T Strength;
@@ -41,22 +41,23 @@ namespace Catacumba.Data
             }
         }
 
-        public static TCharAttributes<T> Empty {
-            get
-            {
-                return new TCharAttributes<T>
-                {
-                    Vigor = default,
-                    Strength = default,
-                    Dexterity = default,
-                    Magic = default
-                };
-            }
-        }
+        public abstract T Sum();
     }
 
-    [Serializable] public class CharAttributesI : TCharAttributes<int> { }
-    [Serializable] public class CharAttributesF : TCharAttributes<float> { }
+    [Serializable] public class CharAttributesI : TCharAttributes<int> 
+    {
+        public override int Sum()
+        {
+            return Vigor + Strength + Dexterity + Magic;
+        }  
+    }
+    [Serializable] public class CharAttributesF : TCharAttributes<float> 
+    { 
+        public override float Sum()
+        {
+            return Vigor + Strength + Dexterity + Magic;
+        }  
+    }
 
     public static class TCharAttributeExtension
     {

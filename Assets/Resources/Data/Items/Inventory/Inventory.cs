@@ -173,6 +173,11 @@ namespace Catacumba.Data.Items
             return item;
         }
 
+        public InventorySlot GetSlot(BodyPart part)
+        {
+            return Slots.GetSlot(part);
+        }
+
         public InventorySlot GetSlotByString(string name)
         {
             return Slots.GetSlot(name);
@@ -303,8 +308,6 @@ namespace Catacumba.Data.Items
 
             return characteristics.SelectMany(c => c.Slots.Select(s => s.BodyPart)).ToArray();
         }
-
-
     }
 
 }
