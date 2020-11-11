@@ -464,7 +464,7 @@ namespace Catacumba.Entity
 
 #endif
 
-        public void AnimPlayWoosh()
+        public void AnimPlayWoosh() 
         {
             if (movement)
             {

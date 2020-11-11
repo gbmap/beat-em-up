@@ -14,8 +14,9 @@ namespace Catacumba.Entity
         public void Interact(CharacterData data, System.Action<InteractionResult> callback)
         {
             if (IsOneShot && _wasInteracted) return;
+            _wasInteracted = true;
+
             callback += OnInteraction;
-            if (IsOneShot) callback += (InteractionResult res) => _wasInteracted = true;
             Interaction.Interact(new InteractionParams
             {
                 Interactor = data,
