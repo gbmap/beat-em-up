@@ -196,8 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConfigurationStats: {fileID: 11400000, guid: a3a0b674cc38e924fbb69e4a857ecf59, type: 2}
   ConfigurationView: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}
-  ConfigurationInventory: {fileID: 11400000, guid: 0c3d9513ab4f24044aee499b5bd29df4,
-    type: 2}
+  ConfigurationInventory: {fileID: 0}
   Stats:
     Attributes:
       Vigor: 0
@@ -613,7 +612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsOneShot: 0
-  Interaction: {fileID: 11400000, guid: e0538692127545c4bb949a23f522f774, type: 2}
+  Interaction: {fileID: 11400000, guid: 419a4764d5576f441bb06f9bfeff74af, type: 2}
 --- !u!95 &1302803115
 Animator:
   serializedVersion: 3

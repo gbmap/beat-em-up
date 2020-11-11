@@ -112,6 +112,11 @@ namespace Catacumba.Data.Items
             return s.IsEmpty();
         }
 
+        public bool HasItem(Item item)
+        {
+            return slots.Any(s => s.Item == item);
+        }
+
         public IEnumerator<InventorySlot> GetEnumerator()
         {
             return slots.GetEnumerator();
@@ -191,6 +196,11 @@ namespace Catacumba.Data.Items
         public bool IsSlotEmpty(BodyPart slot)
         {
             return Slots.IsEmpty(slot);
+        }
+
+        public bool HasItem(Item item)
+        {
+            return Slots.HasItem(item);
         }
 
         public InventoryEquipResult.EEquipResult Equip(InventoryEquipParams parameters) 
