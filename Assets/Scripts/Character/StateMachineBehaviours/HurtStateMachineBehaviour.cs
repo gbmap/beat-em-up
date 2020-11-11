@@ -16,7 +16,7 @@ public class HurtStateMachineBehaviour : StateMachineBehaviour
         }
         else
         {
-            animator.GetComponentInParent<CharacterAnimator>().FreezeAnimator();
+            //animator.GetComponentInParent<CharacterAnimator>().FreezeAnimator();
         }
     }
 

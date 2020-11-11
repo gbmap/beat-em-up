@@ -22,7 +22,7 @@ namespace Catacumba.Data
             {
                 health = Mathf.Clamp(value, 0, MaxHealth);
                 OnStatsChanged?.Invoke(this);
-            }
+            } 
         }
         public int MaxHealth { get { return CombatManager.GetMaxHealth(this); } }
         public float HealthNormalized { get { return ((float)Health / MaxHealth); } }

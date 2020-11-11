@@ -1,0 +1,17 @@
+{
+    "name": "Catacumba",
+    "references": [
+        "GUID:e3f899692b10a7a4e90b98df1290745f",
+        "GUID:4307f53044263cf4b835bd812fc161a4",
+        "GUID:8c4dd21966739024fbd72155091d199e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

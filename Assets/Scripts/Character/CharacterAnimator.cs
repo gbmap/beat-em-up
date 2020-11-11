@@ -246,11 +246,6 @@ namespace Catacumba.Entity
             // animator.SetTrigger(type == EAttackType.Weak ? hashWeakAttack : hashStrongAttack);
         }
 
-        private void OnCharacterAttackCallback(AttackResult attack)
-        {
-            if (attack.Defender != null)
-                FreezeAnimator();
-        }
 
         private void OnRecoverCallback()
         {
@@ -295,11 +290,6 @@ namespace Catacumba.Entity
         {
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);
-        }
-
-        public void FreezeAnimator()
-        {
-            GetComponent<FreezeAnimator>()?.Freeze();
         }
 
         // gambiarra 
