@@ -20,11 +20,15 @@ namespace Catacumba.Data.Interactions
     [CreateAssetMenu(menuName="Data/Interactions/Interaction")]
     public class Interaction : ScriptableObject, IInteraction
     {
-        public ActionBase Action;
+        public ActionBase[] Actions;
 
         public void Interact(InteractionParams parameters)
         {
-            Action.Run(parameters);
+            foreach (ActionBase action in Actions)
+            {
+                Vector2Int direction = action.Run(parameters);
+                if (direction != Vector2Int.down) break;
+            }
         }
     }
 }
