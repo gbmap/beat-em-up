@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c91fd5b264dc06a44ac15ea19174ccf0, type: 3}
-  m_Name: Stackable
+  m_Name: Stackable_MaxValue
   m_EditorClassIdentifier: 
   CurrentAmount: 0
-  MaxAmount: 0
+  MaxAmount: 2147483647

@@ -210,7 +210,7 @@ namespace Catacumba.Data.Items
 
         public bool Grab(Item item)
         {
-            //item = ScriptableObject.Instantiate(item);
+            if (!item.IsInstance) item = item.Clone();
             var stackable = item.GetCharacteristic<CharacteristicStackable>();
             if (!stackable)
                 return AllocateItem(item);

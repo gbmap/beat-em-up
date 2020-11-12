@@ -33,6 +33,8 @@ namespace Catacumba.Data.Items
 
         public bool OccupiesSlot = true;
 
+        public bool IsInstance { get; private set; }
+
         public bool Equip(CharacterData character, BodyPart slot)
         {
             if (!HasCharacteristic<CharacteristicEquippable>())
@@ -100,6 +102,7 @@ namespace Catacumba.Data.Items
         public Item Clone()
         {
             Item instance = ScriptableObject.Instantiate(this);
+            instance.IsInstance = true;
             for (int i = 0; i < Characteristics.Length; i++)
             {
                 ItemCharacteristic characteristic = (ItemCharacteristic)Characteristics[i];
