@@ -47,14 +47,8 @@ namespace Catacumba.Entity
 
         void OnInteraction(InteractionResult result)
         {
-            if (result is InventoryEquipResult)
-            {
-                InventoryEquipResult equip = result as InventoryEquipResult;
-                if (equip.Result != InventoryEquipResult.EEquipResult.Success)
-                    return;
-
+            if (result.Code == InteractionResult.ECode.Success)
                 Take();
-            }
         }
 
         void Start()

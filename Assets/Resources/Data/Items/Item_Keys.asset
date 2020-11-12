@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df125eb3a3892148a2349f2619eb9c3, type: 3}
   m_Name: Item_Keys
   m_EditorClassIdentifier: 
-  Name: 
+  Name: Key
   Description: 
   Rarity: {fileID: 11400000, guid: d874133fb075b7f488939554ae63a99f, type: 2}
   Attributes:

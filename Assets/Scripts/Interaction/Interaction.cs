@@ -10,7 +10,16 @@ namespace Catacumba.Data.Interactions
         public System.Action<InteractionResult> Callback;
     }
 
-    public class InteractionResult {}
+    public class InteractionResult 
+    {
+        public enum ECode
+        {
+            Success,
+            Failure
+        }
+
+        public ECode Code { get; set; }
+    }
 
     public interface IInteraction
     {
@@ -24,11 +33,18 @@ namespace Catacumba.Data.Interactions
 
         public void Interact(InteractionParams parameters)
         {
+            InteractionResult.ECode resultCode = InteractionResult.ECode.Success;
             foreach (ActionBase action in Actions)
             {
                 Vector2Int direction = action.Run(parameters);
-                if (direction != Vector2Int.down) break;
+                if (direction != Vector2Int.down)
+                {
+                    resultCode = InteractionResult.ECode.Failure;
+                    break;
+                }
             }
+
+            parameters.Callback?.Invoke(new InteractionResult { Code = resultCode });
         }
     }
 }

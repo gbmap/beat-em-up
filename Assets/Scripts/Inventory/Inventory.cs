@@ -232,6 +232,35 @@ namespace Catacumba.Data.Items
             return items[index];
         }
 
+        public Item Get(string name)
+        {
+            return items.FirstOrDefault(i => i != null && i.Name == name);
+        }
+
+        public bool DropAmount(Item item, int amount)
+        {
+            Item itemInstance = Get(item.Name);
+            if (!itemInstance) return false;
+
+            int index = GetItemIndex(itemInstance);
+            var stackable = itemInstance.GetCharacteristic<CharacteristicStackable>();
+            if (!stackable)
+            {
+                if (amount == 1)
+                    return DeallocateItem(itemInstance);
+                return false;
+            }
+
+            if (amount <= stackable.CurrentAmount)
+                stackable.CurrentAmount -= amount;
+
+            if (stackable.CurrentAmount > 0)
+                return true;
+
+            return DeallocateItem(itemInstance);
+            // return true;
+        }
+
         private bool AllocateItem(Item item)
         {
             if (item == null) return false;
@@ -244,6 +273,20 @@ namespace Catacumba.Data.Items
             return true;
         }
 
+        private bool DeallocateItem(Item item)
+        {
+            if (item == null) return false;
+
+            int index = GetItemIndex(item);
+            if (index == -1) return false;
+
+            Item itemInstance = items[index];
+            GameObject.DestroyImmediate(itemInstance);
+            itemInstance = null;
+            numberItems--;
+            return true;
+        }
+
         private int FindEmptySlot()
         {
             return GetItemIndex(null);
@@ -252,7 +295,7 @@ namespace Catacumba.Data.Items
         private int GetItemIndex(Item item)
         {
             for (int i = 0; i < items.Length; i++)
-                if (items[i] == item) return i;
+                if (Item.Compare(items[i], item)) return i;
             return -1;
         }
     }
@@ -335,6 +378,11 @@ namespace Catacumba.Data.Items
                 OnItemEquipped?.Invoke(result);
 
             return result;
+        }
+
+        public bool Grab(Item item)
+        {
+            return Bag.Grab(item);
         }
 
         public InventoryDropResult Drop(InventoryDropParams parameters)

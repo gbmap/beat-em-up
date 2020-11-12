@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c91fd5b264dc06a44ac15ea19174ccf0, type: 3}
-  m_Name: Stackable_MaxValue
+  m_Script: {fileID: 11500000, guid: 36d5da36f628a2c43a79396938b6f9c7, type: 3}
+  m_Name: ActionConsumeKeyFromBag
   m_EditorClassIdentifier: 
-  CurrentAmount: 1
-  MaxAmount: 999
+  item: {fileID: 11400000, guid: bc6e295027b2d1148b8d5da0e320d720, type: 2}

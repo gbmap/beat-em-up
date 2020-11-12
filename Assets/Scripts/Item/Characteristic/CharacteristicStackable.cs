@@ -1,7 +1,3 @@
-
-
-
-
 using UnityEngine;
 
 namespace Catacumba.Data.Items.Characteristics

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c91fd5b264dc06a44ac15ea19174ccf0, type: 3}
-  m_Name: Stackable_MaxValue
+  m_Script: {fileID: 11500000, guid: 4f3b9a0ff206f0b4388ae91493728f74, type: 3}
+  m_Name: InteractionEquipItemFromComponent
   m_EditorClassIdentifier: 
-  CurrentAmount: 1
-  MaxAmount: 999
+  Actions:
+  - {fileID: 11400000, guid: 0e3cc02a9acc4414e9760e75a5c91767, type: 2}

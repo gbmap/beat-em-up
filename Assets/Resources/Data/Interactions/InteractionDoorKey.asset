@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: InteractionDoorKey
   m_EditorClassIdentifier: 
   Actions:
-  - {fileID: 11400000, guid: a4aecfbc0b29e2e44851deed438d36ee, type: 2}
+  - {fileID: 11400000, guid: bb061bf59c051b241bcaa0c5b8bd3021, type: 2}
   - {fileID: 11400000, guid: 44dc029d35a31b6408d26e49d5110d7b, type: 2}
   - {fileID: 11400000, guid: d68bed82d6faabb47adf415cd2ca8694, type: 2}
