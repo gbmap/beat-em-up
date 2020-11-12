@@ -127,7 +127,7 @@ namespace Catacumba.Data.Items
             return slots.GetEnumerator();
         }
 
-        public InventoryEquipResult.EEquipResult Equip(InventoryEquipParams parameters) 
+        public InventoryEquipResult Equip(InventoryEquipParams parameters) 
         {
             if (parameters.Slot == null)
                 return EquipAnySlot(parameters);
@@ -135,7 +135,7 @@ namespace Catacumba.Data.Items
             return EquipOnSlot(parameters);
         }
 
-        public InventoryEquipResult.EEquipResult EquipOnSlot(InventoryEquipParams parameters)
+        public InventoryEquipResult EquipOnSlot(InventoryEquipParams parameters)
         {
             if (!IsEmpty(parameters.Slot))
                 return EquipResult(parameters, InventoryEquipResult.EEquipResult.NoSlotsAvailable);
@@ -143,7 +143,7 @@ namespace Catacumba.Data.Items
             return EquipItem(parameters);
         }
 
-        InventoryEquipResult.EEquipResult EquipAnySlot(InventoryEquipParams parameters)
+        InventoryEquipResult EquipAnySlot(InventoryEquipParams parameters)
         {
             BodyPart[] slots = GetBodyParts(parameters.Item);
             if (slots == null || slots.Length == 0)
@@ -157,7 +157,7 @@ namespace Catacumba.Data.Items
             return EquipItem(parameters);
         }
 
-        private InventoryEquipResult.EEquipResult EquipItem(InventoryEquipParams parameters)
+        private InventoryEquipResult EquipItem(InventoryEquipParams parameters)
         {
             InventorySlot slot = GetSlot(parameters.Slot);
             slot.Item = parameters.Item;
@@ -173,7 +173,7 @@ namespace Catacumba.Data.Items
             return characteristics.SelectMany(c => c.Slots.Select(s => s.BodyPart)).ToArray();
         }
 
-        private InventoryEquipResult.EEquipResult EquipResult(
+        private InventoryEquipResult EquipResult(
             InventoryEquipParams parameters, 
             InventoryEquipResult.EEquipResult result)
         {
@@ -184,7 +184,7 @@ namespace Catacumba.Data.Items
             };
 
             parameters.Callback?.Invoke(res);
-            return result;
+            return res;
         }
 
         private bool CanEquipOnSlot(BodyPart slot)
@@ -328,10 +328,13 @@ namespace Catacumba.Data.Items
             return Slots.HasItem(item);
         }
 
-        public InventoryEquipResult.EEquipResult Equip(InventoryEquipParams parameters) 
+        public InventoryEquipResult Equip(InventoryEquipParams parameters) 
         {
-            parameters.Callback += Cb_OnItemEquipped;
-            return Slots.Equip(parameters);
+            var result = Slots.Equip(parameters);
+            if (result.Result == InventoryEquipResult.EEquipResult.Success)
+                OnItemEquipped?.Invoke(result);
+
+            return result;
         }
 
         public InventoryDropResult Drop(InventoryDropParams parameters)

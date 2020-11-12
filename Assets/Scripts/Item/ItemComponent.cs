@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Catacumba.Entity
 {
-    [RequireComponent(typeof(CharacterInteractive))]
     public class ItemComponent : MonoBehaviour
     {
         public Item Item;
@@ -24,22 +23,19 @@ namespace Catacumba.Entity
             set 
             {
                 if (highlighted != value)
-                {
-                    interactive.IsHighlighted = value;
                     animator?.SetBool(hashHighlighted, value);
-                }
                 highlighted = value;
             }
         }
 
         private bool _wasTaken;
 
-        private CharacterInteractive interactive;
+        private InteractiveComponent interactive;
 
         void Awake()
         {
             animator = GetComponent<Animator>();
-            interactive = GetComponent<CharacterInteractive>();
+            interactive = GetComponent<InteractiveComponent>();
             interactive.OnInteraction += OnInteraction;
             interactive.OnHighlight += OnHighlight;
         }

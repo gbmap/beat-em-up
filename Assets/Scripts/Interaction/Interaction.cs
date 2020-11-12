@@ -6,7 +6,7 @@ namespace Catacumba.Data.Interactions
     public class InteractionParams
     {
         public CharacterData Interactor;
-        public CharacterInteractive Interacted;
+        public InteractiveBaseComponent Interacted;
         public System.Action<InteractionResult> Callback;
     }
 

@@ -50,6 +50,7 @@ namespace Catacumba.Entity
 
         public void Interact(CharacterData data, System.Action<InteractionResult> callback)
         {
+            /*
             if (IsOneShot && _wasInteracted) return;
             _wasInteracted = true;
 
@@ -61,6 +62,7 @@ namespace Catacumba.Entity
                 Callback = callback
             });
             callback -= OnInteraction;
+            */
         } 
     }
 }

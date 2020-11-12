@@ -19,9 +19,9 @@ namespace Catacumba.Entity
             if (colliders == null || colliders.Length == 0)
                 return;
 
-            CharacterInteractive interactive = colliders
+            InteractiveBaseComponent interactive = colliders
                 .OrderBy(c => Vector3.Distance(c.transform.position, transform.position))
-                .Select(c => c.GetComponent<CharacterInteractive>())?
+                .Select(c => c.GetComponent<InteractiveBaseComponent>())?
                 .First();
 
             if (!interactive)

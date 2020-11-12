@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Stackable_MaxValue
   m_EditorClassIdentifier: 
   CurrentAmount: 0
-  MaxAmount: 2147483647
+  MaxAmount: 999

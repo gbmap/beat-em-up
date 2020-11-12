@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f3b9a0ff206f0b4388ae91493728f74, type: 3}
   m_Name: InteractionEquipItem
   m_EditorClassIdentifier: 
-  Action: {fileID: 11400000, guid: 0e3cc02a9acc4414e9760e75a5c91767, type: 2}
+  Actions:
+  - {fileID: 11400000, guid: 0e3cc02a9acc4414e9760e75a5c91767, type: 2}
