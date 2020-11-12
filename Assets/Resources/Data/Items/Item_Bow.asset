@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df125eb3a3892148a2349f2619eb9c3, type: 3}
+  m_Name: Item_Bow
+  m_EditorClassIdentifier: 
+  Name: Bow
+  Description: Warm up that string-pulling arm, tho.
+  Rarity: {fileID: 11400000, guid: d874133fb075b7f488939554ae63a99f, type: 2}
+  Attributes:
+    Vigor: 0
+    Strength: 0
+    Dexterity: 5
+    Magic: 0
+  Characteristics:
+  - {fileID: 11400000, guid: af2e54b9f792a344bb1f118002cd527c, type: 2}
+  Model: {fileID: 6725322082494346537, guid: a3abf781048381440acf26ab65872d7e, type: 3}
+  OccupiesSlot: 1

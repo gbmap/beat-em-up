@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: WeaponType_Melee
   m_EditorClassIdentifier: 
   animatorController: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: 68cda3b71e7974c49850079e8d25771b, type: 2}

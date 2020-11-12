@@ -75,7 +75,7 @@ namespace Catacumba.LevelGen
                 return CellEmpty;
             }
 
-            catch (IndexOutOfRangeException ex)
+            catch (IndexOutOfRangeException)
             {
                 return CellError;
             }

@@ -51,7 +51,7 @@ namespace Catacumba.LevelGen
         public float GetVisibilityAt(Vector2Int position) 
         {
             return 1f;
-            return this.visibilityMap[Mathf.Clamp(position.x, 0, Size.x), Mathf.Clamp(position.y, 0, Size.y)]; 
+            //return this.visibilityMap[Mathf.Clamp(position.x, 0, Size.x), Mathf.Clamp(position.y, 0, Size.y)]; 
         }
 
         public void CalculateVisibility(Vector2Int playerCell, Vector3 playerPosition, Vector3 cellSize, float visionDistance = 150f, float visionDecay = 3f)

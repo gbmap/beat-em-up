@@ -16,7 +16,7 @@ public class EmitParticlesOnDamage : MonoBehaviour
         Health.OnDamaged -= OnDamaged;
     }
 
-    private void OnDamaged(CharacterAttackData obj)
+   private void OnDamaged(AttackResult obj)
     {
         foreach (var particles in Particles)
         {

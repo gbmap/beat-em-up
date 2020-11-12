@@ -1,4 +1,6 @@
-﻿using Catacumba.Data.Items;
+﻿using System;
+using Catacumba.Data.Interactions;
+using Catacumba.Data.Items;
 using UnityEngine;
 
 namespace Catacumba.Entity
@@ -14,8 +16,6 @@ namespace Catacumba.Entity
         private static int hashHighlighted = Animator.StringToHash("Highlighted");
         private static int hashTaken       = Animator.StringToHash("Taken");
 
-        private float lastCollisionStay = float.NegativeInfinity;
-
         private bool highlighted;
         public bool Highlighted
         {
@@ -28,9 +28,27 @@ namespace Catacumba.Entity
             }
         }
 
+        private bool _wasTaken;
+
+        private InteractiveComponent interactive;
+
         void Awake()
         {
             animator = GetComponent<Animator>();
+            interactive = GetComponent<InteractiveComponent>();
+            interactive.OnInteraction += OnInteraction;
+            interactive.OnHighlight += OnHighlight;
+        }
+
+        private void OnHighlight(bool value)
+        {
+            Highlighted = value;
+        }
+
+        void OnInteraction(InteractionResult result)
+        {
+            if (result.Code == InteractionResult.ECode.Success)
+                Take();
         }
 
         void Start()
@@ -52,18 +70,11 @@ namespace Catacumba.Entity
             instance.transform.localPosition = Vector3.zero;
         }
 
-        void Update()
-        {
-            Highlighted = Mathf.Abs(Time.time - lastCollisionStay) < 0.05f;
-        }
-
-        void OnTriggerStay(Collider other)
-        {
-            lastCollisionStay = Time.time;
-        }
-
         public void Take()
         {
+            if (_wasTaken) return;
+
+            _wasTaken = true;
             animator?.SetTrigger(hashTaken);
         }
 
@@ -71,6 +82,5 @@ namespace Catacumba.Entity
         {
             Destroy(this.gameObject);
         }
-
     }
 }

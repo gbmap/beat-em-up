@@ -277,9 +277,11 @@ namespace Catacumba.LevelGen.Mesh
         private static ComponentVisibility AddVisibilityComponent(GameObject gameObject, Vector2Int cellPosition) 
         {
             return null;
+            /*
             var vis = gameObject.AddComponent<ComponentVisibility>();
             vis.cellPosition = cellPosition;
             return vis;
+            */
         }
 
         public static GameObject PutFloor(LevelGenRoomConfig cfg,

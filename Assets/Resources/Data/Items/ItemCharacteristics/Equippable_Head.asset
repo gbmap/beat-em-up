@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 754141948fb78f841b20702f985cf461, type: 3}
+  m_Name: Equippable_Head
+  m_EditorClassIdentifier: 
+  Slots:
+  - {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}

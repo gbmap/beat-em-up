@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdb2dbf47162c5b42a42442dc1435a4e, type: 3}
   m_Name: Head
   m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:BodyPart
-  BoneName: 
+  BoneName: Head
+  LocalPosition: {x: 0, y: 0.0972, z: 0}
+  LocalRotationEuler: {x: 0, y: 0, z: 0}
