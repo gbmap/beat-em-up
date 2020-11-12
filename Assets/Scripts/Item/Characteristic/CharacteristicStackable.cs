@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items.Characteristics
 {
+    [CreateAssetMenu(menuName="Data/Item/Characteristic/Stackable", fileName="CharacteristicStackable")]
     public class CharacteristicStackable : ItemCharacteristic
     {
         public int CurrentAmount;
@@ -13,7 +14,8 @@ namespace Catacumba.Data.Items.Characteristics
 
         public void Stack(ref Item a, ref Item b)
         {
-            if (a != b) return;
+            if (!Item.Compare(a, b)) throw new System.Exception("Can't stack two different items.");
+            if (Item.CompareInstance(a, b)) throw new System.Exception("Can't stack the same instance of items.");
             CharacteristicStackable sa = a.GetCharacteristic<CharacteristicStackable>();
             CharacteristicStackable sb = b.GetCharacteristic<CharacteristicStackable>();
             int amount = sa.CurrentAmount + sb.CurrentAmount;
@@ -22,8 +24,11 @@ namespace Catacumba.Data.Items.Characteristics
 
             if (sb.CurrentAmount == 0)
             {
-                Destroy(sb);
+                DestroyImmediate(sb);
                 sb = null;
+
+                DestroyImmediate(b);
+                b = null;
             }
         }
     }

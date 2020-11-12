@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Catacumba.Data.Character;
 using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
@@ -77,6 +78,36 @@ namespace Catacumba.Data.Items
         {
             return Characteristics.Any(c => c is TCharacteristic);
         }
+
+        public static bool CompareInstance(Item a, Item b)
+        {
+            return a.GetInstanceID() == b.GetInstanceID();
+        }
+
+        public static bool Compare(Item a, Item b)
+        {
+            if (a == null && b == null) return true;
+            if (a == null || b == null)  return false;
+            return string.Equals(a.Name, b.Name);
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other is Item) return Item.Compare(this, other as Item);
+            return base.Equals(other);
+        }
+
+        public Item Clone()
+        {
+            Item instance = ScriptableObject.Instantiate(this);
+            for (int i = 0; i < Characteristics.Length; i++)
+            {
+                ItemCharacteristic characteristic = (ItemCharacteristic)Characteristics[i];
+                instance.Characteristics[i] = ScriptableObject.Instantiate(characteristic);
+            }
+
+            return instance;
+        }
     }
 
-}
+} 
