@@ -2,11 +2,14 @@ using UnityEngine;
 
 namespace Catacumba.Entity
 {
+    [RequireComponent(typeof(SphereCollider))]
     public class InteractiveComponent : InteractiveBaseComponent
     {
         public System.Action<bool> OnHighlight;
 
         private Material _material;
+        private SphereCollider _colliderInteractionArea;
+
         // private Animator _animator;
         // private static int hashHighlighted = Animator.StringToHash("Highlighted");
         private static int hashTaken       = Animator.StringToHash("Taken");
@@ -33,6 +36,9 @@ namespace Catacumba.Entity
         protected virtual void Awake()
         {
             _material = GetComponentInChildren<Renderer>()?.material;
+            _colliderInteractionArea = GetComponent<SphereCollider>();
+            _colliderInteractionArea.radius = 1f;
+            _colliderInteractionArea.isTrigger = true;
         }
 
         protected virtual void Update()

@@ -177,8 +177,10 @@ namespace Catacumba.Entity
 
         private void Cb_OnItemDropped(InventoryDropResult result)
         {
+            /*
             Item item = result.Item;
             ItemTemplate.Create(item, transform.position);
+            */
 
             RemoveItemFromBone(result.Params.Slot);
         }

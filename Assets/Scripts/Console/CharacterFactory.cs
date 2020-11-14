@@ -5,20 +5,12 @@ using QFSW.QC;
 using UnityEngine.AI;
 using Catacumba.Data;
 using Catacumba.Data.Controllers;
+using Catacumba.Data.Items;
 
 namespace Catacumba.Entity
 {
-    public class CharacterFactory
+    public static class CharacterFactory
     {
-        private static GameObject _entityTemplate;
-        private static GameObject EntityTemplate
-        {
-            get
-            {
-                return _entityTemplate ?? (_entityTemplate = Resources.Load<GameObject>("Data/Characters/CharacterTemplate")); 
-            }
-        }
-
         [Command("spawn_enemy")]
         public static void Command_CreateEnemy(string characterConfiguration)
         {
@@ -41,7 +33,7 @@ namespace Catacumba.Entity
             CharacterConfiguration configuration = Resources.Load<CharacterConfiguration>(path);
             if (!configuration)
             { 
-                QuantumConsole.Instance.LogToConsole("Couldn't load character.");
+                QuantumConsole.Instance.LogToConsole($"Couldn't load character: {characterConfiguration}");
                 return null;
             }
 

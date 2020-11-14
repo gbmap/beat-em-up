@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7819835369c0234b9c01c5353f63daf, type: 3}
-  m_Name: ItemTemplate
+  m_Script: {fileID: 11500000, guid: e2e86f0c2681408468ae07d2c9dd9ca1, type: 3}
+  m_Name: Weapon Type_Staff
   m_EditorClassIdentifier: 
-  AnimatorController: {fileID: 9100000, guid: 5205c3dda715db64f99be976f55a0da7, type: 2}
-  Highlight: {fileID: 5742265556757604348, guid: f236f64cfa053ac4a91f2aa98c728904,
-    type: 3}
+  animatorController: {fileID: 22100000, guid: 0b16e30d84a4ff44fad1027b8a67a0cd, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: d072fbed943d5e143a94ca48a4977ae0, type: 2}

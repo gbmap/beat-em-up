@@ -53,10 +53,8 @@ namespace Catacumba.Data
             };
 
             if (inventory == null)
-                Inventory = ScriptableObject.CreateInstance<Inventory>();
-            else
-                // shallow copy is fine in this case
-                Inventory = ScriptableObject.Instantiate(inventory);
+                inventory = Resources.Load<Inventory>("Data/Items/Inventory/Inventory_Humanoid");
+            Inventory = ScriptableObject.Instantiate(inventory);
 
             Health          = MaxHealth;
             Mana            = MaxMana;

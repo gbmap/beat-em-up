@@ -23,7 +23,9 @@ namespace Catacumba.Entity
             set 
             {
                 if (highlighted != value)
-                    animator?.SetBool(hashHighlighted, value);
+                {
+                    if (animator != null) animator.SetBool(hashHighlighted, value);
+                }
                 highlighted = value;
             }
         }
@@ -31,14 +33,6 @@ namespace Catacumba.Entity
         private bool _wasTaken;
 
         private InteractiveComponent interactive;
-
-        void Awake()
-        {
-            animator = GetComponent<Animator>();
-            interactive = GetComponent<InteractiveComponent>();
-            interactive.OnInteraction += OnInteraction;
-            interactive.OnHighlight += OnHighlight;
-        }
 
         private void OnHighlight(bool value)
         {
@@ -53,6 +47,11 @@ namespace Catacumba.Entity
 
         void Start()
         {
+            animator = GetComponent<Animator>();
+            interactive = GetComponent<InteractiveComponent>();
+            interactive.OnInteraction += OnInteraction;
+            interactive.OnHighlight += OnHighlight;
+
             if (!Item)
                 throw new System.Exception("No item configuration set.");
 

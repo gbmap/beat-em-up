@@ -17,7 +17,7 @@ MonoBehaviour:
     - Part: {fileID: 11400000, guid: a76c01264e1753b4e9882676c5a17c74, type: 2}
       Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
-      Item: {fileID: 11400000, guid: 76277abc5cdde5a4fb3fce51c6988979, type: 2}
+      Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
       Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: cd6edefdcadcefa4f8ac2f065d6bba5d, type: 2}

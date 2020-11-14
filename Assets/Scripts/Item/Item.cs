@@ -7,14 +7,6 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items
 {
-    public enum EItemRarity
-    {
-        Common,
-        Uncommon,
-        Rare,
-        Legendary
-    }
-
     public abstract class ItemCharacteristic : ScriptableObject { }
 
     [CreateAssetMenu(menuName="Data/Item/Item", fileName="Item")]
