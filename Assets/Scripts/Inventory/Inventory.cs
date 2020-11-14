@@ -74,9 +74,7 @@ namespace Catacumba.Data.Items
         public InventorySlot GetWeaponSlot()
         {
             if (slots.Count == 0 || WeaponSlotIndex < 0 || WeaponSlotIndex > slots.Count)
-            {
                 return null;
-            }
 
             return slots[WeaponSlotIndex];
         }
@@ -364,6 +362,11 @@ namespace Catacumba.Data.Items
         public InventorySlot GetWeaponSlot()
         {
             return Slots.GetWeaponSlot();
+        }
+
+        public Item GetWeapon()
+        {
+            return Slots.GetWeaponSlot()?.Item;
         }
 
         public bool HasItem(Item item)

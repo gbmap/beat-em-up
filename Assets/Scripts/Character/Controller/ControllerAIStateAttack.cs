@@ -21,47 +21,27 @@ namespace Catacumba.Data.Controllers
         private CharacterData Target;
         private int TargetPriority = 10;
 
-        private CharacterMovementBase movement;
-        private CharacterCombat combat;
+        private CharacterMovementBase _movement;
         private CharacterHealth health;
 
         private float attackTimer = 0f;
 
         private float checkTargetTimer = 0f;
-        private float DistanceToAttack
-        {
-            // great code thank you
-            get { return weaponCharacteristic?.WeaponType?.AttackStrategy?.DistanceToAttack ?? 2.5f; }
-        }
-
-        private Item weapon;
-        private CharacteristicWeaponizable weaponCharacteristic;
 
         //////////////////////////////
         //    CONTROLLER AI STATE
 
         public override void OnCreate(ControllerComponent component)
         {
-            movement = component.Data.Components.Movement;
-            combat = component.Data.Components.Combat;
             health = component.Data.Components.Health;
-
-            health.OnDamaged += Cb_OnDamaged;
-
-            Inventory inventory = component.Data.Stats.Inventory;
-            Item weapon = inventory.GetWeaponSlot()?.Item; 
-            if (weapon)
-                UpdateWeaponData(weapon, weapon.GetCharacteristic<CharacteristicWeaponizable>());
-
-            inventory.OnWeaponEquipped += Cb_OnWeaponEquipped;
+            if (health)
+                health.OnDamaged += Cb_OnDamaged;
         }
 
         public override void Destroy(ControllerComponent component)
         {
             if (health)
                 health.OnDamaged -= Cb_OnDamaged;
-
-            component.Data.Stats.Inventory.OnWeaponEquipped -= Cb_OnWeaponEquipped;
         }
 
 
@@ -74,11 +54,18 @@ namespace Catacumba.Data.Controllers
 
             Vector3 deltaToTarget = Target.transform.position - component.transform.position; 
 
-            input.Direction = UpdateTargetPosition(component, deltaToTarget);
-            input.LookDir = UpdateLookDirection(component, deltaToTarget);
-            input.Attack = UpdateShouldAttack(component, out input.AttackType);
+            CharacterData data = component.Data;
+            CharacterMovementBase movement = component.Data.Components.Movement;
 
-            UpdateNavMeshDestination(component);
+            Item weapon = component.Data.Stats.Inventory.GetWeapon();
+            float distanceToAttack = weapon.GetCharacteristic<CharacteristicWeaponizable>().WeaponType.AttackStrategy.DistanceToAttack; 
+            if (movement)
+            {
+                input.Direction = UpdateTargetPosition(movement, deltaToTarget, distanceToAttack);
+                UpdateNavMeshDestination(data, movement, weapon);
+            }
+            input.LookDir = UpdateLookDirection(deltaToTarget);
+            input.Attack = weapon && UpdateShouldAttack(movement, distanceToAttack, out input.AttackType);
         }
 
         public override int UpdatePriority(ControllerComponent component)
@@ -105,12 +92,6 @@ namespace Catacumba.Data.Controllers
 
         //////////////////////////////  
         //      CALLBACKS 
-
-        private void Cb_OnWeaponEquipped(InventoryEquipResult obj, CharacteristicWeaponizable weapon)
-        {
-            UpdateWeaponData(obj.Params.Item, weapon);
-        }
-
         private void Cb_OnDamaged(AttackResult obj)
         {
             if (Target == obj.AttackerData)
@@ -119,13 +100,6 @@ namespace Catacumba.Data.Controllers
 
         //////////////////////////////
         //     PRIVATE METHODS
-
-        private void UpdateWeaponData(Item item, CharacteristicWeaponizable weapon)
-        {
-            this.weapon = item;
-            weaponCharacteristic = weapon;
-        }
-
         private void CheckNewTargets(ControllerComponent component)
         {
             checkTargetTimer += Time.deltaTime;
@@ -139,9 +113,9 @@ namespace Catacumba.Data.Controllers
             }
         }
 
-        private Vector3 UpdateTargetPosition(ControllerComponent component, Vector3 deltaToTarget)
+        private Vector3 UpdateTargetPosition(CharacterMovementBase movement, Vector3 deltaToTarget, float distanceToAttack)
         {
-            if (movement.NavAgentValid && movement.NavMeshAgent.remainingDistance >= DistanceToAttack)
+            if (movement.NavAgentValid && movement.NavMeshAgent.remainingDistance >= distanceToAttack)
             {
                 float velocityLimit = Mathf.Clamp01(movement.NavMeshAgent.remainingDistance);
                 return movement.NavMeshAgent.desiredVelocity * velocityLimit;
@@ -149,49 +123,56 @@ namespace Catacumba.Data.Controllers
             return Vector3.zero; 
         }
 
-        private void UpdateNavMeshDestination(ControllerComponent component)
+        private void UpdateNavMeshDestination(CharacterData data, CharacterMovementBase movement, Item weapon)
         {
-            float destinationToTargetDistance = Vector3.Distance(Target.transform.position, movement.NavMeshAgent.destination);
+            float destinationToTargetDistance = Vector3.Distance(Target.transform.position, 
+                                                                 movement.NavMeshAgent.destination);
             if (destinationToTargetDistance > 1f)
             {
-                Vector3 desiredDestination = GetDesiredPositionFromItem(component, weapon, Target.transform.position);
+                Vector3 desiredDestination = GetDesiredPositionFromItem(data, weapon, Target.transform.position);
                 movement.SetDestination(Target.transform.position);
             }
         }
 
-        private Vector3 GetDesiredPositionFromItem(ControllerComponent component, Item item, Vector3 position)
+        private Vector3 GetDesiredPositionFromItem(CharacterData data, Item item, Vector3 position)
         {
-            CharacteristicWeaponizable weapon = item?.GetCharacteristic<CharacteristicWeaponizable>();
+            CharacteristicWeaponizable weapon = item.GetCharacteristic<CharacteristicWeaponizable>();
             if (weapon == null)
                 return position;
 
             return weapon.WeaponType
                          .AttackStrategy
-                         .ModulateDestinationPosition(item, component.Data, Target);
+                         .ModulateDestinationPosition(item, data, Target);
         }
 
-        private Vector3 UpdateLookDirection(ControllerComponent component, Vector3 deltaToTarget)
+        private Vector3 UpdateLookDirection(Vector3 deltaToTarget)
         {
             return deltaToTarget.normalized;
         }
 
-        private bool UpdateShouldAttack(ControllerComponent component, out EAttackType attackType)
+        private bool UpdateShouldAttack(CharacterMovementBase movement, float distanceToAttack, out EAttackType attackType)
         {
             attackType = EAttackType.Weak;
-            float distanceToTarget = Vector3.Distance(Target.transform.position, component.transform.position);
+            float distanceToTarget = Vector3.Distance(Target.transform.position, movement.transform.position);
 
-            bool isCloseToTarget = distanceToTarget <= DistanceToAttack;
+            bool isCloseToTarget = distanceToTarget <= distanceToAttack;
             bool canAttack = attackTimer >= AttackDelay;
 
             if (isCloseToTarget && canAttack)
             {
-                movement.StopForTime(1f);
+                if (movement)
+                    movement.StopForTime(1f);
                 attackTimer = 0f;
                 return true;
             }
 
             attackTimer += Time.deltaTime;
             return false;
+        }
+
+        private float GetDistanceToAttack(Item weapon)
+        {
+            return weapon.GetCharacteristic<CharacteristicWeaponizable>()?.WeaponType?.AttackStrategy?.DistanceToAttack ?? 2.5f;
         }
 
 

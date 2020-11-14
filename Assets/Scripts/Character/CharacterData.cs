@@ -90,7 +90,6 @@ namespace Catacumba.Entity
                     }
                 }
 
-
                 Cache(newComponent);
             }
 
@@ -133,10 +132,7 @@ namespace Catacumba.Entity
             if (controller && controller.Controller)
                 BrainType = controller.Controller.BrainType;
             else
-                BrainType = ECharacterBrainType.AI;
-
-            SetupCharacterStats();
-            SetupCharacterComponentsCache();
+                BrainType = CompareTag("Player") ? ECharacterBrainType.Input : ECharacterBrainType.AI;
         }
 
         private void SetupCharacterStats()
@@ -156,6 +152,9 @@ namespace Catacumba.Entity
 
         private void Start()
         {
+            SetupCharacterStats();
+            SetupCharacterComponentsCache();
+
             if (ConfigurationView != null && transform.childCount == 0)
                 ConfigurationView.Configure(this);
             
@@ -181,13 +180,6 @@ namespace Catacumba.Entity
         public void SignalComponentRemoved(CharacterComponentBase component)
         {
             Components.OnComponentRemoved(component);        
-        }
-
-        public void SetConfigurations(CharacterStatConfiguration stats, CharacterViewConfiguration view, Inventory inventory)
-        {
-            ConfigurationStats = stats;
-            ConfigurationView = view;
-            ConfigurationInventory = inventory;
         }
 
     #if UNITY_EDITOR

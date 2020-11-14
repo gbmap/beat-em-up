@@ -12,27 +12,9 @@ namespace Catacumba.Entity
     {
         public Animator animator;
 
-        public bool IgnoreWeaponAnimations = false;
-
-        public Vector3 RealCharacterPosition {
-            get
-            {
-                Vector3 delta = ModelInfo.HipsBone.Bone.position - transform.position;
-                delta.y = 0f;
-                return transform.position + delta;
-            }
-        }
-
-        //CharacterData data;
         CharacterMovementBase movement;
         CharacterCombat combat;
         CharacterHealth health;
-
-        CharacterModelInfo modelInfo;
-        public CharacterModelInfo ModelInfo
-        {
-            get { return modelInfo ?? (modelInfo = GetComponentInChildren<CharacterModelInfo>()); }
-        }
 
         private float AnimatorDefaultSpeed
         {
@@ -74,49 +56,19 @@ namespace Catacumba.Entity
         protected override void Awake()
         {
             base.Awake();
-
-            modelInfo = GetComponent<CharacterModelInfo>();
-            renderer = GetComponentInChildren<Renderer>();
-            animator = GetComponentInChildren<Animator>();
         }
 
         protected override void Start()
         {
             base.Start();
 
-            animator.speed = AnimatorDefaultSpeed;
-            animator.SetInteger("BrainType", (int)data.BrainType);
-
-            /*
-            foreach (InventorySlot slot in data.Stats.Inventory.Slots)
-            {
-                if (slot.IsEmpty())
-                    continue;
-
-                Cb_OnItemEquipped(new InventoryEquipResult
-                {
-                    Params = new InventoryEquipParams
-                    {
-                        Item = slot.Item,
-                        Slot = slot.Part
-                    },
-                    Result = InventoryEquipResult.EEquipResult.Success
-                });
-            }
-            */
+            renderer = GetComponentInChildren<Renderer>();
         }
 
-        protected override void OnEnable()
+        protected override void OnDestroy()
         {
-            base.OnEnable();
-            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
-            data.Stats.Inventory.OnItemDropped += Cb_OnItemDropped;
-        }
+            base.OnDestroy();
 
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
             data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
             data.Stats.Inventory.OnItemDropped -= Cb_OnItemDropped;
         }
@@ -168,6 +120,18 @@ namespace Catacumba.Entity
             }
         }
 
+        public override void OnConfigurationEnded()
+        {
+            base.OnConfigurationEnded();
+
+            animator = GetComponentInChildren<Animator>();
+            animator.speed = AnimatorDefaultSpeed;
+            animator.SetInteger("BrainType", (int)data.BrainType);
+
+            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
+            data.Stats.Inventory.OnItemDropped += Cb_OnItemDropped;
+        }
+
         void Update()
         {
             if (movement)
@@ -175,10 +139,6 @@ namespace Catacumba.Entity
                 if (movement.NavMeshAgent)
                     animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
             }
-
-    #if UNITY_EDITOR
-            CheckDebugInput();
-    #endif
         }
 
         private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
@@ -247,6 +207,7 @@ namespace Catacumba.Entity
         }
 
 
+
         private void OnRecoverCallback()
         {
         }
@@ -290,37 +251,6 @@ namespace Catacumba.Entity
         {
             animator.ResetTrigger(hashAttackTrigger);
             animator.ResetTrigger(hashAttackTrigger);
-        }
-
-        // gambiarra 
-        public void RefreshAnimator(bool destroyCurrentAnimator = true)
-        {
-            Avatar avatar = animator.avatar;
-            RuntimeAnimatorController controller = animator.runtimeAnimatorController;
-            bool rootMotion = animator.applyRootMotion;
-            RefreshAnimator(avatar, controller, rootMotion, destroyCurrentAnimator);
-        }
-
-        public void RefreshAnimator(Avatar avatar, RuntimeAnimatorController controller, bool rootMotion, bool destroyCurrentAnimator = true)
-        {
-            if (avatar == null)
-            {
-                avatar = animator.avatar;
-            }
-
-            if (destroyCurrentAnimator)
-            {
-                DestroyImmediate(animator);
-                animator = gameObject.AddComponent<Animator>();
-            }
-            animator.avatar = avatar;
-            animator.runtimeAnimatorController = controller;
-            animator.SetInteger("BrainType", (int)data.BrainType);
-            modelInfo = GetComponentInChildren<CharacterModelInfo>();
-            modelInfo?.UpdateBones();
-            renderer = GetComponentInChildren<SkinnedMeshRenderer>();
-
-            OnRefreshAnimator?.Invoke(animator);
         }
 
         public void UpdateAnimator(RuntimeAnimatorController controller)
@@ -411,48 +341,6 @@ namespace Catacumba.Entity
         {
             animator.applyRootMotion = v;
         }
-
-        public void UpdatePosition()
-        {
-            Vector3 hipsPosition = ModelInfo.HipsBone.Bone.position - transform.position;
-            hipsPosition.y = 0f;
-            transform.position += hipsPosition;
-        }
-        
-        public void UseSkill(int index)
-        {
-            animator.SetInteger(hashSkillIndex, index);
-            animator.SetTrigger(hashUseSkill);
-        }
-
-    #if UNITY_EDITOR
-
-        private bool showDeltaHips = false;
-
-        private void OnDrawGizmosSelected()
-        {
-            if (showDeltaHips)
-            {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(transform.position, ModelInfo.HipsBone.Bone.position);
-
-                Vector3 hipsDelta = ModelInfo.HipsBone.Bone.position - transform.position;
-                hipsDelta.y = 0f;
-
-                Gizmos.color = Color.red;
-                Gizmos.DrawLine(transform.position, transform.position + hipsDelta);
-            }
-        }
-
-        private void CheckDebugInput()
-        {
-            if (Input.GetKeyDown(KeyCode.F8))
-            {
-                showDeltaHips = !showDeltaHips;
-            }
-        }
-
-#endif
 
         public void AnimPlayWoosh() 
         {

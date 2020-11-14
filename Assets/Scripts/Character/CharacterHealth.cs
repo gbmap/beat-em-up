@@ -10,6 +10,7 @@ namespace Catacumba.Entity
 {
     public class MsgOnPlayerDied { public CharacterData player; }
 
+    [RequireComponent(typeof(CapsuleCollider))]
     public class CharacterHealth : CharacterComponentBase
     {
         public ParticleEffectConfiguration HitEffect;
@@ -49,6 +50,8 @@ namespace Catacumba.Entity
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
+            data.Stats.OnStatsChanged += OnStatsChangedCallback;
+
             SetupEffects();
         }
 
@@ -124,7 +127,6 @@ namespace Catacumba.Entity
             OnFall += OnFallCallback;
             OnGetUp += OnGetUpAnimationEnd;
 
-            data.Stats.OnStatsChanged += OnStatsChangedCallback;
         }
 
         private void Update()

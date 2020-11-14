@@ -16,3 +16,4 @@ MonoBehaviour:
   Inventory: {fileID: 11400000, guid: 0c3d9513ab4f24044aee499b5bd29df4, type: 2}
   Skills: {fileID: 0}
   View: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}
+  Components: {fileID: 11400000, guid: 617b52b71d036214d8198343510f32dc, type: 2}

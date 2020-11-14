@@ -51,7 +51,6 @@ namespace Catacumba.Entity
             OnComboEnded += OnComboEndedCallback;
             OnAttack += EmitHitEffects;
 
-            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
         }
         
         protected override void OnDisable()
@@ -62,7 +61,6 @@ namespace Catacumba.Entity
             OnComboEnded -= OnComboEndedCallback;
             OnAttack -= EmitHitEffects;
 
-            data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
         }
 
         private void Cb_OnItemEquipped(InventoryEquipResult result)
@@ -106,11 +104,14 @@ namespace Catacumba.Entity
         {
             base.OnDestroy();
             AttackEffect?.Destroy(this);
+
+            data.Stats.Inventory.OnItemEquipped -= Cb_OnItemEquipped;
         }
 
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
+            data.Stats.Inventory.OnItemEquipped += Cb_OnItemEquipped;
             if (data.IsConfigured)
             // If this is not the object's startup
             {

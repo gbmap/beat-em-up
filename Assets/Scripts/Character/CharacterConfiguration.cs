@@ -5,10 +5,11 @@ using Catacumba.Data.Items;
 
 namespace Catacumba.Data
 {
-    [CreateAssetMenu()]
+    [CreateAssetMenu(menuName="Data/Character Configuration", fileName="Character_")]
     public class CharacterConfiguration : ScriptableObject
     {
-        private const string DEFAULT = "Data/Characters/Character_Default";
+        public const string DEFAULT_FOLDER = "Data/Characters";
+        public const string DEFAULT = "Data/Characters/Character_Default";
 
         private static CharacterConfiguration _defaultInstance;
         public static CharacterConfiguration Default
@@ -23,13 +24,19 @@ namespace Catacumba.Data
         public Inventory Inventory;
         public CharacterSkillConfiguration Skills;
         public CharacterViewConfiguration View;
+        public CharacterComponentConfiguration Components;
 
-        public void Configure(Entity.CharacterData character, System.Action CallbackFinished = null, int modelIndex = -1)
+        /// <summary> 
+        /// Sets configuration objects to CharacterData and adds
+        /// components used in CharacterComponentConfiguration. Doesn't actually
+        /// sets up the character object.
+        /// </summary>
+        public void Configure(Entity.CharacterData character, System.Action CallbackFinished = null)
         {
-            if (character.transform.childCount == 0 && View != null)
-                View.Configure(character, modelIndex);
-
-            CallbackFinished?.Invoke();
+            character.ConfigurationStats = Stats;
+            character.ConfigurationView = View;
+            character.ConfigurationInventory = Inventory;
+            Components.AddComponentsToObject(character.gameObject);
         }
     }
 }

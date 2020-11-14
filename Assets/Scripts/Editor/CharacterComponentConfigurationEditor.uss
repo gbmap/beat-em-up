@@ -1,0 +1,15 @@
+﻿.btn-add {
+    width: 70px;
+}
+
+.attr_popup {
+    flex-grow: 1;
+}
+
+.attr_value {
+    flex-grow: 4;
+}
+
+.attr_btn_remove {
+    flex-grow: 0;
+}
