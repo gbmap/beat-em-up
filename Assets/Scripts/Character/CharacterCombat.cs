@@ -10,7 +10,7 @@ namespace Catacumba.Entity
 {
     public class CharacterCombat : CharacterComponentBase
     {
-        public LayerMask TargetLayer;
+        public LayerMask TargetLayer; 
 
         [HideInInspector] public bool IsOnCombo;
 
@@ -43,6 +43,12 @@ namespace Catacumba.Entity
         private CharacterMovementBase Movement { get { return data.Components.Movement; } }
         private CharacterAnimator Animator { get { return data.Components.Animator; } }
 
+        protected override void Awake()
+        {
+            base.Awake();
+            TargetLayer = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Entities");
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -50,7 +56,6 @@ namespace Catacumba.Entity
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
             OnAttack += EmitHitEffects;
-
         }
         
         protected override void OnDisable()

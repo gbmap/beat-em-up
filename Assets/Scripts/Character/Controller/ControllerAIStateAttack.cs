@@ -44,7 +44,6 @@ namespace Catacumba.Data.Controllers
                 health.OnDamaged -= Cb_OnDamaged;
         }
 
-
         public override void OnEnter(ControllerComponent component) { }
         public override void OnExit(ControllerComponent component) { }
 

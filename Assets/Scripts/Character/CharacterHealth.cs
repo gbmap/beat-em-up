@@ -38,7 +38,7 @@ namespace Catacumba.Entity
         public float LastHit { get; private set; }
         public AttackResult LastHitData { get; private set; }
 
-        private new Collider collider;
+        private new CapsuleCollider collider;
 
         private float recoverTimer;
         private float recoverCooldown = 2f;
@@ -117,7 +117,10 @@ namespace Catacumba.Entity
         protected override void Awake()
         {
             base.Awake();
-            collider = GetComponent<Collider>();
+            collider = GetComponent<CapsuleCollider>();
+            collider.height = 2f;
+            collider.radius = 0.5f;
+            collider.center = Vector3.up;
         }
 
         protected override void OnEnable()
