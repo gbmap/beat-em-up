@@ -2,6 +2,10 @@
 using System.Linq;
 using UnityEngine;
 using System;
+using Catacumba.Data.Level;
+using Catacumba.Data;
+using Catacumba.Entity;
+using UnityEngine.AI;
 
 namespace Catacumba.LevelGen
 {
@@ -427,22 +431,12 @@ namespace Catacumba.LevelGen
         }
 
         public ELevelType LevelType;
-
         public Vector2Int LevelSize = new Vector2Int(50, 50);
-
-        [Range(0f, 1f)]
-        public float PropChance = 0.65f;
-
-        [Range(0f, 1f)]
-        public float EnemyChance = 0.65f;
-
+        [Range(0f, 1f)] public float PropChance = 0.65f;
+        [Range(0f, 1f)] public float EnemyChance = 0.65f;
         public bool GenerateMesh = false;
-
-        [Header("Mesh Configuration")]
-        public LevelGenBiomeConfig BiomeConfig;
-
-        [Header("Player")]
-        public GameObject PlayerPrefab;
+        public BiomeConfiguration BiomeConfig;
+        public CharacterPool EnemyPool;
     }
 
     public class LevelGeneration : SimpleSingleton<LevelGeneration>
@@ -487,24 +481,7 @@ namespace Catacumba.LevelGen
 
         public LevelGenerationParams Params;
 
-        private void Awake()
-        {
-            if (Params.GenerateMesh)
-                Generate(Params, OnLevelGenerationComplete);
-            else
-                Generate(Params, null);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                if (Params.GenerateMesh)
-                    Generate(Params, OnLevelGenerationComplete);
-                else
-                    Generate(Params, null);
-            }
-        }
+        public static Level Level;
 
         ///////////////////////
         /// GENERATION
@@ -536,11 +513,11 @@ namespace Catacumba.LevelGen
 
             /////////////////
             /// PLAYER POSITION
-            Sector[] secs = StepSelectPlayerSpawnPoint(level);
-            UpdateVis(level);
+            //Sector[] secs = StepSelectPlayerSpawnPoint(level);
+            //UpdateVis(level);
 
-            int secsL = secs.Length;
-            yield return new WaitForSeconds(0.5f);
+            //int secsL = secs.Length;
+            //yield return new WaitForSeconds(0.5f);
 
             UpdateVis(level);
 
@@ -559,7 +536,7 @@ namespace Catacumba.LevelGen
             Debug.Log(s);
 
             Debug.Log("Level generation ended.");
-            yield break;
+            Level = level;
         }
 
         private static ILevelGenAlgo GetLevelGenerationAlgorithm(LevelGenerationParams p)
@@ -597,6 +574,28 @@ namespace Catacumba.LevelGen
 
             return Sector.ListConnectedSectors(new HashSet<Sector>(), spawnSector)
                 .OrderBy(s => Vector2.Distance(spawnSector.Pos, s.Pos)).ToArray();
+        }
+
+        public static Vector2Int SelectPlayerStartPosition(Level l)
+        {
+            Vector2Int startPosition = l.Size/2;
+            ECellCode cell = l.GetCell(startPosition);
+            if (cell != ECellCode.Empty) return startPosition;
+
+            for (int searchRadius = 1; searchRadius < Mathf.Min(l.Size.x, l.Size.y)/2; searchRadius++)
+            {
+                for (int x = -searchRadius; x < searchRadius; x++)
+                {
+                    for (int y = -searchRadius; x < searchRadius; y++)
+                    {
+                        Vector2Int position = startPosition + new Vector2Int(x, y);
+                        cell = l.GetCell(position);
+                        if (cell != ECellCode.Empty) return position;
+                    }
+                }
+            }
+
+            return startPosition;
         }
 
         private static void StepAddProps(Level l)
@@ -646,25 +645,29 @@ namespace Catacumba.LevelGen
 
             // Criar inimigos
             LevelGenerationEntities(l, p);
-
         }
 
         static void LevelGenerationEntities(Level l, LevelGenerationParams p)
         {
-            // Criar Player
             var cellSize = p.BiomeConfig.CellSize();
             cellSize.x *= l.SpawnPoint.x;
             cellSize.z *= l.SpawnPoint.y;
             cellSize.y = 0f;
+
+            // Criar Player
+            /*
             GameObject player = Instantiate(p.PlayerPrefab, cellSize, Quaternion.identity);
+            */
 
             // Setar câmera
             Camera.main.transform.position = cellSize;
 
             GameObject virtualCamera = new GameObject("VCam");
             Cinemachine.CinemachineVirtualCamera vcam = virtualCamera.AddComponent<Cinemachine.CinemachineVirtualCamera>();
+            /*
             vcam.Follow = player.transform;
             vcam.LookAt = player.transform;
+            */
 
             var body = vcam.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
             body.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
@@ -673,17 +676,30 @@ namespace Catacumba.LevelGen
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
 
             // Spawn enemies
-            Mesh.Utils.IterateSector(l.BaseSector, SpawnEnemies, ELevelLayer.Enemies);
+            Mesh.Utils.IterateSector(l.BaseSector, (it) => { SpawnEnemy(it, p); }, ELevelLayer.Enemies);
         }
 
-        private static void SpawnEnemies(Mesh.Utils.SectorCellIteration it)
+        public static void SpawnEnemy(Mesh.Utils.SectorCellIteration it, LevelGenerationParams parameters, CharacterPool pool=null)
         {
             if (it.cell != ECellCode.Enemy) 
                 return;
 
+            if (pool == null)
+                pool = parameters.EnemyPool;
 
+            CharacterPoolItem enemy = pool.GetRandom();
 
+            Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(it.cellPosition, parameters.BiomeConfig.CellSize());
+            worldPosition -= parameters.BiomeConfig.CellSize()/2f;
+            worldPosition.y = 0f;
 
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
+            {
+                worldPosition = hit.position;
+            };
+
+            CharacterFactory.SpawnEnemy(enemy.Name, worldPosition);
         }
 
         public static bool IsValidPosition(Level l, Vector2Int p)

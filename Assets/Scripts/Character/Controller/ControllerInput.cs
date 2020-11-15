@@ -39,7 +39,12 @@ namespace Catacumba.Data.Controllers
             float vAxis = RewiredInput.GetAxis("VerticalMovement");
 
             Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward = cameraForward.normalized;
+
             Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0f;
+            cameraRight = cameraRight.normalized;
             
             Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
             cFwd.y = 0;

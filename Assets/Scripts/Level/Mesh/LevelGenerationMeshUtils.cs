@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.AI;
+using Catacumba.Data.Level;
 
 namespace Catacumba.LevelGen.Mesh
 {
@@ -186,7 +187,7 @@ namespace Catacumba.LevelGen.Mesh
         {
             //public Level level;
             public Sector sector;
-            public LevelGenRoomConfig cfg; 
+            public RoomConfiguration cfg; 
             public GameObject prefab; 
             public Vector3 cellSize;
             public GameObject root;
@@ -284,7 +285,7 @@ namespace Catacumba.LevelGen.Mesh
             */
         }
 
-        public static GameObject PutFloor(LevelGenRoomConfig cfg,
+        public static GameObject PutFloor(RoomConfiguration cfg,
                                            Vector3 cellSize,
                                            GameObject floorRoot, 
                                            Vector2Int pos,
@@ -307,7 +308,7 @@ namespace Catacumba.LevelGen.Mesh
         }
 
         public static NeighborObjects CheckOneSidedWalls(Sector sector, 
-                                                         LevelGenRoomConfig cfg, 
+                                                         RoomConfiguration cfg, 
                                                          Vector3 cellSize, 
                                                          GameObject root, 
                                                          Vector2Int position,
@@ -336,7 +337,7 @@ namespace Catacumba.LevelGen.Mesh
         }
 
         public static NeighborObjects CheckTwoSidedWalls(Sector sector,
-                                                         LevelGenRoomConfig cfg,
+                                                         RoomConfiguration cfg,
                                                          Vector3 cellSize,
                                                          GameObject root,
                                                          Vector2Int position, // relative to sector position

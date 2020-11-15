@@ -2,17 +2,18 @@ using UnityEngine;
 using System;
 using System.Linq;
 using Catacumba.Entity;
+using Catacumba.Data.Level;
 
 namespace Catacumba.LevelGen.Mesh
 {
     public interface ILevelGenerationMeshStep
     {
-        void Run(LevelGenBiomeConfig cfg, Level level, GameObject root);
+        void Run(BiomeConfiguration cfg, Level level, GameObject root);
     }
 
     public class LevelGenerationMeshStepRooms : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
+        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             foreach (Sector sec in level.BaseSector.Children)
             {
@@ -20,7 +21,7 @@ namespace Catacumba.LevelGen.Mesh
             }
         }
 
-        void GenerateRoom(Sector sec, LevelGenRoomConfig cfg, GameObject root)
+        void GenerateRoom(Sector sec, RoomConfiguration cfg, GameObject root)
         {
             string log = "GENERATING ROOM:\n";
             log += "Position: " + sec.Pos + "\n";
@@ -78,13 +79,13 @@ namespace Catacumba.LevelGen.Mesh
             this.wallRoot = wallRoot;
         }
 
-        void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
+        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             GenerateHall(level, cfg, this.floorRoot, this.wallRoot);
         }
 
         private static void GenerateHall(Level l,
-                                         LevelGenBiomeConfig cfg,
+                                         BiomeConfiguration cfg,
                                          GameObject floorRoot,
                                          GameObject wallRoot)
         {
@@ -133,7 +134,7 @@ namespace Catacumba.LevelGen.Mesh
 
     public class LevelGenerationMeshStepGroupWalls : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
+        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             var walls = GameObject.FindGameObjectsWithTag("Level").Where(g => g.gameObject.name.Contains("WD")).ToArray();
             foreach (GameObject wallObj in walls)
@@ -166,7 +167,7 @@ namespace Catacumba.LevelGen.Mesh
 
     public class LevelGenerationMeshStepDoors : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(LevelGenBiomeConfig cfg, Level level, GameObject root)
+        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             System.Collections.Generic.List<GameObject> doorsSpawned = new System.Collections.Generic.List<GameObject>();
 

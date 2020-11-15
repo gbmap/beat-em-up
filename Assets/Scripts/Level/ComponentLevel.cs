@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Catacumba.Data.Level;
 using UnityEngine;
 
 namespace Catacumba.LevelGen 
@@ -81,7 +82,7 @@ namespace Catacumba.LevelGen
     public class ComponentLevel : MonoBehaviour
     {
         public Level Level { get; private set; }
-        public LevelGenBiomeConfig BiomeConfig { get; private set;}
+        public BiomeConfiguration BiomeConfig { get; private set;}
         public VisibilityMap VisibilityMap { get; private set; }
         public LevelEvents Events { get; private set; }
 
@@ -93,7 +94,7 @@ namespace Catacumba.LevelGen
         public float VisionDistance = 150f;
         public float VisionDecay = 3f;
 
-        public void SetLevel(Level l, LevelGenBiomeConfig config) 
+        public void SetLevel(Level l, BiomeConfiguration config) 
         {
             this.Level            = l;
             this.BiomeConfig      = config;
@@ -109,6 +110,7 @@ namespace Catacumba.LevelGen
         
         void FixedUpdate() 
         {
+            /*
             if (ObjectsWithSight.Count == 0) {
                 var players = GameObject.FindGameObjectsWithTag("Player");
                 ObjectsWithSight.AddRange(players);
@@ -119,7 +121,7 @@ namespace Catacumba.LevelGen
             PlayerCell = WorldPositionToLevelPosition(ObjectsWithSight[0].transform.position);
             this.VisibilityMap.CalculateVisibility(PlayerCell, ObjectsWithSight[0].transform.position, this.BiomeConfig.CellSize(), VisionDistance, VisionDecay);
             this.Events.OnVisibilityMapChanged?.Invoke(this.VisibilityMap);
-
+            */
         }
     }
 

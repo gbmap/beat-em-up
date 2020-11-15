@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Catacumba.Data.Level;
 using UnityEngine;
 using UnityEngine.AI;
-
 
 namespace Catacumba.LevelGen.Mesh
 {
@@ -11,7 +11,7 @@ namespace Catacumba.LevelGen.Mesh
 
     public static class LevelGenerationMesh
     {
-        public static void Generate(Level l, LevelGenBiomeConfig cfg)
+        public static GameObject Generate(Level l, BiomeConfiguration cfg)
         {
             //////////////////
             /// Roots
@@ -20,7 +20,6 @@ namespace Catacumba.LevelGen.Mesh
             root.transform.rotation = Quaternion.identity;
             root.transform.localScale = Vector3.one;
             root.isStatic = true;
-
 
             GameObject floorRoot = new GameObject("Floors");
             floorRoot.transform.parent = root.transform;
@@ -39,7 +38,6 @@ namespace Catacumba.LevelGen.Mesh
             propRoot.transform.localPosition = Vector3.zero;
             propRoot.transform.localRotation = Quaternion.identity;
             propRoot.isStatic = true;
-
 
             ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
             {
@@ -60,9 +58,11 @@ namespace Catacumba.LevelGen.Mesh
 
             ComponentLevel levelComponent = root.AddComponent<ComponentLevel>();
             levelComponent.SetLevel(l, cfg);
+
+            return root;
         }
 
-        private static GameObject[] CheckProp(LevelGenRoomConfig cfg,
+        private static GameObject[] CheckProp(RoomConfiguration cfg,
                                               Vector3 cellSize,
                                               GameObject propRoot,
                                               Vector2Int pos, 

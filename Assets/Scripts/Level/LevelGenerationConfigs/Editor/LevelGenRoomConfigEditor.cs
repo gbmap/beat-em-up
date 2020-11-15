@@ -1,9 +1,10 @@
-﻿using UnityEditor;
+﻿using Catacumba.Data.Level;
+using UnityEditor;
 
 namespace Catacumba.LevelGen
 {
     [CanEditMultipleObjects]
-    [CustomEditor(typeof(LevelGenRoomConfig))]
+    [CustomEditor(typeof(RoomConfiguration))]
     public class LevelGenBiomeConfigEditor : Editor
     {
         public override void OnInspectorGUI()

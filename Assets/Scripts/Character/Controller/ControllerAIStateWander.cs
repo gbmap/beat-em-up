@@ -38,6 +38,8 @@ namespace Catacumba.Data.Controllers
 
         public override void OnUpdate(ControllerComponent component, ref ControllerCharacterInput input)
 		{
+			if (!movement.NavAgentValid) return;
+
 			_movementTimer += Time.deltaTime;
 			if (_movementTimer >= TimeStopped)		
 			{
@@ -45,7 +47,7 @@ namespace Catacumba.Data.Controllers
 				_movementTimer = 0f;
 			}
 
-			float remainingDist = movement.NavMeshAgent.remainingDistance;
+			float remainingDist = Mathf.Min(1f, movement.NavMeshAgent.remainingDistance);
 			input.Direction = movement.NavMeshAgent.desiredVelocity * remainingDist;
 		}
 

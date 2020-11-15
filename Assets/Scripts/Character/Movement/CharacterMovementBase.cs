@@ -6,7 +6,7 @@ using Catacumba.Effects;
 
 namespace Catacumba.Entity
 {
-    [RequireComponent(typeof(NavMeshAgent))]
+    //[RequireComponent(typeof(NavMeshAgent))]
     public abstract class CharacterMovementBase : CharacterComponentBase
     {
         public ParticleEffectConfiguration MovementEffect;
@@ -19,7 +19,7 @@ namespace Catacumba.Entity
         public Vector3 Velocity { get { return Direction; } }
 
         public NavMeshAgent NavMeshAgent { get; private set; }
-        public bool NavAgentValid { get { return NavMeshAgent && NavMeshAgent.enabled; } }
+        public bool NavAgentValid { get { return NavMeshAgent && NavMeshAgent.enabled && NavMeshAgent.isOnNavMesh; } }
         public Vector3 Destination { get { return NavMeshAgent.destination; }}
 
         public bool CanMove { get { return true; } }
@@ -77,10 +77,12 @@ namespace Catacumba.Entity
                 MovementEffect.PointSystemTowards(this, -SpeedBumpDir);
         }
 
-        protected override void Awake()
+        protected override void Start()
         {
-            base.Awake();
+            base.Start();
             NavMeshAgent = GetComponent<NavMeshAgent>();
+            if (!NavMeshAgent)
+                NavMeshAgent = gameObject.AddComponent<NavMeshAgent>();
         }
 
         protected virtual void Update()
@@ -159,8 +161,9 @@ namespace Catacumba.Entity
 
             bool updatedVelocity = false;
             velocity = UpdateVelocity(velocity, ref updatedVelocity);
-
-            NavMeshAgent.Move(velocity * Time.deltaTime);
+            
+            if (updatedVelocity)
+                NavMeshAgent.Move(velocity * Time.deltaTime);
 
             return velocity;
         }
@@ -315,6 +318,14 @@ namespace Catacumba.Entity
                     "\nspeedBumpT: " + speedBumpT +
                     "\nmoveDir: " + Direction +
                     "\ncanMove: " + CanMove;
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            if (NavAgentValid)
+            {
+                Gizmos.DrawLine(transform.position, transform.position + NavMeshAgent.desiredVelocity);
+            }
         }
     }
 }

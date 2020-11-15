@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5499710f3670e0140939740dbe91092c, type: 3}
-  m_Name: LevelGenBiomeDungeon
+  m_Name: BiomeDungeon
   m_EditorClassIdentifier: UnityEngine.CoreModule:UnityEngine:ScriptableObject
   Hall: {fileID: 11400000, guid: ae93beba36eadde43b0095ffa566f7da, type: 2}
   RoomItem: {fileID: 11400000, guid: 9719f07d3c5f46f4ea933ca66c8aae61, type: 2}

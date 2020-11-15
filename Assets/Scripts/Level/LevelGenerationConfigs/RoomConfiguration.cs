@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Catacumba.LevelGen {
-    public class LevelGenRoomConfig : ScriptableObject
+namespace Catacumba.Data.Level {
+    public class RoomConfiguration : ScriptableObject
     {
         public Material EnvironmentMaterial;
 
