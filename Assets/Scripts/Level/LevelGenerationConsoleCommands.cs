@@ -46,6 +46,13 @@ namespace Catacumba.LevelGen
             set { _characterPool = value; }
         }
 
+        private static CharacterPool _propPool;
+        [Command("prop_pool")]   public static CharacterPool PropPool
+        {
+            get { return _propPool ?? (_propPool = LoadPool("CharacterPool_Props")); }
+            set { _propPool = value; }
+        }
+
         public const string PATH_BIOMES     = "Data/Level/Biomes";
         public const string PATH_CHAR_POOLS = "Data/CharacterPools";
 
@@ -74,7 +81,10 @@ namespace Catacumba.LevelGen
                 Params = parameters;
                 GenerateMesh();
                 SpawnEnemies();
-                SpawnPlayer("Goblin_Archer");
+                SpawnProps();
+                GameObject player = SpawnPlayer("Goblin_Swordsman");
+                CameraManager.Spawn();
+                CameraManager.Target = player.transform;
             };
 
             LevelGeneration.Generate(new LevelGenerationParams
@@ -84,8 +94,9 @@ namespace Catacumba.LevelGen
                 PropChance  = PropChance,
                 EnemyChance = EnemyChance,
                 BiomeConfig = BiomeConfig,
-                EnemyPool   = EnemyPool
-            }, (level, parameters) => { Level = level; Params = parameters; GenerateMesh(); SpawnEnemies(); });
+                EnemyPool   = EnemyPool,
+                PropPool    = PropPool
+            }, OnLevelGenerated);
         }
 
         [Command("generate")]
@@ -98,7 +109,8 @@ namespace Catacumba.LevelGen
                 PropChance  = PropChance,
                 EnemyChance = EnemyChance,
                 BiomeConfig = BiomeConfig,
-                EnemyPool   = EnemyPool
+                EnemyPool   = EnemyPool,
+                PropPool    = PropPool
             }, (level, parameters) => { Level = level; Params = parameters; });
         }
 
@@ -134,11 +146,7 @@ namespace Catacumba.LevelGen
         [CommandDescription("Spawns enemies according to enemy cells in the current level.")]
         public static void SpawnEnemies()
         {
-            Log("Generating level geometry...");
-            Mesh.Utils.IterateSector(Level.BaseSector, (it) => 
-            { 
-                LevelGeneration.SpawnEnemy(it, Params); 
-            }, ELevelLayer.Enemies);
+            SpawnEnemies(Params.EnemyPool);
         }
 
         [Command("spawn_enemies")]
@@ -153,13 +161,20 @@ namespace Catacumba.LevelGen
 
             Mesh.Utils.IterateSector(Level.BaseSector, (it) => 
             { 
-                LevelGeneration.SpawnEnemy(it, Params, characterPool); 
+                if (it.cell != LevelGeneration.ECellCode.Enemy) return;
+                CharacterFactory.SpawnEnemy(it.cellPosition, Params, characterPool); 
             }, ELevelLayer.Enemies);
         }
 
-        [Command("spawn_player")]
-        [CommandDescription("Spawns player in an automatically selected cell.")]
-        public static void SpawnPlayer(string characterConfiguration)
+        [Command("spawn_props")]
+        public static void SpawnProps()
+        {
+            SpawnProps(Params.PropPool);
+        }
+
+        [Command("spawn_props")]
+        [CommandDescription("Spawns props according to prop cells in the current level.")]
+        public static void SpawnProps(CharacterPool characterPool)
         {
             if (Level == null || LevelObject == null)
             {
@@ -167,11 +182,29 @@ namespace Catacumba.LevelGen
                 return;
             }
 
+            Mesh.Utils.IterateSector(Level.BaseSector, (it) =>
+            {
+                if (it.cell != LevelGeneration.ECellCode.Prop) return;
+                CharacterFactory.SpawnProp(it.cellPosition, Params, characterPool);
+            }, ELevelLayer.Props);
+        }
+
+        [Command("spawn_player")]
+        [CommandDescription("Spawns player in an automatically selected cell.")]
+        public static GameObject SpawnPlayer(string characterConfiguration)
+        {
+            if (Level == null || LevelObject == null)
+            {
+                Log("No level generated. Generate and spawn a level before spawning characters.");
+                return null;
+            }
+
             Vector2Int position = LevelGeneration.SelectPlayerStartPosition(Level);
             Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(position, Params.BiomeConfig.CellSize());
-            CharacterFactory.SpawnPlayer(characterConfiguration, worldPosition);
+            GameObject player = CharacterFactory.SpawnPlayer(characterConfiguration, worldPosition);
 
             Log($"Player spawned at {worldPosition}");
+            return player;
         }
 
         private static void Log(string str)

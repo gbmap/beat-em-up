@@ -2,6 +2,8 @@
 using QFSW.QC;
 using Catacumba.Data;
 using Catacumba.Data.Controllers;
+using Catacumba.LevelGen;
+using UnityEngine.AI;
 
 namespace Catacumba.Entity
 {
@@ -22,8 +24,53 @@ namespace Catacumba.Entity
             CharacterData data = CreateEntityInstance(characterConfiguration, "Enemy", "Entities", worldPosition);
             ControllerComponent component = data.gameObject.AddComponent<ControllerComponent>();
             component.Controller = Resources.Load<ControllerAI>("Data/Controllers/ControllerAI");
-            data.transform.position = worldPosition;
             return data.gameObject;
+        }
+
+        public static GameObject SpawnEnemy(Vector2Int cellPosition, LevelGenerationParams parameters, CharacterPool pool=null)
+        {
+            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnEnemy, pool);
+        }
+
+        private static GameObject SpawnEntityAtCellPosition(
+            Vector2Int cellPosition, 
+            LevelGenerationParams parameters,
+            System.Func<string, Vector3, GameObject> SpawnFunction,
+            CharacterPool pool=null)
+        {
+            if (pool == null)
+                pool = parameters.EnemyPool;
+
+            CharacterPoolItem entity = pool.GetRandom();
+
+            Vector3 worldPosition = LevelGen.Mesh.Utils.LevelToWorldPos(cellPosition, parameters.BiomeConfig.CellSize());
+            worldPosition -= parameters.BiomeConfig.CellSize()/2f;
+            worldPosition.y = 0f;
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
+            {
+                worldPosition = hit.position;
+            };
+
+            return SpawnFunction(entity.Name, worldPosition);
+        }
+
+        [Command("spawn_prop")]
+        public static GameObject SpawnProp(string configuration)
+        {
+            return SpawnProp(configuration, Vector3.zero);
+        }
+
+        [Command("spawn_prop")]
+        public static GameObject SpawnProp(string configuration, Vector3 worldPosition)
+        {
+            return CreateEntityInstance(configuration, "Entity", "Entities", worldPosition)?.gameObject;
+        }
+
+        public static GameObject SpawnProp(Vector2Int cellPosition, LevelGenerationParams parameters, CharacterPool pool=null)
+        {
+            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnProp, pool);
         }
 
         [Command("spawn_player")]
@@ -85,14 +132,14 @@ namespace Catacumba.Entity
         private static Cinemachine.CinemachineTransposer Transposer;
 
         [Command("follow_target")] 
-        private static Transform Follow
+        public static Transform Follow
         {
             get { return VirtualCamera.Follow; }
             set { VirtualCamera.Follow = value; }
         }
 
         [Command("follow_offset")]
-        private static Vector3 FollowOffset
+        public static Vector3 FollowOffset
         {
             get { return Transposer.m_FollowOffset; }
             set { Transposer.m_FollowOffset = value; }
@@ -100,14 +147,14 @@ namespace Catacumba.Entity
         }
 
         [Command("look_target")]  
-        private static Transform LookAt
+        public static Transform LookAt
         {
             get { return VirtualCamera.LookAt; }
             set { VirtualCamera.LookAt = value; }
         }
 
         [Command("target")]
-        private static Transform Target
+        public static Transform Target
         {
             set 
             { 
@@ -117,7 +164,7 @@ namespace Catacumba.Entity
         }
 
         [Command("spawn")]
-        public static GameObject SpawnCamera()
+        public static GameObject Spawn()
         {
             CameraObject = Camera.main?.gameObject;
             if (CameraObject == null)

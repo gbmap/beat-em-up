@@ -430,13 +430,14 @@ namespace Catacumba.LevelGen
             Test
         }
 
-        public ELevelType LevelType;
-        public Vector2Int LevelSize = new Vector2Int(50, 50);
+        public ELevelType            LevelType;
+        public Vector2Int            LevelSize = new Vector2Int(50, 50);
         [Range(0f, 1f)] public float PropChance = 0.65f;
         [Range(0f, 1f)] public float EnemyChance = 0.65f;
-        public bool GenerateMesh = false;
-        public BiomeConfiguration BiomeConfig;
-        public CharacterPool EnemyPool;
+        public bool                  GenerateMesh = false;
+        public BiomeConfiguration    BiomeConfig;
+        public CharacterPool         EnemyPool;
+        public CharacterPool         PropPool;
     }
 
     public class LevelGeneration : SimpleSingleton<LevelGeneration>
@@ -676,30 +677,7 @@ namespace Catacumba.LevelGen
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
 
             // Spawn enemies
-            Mesh.Utils.IterateSector(l.BaseSector, (it) => { SpawnEnemy(it, p); }, ELevelLayer.Enemies);
-        }
-
-        public static void SpawnEnemy(Mesh.Utils.SectorCellIteration it, LevelGenerationParams parameters, CharacterPool pool=null)
-        {
-            if (it.cell != ECellCode.Enemy) 
-                return;
-
-            if (pool == null)
-                pool = parameters.EnemyPool;
-
-            CharacterPoolItem enemy = pool.GetRandom();
-
-            Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(it.cellPosition, parameters.BiomeConfig.CellSize());
-            worldPosition -= parameters.BiomeConfig.CellSize()/2f;
-            worldPosition.y = 0f;
-
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
-            {
-                worldPosition = hit.position;
-            };
-
-            CharacterFactory.SpawnEnemy(enemy.Name, worldPosition);
+            Mesh.Utils.IterateSector(l.BaseSector, (it) => { CharacterFactory.SpawnEnemy(it.cellPosition, p); }, ELevelLayer.Enemies);
         }
 
         public static bool IsValidPosition(Level l, Vector2Int p)
