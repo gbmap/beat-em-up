@@ -27,7 +27,7 @@ MonoBehaviour:
   Walls:
   - {fileID: 176122, guid: 939f27c57ef13654eafcf37ff873a454, type: 3}
   DoorWalls:
-  - {fileID: 116930, guid: fdfb06731c5898941b2c95edd34a71b6, type: 3}
+  - {fileID: 6467649592533164415, guid: 75065935509131e4fb1e00a1ccd4ef8d, type: 3}
   DoorFrame:
   - {fileID: 105062, guid: 166d0f22f17c2f3449265f51f299640c, type: 3}
   Door:

@@ -8,6 +8,14 @@ using UnityEngine.AI;
 
 namespace Catacumba.Entity
 {
+    public class QCItemParser : BasicQcParser<Item>
+    {
+        public override Item Parse(string itemConfiguration)
+        {
+            return Resources.Load<Item>($"{ItemFactory.PATH_ITEMS}/{itemConfiguration}");
+        }
+    }
+
     public static class ItemFactory 
     {    
         public const string PATH_ITEMS = "Data/Items";

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c8d3020c93ae854ba3146c990c7c08f, type: 3}
-  m_Name: CharacterStats_Weak
+  m_Name: CharacterStats_Weaker
   m_EditorClassIdentifier: 
   VigorCurve:
-    m_Mode: 3
+    m_Mode: 0
     m_CurveMultiplier: 0
     m_CurveMin:
       serializedVersion: 2
@@ -28,7 +28,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_ConstantMin: 8
-    m_ConstantMax: 10
+    m_ConstantMax: 2
   StrengthCurve:
     m_Mode: 0
     m_CurveMultiplier: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_ConstantMin: 0
-    m_ConstantMax: 5
+    m_ConstantMax: 2
   DexterityCurve:
     m_Mode: 0
     m_CurveMultiplier: 0

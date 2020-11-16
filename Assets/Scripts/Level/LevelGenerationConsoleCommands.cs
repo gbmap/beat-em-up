@@ -12,20 +12,12 @@ namespace Catacumba.LevelGen
     {
         public override BiomeConfiguration Parse(string value)
         {
-            return LevelGenerationConsoleCommands.LoadBiome(value);
-        }
-    }
-
-    public class QCCharacterPoolParser : BasicQcParser<CharacterPool>
-    {
-        public override CharacterPool Parse(string value)
-        {
-            return LevelGenerationConsoleCommands.LoadPool(value);
+            return LevelGenerationManager.LoadBiome(value);
         }
     }
 
     [CommandPrefix("level.")]
-    public static class LevelGenerationConsoleCommands
+    public static class LevelGenerationManager
     {
         [Command("type")]         public static ELevelType LevelType = ELevelType.Dungeon;
         [Command("sz")]           public static Vector2Int LevelSize = new Vector2Int(30, 30);
@@ -42,34 +34,27 @@ namespace Catacumba.LevelGen
         private static CharacterPool _characterPool;
         [Command("enemy_pool")]   public static CharacterPool EnemyPool
         {
-            get { return _characterPool ?? (_characterPool = LoadPool("CharacterPool_Goblins")); }
+            get { return _characterPool ?? (_characterPool = CharacterFactory.LoadPool("CharacterPool_Goblins")); }
             set { _characterPool = value; }
         }
 
         private static CharacterPool _propPool;
         [Command("prop_pool")]   public static CharacterPool PropPool
         {
-            get { return _propPool ?? (_propPool = LoadPool("CharacterPool_Props")); }
+            get { return _propPool ?? (_propPool = CharacterFactory.LoadPool("CharacterPool_Props")); }
             set { _propPool = value; }
         }
 
         public const string PATH_BIOMES     = "Data/Level/Biomes";
-        public const string PATH_CHAR_POOLS = "Data/CharacterPools";
 
-        private static Level Level;
-        private static LevelGenerationParams Params;
-        private static GameObject LevelObject;
+        public static Level                 Level;
+        public static LevelGenerationParams Params;
+        public static GameObject            LevelObject;
 
         [Command("load_biome")]
         public static BiomeConfiguration LoadBiome(string name)
         {
             return Resources.Load<BiomeConfiguration>($"{PATH_BIOMES}/{name}");
-        }
-
-        [Command("load_character_pool")]
-        public static CharacterPool LoadPool(string name)
-        {
-            return Resources.Load<CharacterPool>($"{PATH_CHAR_POOLS}/{name}");
         }
 
         [Command("create")]
