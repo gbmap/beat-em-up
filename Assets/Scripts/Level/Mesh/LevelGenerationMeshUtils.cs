@@ -198,8 +198,8 @@ namespace Catacumba.LevelGen.Mesh
             public string namePreffix; 
             public bool shouldCollide;
         }
-
-        public static NeighborObjects PutWall(PutWallParams p, bool removeExisting = false)
+        
+        public static NeighborObjects PutWall(PutWallParams p)
         {
             Vector3 position = Vector3.zero;
             float angle = 0f;
@@ -213,9 +213,20 @@ namespace Catacumba.LevelGen.Mesh
                 if (!DirectionHelper.IsSet(p.directions, dir))
                     continue;
 
-                position = LevelToWorldPos(p.position+DirectionHelper.ToPrefabOffset(dir), p.cellSize);
+
+                Vector3 worldPosition = LevelToWorldPos(p.position, p.cellSize); 
+                Vector3 offset = EDirectionToVector3(dir);
+                offset.x *= p.cellSize.x/2;
+                offset.z *= p.cellSize.z/2;
+
+                position = worldPosition + offset;
                 angle = DirectionHelper.ToAngle(dir);
                 suffix = DirectionHelper.GetName(dir);
+
+                Vector3  collisionCheckPosition     = p.root?.transform.TransformPoint(position) ?? position;
+                Collider[] collisions               = Physics.OverlapSphere(collisionCheckPosition, 0.15f, 1 << LayerMask.NameToLayer("Level"));
+                if (collisions.Length > 0)
+                    continue;
 
                 var obj = GameObject.Instantiate(p.prefab, p.root.transform);
                 obj.name = string.Format("{0}_{1}_{2}_{3}", p.namePreffix, p.position.x, p.position.y, suffix);
@@ -234,16 +245,15 @@ namespace Catacumba.LevelGen.Mesh
                     obstacle.carving = true;
                 }
 
-                if (removeExisting) {
-                    Vector3  checkCollisionWithExisting = obj.GetComponentInChildren<Renderer>().bounds.center;
-                    Collider[] collisions               = Physics.OverlapSphere(checkCollisionWithExisting, 0.1f, 1 << LayerMask.NameToLayer("Entities"));
-                    foreach( var collision in collisions) {
-                        // Hack imbecil pra impedir que o outro lado da porta seja removido
-                        if (collision.gameObject.name[0] != p.namePreffix[0]) {
-                            GameObject.Destroy(collision.gameObject);
-                        }
+                
+                /*
+                foreach(var collision in collisions) {
+                    // Hack imbecil pra impedir que o outro lado da porta seja removido
+                    if (collision.gameObject.name[0] != p.namePreffix[0]) {
+                        GameObject.Destroy(collision.gameObject);
                     }
                 }
+                */
 
                 walls[dir] = obj;
             }
@@ -377,15 +387,23 @@ namespace Catacumba.LevelGen.Mesh
             foreach (var kvp in walls)
             {
                 GameObject wall = kvp.Value;
-                wall.layer = LayerMask.NameToLayer("Entities");
-                //wall.transform.localPosition = wall.transform.localPosition * 0.99f;
-                //var data = wall.AddComponent<CharacterData>();
-                //data.Stats.Attributes.Vigor = 1;
-
-                //wall.AddComponent<CharacterHealth>();
+                wall.layer = LayerMask.NameToLayer("Level");
             }
 
             return walls;
+        }
+
+        private static Vector3 EDirectionToVector3(EDirectionBitmask dir)
+        {
+            switch (dir)
+            {
+                case EDirectionBitmask.Down:  return Vector3.back;
+                case EDirectionBitmask.Up:    return Vector3.forward;
+                case EDirectionBitmask.Left:  return Vector3.left;
+                case EDirectionBitmask.Right: return Vector3.right;
+                default: return Vector3.zero;
+            }
+
         }
     }
 }

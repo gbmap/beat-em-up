@@ -106,7 +106,6 @@ namespace Catacumba.LevelGen.Mesh
                     param.cell == LevelGeneration.ECellCode.Enemy)
                 {
 
-
                     Utils.PutFloor(new Utils.PutFloorParams
                     {
                         sector        = param.sector,
@@ -116,15 +115,23 @@ namespace Catacumba.LevelGen.Mesh
                         floorMaterial = hallCfg.EnvironmentMaterial,
                         floorRoot     = floorRoot
                     });
-                    Utils.CheckOneSidedWalls(param.sector.Level.BaseSector, hallCfg, cellSize, wallRoot, param.cellPosition, hallCfg.EnvironmentMaterial);
+
+                    Utils.CheckOneSidedWalls(param.sector.Level.BaseSector, 
+                                             hallCfg, 
+                                             cellSize, 
+                                             wallRoot, 
+                                             param.cellPosition, 
+                                             hallCfg.EnvironmentMaterial);
+                    
+                    
                     Utils.CheckTwoSidedWalls(param.sector.Level.BaseSector, 
-                                       hallCfg, 
-                                       cellSize, 
-                                       wallRoot, 
-                                       param.cellPosition, 
-                                       ELevelLayer.Hall | ELevelLayer.Rooms,
-                                       //param.layer,
-                                       comparer, hallCfg.EnvironmentMaterial);
+                                             hallCfg, 
+                                             cellSize, 
+                                             wallRoot, 
+                                             param.cellPosition, 
+                                             ELevelLayer.Hall | ELevelLayer.Rooms,
+                                             //param.layer,
+                                             comparer, hallCfg.EnvironmentMaterial);
                 }
             };
 
@@ -171,16 +178,18 @@ namespace Catacumba.LevelGen.Mesh
         {
             System.Collections.Generic.List<GameObject> doorsSpawned = new System.Collections.Generic.List<GameObject>();
 
-            Action<Utils.SectorCellIteration> checkDoors = delegate(Utils.SectorCellIteration iteration)
+            Action<Utils.SectorCellIteration> CheckDoors = delegate(Utils.SectorCellIteration iteration)
             {
                 if (iteration.cell != LevelGeneration.ECellCode.Door)
                     return;
 
-
                 var cell    = iteration.sector.Level.GetSectorAt(iteration.cellPosition).Code;
                 var roomCfg = cfg.GetRoomConfig(cell);
 
-                EDirectionBitmask directions = Utils.CheckNeighbors(iteration.sector, iteration.cellPosition, SelectDoors, iteration.layer);
+                EDirectionBitmask directions = Utils.CheckNeighbors(iteration.sector,
+                                                                    iteration.cellPosition, 
+                                                                    SelectDoors, 
+                                                                    iteration.layer);
 
                 Utils.PutWallParams p = new Utils.PutWallParams()
                 {
@@ -202,11 +211,11 @@ namespace Catacumba.LevelGen.Mesh
                 }
             };
 
-            Utils.IterateSector(level.BaseSector, checkDoors, ELevelLayer.Doors);
+            Utils.IterateSector(level.BaseSector, CheckDoors, ELevelLayer.Doors);
 
             foreach (GameObject door in doorsSpawned) {
                 Vector3 pos = door.GetComponentInChildren<Renderer>().bounds.center;
-                Collider[] collisions = Physics.OverlapSphere(pos, 0.1f,  1<< LayerMask.NameToLayer("Entities"));
+                Collider[] collisions = Physics.OverlapSphere(pos, 0.1f,  1<< LayerMask.NameToLayer("Level"));
 
                 foreach (var collider in collisions) {
                     if (collider.gameObject.name[0] != 'D') {

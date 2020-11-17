@@ -43,8 +43,8 @@ namespace Catacumba.LevelGen.Mesh
             {
                 new LevelGenerationMeshStepRooms(),
                 new LevelGenerationMeshStepHall(floorRoot, wallRoot),
-                new LevelGenerationMeshStepGroupWalls(),
-                new LevelGenerationMeshStepDoors()
+                // new LevelGenerationMeshStepGroupWalls(),
+                // new LevelGenerationMeshStepDoors()
             };
 
             foreach (ILevelGenerationMeshStep step in steps)
