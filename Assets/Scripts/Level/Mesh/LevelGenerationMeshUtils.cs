@@ -24,6 +24,7 @@ namespace Catacumba.LevelGen.Mesh
 
         public static void SetMaterialInObject(GameObject obj, Material mat)
         {
+            if (!mat) return;
             var renderers = obj.GetComponentsInChildren<Renderer>();
             System.Array.ForEach(renderers, r => r.material = mat);
         }
@@ -224,8 +225,7 @@ namespace Catacumba.LevelGen.Mesh
                 obj.tag = "Level";
 
                 SetMaterialInObject(obj, p.material);
-                AddVisibilityComponent(obj, p.sector.GetAbsolutePosition(p.position));
-
+                // AddVisibilityComponent(obj, p.sector.GetAbsolutePosition(p.position));
 
                 if (p.shouldCollide)
                 {

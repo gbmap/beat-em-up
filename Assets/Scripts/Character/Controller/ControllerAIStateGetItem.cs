@@ -95,9 +95,10 @@ namespace Catacumba.Data.Controllers
 
             List<ItemEquipPossibility> acceptableItems = new List<ItemEquipPossibility>();
 
-            ItemComponent[] itemComponents = items.Select(i => i.GetComponent<ItemComponent>()).ToArray();
+            IEnumerable<ItemComponent> itemComponents = items.Select(i => i.GetComponent<ItemComponent>());
             foreach (ItemComponent itemComponent in itemComponents)
             {
+                if (itemComponent == null) continue;
                 Item item = itemComponent.Item;
                 CharacteristicEquippable equippable = item.GetCharacteristic<CharacteristicEquippable>();
 

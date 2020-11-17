@@ -192,7 +192,8 @@ namespace Catacumba.LevelGen.Mesh
                     cellSize    = roomCfg.Floors[0].GetComponent<Renderer>().bounds.size,
                     namePreffix = "D",
                     position    = iteration.cellPosition,
-                    material    = roomCfg.EnvironmentMaterial
+                    material    = null
+                    //material    = roomCfg.EnvironmentMaterial
                 };
                 NeighborObjects doors = Utils.PutWall(p);
 
