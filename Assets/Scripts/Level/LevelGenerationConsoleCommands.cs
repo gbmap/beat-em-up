@@ -5,6 +5,8 @@ using System;
 using Catacumba.Data.Level;
 using Catacumba.Data;
 using Catacumba.Entity;
+using System.Threading.Tasks;
+using Random = UnityEngine.Random;
 
 namespace Catacumba.LevelGen
 {
@@ -21,8 +23,8 @@ namespace Catacumba.LevelGen
     {
         [Command("type")]         public static ELevelType LevelType = ELevelType.Dungeon;
         [Command("sz")]           public static Vector2Int LevelSize = new Vector2Int(30, 30);
-        [Command("prop_chance")]  public static float PropChance = 0.65f;
-        [Command("enemy_chance")] public static float EnemyChance = 0.65f;
+        [Command("prop_chance")]  public static float PropChance = 0.45f;
+        [Command("enemy_chance")] public static float EnemyChance = 0.55f;
         
         private static BiomeConfiguration _biomeConfig;
         [Command("biome")]        public static BiomeConfiguration BiomeConfig
@@ -34,14 +36,14 @@ namespace Catacumba.LevelGen
         private static CharacterPool _characterPool;
         [Command("enemy_pool")]   public static CharacterPool EnemyPool
         {
-            get { return _characterPool ?? (_characterPool = CharacterFactory.LoadPool("CharacterPool_Goblins")); }
+            get { return _characterPool ?? (_characterPool = CharacterManager.LoadPool("CharacterPool_Goblins")); }
             set { _characterPool = value; }
         }
 
         private static CharacterPool _propPool;
         [Command("prop_pool")]   public static CharacterPool PropPool
         {
-            get { return _propPool ?? (_propPool = CharacterFactory.LoadPool("CharacterPool_Props")); }
+            get { return _propPool ?? (_propPool = CharacterManager.LoadPool("CharacterPool_Props")); }
             set { _propPool = value; }
         }
 
@@ -85,8 +87,9 @@ namespace Catacumba.LevelGen
         }
 
         [Command("generate")]
-        public static void Generate()
+        public static async Task Generate()
         {
+            bool hasEnded = false;
             LevelGeneration.Generate(new LevelGenerationParams
             {
                 LevelType   = LevelType,
@@ -96,7 +99,15 @@ namespace Catacumba.LevelGen
                 BiomeConfig = BiomeConfig,
                 EnemyPool   = EnemyPool,
                 PropPool    = PropPool
-            }, (level, parameters) => { Level = level; Params = parameters; });
+            }, (level, parameters) => 
+            { 
+                Level = level; 
+                Params = parameters; 
+                hasEnded = true;
+            });
+
+            while (!hasEnded)
+                await Task.Delay(100);
         }
 
         [Command("spawn")]
@@ -148,7 +159,7 @@ namespace Catacumba.LevelGen
             Mesh.Utils.IterateSector(Level.BaseSector, (it) => 
             { 
                 if (it.cell != LevelGeneration.ECellCode.Enemy) return;
-                CharacterFactory.SpawnEnemy(it.cellPosition, Params, characterPool); 
+                CharacterManager.SpawnEnemy(it.cellPosition, Params, characterPool); 
             }, ELevelLayer.Enemies);
         }
 
@@ -168,11 +179,26 @@ namespace Catacumba.LevelGen
                 return;
             }
 
+            Vector3 cellSize = Params.BiomeConfig.CellSize();
+
             Mesh.Utils.IterateSector(Level.BaseSector, (it) =>
             {
                 if (it.cell != LevelGeneration.ECellCode.Prop) return;
-                CharacterFactory.SpawnProp(it.cellPosition, Params, characterPool);
+
+                CharacterPoolItem propCfg = characterPool.GetRandom();
+
+                Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(it.cellPosition, cellSize);
+                float   randX         = PropDistanceAdjust(Random.value);
+                float   randZ         = PropDistanceAdjust(Random.value);
+                Vector3 offset        = new Vector3(randX*cellSize.x, 0f, randZ*cellSize.z);
+
+                CharacterManager.SpawnProp(propCfg.Name, worldPosition + offset);
             }, ELevelLayer.Props);
+        }
+
+        private static float PropDistanceAdjust(float v)
+        {
+            return Mathf.Pow(Random.value, 1f/5f);
         }
 
         [Command("spawn_player")]
@@ -187,7 +213,7 @@ namespace Catacumba.LevelGen
 
             Vector2Int position = LevelGeneration.SelectPlayerStartPosition(Level);
             Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(position, Params.BiomeConfig.CellSize());
-            GameObject player = CharacterFactory.SpawnPlayer(characterConfiguration, worldPosition);
+            GameObject player = CharacterManager.SpawnPlayer(characterConfiguration, worldPosition);
 
             Log($"Player spawned at {worldPosition}");
             return player;

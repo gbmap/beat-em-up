@@ -12,15 +12,26 @@ namespace Catacumba.Entity
     {
         public override CharacterPool Parse(string value)
         {
-            return CharacterFactory.LoadPool(value);
+            return CharacterManager.LoadPool(value);
+        }
+    }
+
+    public class QCTransformParser : BasicQcParser<Transform>
+    {
+        public override Transform Parse(string value)
+        {
+            return GameObject.Find(value)?.transform;
         }
     }
 
     [CommandPrefix("entity.")]
-    public static class CharacterFactory
+    public static class CharacterManager
     {
         private static uint EntityCount = 0;
         public const string PATH_CHAR_POOLS = "Data/CharacterPools";
+
+        ////////////////////////////////////////
+        //      ENEMIES
 
         [Command("spawn_enemy")]
         public static GameObject SpawnEnemy(string characterConfiguration)
@@ -29,12 +40,12 @@ namespace Catacumba.Entity
         }
 
         [Command("spawn_enemy")]
-        public static GameObject SpawnEnemy(string characterConfiguration, Vector2Int position)
+        public static GameObject SpawnEnemy(string characterConfiguration, int x, int y)
         {
-            Vector3 worldPosition = CalculateWorldPosition(position);
+            Vector2Int pos = new Vector2Int(x, y);
+            Vector3 worldPosition = CalculateWorldPosition(pos);
             return SpawnEnemy(characterConfiguration, worldPosition);
         }
-
 
         [Command("spawn_enemy")]
         public static GameObject SpawnEnemy(string characterConfiguration, Vector3 worldPosition)
@@ -45,7 +56,9 @@ namespace Catacumba.Entity
             return data.gameObject;
         }
 
-        public static GameObject SpawnEnemy(Vector2Int cellPosition, LevelGenerationParams parameters, CharacterPool pool=null)
+        public static GameObject SpawnEnemy(Vector2Int cellPosition, 
+                                            LevelGenerationParams parameters, 
+                                            CharacterPool pool=null)
         {
             return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnEnemy, pool);
         }
@@ -56,23 +69,11 @@ namespace Catacumba.Entity
             System.Func<string, Vector3, GameObject> SpawnFunction,
             CharacterPool pool=null)
         {
-            if (pool == null)
-                pool = parameters.EnemyPool;
-
-            CharacterPoolItem entity = pool.GetRandom();
-
-            Vector3 worldPosition = LevelGen.Mesh.Utils.LevelToWorldPos(cellPosition, parameters.BiomeConfig.CellSize());
-            worldPosition -= parameters.BiomeConfig.CellSize()/2f;
-            worldPosition.y = 0f;
-
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
-            {
-                worldPosition = hit.position;
-            };
-
-            return SpawnFunction(entity.Name, worldPosition);
+            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnFunction, Vector3.zero, pool);
         }
+
+        ////////////////////////////////////////
+        //      PROPS
 
         [Command("spawn_prop")]
         public static GameObject SpawnProp(string configuration)
@@ -81,15 +82,31 @@ namespace Catacumba.Entity
         }
 
         [Command("spawn_prop")]
+        public static GameObject SpawnProp(string configuration, int x, int y)
+        {
+            Vector3 worldPosition = CalculateWorldPosition(new Vector2Int(x, y));
+            return SpawnProp(configuration, worldPosition);
+        }
+
+        [Command("spawn_prop")]
         public static GameObject SpawnProp(string configuration, Vector3 worldPosition)
         {
             return CreateEntityInstance(configuration, "Entity", "Entities", worldPosition)?.gameObject;
         }
 
+        ////////////////////////////////////////
+        //      PLAYER
+
         [Command("spawn_player")]
         public static GameObject SpawnPlayer(string characterConfiguration)
         {
             return SpawnPlayer(characterConfiguration, Vector3.zero);
+        }
+
+        [Command("spawn_player")]
+        public static GameObject SpawnPlayer(string configuration, int x, int y)
+        {
+            return SpawnPlayer(configuration, CalculateWorldPosition(new Vector2Int(x, y)));
         }
 
         [Command("spawn_player")]
@@ -102,9 +119,13 @@ namespace Catacumba.Entity
             CharacterInteract interact = data.gameObject.AddComponent<CharacterInteract>();
             interact.TargetLayer = (1 << LayerMask.NameToLayer("Level")) | 
                                    (1 << LayerMask.NameToLayer("Item") | 
-                                   (1<<LayerMask.NameToLayer("Entities")));
+                                   (1 << LayerMask.NameToLayer("Entities")));
             return data.gameObject;
         }
+
+
+        ////////////////////////////////////////
+        //      MISC
 
         [Command("load_pool")]
         [CommandDescription("Loads a pool of characters that can be randomly picked.")]
@@ -113,9 +134,34 @@ namespace Catacumba.Entity
             return Resources.Load<CharacterPool>($"{PATH_CHAR_POOLS}/{name}");
         }
 
-        public static GameObject SpawnProp(Vector2Int cellPosition, LevelGenerationParams parameters, CharacterPool pool=null)
+        ////////////////////////////////////////
+        //      UTILITIES
+
+        private static GameObject SpawnEntityAtCellPosition(
+            Vector2Int cellPosition, 
+            LevelGenerationParams parameters,
+            System.Func<string, Vector3, GameObject> SpawnFunction,
+            Vector3 positionOffset,
+            CharacterPool pool=null)
         {
-            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnProp, pool);
+            if (pool == null)
+                pool = parameters.EnemyPool;
+
+            CharacterPoolItem entity = pool.GetRandom();
+
+            Vector3 worldPosition = LevelGen.Mesh.Utils.LevelToWorldPos(cellPosition, parameters.BiomeConfig.CellSize());
+            worldPosition += positionOffset;
+            worldPosition.y = 0f;
+
+            /*
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
+            {
+                worldPosition = hit.position;
+            };
+            */
+
+            return SpawnFunction(entity.Name, worldPosition);
         }
 
         private static CharacterData CreateEntityInstance(string characterConfiguration, string tag, string layer, Vector3 position)
@@ -127,6 +173,12 @@ namespace Catacumba.Entity
                 QuantumConsole.Instance.LogToConsole($"Couldn't load character: {characterConfiguration}");
                 return null;
             }
+            
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(position, out hit, 5f, NavMesh.AllAreas))
+            {
+                position = hit.position;
+            };
 
             string name = $"{characterConfiguration}_{tag}_{EntityCount}";
             GameObject instance = new GameObject(name);
@@ -148,23 +200,15 @@ namespace Catacumba.Entity
         {
             if (LevelGenerationManager.Level == null)
             {
-                Debug.Log("No level loaded, world position calculations are most likely wrong.");
+                Debug.LogWarning("No level loaded, world position calculations are most likely wrong.");
                 return Vector3.zero;
             }
 
             Vector3 cellSize = LevelGenerationManager.Params.BiomeConfig.CellSize();
             return LevelGen.Mesh.Utils.LevelToWorldPos(position, cellSize);
         }
-
     }
 
-    public class QCTransformParser : BasicQcParser<Transform>
-    {
-        public override Transform Parse(string value)
-        {
-            return GameObject.Find(value)?.transform;
-        }
-    }
 
     [CommandPrefix("camera.")]
     public static class CameraManager

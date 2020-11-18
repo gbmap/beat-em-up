@@ -514,10 +514,11 @@ namespace Catacumba.LevelGen
 
             /////////////////
             /// PLAYER POSITION
-            //Sector[] secs = StepSelectPlayerSpawnPoint(level);
-            //UpdateVis(level);
 
-            //int secsL = secs.Length;
+            // Sector[] secs = StepSelectPlayerSpawnPoint(level);
+            // UpdateVis(level);
+
+            // int secsL = secs.Length;
             //yield return new WaitForSeconds(0.5f);
 
             UpdateVis(level);
@@ -677,7 +678,7 @@ namespace Catacumba.LevelGen
             var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
 
             // Spawn enemies
-            Mesh.Utils.IterateSector(l.BaseSector, (it) => { CharacterFactory.SpawnEnemy(it.cellPosition, p); }, ELevelLayer.Enemies);
+            Mesh.Utils.IterateSector(l.BaseSector, (it) => { CharacterManager.SpawnEnemy(it.cellPosition, p); }, ELevelLayer.Enemies);
         }
 
         public static bool IsValidPosition(Level l, Vector2Int p)

@@ -1,0 +1,8 @@
+
+level.generate
+level.spawn
+camera.spawn
+
+level.spawn_player Goblin_Swordsman
+camera.target Goblin_Swordsman_Player_0
+level.spawn_props
