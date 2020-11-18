@@ -98,6 +98,11 @@ namespace Catacumba.Entity
             CharacterData data = CreateEntityInstance(characterConfiguration, "Player", "Player", worldPosition);
             ControllerComponent component = data.gameObject.AddComponent<ControllerComponent>();
             component.Controller = Resources.Load<ControllerInput>("Data/Controllers/ControllerInputPlayer1");
+
+            CharacterInteract interact = data.gameObject.AddComponent<CharacterInteract>();
+            interact.TargetLayer = (1 << LayerMask.NameToLayer("Level")) | 
+                                   (1 << LayerMask.NameToLayer("Item") | 
+                                   (1<<LayerMask.NameToLayer("Entities")));
             return data.gameObject;
         }
 

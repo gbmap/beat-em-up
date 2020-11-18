@@ -15,13 +15,7 @@ namespace Catacumba.Data.Level {
         public GameObject[] Walls;
 
         [Header("Doors")]
-        public GameObject[] DoorWalls;
-        public GameObject[] DoorFrame;
-        public GameObject[] Door;
-        public RuntimeAnimatorController DoorAnimator;
-
-        [Header("Props")]
-        public GameObject[] Props;
+        public GameObject[] Doors;
 
         public Vector3 CellSize()
         {

@@ -193,16 +193,16 @@ namespace Catacumba.LevelGen.Mesh
 
                 Utils.PutWallParams p = new Utils.PutWallParams()
                 {
-                    sector      = iteration.sector,
-                    root        = root,
-                    cfg         = roomCfg,
-                    directions  = directions,
-                    prefab      = roomCfg.DoorWalls[0],
-                    cellSize    = roomCfg.Floors[0].GetComponent<Renderer>().bounds.size,
-                    namePreffix = "D",
-                    position    = iteration.cellPosition,
-                    material    = null
-                    //material    = roomCfg.EnvironmentMaterial
+                    sector         = iteration.sector,
+                    root           = root,
+                    cfg            = roomCfg,
+                    directions     = directions,
+                    prefab         = roomCfg.Doors[0],
+                    cellSize       = roomCfg.Floors[0].GetComponent<Renderer>().bounds.size,
+                    namePreffix    = "D",
+                    position       = iteration.cellPosition,
+                    removeExisting = true,
+                    material       = roomCfg.EnvironmentMaterial
                 };
                 NeighborObjects doors = Utils.PutWall(p);
 
@@ -240,6 +240,98 @@ namespace Catacumba.LevelGen.Mesh
             return bothDoors && differentSectors;
         }
 
+    }
+
+    public class LevelGenerationMeshStepGeometry : ILevelGenerationMeshStep
+    {
+        public void Run(BiomeConfiguration cfg, Level level, GameObject root)
+        {
+            Action<Utils.SectorCellIteration> Iterator = delegate (Utils.SectorCellIteration it)
+            {
+                var roomCfg = cfg.GetRoomConfig(it.cell);
+
+                bool floor = it.cell != LevelGeneration.ECellCode.Empty;
+                if (floor)
+                {
+                    Utils.PutFloor(new Utils.PutFloorParams
+                    {
+                        sector = it.sector,
+                        floorPrefab = roomCfg.Floors[0],
+                        floorMaterial = roomCfg.EnvironmentMaterial,
+                        cellSize = roomCfg.CellSize(),
+                        floorRoot = root,
+                        position = it.cellPosition
+                    });
+                }
+
+                Func<Utils.CheckNeighborsComparerParams, bool> WallCheck = delegate(Utils.CheckNeighborsComparerParams p)
+                {
+                    bool differentSectors = level.GetSectorAt(p.originalPosition) != level.GetSectorAt(p.neighborPosition);
+                    bool differentTypes = p.originalCell != p.neighborCell;
+
+                    bool isOriginDoor = p.sector.GetCell(p.originalPosition, ELevelLayer.Doors) == LevelGeneration.ECellCode.Door;
+                    bool isNeighborDoor = p.sector.GetCell(p.neighborPosition, ELevelLayer.Doors) == LevelGeneration.ECellCode.Door;
+
+                    bool isDoor = isOriginDoor && isNeighborDoor;
+
+                    if ((differentTypes || differentSectors) && !isDoor)
+                    {
+                        Utils.PutWall(new Utils.PutWallParams
+                        {
+                            sector          = it.sector,
+                            root            = root,
+                            cfg             = roomCfg,
+                            directions      = p.direction,
+                            prefab          = roomCfg.Walls[0],
+                            cellSize        = roomCfg.CellSize(),
+                            namePreffix     = "W",
+                            position        = it.cellPosition,
+                            material        = roomCfg.EnvironmentMaterial,
+                            shouldCollide   = true
+                        });
+                    }
+                    else if (isDoor)
+                    {
+                        Utils.PutWall(new Utils.PutWallParams
+                        {
+                            sector          = it.sector,
+                            root            = root,
+                            cfg             = roomCfg,
+                            directions      = p.direction,
+                            prefab          = roomCfg.Doors[0],
+                            cellSize        = roomCfg.CellSize(),
+                            namePreffix     = "W",
+                            position        = it.cellPosition,
+                            material        = roomCfg.EnvironmentMaterial,
+                            shouldCollide   = true,
+                            addNavMeshObstacle = false
+                        });
+                    }
+
+                    return (differentTypes || differentSectors) && !isDoor;
+                };
+                Utils.CheckNeighbors(it.sector, 
+                                     it.cellPosition, 
+                                     WallCheck, 
+                                     ELevelLayer.Hall | ELevelLayer.Rooms);
+            };
+
+            Utils.IterateSector(level.BaseSector, Iterator, ELevelLayer.All);
+        }
+
+    }
+
+    public class LevelGenerationMeshStepCleanColliders : ILevelGenerationMeshStep
+    {
+        public void Run(BiomeConfiguration cfg, Level level, GameObject root)
+        {
+            var colliders = root.GetComponentsInChildren<Collider>();
+            foreach (var collider in colliders)
+            {
+                if (collider.gameObject.name.Contains("W"))
+                    GameObject.Destroy(collider);
+            }
+        }
     }
 
 }

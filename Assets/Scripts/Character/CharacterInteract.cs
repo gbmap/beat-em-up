@@ -21,7 +21,7 @@ namespace Catacumba.Entity
 
             InteractiveBaseComponent interactive = colliders
                 .OrderBy(c => Vector3.Distance(c.transform.position, transform.position))
-                .Select(c => c.GetComponent<InteractiveBaseComponent>())?
+                .Select(c => c.GetComponentInChildren<InteractiveBaseComponent>())?
                 .First();
 
             if (!interactive)

@@ -33,7 +33,7 @@ namespace Catacumba.Entity
 
         private float lastCollisionStay = float.NegativeInfinity;
 
-        protected virtual void Awake()
+        protected virtual void Start()
         {
             _material = GetComponentInChildren<Renderer>()?.material;
             _colliderInteractionArea = GetComponent<SphereCollider>();

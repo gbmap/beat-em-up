@@ -14,25 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.CoreModule:UnityEngine:ScriptableObject
   EnvironmentMaterial: {fileID: 2100000, guid: 1df874c629d303546827208580ad457d, type: 2}
   Floors:
-  - {fileID: 137298, guid: 9830f561f80768b4f92139c1c15bc835, type: 3}
-  - {fileID: 121644, guid: 67f6358a70929f943ae115f8b4bcf075, type: 3}
-  - {fileID: 192550, guid: 3bf01e09059dad54b985779213d8dca8, type: 3}
-  - {fileID: 184820, guid: 9e2131326fc97464987f58ebcb08832a, type: 3}
-  - {fileID: 126278, guid: 5409c9ff5a9c7b045a9809d71ccdcab8, type: 3}
-  - {fileID: 139220, guid: 704795cfbb02b844591f900d2b76342e, type: 3}
-  - {fileID: 103136, guid: 07f4a007d7093a64bbbdc962a82b494a, type: 3}
-  - {fileID: 127758, guid: 0e2d311aa2f76c2479ed7bbf11aa4ffb, type: 3}
-  - {fileID: 139024, guid: faefc7bf0b06adc4497fd8b1694fad68, type: 3}
-  - {fileID: 123934, guid: c6cb56b5c70f4f14ebf96689fda29f2c, type: 3}
+  - {fileID: 1270428469967565019, guid: 8b9fb011e414fe444aa6d55e63a16064, type: 3}
   Walls:
   - {fileID: 8638514096912393065, guid: a58d9859e35982e4a8115411e18a9aa0, type: 3}
-  DoorWalls:
-  - {fileID: 6467649592533164415, guid: 75065935509131e4fb1e00a1ccd4ef8d, type: 3}
-  DoorFrame:
-  - {fileID: 105062, guid: 166d0f22f17c2f3449265f51f299640c, type: 3}
-  Door:
-  - {fileID: 114226, guid: f7f8afc7225502240bc7b70a9419c566, type: 3}
-  - {fileID: 128464, guid: 30cbf2b140e7ff04cac9897c5ab79430, type: 3}
-  DoorAnimator: {fileID: 22100000, guid: f5133466232c43d4dbd7e560c1d9a446, type: 2}
-  Props:
-  - {fileID: 525851034677697745, guid: 8c2a7f2d901b7b04a9756c22c75bab26, type: 3}
+  Doors:
+  - {fileID: 2804478649494323333, guid: e42454e5907143e4cb80ebc20a3d4a69, type: 3}

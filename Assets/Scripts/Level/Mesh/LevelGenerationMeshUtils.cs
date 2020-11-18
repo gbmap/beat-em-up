@@ -197,6 +197,8 @@ namespace Catacumba.LevelGen.Mesh
             public Material material;
             public string namePreffix; 
             public bool shouldCollide;
+            public bool removeExisting;
+            public bool addNavMeshObstacle;
         }
         
         public static NeighborObjects PutWall(PutWallParams p)
@@ -223,10 +225,13 @@ namespace Catacumba.LevelGen.Mesh
                 angle = DirectionHelper.ToAngle(dir);
                 suffix = DirectionHelper.GetName(dir);
 
-                Vector3  collisionCheckPosition     = p.root?.transform.TransformPoint(position) ?? position;
-                Collider[] collisions               = Physics.OverlapSphere(collisionCheckPosition, 0.15f, 1 << LayerMask.NameToLayer("Level"));
-                if (collisions.Length > 0)
-                    continue;
+                if (!p.removeExisting)
+                {
+                    Vector3  collisionCheckPosition = p.root?.transform.TransformPoint(position) ?? position;
+                    Collider[] collisions           = Physics.OverlapSphere(collisionCheckPosition, 0.15f, 1 << LayerMask.NameToLayer("Level"));
+                    if (collisions.Length > 0)
+                        continue;
+                }
 
                 var obj = GameObject.Instantiate(p.prefab, p.root.transform);
                 obj.name = string.Format("{0}_{1}_{2}_{3}", p.namePreffix, p.position.x, p.position.y, suffix);
@@ -241,19 +246,21 @@ namespace Catacumba.LevelGen.Mesh
                 if (p.shouldCollide)
                 {
                     obj.AddComponent<BoxCollider>();
+                }
+                if (p.addNavMeshObstacle)
+                {
                     var obstacle = obj.AddComponent<NavMeshObstacle>();
                     obstacle.carving = true;
                 }
 
-                
-                /*
-                foreach(var collision in collisions) {
-                    // Hack imbecil pra impedir que o outro lado da porta seja removido
-                    if (collision.gameObject.name[0] != p.namePreffix[0]) {
-                        GameObject.Destroy(collision.gameObject);
-                    }
+                if (p.removeExisting)
+                {
+                    Vector3 collisionCheckPosition = p.root?.transform.TransformPoint(position) ?? position;
+                    Collider[] collisions          = Physics.OverlapSphere(collisionCheckPosition, 0.15f, 1 << LayerMask.NameToLayer("Level"));
+                    
+                    foreach (Collider collider in collisions)
+                        GameObject.Destroy(collider);
                 }
-                */
 
                 walls[dir] = obj;
             }

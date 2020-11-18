@@ -120,6 +120,7 @@ namespace Catacumba.LevelGen
             try
             {
                 LevelObject = Mesh.LevelGenerationMesh.Generate(Level, Params.BiomeConfig);
+                Log("Finished generating geometry.");
             }
             catch (Exception ex)
             {

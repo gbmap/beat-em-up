@@ -41,10 +41,12 @@ namespace Catacumba.LevelGen.Mesh
 
             ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
             {
-                new LevelGenerationMeshStepRooms(),
-                new LevelGenerationMeshStepHall(floorRoot, wallRoot),
+                //new LevelGenerationMeshStepRooms(),
+                //new LevelGenerationMeshStepHall(floorRoot, wallRoot),
                 // new LevelGenerationMeshStepGroupWalls(),
-                // new LevelGenerationMeshStepDoors()
+                //new LevelGenerationMeshStepDoors(),
+                new LevelGenerationMeshStepGeometry(),
+                new LevelGenerationMeshStepCleanColliders()
             };
 
             foreach (ILevelGenerationMeshStep step in steps)
@@ -62,6 +64,7 @@ namespace Catacumba.LevelGen.Mesh
             return root;
         }
 
+        /*
         private static GameObject[] CheckProp(RoomConfiguration cfg,
                                               Vector3 cellSize,
                                               GameObject propRoot,
@@ -88,6 +91,7 @@ namespace Catacumba.LevelGen.Mesh
             }
             return propInstances;
         }
+        */
     }
 
 }
