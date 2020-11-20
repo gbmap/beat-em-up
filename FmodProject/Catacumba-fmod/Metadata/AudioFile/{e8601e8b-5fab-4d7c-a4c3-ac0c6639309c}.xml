@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{e8601e8b-5fab-4d7c-a4c3-ac0c6639309c}">
+		<property name="assetPath">
+			<value>03_Player/player_atk_layer_whoosh_var02.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.49570833333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6c94a9cf-6b93-4e62-9440-78738e3e50f2}</destination>
+		</relationship>
+	</object>
+</objects>

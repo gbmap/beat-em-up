@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{80bc36bd-1753-4423-bb16-99dde56424ae}">
+		<property name="assetPath">
+			<value>03_Player/player_kick_layer_whoosh_long_var01.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.58943749999999995</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6c94a9cf-6b93-4e62-9440-78738e3e50f2}</destination>
+		</relationship>
+	</object>
+</objects>

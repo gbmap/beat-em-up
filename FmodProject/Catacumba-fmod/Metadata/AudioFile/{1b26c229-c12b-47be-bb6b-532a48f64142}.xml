@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{1b26c229-c12b-47be-bb6b-532a48f64142}">
+		<property name="assetPath">
+			<value>03_Player/player_atk_layer_vo_var02.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.49570833333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6c94a9cf-6b93-4e62-9440-78738e3e50f2}</destination>
+		</relationship>
+	</object>
+</objects>
