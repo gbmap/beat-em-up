@@ -3,22 +3,27 @@ using System;
 using System.Linq;
 using Catacumba.Entity;
 using Catacumba.Data.Level;
+using Catacumba.Data;
+using static Catacumba.LevelGen.LevelGeneration;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Catacumba.LevelGen.Mesh
 {
     public interface ILevelGenerationMeshStep
     {
-        void Run(BiomeConfiguration cfg, Level level, GameObject root);
+        IEnumerator Run(BiomeConfiguration cfg, Level level, GameObject root);
     }
 
     public class LevelGenerationMeshStepRooms : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
+        IEnumerator ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             foreach (Sector sec in level.BaseSector.Children)
             {
                 GenerateRoom(sec, cfg.GetRoomConfig(sec.Code), root);
             }
+            yield return null;
         }
 
         void GenerateRoom(Sector sec, RoomConfiguration cfg, GameObject root)
@@ -79,9 +84,10 @@ namespace Catacumba.LevelGen.Mesh
             this.wallRoot = wallRoot;
         }
 
-        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
+        IEnumerator ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             GenerateHall(level, cfg, this.floorRoot, this.wallRoot);
+            yield return null;
         }
 
         private static void GenerateHall(Level l,
@@ -141,7 +147,7 @@ namespace Catacumba.LevelGen.Mesh
 
     public class LevelGenerationMeshStepGroupWalls : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
+        IEnumerator ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             var walls = GameObject.FindGameObjectsWithTag("Level").Where(g => g.gameObject.name.Contains("WD")).ToArray();
             foreach (GameObject wallObj in walls)
@@ -169,12 +175,13 @@ namespace Catacumba.LevelGen.Mesh
                         GameObject.Destroy(data);
                 }
             }
+            yield return null;
         }
     }
 
     public class LevelGenerationMeshStepDoors : ILevelGenerationMeshStep
     {
-        void ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
+        IEnumerator ILevelGenerationMeshStep.Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             System.Collections.Generic.List<GameObject> doorsSpawned = new System.Collections.Generic.List<GameObject>();
 
@@ -223,6 +230,8 @@ namespace Catacumba.LevelGen.Mesh
                     }
                 }
             }
+
+            yield return null;
         }
 
         bool SelectDoors(Utils.CheckNeighborsComparerParams param)
@@ -244,7 +253,7 @@ namespace Catacumba.LevelGen.Mesh
 
     public class LevelGenerationMeshStepGeometry : ILevelGenerationMeshStep
     {
-        public void Run(BiomeConfiguration cfg, Level level, GameObject root)
+        public IEnumerator Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             Action<Utils.SectorCellIteration> Iterator = delegate (Utils.SectorCellIteration it)
             {
@@ -317,13 +326,14 @@ namespace Catacumba.LevelGen.Mesh
             };
 
             Utils.IterateSector(level.BaseSector, Iterator, ELevelLayer.All);
+            yield return null;
         }
 
     }
 
     public class LevelGenerationMeshStepCleanColliders : ILevelGenerationMeshStep
     {
-        public void Run(BiomeConfiguration cfg, Level level, GameObject root)
+        public IEnumerator Run(BiomeConfiguration cfg, Level level, GameObject root)
         {
             var colliders = root.GetComponentsInChildren<Collider>();
             foreach (var collider in colliders)
@@ -331,6 +341,73 @@ namespace Catacumba.LevelGen.Mesh
                 if (collider.gameObject.name.Contains("W"))
                     GameObject.Destroy(collider);
             }
+            yield return null;
+        }
+    }
+
+    public class LevelGenerationMeshStepProps : ILevelGenerationMeshStep
+    {
+        private class PropPlacementBufferItem
+        {
+            public List<GameObject> PropInstances = new List<GameObject>();
+            public GameObject FloorObject;
+            public EDirectionBitmask Directions;
+        }
+
+        public LevelGenerationMeshStepProps()
+        {
+        }
+
+        public IEnumerator Run(BiomeConfiguration cfg, Level level, GameObject root)
+        {
+            List<PropPlacementBufferItem> bufferItems = new List<PropPlacementBufferItem>();
+
+            Mesh.Utils.IterateSector(level.BaseSector, (it) =>
+            {
+                if (it.cell != LevelGeneration.ECellCode.Prop) return;
+
+                RoomConfiguration roomCfg = cfg.GetRoomConfig(level.GetCell(it.cellPosition, ELevelLayer.Hall | ELevelLayer.Rooms));
+                
+                GameObject floorObject = GameObject.Find($"F_{it.cellPosition.x}_{it.cellPosition.y}");
+                if (floorObject == null) return;
+
+                EDirectionBitmask differentNeighbors = GetDifferentNeighbors(it.sector, it.cellPosition);
+                List<GameObject>  propInstances      = new List<GameObject>();
+                for (int i = 0; i < 3; i++)
+                {
+                    CharacterPoolItem propCfg = roomCfg.PropPool.GetRandom();
+                    propInstances.Add(CharacterManager.SpawnProp(propCfg.Config));
+                }
+
+                bufferItems.Add(new PropPlacementBufferItem
+                {
+                    PropInstances = propInstances,
+                    FloorObject   = floorObject,
+                    Directions    = differentNeighbors
+                });
+            }, ELevelLayer.Props);
+            yield return new WaitForSeconds(0.25f);
+
+            foreach (PropPlacementBufferItem item in bufferItems)
+                PropPlacement.OrganizeProps(item.FloorObject, item.Directions, item.PropInstances.ToArray());
+        }
+
+        private EDirectionBitmask GetDifferentNeighbors(Sector sector, Vector2Int cellPosition)
+        {
+            ECellCode cell = sector.GetCell(cellPosition);
+            EDirectionBitmask differentCells = EDirectionBitmask.None;
+            System.Func<Utils.CheckNeighborsComparerParams, bool> checker = delegate(Utils.CheckNeighborsComparerParams arg) 
+            { 
+                return CheckNeighbors(arg, ref differentCells);
+            };
+            Utils.CheckNeighbors(sector, cellPosition, checker, ELevelLayer.Hall | ELevelLayer.Rooms); 
+            return differentCells;
+        }
+
+        private bool CheckNeighbors(Utils.CheckNeighborsComparerParams arg, ref EDirectionBitmask directions)
+        {
+            if (arg.neighborCell != arg.originalCell) DirectionHelper.Set(ref directions, arg.direction);
+            return true;
         }
     }
 

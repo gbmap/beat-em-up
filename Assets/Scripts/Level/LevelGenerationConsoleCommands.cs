@@ -18,6 +18,14 @@ namespace Catacumba.LevelGen
         }
     }
 
+    public class QCCharacterConfigurationParser : BasicQcParser<CharacterConfiguration>
+    {
+        public override CharacterConfiguration Parse(string value)
+        {
+            return CharacterConfiguration.Load(value);
+        }
+    }
+
     [CommandPrefix("level.")]
     public static class LevelGenerationManager
     {
@@ -59,6 +67,7 @@ namespace Catacumba.LevelGen
             return Resources.Load<BiomeConfiguration>($"{PATH_BIOMES}/{name}");
         }
 
+        /*
         [Command("create")]
         public static void CreateLevel()
         {
@@ -69,7 +78,7 @@ namespace Catacumba.LevelGen
                 GenerateMesh();
                 SpawnEnemies();
                 SpawnProps();
-                GameObject player = SpawnPlayer("Goblin_Swordsman");
+                GameObject player = SpawnPlayer(CharacterConfiguration.Load("Goblin_Swordsman"));
                 CameraManager.Spawn();
                 CameraManager.Target = player.transform;
             };
@@ -85,6 +94,7 @@ namespace Catacumba.LevelGen
                 PropPool    = PropPool
             }, OnLevelGenerated);
         }
+        */
 
         [Command("generate")]
         public static async Task Generate()
@@ -112,7 +122,7 @@ namespace Catacumba.LevelGen
 
         [Command("spawn")]
         [CommandDescription("Spawns object for current generated level.")]
-        public static void GenerateMesh()
+        public static async Task GenerateMesh()
         {
             Log("Generating level geometry...");
             if (Level == null)
@@ -130,7 +140,16 @@ namespace Catacumba.LevelGen
 
             try
             {
-                LevelObject = Mesh.LevelGenerationMesh.Generate(Level, Params.BiomeConfig);
+                System.Action<GameObject> OnLevelGenerationEnded = delegate(GameObject obj) { LevelObject = obj; };
+                Coroutine coroutine = QuantumConsole.Instance
+                                                    .StartCoroutine(Mesh.LevelGenerationMesh
+                                                                        .Generate(Level, 
+                                                                                  Params.BiomeConfig, 
+                                                                                  OnLevelGenerationEnded));
+
+                while (coroutine != null)
+                    await Task.Delay(100);
+
                 Log("Finished generating geometry.");
             }
             catch (Exception ex)
@@ -192,7 +211,7 @@ namespace Catacumba.LevelGen
                 float   randZ         = PropDistanceAdjust(Random.value);
                 Vector3 offset        = new Vector3(randX*cellSize.x, 0f, randZ*cellSize.z);
 
-                CharacterManager.SpawnProp(propCfg.Name, worldPosition + offset);
+                CharacterManager.SpawnProp(propCfg.Config, worldPosition + offset);
             }, ELevelLayer.Props);
         }
 
@@ -203,7 +222,7 @@ namespace Catacumba.LevelGen
 
         [Command("spawn_player")]
         [CommandDescription("Spawns player in an automatically selected cell.")]
-        public static GameObject SpawnPlayer(string characterConfiguration)
+        public static GameObject SpawnPlayer(CharacterConfiguration characterConfiguration)
         {
             if (Level == null || LevelObject == null)
             {

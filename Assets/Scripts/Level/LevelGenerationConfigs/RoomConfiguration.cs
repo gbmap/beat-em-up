@@ -17,6 +17,9 @@ namespace Catacumba.Data.Level {
         [Header("Doors")]
         public GameObject[] Doors;
 
+        [Header("Prop Pool")]
+        public CharacterPool PropPool;
+
         public Vector3 CellSize()
         {
             return Floors[0].GetComponent<Renderer>().bounds.size;

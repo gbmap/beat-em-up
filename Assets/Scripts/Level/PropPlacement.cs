@@ -14,16 +14,30 @@ namespace Catacumba.LevelGen
             public int propsInArea;
         }
 
-        public static List<BoundsSize> OrganizeProps(GameObject cellObject, EDirectionBitmask directions, GameObject[] props, float areaPercentage = 0.2f)
+        public static List<BoundsSize> OrganizeProps(GameObject cellObject, 
+                                                     EDirectionBitmask directions, 
+                                                     GameObject[] props, 
+                                                     float margin = 0.0175f,
+                                                     float areaPercentage = 0.25f)
         {
-            Bounds cellBounds = cellObject.GetComponent<Renderer>().bounds;
+            Bounds cellBounds = cellObject.GetComponentInChildren<MeshRenderer>().bounds;
+            cellBounds.extents *= (1f - margin);
             List<BoundsSize> bounds = CreateBounds(directions, cellBounds, areaPercentage);
 
             int nProps = props.Length;
             for (int i = 0; i < nProps; i++)
             {
                 GameObject obj = props[i];
-                Bounds objBounds = obj.GetComponent<Renderer>().bounds;
+                if (obj == null) continue;
+
+                MeshRenderer renderer = obj.GetComponentInChildren<MeshRenderer>(); 
+                if (!renderer)
+                {
+                    Debug.LogError($"No renderer in {obj.name}");
+                    continue; 
+                }
+
+                Bounds objBounds = renderer.bounds;
 
                 var availableBounds = bounds.Where(b => b.bounds.extents[OrthogonalAxis(b.axis)] >= objBounds.extents[b.axis]);
                 BoundsSize[] boundsArray = availableBounds.ToArray();
@@ -41,12 +55,14 @@ namespace Catacumba.LevelGen
                 Vector3 position = GetPropPositionInBounds(objBounds, bound, axis);
 
                 obj.transform.position = position;
-                objBounds = obj.GetComponent<Renderer>().bounds; 
+                objBounds = renderer.bounds; 
 
+                /*
                 Vector3 delta = cellObject.transform.position - obj.transform.position;
                 delta.y = 0f;
+                */
                 //obj.transform.rotation = Quaternion.Euler(delta);
-                obj.transform.forward = delta;
+                obj.transform.forward = -DirectionHelper.ToOffset3D(bound.direction);
 
                 foreach (BoundsSize bsz in boundsArray)
                     SubtractBoundOnAxis(ref bsz.bounds, objBounds, bsz.axis == 2 ? 0 : 2);

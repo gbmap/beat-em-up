@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Catacumba.Data.Level;
@@ -11,10 +12,11 @@ namespace Catacumba.LevelGen.Mesh
 
     public static class LevelGenerationMesh
     {
-        public static GameObject Generate(Level l, BiomeConfiguration cfg)
+        public static IEnumerator Generate(Level l, BiomeConfiguration cfg, System.Action<GameObject> OnGenerationEnded)
         {
             //////////////////
             /// Roots
+
             GameObject root = new GameObject("Level");
             root.transform.position = Vector3.zero;
             root.transform.rotation = Quaternion.identity;
@@ -46,11 +48,12 @@ namespace Catacumba.LevelGen.Mesh
                 // new LevelGenerationMeshStepGroupWalls(),
                 //new LevelGenerationMeshStepDoors(),
                 new LevelGenerationMeshStepGeometry(),
-                new LevelGenerationMeshStepCleanColliders()
+                new LevelGenerationMeshStepCleanColliders(),
+                new LevelGenerationMeshStepProps(),
             };
 
             foreach (ILevelGenerationMeshStep step in steps)
-                step.Run(cfg, l, root);
+                yield return step.Run(cfg, l, root);
 
             //////////////////
             /// Nav Mesh
@@ -61,7 +64,7 @@ namespace Catacumba.LevelGen.Mesh
             ComponentLevel levelComponent = root.AddComponent<ComponentLevel>();
             levelComponent.SetLevel(l, cfg);
 
-            return root;
+            OnGenerationEnded?.Invoke(root);
         }
 
         /*

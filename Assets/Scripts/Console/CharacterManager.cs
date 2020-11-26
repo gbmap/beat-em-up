@@ -34,23 +34,23 @@ namespace Catacumba.Entity
         //      ENEMIES
 
         [Command("spawn_enemy")]
-        public static GameObject SpawnEnemy(string characterConfiguration)
+        public static GameObject SpawnEnemy(CharacterConfiguration configuration)
         {
-            return SpawnEnemy(characterConfiguration, Vector3.zero);
+            return SpawnEnemy(configuration, Vector3.zero);
         }
 
         [Command("spawn_enemy")]
-        public static GameObject SpawnEnemy(string characterConfiguration, int x, int y)
+        public static GameObject SpawnEnemy(CharacterConfiguration configuration, int x, int y)
         {
             Vector2Int pos = new Vector2Int(x, y);
             Vector3 worldPosition = CalculateWorldPosition(pos);
-            return SpawnEnemy(characterConfiguration, worldPosition);
+            return SpawnEnemy(configuration, worldPosition);
         }
 
         [Command("spawn_enemy")]
-        public static GameObject SpawnEnemy(string characterConfiguration, Vector3 worldPosition)
+        public static GameObject SpawnEnemy(CharacterConfiguration configuration, Vector3 worldPosition)
         {
-            CharacterData data = CreateEntityInstance(characterConfiguration, "Enemy", "Entities", worldPosition);
+            CharacterData data = CreateEntityInstance(configuration, "Enemy", "Entities", worldPosition);
             ControllerComponent component = data.gameObject.AddComponent<ControllerComponent>();
             component.Controller = Resources.Load<ControllerAI>("Data/Controllers/ControllerAI");
             return data.gameObject;
@@ -63,33 +63,25 @@ namespace Catacumba.Entity
             return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnEnemy, pool);
         }
 
-        private static GameObject SpawnEntityAtCellPosition(
-            Vector2Int cellPosition, 
-            LevelGenerationParams parameters,
-            System.Func<string, Vector3, GameObject> SpawnFunction,
-            CharacterPool pool=null)
-        {
-            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnFunction, Vector3.zero, pool);
-        }
 
         ////////////////////////////////////////
         //      PROPS
 
         [Command("spawn_prop")]
-        public static GameObject SpawnProp(string configuration)
+        public static GameObject SpawnProp(CharacterConfiguration configuration)
         {
             return SpawnProp(configuration, Vector3.zero);
         }
 
         [Command("spawn_prop")]
-        public static GameObject SpawnProp(string configuration, int x, int y)
+        public static GameObject SpawnProp(CharacterConfiguration configuration, Vector2Int position)
         {
-            Vector3 worldPosition = CalculateWorldPosition(new Vector2Int(x, y));
+            Vector3 worldPosition = CalculateWorldPosition(position);
             return SpawnProp(configuration, worldPosition);
         }
 
         [Command("spawn_prop")]
-        public static GameObject SpawnProp(string configuration, Vector3 worldPosition)
+        public static GameObject SpawnProp(CharacterConfiguration configuration, Vector3 worldPosition)
         {
             return CreateEntityInstance(configuration, "Entity", "Entities", worldPosition)?.gameObject;
         }
@@ -98,21 +90,21 @@ namespace Catacumba.Entity
         //      PLAYER
 
         [Command("spawn_player")]
-        public static GameObject SpawnPlayer(string characterConfiguration)
+        public static GameObject SpawnPlayer(CharacterConfiguration configuration)
         {
-            return SpawnPlayer(characterConfiguration, Vector3.zero);
+            return SpawnPlayer(configuration, Vector3.zero);
         }
 
         [Command("spawn_player")]
-        public static GameObject SpawnPlayer(string configuration, int x, int y)
+        public static GameObject SpawnPlayer(CharacterConfiguration configuration, int x, int y)
         {
             return SpawnPlayer(configuration, CalculateWorldPosition(new Vector2Int(x, y)));
         }
 
         [Command("spawn_player")]
-        public static GameObject SpawnPlayer(string characterConfiguration, Vector3 worldPosition)
+        public static GameObject SpawnPlayer(CharacterConfiguration configuration, Vector3 worldPosition)
         {
-            CharacterData data = CreateEntityInstance(characterConfiguration, "Player", "Player", worldPosition);
+            CharacterData data = CreateEntityInstance(configuration, "Player", "Player", worldPosition);
             ControllerComponent component = data.gameObject.AddComponent<ControllerComponent>();
             component.Controller = Resources.Load<ControllerInput>("Data/Controllers/ControllerInputPlayer1");
 
@@ -140,7 +132,16 @@ namespace Catacumba.Entity
         private static GameObject SpawnEntityAtCellPosition(
             Vector2Int cellPosition, 
             LevelGenerationParams parameters,
-            System.Func<string, Vector3, GameObject> SpawnFunction,
+            System.Func<CharacterConfiguration, Vector3, GameObject> SpawnFunction,
+            CharacterPool pool=null)
+        {
+            return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnFunction, Vector3.zero, pool);
+        }
+
+        private static GameObject SpawnEntityAtCellPosition(
+            Vector2Int cellPosition, 
+            LevelGenerationParams parameters,
+            System.Func<CharacterConfiguration, Vector3, GameObject> SpawnFunction,
             Vector3 positionOffset,
             CharacterPool pool=null)
         {
@@ -161,16 +162,16 @@ namespace Catacumba.Entity
             };
             */
 
-            return SpawnFunction(entity.Name, worldPosition);
+            return SpawnFunction(entity.Config, worldPosition);
         }
 
-        private static CharacterData CreateEntityInstance(string characterConfiguration, string tag, string layer, Vector3 position)
+        private static CharacterData CreateEntityInstance(CharacterConfiguration configuration, string tag, string layer, Vector3 position)
         {
-            string path = $"{CharacterConfiguration.DEFAULT_FOLDER}/{characterConfiguration}";
-            CharacterConfiguration configuration = Resources.Load<CharacterConfiguration>(path);
+            //string path = $"{CharacterConfiguration.DEFAULT_FOLDER}/{characterConfiguration}";
+            //CharacterConfiguration configuration = Resources.Load<CharacterConfiguration>(path);
             if (!configuration)
             { 
-                QuantumConsole.Instance.LogToConsole($"Couldn't load character: {characterConfiguration}");
+                QuantumConsole.Instance.LogToConsole($"Couldn't load character.");
                 return null;
             }
             
@@ -180,7 +181,7 @@ namespace Catacumba.Entity
                 position = hit.position;
             };
 
-            string name = $"{characterConfiguration}_{tag}_{EntityCount}";
+            string name = $"{configuration.name}_{tag}_{EntityCount}";
             GameObject instance = new GameObject(name);
             instance.transform.position      = position;
             instance.transform.localRotation = Quaternion.identity;

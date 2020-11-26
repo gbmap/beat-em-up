@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 077d2da6891e1584dbd7e4d1156bd705, type: 3}
-  m_Name: CharacterView_Barrel
+  m_Name: CharacterView_Prop_IronMaiden
   m_EditorClassIdentifier: 
   Models:
-  - {fileID: 139238, guid: ea39c929a43fec843a8747fa0f34346e, type: 3}
+  - {fileID: 113964, guid: 650caedadb056ca40870f3a4ba441ebf, type: 3}
   AnimationConfig: {fileID: 0}
   DamageEffect: {fileID: 11400000, guid: 860f51fa350b5a4428121b9eb4a99b1f, type: 2}
   MovementEffect: {fileID: 0}

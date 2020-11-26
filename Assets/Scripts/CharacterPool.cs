@@ -9,9 +9,9 @@ namespace Catacumba.Data
     public class CharacterPoolItem
     {
         /// <summary>
-        /// Name of a CharacterConfiguration ScriptableObject 
+        /// CharacterConfiguration ScriptableObject 
         /// </summary>
-        public string Name;
+        public CharacterConfiguration Config;
 
         /// <summary> Probability of it being chosen. </summary>
         public int Weight;

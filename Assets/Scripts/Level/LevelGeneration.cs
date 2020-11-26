@@ -93,6 +93,17 @@ namespace Catacumba.LevelGen
             { EDirectionBitmask.Left, Vector2Int.left }
         };
 
+        private static System.Collections.Generic.Dictionary<EDirectionBitmask, Vector3> DictDirectionToOffset3d 
+            = new System.Collections.Generic.Dictionary<EDirectionBitmask, Vector3>
+        {
+            { EDirectionBitmask.Up, Vector3.forward },
+            { EDirectionBitmask.Right, Vector3.right },
+            { EDirectionBitmask.Down, Vector3.back },
+            { EDirectionBitmask.Left, Vector3.left }
+        };
+
+        
+
         public static float ToAngle(EDirectionBitmask dir)
         {
             return DictDirectionToAngle[dir];
@@ -106,6 +117,11 @@ namespace Catacumba.LevelGen
         public static Vector2Int ToOffset(EDirectionBitmask dir)
         {
             return DictDirectionToOffset[dir];
+        }
+
+        public static Vector3 ToOffset3D(EDirectionBitmask dir)
+        {
+            return DictDirectionToOffset3d[dir];
         }
 
         public static EDirectionBitmask[] GetValues()
@@ -552,32 +568,6 @@ namespace Catacumba.LevelGen
             }
         }
 
-        /*
-         * Returns a list of connected Sectors starting by the spawn sector.
-         * */
-        private static Sector[] StepSelectPlayerSpawnPoint(Level l)
-        {
-            IOrderedEnumerable<Sector> sectors = l.BaseSector.Children
-                                                  .OrderByDescending(s => Sector.GetNumberOfConnectedSectors(s));
-
-            if (sectors == null || sectors.Count() == 0)
-            {
-                return new Sector[] { l.BaseSector };
-            }
-            
-            // select the sector with most connected sectors to it
-            // i'm dumb as a door
-            var spawnSector = sectors.First();
-
-            spawnSector.SetCell(Vector2Int.one, LevelGeneration.ECellCode.PlayerSpawn, ELevelLayer.All, true);
-
-            l.SpawnSector = spawnSector;
-            l.SpawnPoint = spawnSector.GetAbsolutePosition(Vector2Int.one);
-
-            return Sector.ListConnectedSectors(new HashSet<Sector>(), spawnSector)
-                .OrderBy(s => Vector2.Distance(spawnSector.Pos, s.Pos)).ToArray();
-        }
-
         public static Vector2Int SelectPlayerStartPosition(Level l)
         {
             Vector2Int startPosition = l.Size/2;
@@ -600,86 +590,9 @@ namespace Catacumba.LevelGen
             return startPosition;
         }
 
-        private static void StepAddProps(Level l)
-        {
-            for (int x = 0; x < l.Size.x; x++)
-            {
-                for (int y = 0; y < l.Size.y; y++)
-                {
-                    LevelGeneration.ECellCode cell = l.GetCell(x, y);
-                    if (cell != LevelGeneration.ECellCode.Hall)
-                        continue;
-                }
-            }
-        }
-
-        private static System.Collections.IEnumerator StepCleanup(Level l)
-        {
-            HashSet<Sector> sectors = Sector.ListConnectedSectors(new HashSet<Sector>(), l.SpawnSector);
-            for (int i = 0; i < l.BaseSector.Children.Count; i++)
-            {
-                Sector sc = l.BaseSector.Children[i];
-                if (sectors.Contains(sc))
-                    continue;
-
-                sc.DestroySector();
-                i--;
-
-                UpdateVis(l);
-                yield return new WaitForSeconds(0.25f);
-            }
-        }
-
         ///////////////////////////
         /// MESH GENERATION
         /// 
-        static void OnLevelGenerationComplete(Level l, LevelGenerationParams p)
-        {
-            // Se já tem geometria de um level anterior, destruir.
-            var obj = GameObject.Find("Level");
-            if (obj)
-            {
-                DestroyImmediate(obj);
-            }
-
-            // Mesh
-            Mesh.LevelGenerationMesh.Generate(l, p.BiomeConfig);
-
-            // Criar inimigos
-            LevelGenerationEntities(l, p);
-        }
-
-        static void LevelGenerationEntities(Level l, LevelGenerationParams p)
-        {
-            var cellSize = p.BiomeConfig.CellSize();
-            cellSize.x *= l.SpawnPoint.x;
-            cellSize.z *= l.SpawnPoint.y;
-            cellSize.y = 0f;
-
-            // Criar Player
-            /*
-            GameObject player = Instantiate(p.PlayerPrefab, cellSize, Quaternion.identity);
-            */
-
-            // Setar câmera
-            Camera.main.transform.position = cellSize;
-
-            GameObject virtualCamera = new GameObject("VCam");
-            Cinemachine.CinemachineVirtualCamera vcam = virtualCamera.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-            /*
-            vcam.Follow = player.transform;
-            vcam.LookAt = player.transform;
-            */
-
-            var body = vcam.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
-            body.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
-            body.m_FollowOffset = new Vector3(0f, 16f, -9f);
-
-            var aim = vcam.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
-
-            // Spawn enemies
-            Mesh.Utils.IterateSector(l.BaseSector, (it) => { CharacterManager.SpawnEnemy(it.cellPosition, p); }, ELevelLayer.Enemies);
-        }
 
         public static bool IsValidPosition(Level l, Vector2Int p)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 [RequireComponent(typeof(MeshRenderer))]
 public class PropPlacementTest : MonoBehaviour
 {
+    public float margin = 0.025f;
     public float percentage = 0.2f;
     private new MeshRenderer renderer;
     public EDirectionBitmask directions;
@@ -20,6 +21,7 @@ public class PropPlacementTest : MonoBehaviour
         bounds = PropPlacement.OrganizeProps(gameObject, 
                                              directions, 
                                              targetObjects.Select(o=>o.gameObject).ToArray(), 
+                                             margin,
                                              percentage);
     }
 

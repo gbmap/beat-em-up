@@ -10,8 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2452fadb38bea3e41bfa03615a356b60, type: 3}
-  m_Name: CharacterPool_Props
+  m_Name: CharacterPool_Props_Dungeon
   m_EditorClassIdentifier: 
   PoolItems:
-  - Name: Prop_Barrel
+  - Config: {fileID: 11400000, guid: 4f37c62d97b48bc44a1b31d89e50b862, type: 2}
+    Weight: 3
+  - Config: {fileID: 11400000, guid: e0f06ac743bfd624c949133111d69e6d, type: 2}
+    Weight: 1
+  - Config: {fileID: 11400000, guid: e28177c3ad9bcff4ab10e0def1058051, type: 2}
+    Weight: 2
+  - Config: {fileID: 11400000, guid: 827718270e3ac8744abe3e35315a701a, type: 2}
     Weight: 1

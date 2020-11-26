@@ -20,6 +20,11 @@ namespace Catacumba.Data
             }
         }
 
+        public static CharacterConfiguration Load(string path)
+        {
+            return Resources.Load<CharacterConfiguration>($"{DEFAULT_FOLDER}/{path}");
+        }
+
         public CharacterStatConfiguration Stats;
         public Inventory Inventory;
         public CharacterSkillConfiguration Skills;
