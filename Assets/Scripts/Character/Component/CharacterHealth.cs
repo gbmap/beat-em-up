@@ -14,7 +14,6 @@ namespace Catacumba.Entity
     public class CharacterHealth : CharacterComponentBase
     {
         public ParticleEffectConfiguration HitEffect;
-        public HealthEffectsConfiguration HealthEffects;
         private HitEffect shaderHitEffect; 
 
         //////////////////////////// 
@@ -43,15 +42,12 @@ namespace Catacumba.Entity
         private float recoverTimer;
         private float recoverCooldown = 2f;
 
-
         ///////////////////////////////////
         //          OVERRIDES
 
         public override void OnConfigurationEnded()
         {
             base.OnConfigurationEnded();
-            data.Stats.OnStatsChanged += OnStatsChangedCallback;
-
             SetupEffects();
         }
 
@@ -62,16 +58,6 @@ namespace Catacumba.Entity
 
             HitEffect?.Setup(this);
             shaderHitEffect = new HitEffect(this);
-
-            if (!HealthEffects)
-                HealthEffects = data.ConfigurationView.HealthQuad;
-            
-            if (HealthEffects)
-            {
-                HealthEffects.Setup(this);
-                HealthEffects.SetHealth(this, data.Stats.HealthNormalized);
-                HealthEffects.SetStamina(this, data.Stats.StaminaBar);
-            }
         }
 
         public override void OnComponentAdded(CharacterComponentBase component)
@@ -169,8 +155,6 @@ namespace Catacumba.Entity
 
             OnFall -= OnFallCallback;
             OnGetUp -= OnGetUpAnimationEnd;
-
-            data.Stats.OnStatsChanged -= OnStatsChangedCallback;
         }
 
         protected override void OnDestroy()
@@ -182,21 +166,10 @@ namespace Catacumba.Entity
         private void DestroyEffects()
         {
             HitEffect?.Destroy(this);
-            HealthEffects?.Destroy(this);
         }
 
         ////////////////////////////////////////
         //      CALLBACKS
-
-        private void OnStatsChangedCallback(CharacterStats stats)
-        {
-            // UpdateHealthQuad(stats.HealthNormalized, stats.StaminaBar);
-            if (HealthEffects)
-            {
-                HealthEffects.SetHealth(this, stats.HealthNormalized);
-                HealthEffects.SetStamina(this, stats.StaminaBar);
-            }
-        }
 
         public void OnGetUpAnimationEnd()
         {

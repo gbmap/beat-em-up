@@ -51,7 +51,7 @@ namespace Catacumba.LevelGen
         private static CharacterPool _propPool;
         [Command("prop_pool")]   public static CharacterPool PropPool
         {
-            get { return _propPool ?? (_propPool = CharacterManager.LoadPool("CharacterPool_Props")); }
+            get { return _propPool ?? (_propPool = CharacterManager.LoadPool("CharacterPool_Props_Dungeon")); }
             set { _propPool = value; }
         }
 
@@ -140,14 +140,15 @@ namespace Catacumba.LevelGen
 
             try
             {
-                System.Action<GameObject> OnLevelGenerationEnded = delegate(GameObject obj) { LevelObject = obj; };
-                Coroutine coroutine = QuantumConsole.Instance
-                                                    .StartCoroutine(Mesh.LevelGenerationMesh
-                                                                        .Generate(Level, 
-                                                                                  Params.BiomeConfig, 
-                                                                                  OnLevelGenerationEnded));
+                bool hasEnded = false;
+                System.Action<GameObject> OnLevelGenerationEnded = delegate(GameObject obj) { LevelObject = obj; hasEnded = true; };
+                QuantumConsole.Instance
+                              .StartCoroutine(Mesh.LevelGenerationMesh
+                                                  .Generate(Level, 
+                                                            Params.BiomeConfig, 
+                                                            OnLevelGenerationEnded));
 
-                while (coroutine != null)
+                while (!hasEnded)
                     await Task.Delay(100);
 
                 Log("Finished generating geometry.");

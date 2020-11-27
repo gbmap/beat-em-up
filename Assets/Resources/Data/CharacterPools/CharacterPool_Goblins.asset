@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharacterPool_Goblins
   m_EditorClassIdentifier: 
   PoolItems:
-  - Name: Goblin_Archer
+  - Config: {fileID: 11400000, guid: 8fedf7fd36266d34aa3cf0fdd55dcc18, type: 2}
     Weight: 1
-  - Name: Goblin_Swordsman
+  - Config: {fileID: 11400000, guid: 192bea3bd6febe445951c167d2fad4b0, type: 2}
     Weight: 1
