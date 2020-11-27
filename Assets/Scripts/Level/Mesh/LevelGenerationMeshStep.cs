@@ -406,7 +406,9 @@ namespace Catacumba.LevelGen.Mesh
 
         private bool CheckNeighbors(Utils.CheckNeighborsComparerParams arg, ref EDirectionBitmask directions)
         {
-            if (arg.neighborCell != arg.originalCell) DirectionHelper.Set(ref directions, arg.direction);
+            bool isDoor = arg.sector.GetCell(arg.neighborPosition, ELevelLayer.Doors) > ECellCode.Empty;
+            if (arg.neighborCell != arg.originalCell && !isDoor)
+                DirectionHelper.Set(ref directions, arg.direction);
             return true;
         }
     }

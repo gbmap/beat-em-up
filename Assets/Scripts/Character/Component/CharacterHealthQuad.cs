@@ -23,6 +23,12 @@ namespace Catacumba.Entity
             data.Stats.OnStatsChanged -= OnStatsChangedCallback;
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            HealthEffects?.Destroy(this);
+        }
+
         private void SetupEffects()
         {
             if (!HealthEffects)
