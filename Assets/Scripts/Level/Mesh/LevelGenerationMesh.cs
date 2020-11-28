@@ -43,17 +43,11 @@ namespace Catacumba.LevelGen.Mesh
 
             ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
             {
-                //new LevelGenerationMeshStepRooms(),
-                //new LevelGenerationMeshStepHall(floorRoot, wallRoot),
-                // new LevelGenerationMeshStepGroupWalls(),
-                //new LevelGenerationMeshStepDoors(),
                 new LevelGenerationMeshStepGeometry(),
-                new LevelGenerationMeshStepCleanColliders(),
-                new LevelGenerationMeshStepProps(),
+                new LevelGenerationMeshStepCleanColliders()
             };
 
-            foreach (ILevelGenerationMeshStep step in steps)
-                yield return step.Run(cfg, l, root);
+            yield return RunSteps(steps, l, cfg, root);
 
             //////////////////
             /// Nav Mesh
@@ -67,34 +61,16 @@ namespace Catacumba.LevelGen.Mesh
             OnGenerationEnded?.Invoke(root);
         }
 
-        /*
-        private static GameObject[] CheckProp(RoomConfiguration cfg,
-                                              Vector3 cellSize,
-                                              GameObject propRoot,
-                                              Vector2Int pos, 
-                                              LevelGeneration.ECellCode c)
+        public static IEnumerator RunSteps(ILevelGenerationMeshStep[] steps, 
+                                           Level level, 
+                                           BiomeConfiguration biome,
+                                           GameObject levelRoot,
+                                           System.Action OnEnded = null)
         {
-            if (c != LevelGeneration.ECellCode.Prop)
-                return null;
-
-            int nProps = UnityEngine.Random.Range(3, 6);
-            GameObject[] propInstances = new GameObject[nProps];
-
-            Vector3 hcsz = cellSize / 2;
-
-            for (int i = 0; i < nProps; i++)
-            {
-                Vector3 randPos = UnityEngine.Random.insideUnitSphere;
-                float x = (pos.x * cellSize.x) + (cellSize.x * 0.5f) + UnityEngine.Random.Range(-hcsz.x, hcsz.x);
-                float z = (pos.y * cellSize.z) + (cellSize.z * 0.5f) + UnityEngine.Random.Range(-hcsz.z, hcsz.z);
-
-                var prop = GameObject.Instantiate(cfg.Props[UnityEngine.Random.Range(0, cfg.Props.Length)], propRoot.transform);
-                prop.transform.localPosition = new Vector3(x, 0f, z);
-                prop.layer = LayerMask.NameToLayer("Entities");
-            }
-            return propInstances;
+            foreach (ILevelGenerationMeshStep step in steps)
+                yield return step.Run(biome, level, levelRoot);
+            OnEnded?.Invoke();
         }
-        */
     }
 
 }

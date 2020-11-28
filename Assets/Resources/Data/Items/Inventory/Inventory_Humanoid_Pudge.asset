@@ -23,7 +23,7 @@ MonoBehaviour:
     - Part: {fileID: 11400000, guid: cd6edefdcadcefa4f8ac2f065d6bba5d, type: 2}
       Item: {fileID: 0}
     - Part: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
-      Item: {fileID: 11400000, guid: c0fc2a6e5440f6548af13b698da60cb6, type: 2}
+      Item: {fileID: 11400000, guid: 3727f1270f63a454fbb6dc1b4f0ccd96, type: 2}
     - Part: {fileID: 11400000, guid: b1ee5ff38c596b746b3a7b9fc2cec2df, type: 2}
       Item: {fileID: 0}
     WeaponSlotIndex: 4

@@ -7,6 +7,7 @@ using Catacumba.Data;
 using Catacumba.Entity;
 using System.Threading.Tasks;
 using Random = UnityEngine.Random;
+using Catacumba.LevelGen.Mesh;
 
 namespace Catacumba.LevelGen
 {
@@ -55,6 +56,8 @@ namespace Catacumba.LevelGen
             set { _propPool = value; }
         }
 
+        [Command("player")] public static GameObject Player { get; set; }
+
         public const string PATH_BIOMES     = "Data/Level/Biomes";
 
         public static Level                 Level;
@@ -67,34 +70,6 @@ namespace Catacumba.LevelGen
             return Resources.Load<BiomeConfiguration>($"{PATH_BIOMES}/{name}");
         }
 
-        /*
-        [Command("create")]
-        public static void CreateLevel()
-        {
-            System.Action<Level, LevelGenerationParams> OnLevelGenerated = (level, parameters) =>
-            {
-                Level = level;
-                Params = parameters;
-                GenerateMesh();
-                SpawnEnemies();
-                SpawnProps();
-                GameObject player = SpawnPlayer(CharacterConfiguration.Load("Goblin_Swordsman"));
-                CameraManager.Spawn();
-                CameraManager.Target = player.transform;
-            };
-
-            LevelGeneration.Generate(new LevelGenerationParams
-            {
-                LevelType   = LevelType,
-                LevelSize   = LevelSize,
-                PropChance  = PropChance,
-                EnemyChance = EnemyChance,
-                BiomeConfig = BiomeConfig,
-                EnemyPool   = EnemyPool,
-                PropPool    = PropPool
-            }, OnLevelGenerated);
-        }
-        */
 
         [Command("generate")]
         public static async Task Generate()
@@ -183,21 +158,43 @@ namespace Catacumba.LevelGen
             }, ELevelLayer.Enemies);
         }
 
-        [Command("spawn_props")]
-        public static void SpawnProps()
+        [Command("spawn_boss")]
+        public async static void SpawnBoss(CharacterConfiguration boss)
         {
-            SpawnProps(Params.PropPool);
+            bool hasEnded = false;
+            QuantumConsole.Instance.StartCoroutine(
+                LevelGenerationMesh.RunSteps(new ILevelGenerationMeshStep[] { new LevelGenerationMeshStepBoss(boss) },
+                                             Level, BiomeConfig, LevelObject, () => { hasEnded = true; } )
+            );
+
+            while (!hasEnded)
+                await Task.Delay(100);
+        }
+
+        [Command("spawn_props")]
+        public static async Task SpawnProps()
+        {
+            await SpawnProps(Params.PropPool);
         }
 
         [Command("spawn_props")]
         [CommandDescription("Spawns props according to prop cells in the current level.")]
-        public static void SpawnProps(CharacterPool characterPool)
+        public static async Task SpawnProps(CharacterPool characterPool)
         {
             if (Level == null || LevelObject == null)
             {
                 Log("No level generated. Generate and spawn a level before spawning characters.");
                 return;
             }
+
+            bool hasEnded = false;
+            QuantumConsole.Instance.StartCoroutine(
+                LevelGenerationMesh.RunSteps(new ILevelGenerationMeshStep[] { new LevelGenerationMeshStepProps() },
+                                             Level, BiomeConfig, LevelObject, () => { hasEnded = true; } )
+            );
+
+            while (!hasEnded)
+                await Task.Delay(100);
 
             Vector3 cellSize = Params.BiomeConfig.CellSize();
 
@@ -236,6 +233,7 @@ namespace Catacumba.LevelGen
             GameObject player = CharacterManager.SpawnPlayer(characterConfiguration, worldPosition);
 
             Log($"Player spawned at {worldPosition}");
+            CameraManager.Target = player.transform;
             return player;
         }
 
