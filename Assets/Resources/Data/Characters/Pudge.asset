@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
-  m_Name: Enemy_Goblin_Weak
+  m_Name: Pudge
   m_EditorClassIdentifier: 
-  Stats: {fileID: 11400000, guid: 282ce180d6f3db34fb65e3c1032c3304, type: 2}
-  Inventory: {fileID: 11400000, guid: 0c3d9513ab4f24044aee499b5bd29df4, type: 2}
+  Stats: {fileID: 11400000, guid: 1f8603209840e4747add6961d70dd4af, type: 2}
+  Inventory: {fileID: 11400000, guid: a226293bcaaae4843a573cd0e14d0abb, type: 2}
   Skills: {fileID: 0}
-  View: {fileID: 11400000, guid: 28f6cacecab4ccb46ab95ecc2116e719, type: 2}
+  View: {fileID: 11400000, guid: 3d26a77b5ae227c4385a53f259fb25c0, type: 2}
+  Components: {fileID: 11400000, guid: 617b52b71d036214d8198343510f32dc, type: 2}

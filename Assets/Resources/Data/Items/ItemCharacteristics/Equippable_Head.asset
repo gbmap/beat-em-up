@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Equippable_Head
   m_EditorClassIdentifier: 
   Slots:
-  - {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
+  - BodyPart: {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
+    ModelOffset: {fileID: 11400000, guid: 53a278a40f545ac4788148c1c32c47b0, type: 2}
