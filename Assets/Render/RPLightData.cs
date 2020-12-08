@@ -12,7 +12,7 @@ namespace Catacumba.Rendering
 
         static int ID_LIGHT_COLORS     = Shader.PropertyToID("_LightColors"),
                    ID_LIGHT_DIRECTIONS = Shader.PropertyToID("_LightDirections"),
-                   ID_LIGHT_SHADOW_MAP = Shader.PropertyToID("_LightShadowData"),
+                   ID_LIGHT_SHADOW_MAP = Shader.PropertyToID("_LightShadowsData"),
                    ID_LIGHT_COUNT      = Shader.PropertyToID("_LightCount");
 
         static Vector4[] _otherLightColors      = new Vector4[MAX_OTHER_LIGHTS],
@@ -111,7 +111,7 @@ namespace Catacumba.Rendering
             position.w = 1f / Mathf.Max(light.range * light.range, 0.00001f);
             _otherLightColors[lightCount]     = light.finalColor;
             _otherLightPositions[lightCount]  = position;
-            //_otherLightShadowData[lightCount] = shadows.ReserveDirectionalShadows(light.light, lightCount);
+            _otherLightShadowData[lightCount] = new Vector4(light.range, 0.0f, 0.0f, 0.0f);
         }
 
         void SendLightDataToGPU(

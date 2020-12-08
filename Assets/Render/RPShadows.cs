@@ -41,7 +41,8 @@ namespace Catacumba.Rendering
             ShadowedDirectionalLightCount = 0;
         }
 
-        public Vector2 ReserveDirectionalShadows (Light light, int visibleLightIndex) {
+        public Vector2 ReserveDirectionalShadows (Light light, int visibleLightIndex) 
+        {
             if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
                 light.shadows != LightShadows.None && light.shadowStrength > 0f &&
                 cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b)) 

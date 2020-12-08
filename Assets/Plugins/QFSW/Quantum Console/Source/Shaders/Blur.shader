@@ -17,9 +17,9 @@ Shader "QFSW/Blur"
 	Blend SrcAlpha OneMinusSrcAlpha
 	SubShader{
 
-	GrabPass{
-	Tags{ "LightMode" = "Always" }
-	}
+	//GrabPass{
+	//Tags{ "LightMode" = "Always" }
+	//}
 	Pass{
 	Tags{ "LightMode" = "Always" }
 
@@ -58,8 +58,8 @@ Shader "QFSW/Blur"
 		return o;
 	}
 
-	sampler2D _GrabTexture;
-	float4 _GrabTexture_TexelSize;
+	// sampler2D _GrabTexture;
+	// float4 _GrabTexture_TexelSize;
 	uniform float _Radius;
 	uniform float _BlurMultiplier = 1;
 
@@ -68,6 +68,7 @@ Shader "QFSW/Blur"
 		_Radius *= _BlurMultiplier;
 		_Radius *= i.color.a;
 		half4 sum = half4(0,0,0,0);
+		/*
 #define GRABPIXEL(weight, kernelx) tex2Dproj(_GrabTexture, UNITY_PROJ_COORD(float4(i.uvgrab.x + _GrabTexture_TexelSize.x * kernelx * _Radius, i.uvgrab.y, i.uvgrab.z, i.uvgrab.w))) * weight
 		sum += GRABPIXEL(0.05, -4.0);
 		sum += GRABPIXEL(0.09, -3.0);
@@ -78,7 +79,7 @@ Shader "QFSW/Blur"
 		sum += GRABPIXEL(0.12, +2.0);
 		sum += GRABPIXEL(0.09, +3.0);
 		sum += GRABPIXEL(0.05, +4.0);
-
+		*/
 		return sum;
 	}
 		ENDCG
@@ -124,8 +125,8 @@ Shader "QFSW/Blur"
 		return o;
 	}
 
-	sampler2D _GrabTexture;
-	float4 _GrabTexture_TexelSize;
+	// sampler2D _GrabTexture;
+	// float4 _GrabTexture_TexelSize;
 	uniform float _Radius;
 	uniform float _BlurMultiplier = 1;
 
@@ -133,6 +134,7 @@ Shader "QFSW/Blur"
 		_Radius *= _BlurMultiplier;
 		_Radius *= i.color.a;
 		half4 sum = half4(0,0,0,0);
+		/*
 #define GRABPIXEL(weight,kernely) tex2Dproj( _GrabTexture, UNITY_PROJ_COORD(float4(i.uvgrab.x, i.uvgrab.y + _GrabTexture_TexelSize.y * kernely*_Radius, i.uvgrab.z, i.uvgrab.w))) * weight
 
 		sum += GRABPIXEL(0.05, -4.0);
@@ -144,7 +146,7 @@ Shader "QFSW/Blur"
 		sum += GRABPIXEL(0.12, +2.0);
 		sum += GRABPIXEL(0.09, +3.0);
 		sum += GRABPIXEL(0.05, +4.0);
-
+		*/
 		return sum;
 	}
 		ENDCG
@@ -195,20 +197,20 @@ Shader "QFSW/Blur"
 
 	fixed4 _Color;
 	fixed4 _OverlayColor;
-	sampler2D _GrabTexture;
-	float4 _GrabTexture_TexelSize;
+	// sampler2D _GrabTexture;
+	// float4 _GrabTexture_TexelSize;
 	sampler2D _MainTex;
 
 	half4 frag(v2f i) : COLOR
 	{
-		half4 blurredCol = tex2Dproj(_GrabTexture, UNITY_PROJ_COORD(i.uvgrab)); // Gets the color of what is behind it and blurred
+		// half4 blurredCol = tex2Dproj(_GrabTexture, UNITY_PROJ_COORD(i.uvgrab)); // Gets the color of what is behind it and blurred
 		half4 texCol = tex2D(_MainTex, i.uvmain); // Gets the color of the supplied texture
 		half4 tint = texCol * _Color; // Gets the tint color to apply
 
-		half4 col = blurredCol * tint; // Tints the color
+		half4 col = tint; // Tints the color
 		col = col * (1 - _OverlayColor.a) + _OverlayColor * _OverlayColor.a; // Blends it with the overlay color
 		col *= i.color;
-		col = blurredCol * (1 - texCol.a) + col * texCol.a; // Blends it using the tex color so transparent regions stay transparent
+		//col = blurredCol * (1 - texCol.a) + col * texCol.a; // Blends it using the tex color so transparent regions stay transparent
 		
 		return col;
 	}

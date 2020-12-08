@@ -32,7 +32,7 @@ CBUFFER_START(_LightData)
     int    _LightCount;
     float4 _LightColors[MAX_LIGHTS];
     float4 _LightDirections[MAX_LIGHTS];
-    float4 _LightShadowData[MAX_LIGHTS];
+    float4 _LightShadowsData[MAX_LIGHTS];
 
     int    _OtherLightCount;
     float4 _OtherLightColors[MAX_OTHER_LIGHTS];
@@ -61,38 +61,51 @@ float4 selectEffectColor(float v, float4 vertWorld, float3 n, float t)
     return float4(1.6, 0.6, 0.3, 0.0) * v * pow(0.1, intensity);
 }
 
-float3 other_lights(float3 color, float3 normalWS, float3 vertWS)
+float light_distance_factor(float3 lightToVertex, float d)
 {
-    for (int i = 0; i < _OtherLightCount; i++)
-    {
-        float3 ldir = normalize(vertWS - _OtherLightPositions[i]);
-        float  a      = 1.0 -  step(0.6, (dot(ldir, normalWS) + 1.0)/2.0);
-        color  = lerp(unity_FogColor.xyz, color, a);
-    }
-    return color;
+    return 1. - step(d, length(lightToVertex));
 }
 
-float3 directional_lights(float3 color, float3 normalWS, float3 vertWS)
+float other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
+{
+    a = 0.0;
+    color = 0.0;
+    for (int i = 0; i < _OtherLightCount; i++)
+    {
+        float lrange = _OtherLightShadowData[i].x;
+        float3 ldelta = vertWS - _OtherLightPositions[i];
+        float ldotn = -dot(normalize(ldelta), normalWS);
+        float distF = light_distance_factor(ldelta, lrange);
+        a = max(a, step(0., ldotn) * distF);
+        color += _OtherLightColors[i] * step(0.8, ldotn*light_distance_factor(ldelta, lrange*0.8));
+    }
+    return a;
+}
+
+float directional_lights(float3 normalWS, float3 vertWS)
 {
     float shadow = .0;
     float a = .0;
     for (int i = 0; i < _LightCount; i++)
     {
         float3 ldir   = _LightDirections[i].xyz;
-        a      = max(a, 1.0 - step(0.5, (dot(ldir, normalWS) + 1.0)/2.0));
-        shadow = max(shadow, GetShadowAttenuation(i, vertWS));
+        //a      = max(a, (max(0., dot(ldir, normalWS)))));
+        //shadow = max(shadow, GetShadowAttenuation(i, vertWS) * _LightShadowsData[i].x);
     }
-    color = lerp(lerp(color, unity_FogColor.xyz,.9), color, min(a, shadow));
-    return color;
+
+    return a;
+    //color = lerp(lerp(color, unity_FogColor.xyz,.9), color, min(a, shadow));
+    //return color;
 }
  
 float3 lighting(float3 color, float3 normalWS, float3 vertWS)
  {
     float3 normal = TransformWorldToObject(normalWS);
-    //return normalWS;
-    color = directional_lights(color, normalize(normalWS), vertWS);
-    color = other_lights(color, normalWS, vertWS);
-    return color;
+    float a = 0.0;
+    float3 lightClr = float3(0.0, 0.0, 0.0);
+    //color = directional_lights(color, normalize(normalWS), vertWS);
+    other_lights(normalWS, vertWS, a, lightClr);
+    return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 
  #endif
