@@ -12,6 +12,7 @@
         {
             Tags { 
                 "LightMode"="Entity" 
+                "Queue"="Opaque"
             }
 
             HLSLPROGRAM

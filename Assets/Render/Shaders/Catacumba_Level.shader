@@ -12,14 +12,13 @@
         {
             Tags { 
                 "LightMode"="Level" 
+                "Queue"="Opaque"
             }
 
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "Catacumba_Entity.hlsl"
-
-
             ENDHLSL
         }
 
@@ -30,7 +29,7 @@
                 "LightMode" = "ShadowCaster"
             }
 
-            ColorMask 0
+            //ColorMask 0
 
             HLSLPROGRAM
 			#pragma target 3.5

@@ -38,7 +38,7 @@ v2f vert(vertIN i)
     v2f o;
     o.positionCS = posCS;
     o.positionWS = posW;
-    o.normalWS = TransformObjectToWorld(i.normalOS);
+    o.normalWS = TransformObjectToWorldNormal(i.normalOS);
     o.uv = i.uv;
 
     return o;

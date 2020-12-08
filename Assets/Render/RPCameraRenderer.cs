@@ -55,9 +55,14 @@ namespace Catacumba.Rendering
             buffer.EndSample(SampleName);
 
             Setup();
+
             foreach (var shaderTagId in shaderTagIds)
-                DrawVisibleGeometry(shaderTagId);
+                DrawVisibleGeometry(shaderTagId, SortingCriteria.CommonOpaque, RenderQueueRange.opaque);
+
             context.DrawSkybox(camera);
+
+            foreach (var shaderTagId in shaderTagIds)
+                DrawVisibleGeometry(shaderTagId, SortingCriteria.CommonTransparent, RenderQueueRange.transparent);
 
             DrawUnsupportedShaders();
             DrawGizmos();
@@ -82,13 +87,16 @@ namespace Catacumba.Rendering
             ExecuteBuffer();
         }
 
-        void DrawVisibleGeometry(ShaderTagId shaderTagId) 
-        {
+        void DrawVisibleGeometry(
+            ShaderTagId shaderTagId,
+            SortingCriteria sortingCriteria,
+            RenderQueueRange renderQueueRange
+        ) {
             var sortingSettings   = new SortingSettings(camera) {
-                criteria = SortingCriteria.CommonOpaque
+                criteria = sortingCriteria
             };
             var drawingSettings   = new DrawingSettings(shaderTagId, sortingSettings);
-            var filteringSettings = new FilteringSettings(RenderQueueRange.all);
+            var filteringSettings = new FilteringSettings(renderQueueRange);
 
             context.DrawRenderers(
                 cullingResults, ref drawingSettings, ref filteringSettings

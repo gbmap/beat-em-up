@@ -59,12 +59,12 @@ namespace Catacumba.Effects
 
         public void SetHealth(MonoBehaviour component, float value)
         {
-            SetFloat(component, "_Health", value);
+            SetFloat(component, "_HealthPercentage", value);
         }
 
         public void SetStamina(MonoBehaviour component, float value)
         {
-            SetFloat(component, "_Poise", value);
+            SetFloat(component, "_PoisePercentage", value);
         }
 
         private void SetColor(Renderer quad, Color color)
@@ -96,7 +96,7 @@ namespace Catacumba.Effects
 
             quad.transform.parent = component.transform;
             quad.transform.localPosition = Vector3.zero;
-            quad.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+            quad.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
             Vector3 scale = new Vector3(renderer.bounds.size.x * 2f, renderer.bounds.size.z * 2f, 1f);
             quad.transform.localScale = scale;

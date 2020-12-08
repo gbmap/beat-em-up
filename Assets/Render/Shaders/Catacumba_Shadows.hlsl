@@ -4,6 +4,7 @@
 
 #define MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT 4
 
+
 TEXTURE2D_SHADOW(_ShadowAtlas);
 #define SHADOW_SAMPLER sampler_linear_clamp_compare
 SAMPLER_CMP(SHADOW_SAMPLER);

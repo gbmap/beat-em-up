@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: CatacumbaRenderPipeline
   m_EditorClassIdentifier: 
   shadows:
-    maxDistance: 20
+    maxDistance: 40
     directional:
       atlasSize: 1024

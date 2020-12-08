@@ -7,14 +7,26 @@ namespace Catacumba.Rendering
 {
     public class RPLightData 
     {
-        const int MAX_LIGHTS = 4;
-        static int ID_LIGHT_COLORS = Shader.PropertyToID("_LightColors");
-        static int ID_LIGHT_DIRECTIONS = Shader.PropertyToID("_LightDirections");
-        static int ID_LIGHT_SHADOW_MAP = Shader.PropertyToID("_LightShadowData");
+        const int MAX_LIGHTS       = 4,
+                  MAX_OTHER_LIGHTS = 8;
 
-        Vector4[] _lightColors     = new Vector4[MAX_LIGHTS];
-        Vector4[] _lightDirections = new Vector4[MAX_LIGHTS];
-        Vector4[] _lightShadowData = new Vector4[MAX_LIGHTS];
+        static int ID_LIGHT_COLORS     = Shader.PropertyToID("_LightColors"),
+                   ID_LIGHT_DIRECTIONS = Shader.PropertyToID("_LightDirections"),
+                   ID_LIGHT_SHADOW_MAP = Shader.PropertyToID("_LightShadowData"),
+                   ID_LIGHT_COUNT      = Shader.PropertyToID("_LightCount");
+
+        static Vector4[] _otherLightColors      = new Vector4[MAX_OTHER_LIGHTS],
+                         _otherLightPositions   = new Vector4[MAX_OTHER_LIGHTS],
+                         _otherLightShadowData  = new Vector4[MAX_OTHER_LIGHTS];
+
+        static int ID_OTHER_LIGHT_COUNT      = Shader.PropertyToID("_OtherLightCount"),
+                   ID_OTHER_LIGHT_COLORS     = Shader.PropertyToID("_OtherLightColors"),
+                   ID_OTHER_LIGHT_SHADOW_MAP = Shader.PropertyToID("_OtherLightShadowData"),
+                   ID_OTHER_LIGHT_POSITIONS  = Shader.PropertyToID("_OtherLightPositions");
+
+        static Vector4[] _lightColors     = new Vector4[MAX_LIGHTS],
+                         _lightDirections = new Vector4[MAX_LIGHTS],
+                         _lightShadowData = new Vector4[MAX_LIGHTS];
 
         RPShadows shadows = new RPShadows();
 
@@ -35,8 +47,7 @@ namespace Catacumba.Rendering
             ScriptableRenderContext context,
             CullingResults cull,
             ShadowSettings settings
-        )
-        {
+        ) {
             cullingResults = cull;
 
             buffer.BeginSample(bufferName);
@@ -51,43 +62,81 @@ namespace Catacumba.Rendering
         public void UpdateLightData(
             ScriptableRenderContext context, 
             CullingResults cull
-        )
-        {
-            GetLightData(cull, shadows, ref _lightDirections, ref _lightColors, ref _lightShadowData);
-            SendLightDataToGPU(context, _lightDirections, _lightColors, _lightShadowData);
+        ) {
+            int lightCount, otherLightCount;
+            GetLightData(cull, out lightCount, out otherLightCount);
+            SendLightDataToGPU(context, lightCount, otherLightCount);
         }
 
         void GetLightData(
             CullingResults cull, 
-            RPShadows shadows,
-            ref Vector4[] lightDirections, 
-            ref Vector4[] lightColors,
-            ref Vector4[] lightShadowData
+            out int lightCount, 
+            out int otherLightCount
         ) {
-            for (int i = 0; i < Mathf.Min(lightColors.Length, cull.visibleLights.Length); i++) {
+            lightCount = 0;
+            otherLightCount = 0;
+            for (int i = 0; i < cull.visibleLights.Length; i++) 
+            {
                 VisibleLight light = cull.visibleLights[i];
-
-                Vector3 fwd = light.light.transform.forward;
-                Vector4 lightPos = new Vector4(fwd.x, -fwd.y, fwd.z, 1.0f);
-
-                lightColors    [i] = light.finalColor;
-                lightDirections[i] = lightPos;
-                lightShadowData[i] = shadows.ReserveDirectionalShadows(light.light, i);
+                switch (light.lightType)
+                {
+                    case LightType.Directional:
+                    {
+                        if (lightCount < MAX_LIGHTS)
+                            GetDirectionalLightData(lightCount++, ref light);
+                        break;
+                    }
+                    case LightType.Point:
+                    {
+                        if (otherLightCount < MAX_OTHER_LIGHTS)
+                            GetOtherLightData(otherLightCount++, ref light);
+                        break;
+                    }
+                }
             }
         }
 
-        void SendLightDataToGPU(ScriptableRenderContext context, 
-                                Vector4[] lightDirections, 
-                                Vector4[] lightColors, 
-                                Vector4[] lightShadowmaps)
+        void GetDirectionalLightData(int lightCount, ref VisibleLight light)
         {
-            buffer.SetGlobalVectorArray(ID_LIGHT_DIRECTIONS, lightDirections);
-            buffer.SetGlobalVectorArray(ID_LIGHT_COLORS, lightColors);
-            buffer.SetGlobalVectorArray(ID_LIGHT_SHADOW_MAP, lightShadowmaps);
+            Vector3 fwd = light.light.transform.forward;
+            Vector4 lightPos = new Vector4(fwd.x, fwd.y, fwd.z, 1.0f);
+            _lightColors[lightCount]     = light.finalColor;
+            _lightDirections[lightCount] = lightPos;
+            _lightShadowData[lightCount] = shadows.ReserveDirectionalShadows(light.light, lightCount);
+        }
+
+        void GetOtherLightData(int lightCount, ref VisibleLight light)
+        {
+            Vector4 position = light.localToWorldMatrix.GetColumn(3);
+            position.w = 1f / Mathf.Max(light.range * light.range, 0.00001f);
+            _otherLightColors[lightCount]     = light.finalColor;
+            _otherLightPositions[lightCount]  = position;
+            //_otherLightShadowData[lightCount] = shadows.ReserveDirectionalShadows(light.light, lightCount);
+        }
+
+        void SendLightDataToGPU(
+            ScriptableRenderContext context,
+            int lightCount,
+            int otherLightCount
+        ) {
+            buffer.SetGlobalInt(ID_LIGHT_COUNT, lightCount);
+            if (lightCount > 0)
+            {
+                buffer.SetGlobalVectorArray(ID_LIGHT_DIRECTIONS, _lightDirections);
+                buffer.SetGlobalVectorArray(ID_LIGHT_COLORS,     _lightColors);
+                buffer.SetGlobalVectorArray(ID_LIGHT_SHADOW_MAP, _lightShadowData);
+            }
+
+            buffer.SetGlobalInt(ID_OTHER_LIGHT_COUNT, otherLightCount);
+            if (otherLightCount > 0)
+            {
+                buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_POSITIONS,  _otherLightPositions);
+                buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_COLORS,     _otherLightColors);
+                buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_SHADOW_MAP, _otherLightShadowData);
+            }
 
             context.ExecuteCommandBuffer(buffer);
 
-            //buffer.Release();
             context.Submit();
         }
 
