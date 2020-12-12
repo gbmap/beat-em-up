@@ -47,8 +47,8 @@ v2f vert(vertIN i)
 float4 frag(v2f i) : SV_TARGET
 {
     float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv); 
-    color += healthEffectColor(_HitFactor);
     color.xyz = lighting(color, i.normalWS, i.positionWS);
+    color += healthEffectColor(_HitFactor);
     color += selectEffectColor(_Selected, i.positionCS, i.normalWS, _Time.y);
     return color;  
 }
