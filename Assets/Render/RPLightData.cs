@@ -8,25 +8,26 @@ namespace Catacumba.Rendering
     public class RPLightData 
     {
         const int MAX_LIGHTS       = 4,
-                  MAX_OTHER_LIGHTS = 8;
+                  MAX_OTHER_LIGHTS = 6*12;
 
-        static int ID_LIGHT_COLORS     = Shader.PropertyToID("_LightColors"),
-                   ID_LIGHT_DIRECTIONS = Shader.PropertyToID("_LightDirections"),
-                   ID_LIGHT_SHADOW_MAP = Shader.PropertyToID("_LightShadowsData"),
-                   ID_LIGHT_COUNT      = Shader.PropertyToID("_LightCount");
+        int ID_LIGHT_COLORS              = Shader.PropertyToID("_LightColors"),
+            ID_LIGHT_DIRECTIONS          = Shader.PropertyToID("_LightDirections"),
+            ID_LIGHT_SHADOW_MAP          = Shader.PropertyToID("_LightShadowsData"),
+            ID_LIGHT_COUNT               = Shader.PropertyToID("_LightCount"),
 
-        static Vector4[] _otherLightColors      = new Vector4[MAX_OTHER_LIGHTS],
-                         _otherLightPositions   = new Vector4[MAX_OTHER_LIGHTS],
-                         _otherLightShadowData  = new Vector4[MAX_OTHER_LIGHTS];
+            ID_OTHER_LIGHT_COUNT         = Shader.PropertyToID("_OtherLightCount"),
+            ID_OTHER_LIGHT_COLORS        = Shader.PropertyToID("_OtherLightColors"),
+            ID_OTHER_LIGHT_DATA          = Shader.PropertyToID("_OtherLightData"),
+            ID_OTHER_LIGHT_SHADOW_MAP    = Shader.PropertyToID("_OtherLightShadowData"),
+            ID_OTHER_LIGHT_POSITIONS     = Shader.PropertyToID("_OtherLightPositions");
 
-        static int ID_OTHER_LIGHT_COUNT      = Shader.PropertyToID("_OtherLightCount"),
-                   ID_OTHER_LIGHT_COLORS     = Shader.PropertyToID("_OtherLightColors"),
-                   ID_OTHER_LIGHT_SHADOW_MAP = Shader.PropertyToID("_OtherLightShadowData"),
-                   ID_OTHER_LIGHT_POSITIONS  = Shader.PropertyToID("_OtherLightPositions");
-
-        static Vector4[] _lightColors     = new Vector4[MAX_LIGHTS],
-                         _lightDirections = new Vector4[MAX_LIGHTS],
-                         _lightShadowData = new Vector4[MAX_LIGHTS];
+        Vector4[] _lightColors           = new Vector4[MAX_LIGHTS],
+                  _lightDirections       = new Vector4[MAX_LIGHTS],
+                  _lightShadowData       = new Vector4[MAX_LIGHTS],
+                  _otherLightColors      = new Vector4[MAX_OTHER_LIGHTS],
+                  _otherLightPositions   = new Vector4[MAX_OTHER_LIGHTS],
+                  _otherLightData        = new Vector4[MAX_OTHER_LIGHTS],
+                  _otherLightShadowData  = new Vector4[MAX_OTHER_LIGHTS];
 
         RPShadows shadows = new RPShadows();
 
@@ -83,35 +84,43 @@ namespace Catacumba.Rendering
                     case LightType.Directional:
                     {
                         if (lightCount < MAX_LIGHTS)
-                            GetDirectionalLightData(lightCount++, ref light);
+                            GetDirectionalLightData(lightCount++, i, ref light);
                         break;
                     }
                     case LightType.Point:
                     {
                         if (otherLightCount < MAX_OTHER_LIGHTS)
-                            GetOtherLightData(otherLightCount++, ref light);
+                            if (GetOtherLightData(otherLightCount, i, ref light))
+                                otherLightCount++;
                         break;
                     }
                 }
             }
         }
 
-        void GetDirectionalLightData(int lightCount, ref VisibleLight light)
+        void GetDirectionalLightData(int lightCount, int index, ref VisibleLight light)
         {
             Vector3 fwd = light.light.transform.forward;
             Vector4 lightPos = new Vector4(fwd.x, fwd.y, fwd.z, 1.0f);
             _lightColors[lightCount]     = light.finalColor;
             _lightDirections[lightCount] = lightPos;
-            _lightShadowData[lightCount] = shadows.ReserveDirectionalShadows(light.light, lightCount);
+            _lightShadowData[lightCount] = shadows.ReserveDirectionalShadows(light.light, index);
         }
 
-        void GetOtherLightData(int lightCount, ref VisibleLight light)
+        bool GetOtherLightData(int lightCount, int index, ref VisibleLight light)
         {
+            Vector4 pointShadowData = Vector4.zero;
+            bool isOnBounds = shadows.ReservePointShadows(light.light, index, out pointShadowData);
+            //if (!isOnBounds) return false;
+
             Vector4 position = light.localToWorldMatrix.GetColumn(3);
             position.w = 1f / Mathf.Max(light.range * light.range, 0.00001f);
             _otherLightColors[lightCount]     = light.finalColor;
             _otherLightPositions[lightCount]  = position;
-            _otherLightShadowData[lightCount] = new Vector4(light.range, 0.0f, 0.0f, 0.0f);
+            _otherLightData[lightCount]       = new Vector4(light.range, 0f,0f,0f);
+            _otherLightShadowData[lightCount] = pointShadowData;
+
+            return true;
         }
 
         void SendLightDataToGPU(
@@ -133,6 +142,7 @@ namespace Catacumba.Rendering
                 buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_POSITIONS,  _otherLightPositions);
                 buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_COLORS,     _otherLightColors);
                 buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_SHADOW_MAP, _otherLightShadowData);
+                buffer.SetGlobalVectorArray(ID_OTHER_LIGHT_DATA, _otherLightData);
             }
 
             context.ExecuteCommandBuffer(buffer);

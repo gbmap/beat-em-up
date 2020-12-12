@@ -13,6 +13,11 @@ namespace Catacumba.Rendering
             public TextureSize atlasSize;
         }
 
+        public struct Point {
+            public TextureSize atlasSize;
+            public float filter;
+        }
+
         public enum TextureSize {
             _256 = 256, _512 = 512, _1024 = 1024,
             _2048 = 2048, _4096 = 4096, _8192 = 8192
@@ -23,6 +28,11 @@ namespace Catacumba.Rendering
 
         public Directional directional = new Directional {
             atlasSize = TextureSize._1024
+        };
+
+        public Point point = new Point {
+            atlasSize = TextureSize._1024,
+            filter = 1f
         };
     }
     

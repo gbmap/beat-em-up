@@ -26,7 +26,7 @@ CBUFFER_END
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
 
 #define MAX_LIGHTS 4
-#define MAX_OTHER_LIGHTS 8
+#define MAX_OTHER_LIGHTS 6*12 
 
 CBUFFER_START(_LightData)
     int    _LightCount;
@@ -37,6 +37,7 @@ CBUFFER_START(_LightData)
     int    _OtherLightCount;
     float4 _OtherLightColors[MAX_OTHER_LIGHTS];
     float4 _OtherLightPositions[MAX_OTHER_LIGHTS];
+    float4 _OtherLightData[MAX_OTHER_LIGHTS];
     float4 _OtherLightShadowData[MAX_OTHER_LIGHTS];
 CBUFFER_END
 
@@ -72,12 +73,25 @@ float other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color
     color = 0.0;
     for (int i = 0; i < _OtherLightCount; i++)
     {
-        float lrange = _OtherLightShadowData[i].x;
+        float  lrange = _OtherLightData[i].x;
         float3 ldelta = vertWS - _OtherLightPositions[i];
-        float ldotn = -dot(normalize(ldelta), normalWS);
-        float distF = light_distance_factor(ldelta, lrange);
-        a = max(a, step(0., ldotn) * distF);
-        color += _OtherLightColors[i] * step(0.8, ldotn*light_distance_factor(ldelta, lrange*0.8));
+        float  ldotn  = -dot(normalize(ldelta), normalWS);
+
+        // clamps light if too far 
+        float  distF  = light_distance_factor(ldelta, lrange);
+
+        // shadow attenuation
+        float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, distF);
+              sa = step(0.5, sa);
+              //sa = smoothstep(0.0, 0.55, sa) * sa;
+
+        // light clamping based on distance 
+        float lclamp = max(a, step(0., ldotn) * distF); 
+
+        a = lerp(a, sa, 0.5);
+
+        float lcolor = 0.5 - smoothstep(0.0, 20.0, lrange)*0.4;
+        color += _OtherLightColors[i] * step(lcolor, ldotn*light_distance_factor(ldelta, lrange*0.8));
     }
     return a;
 }
@@ -103,8 +117,10 @@ float3 lighting(float3 color, float3 normalWS, float3 vertWS)
     float3 normal = TransformWorldToObject(normalWS);
     float a = 0.0;
     float3 lightClr = float3(0.0, 0.0, 0.0);
-    //color = directional_lights(color, normalize(normalWS), vertWS);
+
     other_lights(normalWS, vertWS, a, lightClr);
+
+    //return lightClr;
     return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 
