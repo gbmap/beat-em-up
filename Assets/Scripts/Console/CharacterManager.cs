@@ -112,9 +112,15 @@ namespace Catacumba.Entity
             interact.TargetLayer = (1 << LayerMask.NameToLayer("Level")) | 
                                    (1 << LayerMask.NameToLayer("Item") | 
                                    (1 << LayerMask.NameToLayer("Entities")));
+
+            GameObject light = new GameObject("Light");
+            Light l = light.AddComponent<Light>();
+            l.range = 5f;
+            l.color = Color.black;
+            l.transform.parent = data.transform;
+            l.transform.localPosition = Vector3.up * 1.25f;
             return data.gameObject;
         }
-
 
         ////////////////////////////////////////
         //      MISC

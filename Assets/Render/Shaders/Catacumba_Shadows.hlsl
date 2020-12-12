@@ -44,7 +44,7 @@ float SamplePointShadowAtlas (float3 positionSTS, float3 bounds) {
 	);
 }
 
-float GetPointShadowAttenuation(
+float SamplePointShadowAttenuation(
     int tileIndex, 
     float3 posWS, 
     float3 normalWS, 
@@ -62,9 +62,22 @@ float GetPointShadowAttenuation(
     float3 normalBias = normalWS * (dist2Plane * tileData.w);
 
     float4 posSTS = mul(_ShadowPointMatrices[tileIndex], float4(posWS + normalBias, 1.0));
+    
+    float s1 = SamplePointShadowAtlas(posSTS.xyz/posSTS.w, tileData.xyz);
+    return s1 * lightDistanceFactor;
 
-    float pointShadowSample = SamplePointShadowAtlas(posSTS.xyz/posSTS.w, tileData.xyz);
-    return pointShadowSample * lightDistanceFactor;
+}
+
+float GetPointShadowAttenuation(
+    int tileIndex, 
+    float3 posWS, 
+    float3 normalWS, 
+    float3 lightDirectionWS,
+    float lightDistanceFactor)
+{
+    float3 pos = posWS;
+    float sa = SamplePointShadowAttenuation(tileIndex, pos, normalWS, lightDirectionWS, lightDistanceFactor); 
+    return sa;
 }
 
 

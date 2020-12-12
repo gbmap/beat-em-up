@@ -111,7 +111,7 @@ namespace Catacumba.Rendering
         {
             Vector4 pointShadowData = Vector4.zero;
             bool isOnBounds = shadows.ReservePointShadows(light.light, index, out pointShadowData);
-            //if (!isOnBounds) return false;
+            if (!isOnBounds) return false;
 
             Vector4 position = light.localToWorldMatrix.GetColumn(3);
             position.w = 1f / Mathf.Max(light.range * light.range, 0.00001f);

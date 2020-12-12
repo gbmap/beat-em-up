@@ -13,5 +13,5 @@ camera.spawn
 
 level.spawn_player Goblin_Swordsman
 level.spawn_props
-level.spawn_enemies
-level.spawn_boss Pudge
+//level.spawn_enemies
+//level.spawn_boss Pudge

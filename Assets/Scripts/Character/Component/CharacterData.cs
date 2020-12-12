@@ -155,7 +155,7 @@ namespace Catacumba.Entity
             SetupCharacterStats();
             SetupCharacterComponentsCache();
 
-            if (ConfigurationView != null && transform.childCount == 0)
+            if (ConfigurationView != null)
                 ConfigurationView.Configure(this);
             
             OnCharacterConfigurationEnded();

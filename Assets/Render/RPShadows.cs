@@ -19,9 +19,6 @@ namespace Catacumba.Rendering
 
         struct ShadowedOtherLight {
             public int visibleLightIndex;
-            public float slopeScaleBias;
-            public float normalBias;
-            public bool isPoint;
         }
 
         ShadowedOtherLight[] shadowedOtherLights =
@@ -100,9 +97,6 @@ namespace Catacumba.Rendering
 
             shadowedOtherLights[ShadowedPointLightCount] = new ShadowedOtherLight {
                 visibleLightIndex = visibleLightIndex,
-                slopeScaleBias = 0.039f, //light.shadowBias,
-                normalBias = 0.17f, //light.shadowNormalBias,
-                isPoint = true
             };
 
             data = new Vector4(
@@ -216,6 +210,7 @@ namespace Catacumba.Rendering
 
         int GetTileSplits(int lightCount)
         {
+            lightCount = maxShadowedPointLightCount;
             return Mathf.CeilToInt(Mathf.Sqrt(lightCount));
             /*
             if (lightCount <= 1) { return 1; }
@@ -232,7 +227,7 @@ namespace Catacumba.Rendering
                 new ShadowDrawingSettings(cullingResults, light.visibleLightIndex);
             float texelSize = 2f / tileSize;
             float filterSize = texelSize * ((float)settings.point.filter + 1f);
-            float bias = light.normalBias * filterSize * 1.4142136f;
+            float bias = settings.point.normalBias * filterSize * 1.4142136f;
             float tileScale = 1f / split;
             float fovBias = Mathf.Atan(1f + bias + filterSize) * Mathf.Rad2Deg * 2f - 90f;
             for (int i = 0; i < 6; i++) {
@@ -254,7 +249,7 @@ namespace Catacumba.Rendering
                 );
 
                 buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
-                buffer.SetGlobalDepthBias(0f, light.slopeScaleBias);
+                buffer.SetGlobalDepthBias(0f, settings.point.slopeScaleBias);
                 ExecuteBuffer();
                 context.DrawShadows(ref shadowSettings);
                 buffer.SetGlobalDepthBias(0f, 0f);

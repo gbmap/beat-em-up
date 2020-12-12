@@ -13,9 +13,16 @@ namespace Catacumba.Rendering
             public TextureSize atlasSize;
         }
 
-        public struct Point {
+        [System.Serializable]
+        public class Point {
             public TextureSize atlasSize;
             public float filter;
+
+            [Range(0f, 2f)]
+            public float slopeScaleBias = 0.039f;
+
+            [Range(0f, 2f)]
+            public float normalBias = 0.17f;
         }
 
         public enum TextureSize {
@@ -34,6 +41,7 @@ namespace Catacumba.Rendering
             atlasSize = TextureSize._1024,
             filter = 1f
         };
+
     }
     
     [CreateAssetMenu(menuName="Rendering/Catacumba Rendering Pipeline", fileName="CatacumbaRenderPipeline")]

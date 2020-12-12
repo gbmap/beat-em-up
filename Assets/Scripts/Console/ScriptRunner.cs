@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using QFSW.QC;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Catacumba
 {
@@ -12,6 +13,9 @@ namespace Catacumba
         [Command("run_commands")]
         public static async Task Run(string[] commands)
         {
+            commands = commands.Where(c => c.Length > 2)
+                               .Where(c => c.Substring(0, 2) != "//")
+                               .ToArray();
             await QuantumConsole.Instance.InvokeCommandsAsync(commands);
         }
 
