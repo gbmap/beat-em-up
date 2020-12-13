@@ -73,7 +73,15 @@ namespace Catacumba.Data
                 anim = modelInstance.AddComponent<Animator>();
 
             anim.runtimeAnimatorController = animationConfig.AnimatorController;
-            anim.avatar = modelPrefab.GetComponent<Animator>()?.avatar ?? animationConfig.Avatar;
+
+            Avatar avatar = null;
+            Animator prefabAnim = modelPrefab.GetComponent<Animator>();
+            if (prefabAnim && prefabAnim.avatar)
+                avatar = prefabAnim.avatar;
+            else if (animationConfig.Avatar)
+                avatar = animationConfig.Avatar;
+
+            anim.avatar = avatar;
             anim.applyRootMotion = false;
 
             // maybe we should remove this

@@ -262,6 +262,11 @@ namespace Catacumba.Entity
                     if (Weapon && data)
                         Weapon.DebugDraw(data, LastAttackData.Type);
                 }
+                else
+                {
+                    if (Weapon && data)
+                        Weapon.DebugDraw(data, EAttackType.Weak);
+                }
             }
             catch { }
         }

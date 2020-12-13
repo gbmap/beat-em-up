@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50194bcaede13cb43b09e1700f466f51, type: 3}
-  m_Name: AttackColliderSize_Default
+  m_Name: AttackCollider_Trap
   m_EditorClassIdentifier: 
-  Size: {x: 1, y: 1, z: 1}
+  OrientationOffset: {x: 0, y: 0, z: 0}
+  Size: {x: 0.88, y: 3, z: 1.95}

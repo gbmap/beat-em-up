@@ -53,7 +53,7 @@ namespace Catacumba.Data
             };
 
             if (inventory == null)
-                inventory = Resources.Load<Inventory>("Data/Items/Inventory/Inventory_Humanoid");
+                inventory = Resources.Load<Inventory>("Data/Items/Inventory/Inventory_Empty");
             Inventory = ScriptableObject.Instantiate(inventory);
 
             Health          = MaxHealth;

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
+  m_Name: Trap_Spikes
+  m_EditorClassIdentifier: 
+  Stats: {fileID: 11400000, guid: 2b8343d5306be204886bbe29ffdf9da6, type: 2}
+  Inventory: {fileID: 11400000, guid: 790bad7ffb62a0d448ee50d63db73c14, type: 2}
+  Skills: {fileID: 0}
+  View: {fileID: 11400000, guid: e2b86ec4d8366ba4c8bcd87943c19421, type: 2}
+  Components: {fileID: 11400000, guid: c8d0a89c3ab68614db307a907e863f8a, type: 2}

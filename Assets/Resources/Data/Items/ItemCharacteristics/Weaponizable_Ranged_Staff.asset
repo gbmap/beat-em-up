@@ -20,6 +20,6 @@ MonoBehaviour:
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 0}
   WeaponType: {fileID: 11400000, guid: 17001ec7eba301b488e974f65b9b33a0, type: 2}
-  AttackColliderSize: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
+  AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
   Projectile: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
     type: 3}

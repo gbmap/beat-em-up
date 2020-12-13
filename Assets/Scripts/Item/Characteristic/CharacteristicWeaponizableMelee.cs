@@ -6,7 +6,8 @@ namespace Catacumba.Data.Items.Characteristics
     [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Melee", fileName = "WeaponizableMelee")]
     public class CharacteristicWeaponizableMelee : CharacteristicWeaponizable
     {
-        public AttackColliderSize AttackColliderSize;
+        public AttackCollider AttackCollider;
+        public bool IgnoreFacingDirection = false;
 
         public override AttackResult[] Attack(CharacterData character, Transform origin,  EAttackType attackType)
         {
@@ -22,7 +23,7 @@ namespace Catacumba.Data.Items.Characteristics
 
                 CharacterData defender = c.GetComponent<CharacterData>();
 
-                AttackRequest request = new AttackRequest(character, defender, attackType);
+                AttackRequest request = new AttackRequest(character, defender, attackType, IgnoreFacingDirection);
                 AttackResult attackData = CombatManager.AttackCharacter(request);
                 if (attackData == null) continue;
 
@@ -47,15 +48,17 @@ namespace Catacumba.Data.Items.Characteristics
 
         protected Vector3 GetColliderPosition(Transform origin)
         {
-            return origin.transform.position + (origin.transform.forward*1.25f + Vector3.up);
+            Vector3 up  = origin.transform.up * (1 + AttackCollider.OrientationOffset.y);
+            Vector3 fwd = origin.transform.forward * AttackCollider.OrientationOffset.z;
+            return origin.transform.position + fwd + up;
         }
 
         private Vector3 GetColliderSize(CharacterData character, EAttackType attackType)
         {
             Vector3 attackColliderSize = (Vector3.one * 0.65f + Vector3.right * 0.65f); 
-            attackColliderSize.x *= AttackColliderSize.Size.x;
-            attackColliderSize.y *= AttackColliderSize.Size.y;
-            attackColliderSize.z *= AttackColliderSize.Size.z;
+            attackColliderSize.x *= AttackCollider.Size.x;
+            attackColliderSize.y *= AttackCollider.Size.y;
+            attackColliderSize.z *= AttackCollider.Size.z;
 
             attackColliderSize *= attackType == EAttackType.Weak ? 1.0f : 1.5f;
             return (attackColliderSize + Vector3.one)/2f;
@@ -72,7 +75,7 @@ namespace Catacumba.Data.Items.Characteristics
             Gizmos.matrix = Matrix4x4.TRS(
                 GetColliderPosition(data.transform),
                 GetColliderRotation(data.transform),
-                GetColliderSize(data, type)
+                GetColliderSize(data, type)*2f
             );
             Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
         }
