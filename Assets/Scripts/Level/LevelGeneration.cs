@@ -234,10 +234,6 @@ namespace Catacumba.LevelGen
                 Parent = parent;
             else if (l.BaseSector != null)
                 Parent = l.BaseSector;
-            else
-            {  
-                Debug.LogWarning("Sector being created with no parent and no Base Sector set for the Level instance provided. If this is run by Level's constructor, this message can be ignored.");
-            }
 
             FillSector(code);
         }

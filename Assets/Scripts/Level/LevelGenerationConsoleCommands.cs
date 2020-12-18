@@ -11,22 +11,6 @@ using Catacumba.LevelGen.Mesh;
 
 namespace Catacumba.LevelGen
 {
-    public class QCBiomeParser : BasicQcParser<BiomeConfiguration>
-    {
-        public override BiomeConfiguration Parse(string value)
-        {
-            return LevelGenerationManager.LoadBiome(value);
-        }
-    }
-
-    public class QCCharacterConfigurationParser : BasicQcParser<CharacterConfiguration>
-    {
-        public override CharacterConfiguration Parse(string value)
-        {
-            return CharacterConfiguration.Load(value);
-        }
-    }
-
     [CommandPrefix("level.")]
     public static class LevelGenerationManager
     {
@@ -211,6 +195,25 @@ namespace Catacumba.LevelGen
 
                 CharacterManager.SpawnProp(propCfg.Config, worldPosition + offset);
             }, ELevelLayer.Props);
+        }
+
+        [Command("spawn_traps")]
+        public static async Task SpawnTraps(BiomeTrapConfiguration trapConfiguration)
+        {
+            if (Level == null || LevelObject == null)
+            {
+                Log("No level generated. Generate and spawn a level before spawning characters.");
+                return;
+            }
+
+            bool hasEnded = false;
+            QuantumConsole.Instance.StartCoroutine(
+                LevelGenerationMesh.RunSteps(new ILevelGenerationMeshStep[] { new LevelGenerationMeshStepTraps(trapConfiguration) },
+                                             Level, BiomeConfig, LevelObject, () => { hasEnded = true; } )
+            );
+
+            while (!hasEnded)
+                await Task.Delay(100);
         }
 
         private static float PropDistanceAdjust(float v)

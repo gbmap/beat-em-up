@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
-
-using Catacumba.Entity;
 using Catacumba.Data.Items;
+using QFSW.QC;
 
 namespace Catacumba.Data
 {
+    public class QCCharacterConfigurationParser : BasicQcParser<CharacterConfiguration>
+    {
+        public override CharacterConfiguration Parse(string value)
+        {
+            return CharacterConfiguration.Load(value);
+        }
+    }
+
     [CreateAssetMenu(menuName="Data/Character Configuration", fileName="Character_")]
     public class CharacterConfiguration : ScriptableObject
     {

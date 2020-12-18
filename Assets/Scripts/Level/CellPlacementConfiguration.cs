@@ -1,8 +1,10 @@
 using System;
 using System.Text;
+using Catacumba.LevelGen;
 using UnityEngine;
+using static Catacumba.LevelGen.LevelGeneration;
 
-namespace Catacumba.Data
+namespace Catacumba.Data.Level
 {
     [CreateAssetMenu(menuName="Data/Level/Cell Placement Configuration", fileName="CellPlacement")]
 	public class CellPlacementConfiguration : ScriptableObject
@@ -11,13 +13,28 @@ namespace Catacumba.Data
 		public int    RowWidth      = 3;            // Pattern row width
 		public bool   AllowRotation = true;         // Does the pattern should be checked with 4 90 degrees rotations? 
 
-		public string RotatePattern90Degrees()
+		public string Rotate90Degrees()
 		{
-			return RotatePattern90Degrees(Pattern, RowWidth);
+			return CellPlacementConfiguration.RotatePattern90Degrees(Pattern, RowWidth);
 		}
 
-		public string RotatePattern90Degrees(string pattern, int rowWidth, bool debug=false)
-		{
+        public bool IsPosValid(LevelGen.Level l, 
+                               Vector2Int pos, 
+                               ELevelLayer layer,
+                               ECellCode targetCell
+        ) {
+            return IsPositionValid(this, l, pos, layer, targetCell);
+        }
+
+		//////////////////////////////	
+		///	STATIC METHODS 
+		///
+
+		public static string RotatePattern90Degrees(
+				string pattern, 
+				int rowWidth, 
+				bool debug=false
+		) {
 			int w = rowWidth;
 
 			StringBuilder result = new StringBuilder(pattern);
@@ -30,7 +47,7 @@ namespace Catacumba.Data
 				int offsetX = (w-1) - y - x;
 				int offsetY = -y + x;
 
-				int index = ConvertOffsetToLinear(x+offsetX, y+offsetY);
+				int index = ConvertOffsetToLinear(x+offsetX, y+offsetY, rowWidth);
 				result[index] = v == 1 ? '1' : '0';
 
 				if (debug) {
@@ -39,10 +56,9 @@ namespace Catacumba.Data
 			}
 			return result.ToString();
 		}
-
-		public int ConvertOffsetToLinear(int x, int y)
+	
+		public static int ConvertOffsetToLinear(int x, int y, int w)
 		{
-			int w = RowWidth;
 			return x + w * y;
 		}
 
@@ -51,29 +67,84 @@ namespace Catacumba.Data
 			return new Vector2Int(index % w, Mathf.FloorToInt(index/w));
 		}
 
-		// Returns an offset from the center of the specified grid based on an index.
+        // Returns an offset from the center of the specified grid based on an index.
 		public static Vector2Int IndexToOffset(
 				string pattern,
 				int w, 
 				int index
 		) {
-			Vector2Int center   = new Vector2Int(Mathf.FloorToInt(w/2), Mathf.FloorToInt(w/2));
+			int x = Mathf.FloorToInt(w/2); 
+			Vector2Int center   = new Vector2Int(x,x);
 			Vector2Int position = IndexToPosition(index, w);
 			return position - center;
 		}
 
 		public static bool IsPositionValid(
-				string pattern, 
-			    int w, 
-			    LevelGen.Level l, 
-			    Vector2Int initialPosition
+			CellPlacementConfiguration cfg, 
+			LevelGen.Level l,
+			Vector2Int initialPosition,
+			ELevelLayer layer,
+            ECellCode cell
 		) {
+			return IsPositionValid(
+					cfg.Pattern, 
+					cfg.RowWidth, 
+					cfg.AllowRotation,
+					l, 
+					initialPosition, 
+					layer,
+                    cell
+			); 
+		}
+
+		public static bool IsPositionValid(
+			string pattern, 
+            int w, 
+			bool allowRotation,
+            LevelGen.Level l, 
+            Vector2Int initialPosition,
+			ELevelLayer layer,
+            ECellCode cell
+		) {
+
+			bool result = TestPosition(pattern, w, l, initialPosition, layer, cell);
+			if (!allowRotation)
+				return result;
+
+			for (int i = 0; i < 3; i++)
+			{
+				pattern = RotatePattern90Degrees(pattern, w);	
+				result = TestPosition(pattern, w, l, initialPosition, layer, cell);
+				if (result)
+					return true;
+			}
+
+			return false;
+		}
+
+		private static bool TestPosition(
+			string pattern, 
+            int w, 
+            LevelGen.Level l, 
+            Vector2Int initialPosition,
+			ELevelLayer layer,
+            ECellCode cell
+        ) {
 			for (int i = 0; i < pattern.Length; i++)
 			{
-				Vector2Int pos = IndexToPosition(i, w);
+				Vector2Int offset = IndexToOffset(pattern, w, i);
+				Vector2Int cellPos = initialPosition + offset;
+				var lcell = l.BaseSector.GetCell(cellPos, layer);
+
+				int targetValue  = (int)Char.GetNumericValue(pattern[i]);
+                bool isEqualCell = lcell == cell;
+
+                bool v = ((targetValue == 1 && isEqualCell) ||
+                          (targetValue == 0 && lcell <= ECellCode.Empty));
+				if (!v)
+					return false;
 			}
 			return true;
 		}
 	}
-
 }

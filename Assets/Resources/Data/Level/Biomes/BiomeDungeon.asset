@@ -20,3 +20,4 @@ MonoBehaviour:
   RoomBloodOath: {fileID: 11400000, guid: be0534661b0b9ba4db5fbeca09adccd5, type: 2}
   RoomKillChallenge: {fileID: 11400000, guid: 63b2311321a02154782ae3a36385dcbf, type: 2}
   RoomChase: {fileID: 11400000, guid: c7b6061487467104d9525a43a4c2c842, type: 2}
+  TrapConfiguration: {fileID: 11400000, guid: 5887230b7f209513289185662d467443, type: 2}

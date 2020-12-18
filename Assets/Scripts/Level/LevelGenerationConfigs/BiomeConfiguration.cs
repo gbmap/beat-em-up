@@ -1,7 +1,17 @@
 ﻿using Catacumba.LevelGen;
+using QFSW.QC;
 using UnityEngine;
 
 namespace Catacumba.Data.Level {
+
+    public class QCBiomeParser : BasicQcParser<BiomeConfiguration>
+    {
+        public override BiomeConfiguration Parse(string value)
+        {
+            return LevelGenerationManager.LoadBiome(value);
+        }
+    }
+
     public class  BiomeConfiguration : ScriptableObject
     {
         // código burro pq eu sou burro
@@ -13,6 +23,8 @@ namespace Catacumba.Data.Level {
         public RoomConfiguration RoomBloodOath;
         public RoomConfiguration RoomKillChallenge;
         public RoomConfiguration RoomChase; 
+
+        public BiomeTrapConfiguration TrapConfiguration;
 
         public RoomConfiguration GetRoomConfig(LevelGeneration.ECellCode cellCode)
         {
