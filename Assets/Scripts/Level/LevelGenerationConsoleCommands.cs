@@ -42,6 +42,8 @@ namespace Catacumba.LevelGen
 
         [Command("player")] public static GameObject Player { get; set; }
 
+        [Command("preloaded_file")] public static string PreloadedLevel { get; set; }
+
         public const string PATH_BIOMES     = "Data/Level/Biomes";
 
         public static Level                 Level;
@@ -54,20 +56,20 @@ namespace Catacumba.LevelGen
             return Resources.Load<BiomeConfiguration>($"{PATH_BIOMES}/{name}");
         }
 
-
         [Command("generate")]
         public static async Task Generate()
         {
             bool hasEnded = false;
             LevelGeneration.Generate(new LevelGenerationParams
             {
-                LevelType   = LevelType,
-                LevelSize   = LevelSize,
-                PropChance  = PropChance,
-                EnemyChance = EnemyChance,
-                BiomeConfig = BiomeConfig,
-                EnemyPool   = EnemyPool,
-                PropPool    = PropPool
+                LevelType      = LevelType,
+                LevelSize      = LevelSize,
+                PropChance     = PropChance,
+                EnemyChance    = EnemyChance,
+                BiomeConfig    = BiomeConfig,
+                EnemyPool      = EnemyPool,
+                PropPool       = PropPool,
+                PreloadedLevel = PreloadedLevel
             }, (level, parameters) => 
             { 
                 Level = level; 
@@ -77,6 +79,13 @@ namespace Catacumba.LevelGen
 
             while (!hasEnded)
                 await Task.Delay(100);
+        }
+
+        [Command("load_from_bitmap")]
+        public static async Task LoadBitmap(string file)
+        {
+            PreloadedLevel = file;
+            await Generate();
         }
 
         [Command("spawn")]

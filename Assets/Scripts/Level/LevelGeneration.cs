@@ -450,6 +450,7 @@ namespace Catacumba.LevelGen
         public BiomeConfiguration    BiomeConfig;
         public CharacterPool         EnemyPool;
         public CharacterPool         PropPool;
+        public string                PreloadedLevel;
     }
 
     public class LevelGeneration : SimpleSingleton<LevelGeneration>
@@ -510,7 +511,11 @@ namespace Catacumba.LevelGen
         {
             Debug.Log("Level generation started.");
 
-            Level level = new Level(p.LevelSize);
+            Level level = null;
+            if (!string.IsNullOrEmpty(p.PreloadedLevel))
+                level = LevelBitmapLoader.Load(p.PreloadedLevel);
+            else
+                level = new Level(p.LevelSize);
 
             UpdateVis(level);
 
@@ -527,27 +532,9 @@ namespace Catacumba.LevelGen
             /////////////////
             /// PLAYER POSITION
 
-            // Sector[] secs = StepSelectPlayerSpawnPoint(level);
-            // UpdateVis(level);
-
-            // int secsL = secs.Length;
-            //yield return new WaitForSeconds(0.5f);
-
             UpdateVis(level);
 
             OnCompleted?.Invoke(level, p);
-
-            string s = "";
-            for (int y = 0; y < level.Size.y; y++)
-            {
-                for (int x = 0; x < level.Size.x; x++)
-                {
-                    if (level.GetCell(x, y) > 0) s += "1";
-                    else s += "0";
-                }
-                s += System.Environment.NewLine;
-            }
-            Debug.Log(s);
 
             Debug.Log("Level generation ended.");
             Level = level;
@@ -555,6 +542,9 @@ namespace Catacumba.LevelGen
 
         private static ILevelGenAlgo GetLevelGenerationAlgorithm(LevelGenerationParams p)
         {
+            if (!string.IsNullOrEmpty(p.PreloadedLevel))
+                return new LevelGenAlgoEmpty(); 
+
             switch (p.LevelType)
             {
                 case LevelGenerationParams.ELevelType.Dungeon: return new LevelGenAlgoWalkers();
@@ -585,10 +575,6 @@ namespace Catacumba.LevelGen
 
             return startPosition;
         }
-
-        ///////////////////////////
-        /// MESH GENERATION
-        /// 
 
         public static bool IsValidPosition(Level l, Vector2Int p)
         {
