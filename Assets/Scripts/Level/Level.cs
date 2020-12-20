@@ -193,6 +193,7 @@ namespace Catacumba.LevelGen
                 if (sec.IsInFromGlobal(position))
                     return sec;
             }
+            //return null;
             return BaseSector;
         }
 

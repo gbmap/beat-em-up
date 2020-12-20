@@ -36,7 +36,7 @@ namespace Catacumba.LevelGen
             _repeatConnections = repeatConnectionsOnDifferentSides;
         }
 
-        public IEnumerator Run(Level level, System.Action<Level> updateVis = null)
+        public IEnumerator Run(Level level, System.Action<Level> updateVis = null) 
         {
             foreach (var sec in level.BaseSector.Children)
             {
