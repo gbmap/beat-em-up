@@ -1,0 +1,4 @@
+
+
+entity.spawn_player Goblin_Swordsman
+entity.spawn_enemy Goblin_Swordsman

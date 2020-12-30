@@ -23,6 +23,12 @@ namespace Catacumba
         public static async Task Run(string file)
         {
             TextAsset script = Resources.Load<TextAsset>(file);
+            if (script == null) 
+            {
+                Debug.LogError($"Couldn't load script: {file}.");
+                return;
+            }
+
             string[] lines = script.text.Split('\n');
             await Run(lines);
         }

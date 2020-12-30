@@ -1,6 +1,6 @@
 
 level.type Dungeon
-level.sz (20, 20)
+level.sz (25, 25)
 level.prop_chance 0.45
 level.enemy_chance 0.5
 level.biome BiomeDungeon
@@ -13,5 +13,5 @@ camera.spawn
 
 level.spawn_player Goblin_Swordsman
 level.spawn_props
-//level.spawn_enemies
+level.spawn_enemies
 //level.spawn_boss Pudge

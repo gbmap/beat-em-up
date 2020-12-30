@@ -14,8 +14,8 @@ namespace Catacumba.Data.Controllers
         public override int CurrentPriority => _currentPriority;
 
         public int InitialTargetPriority = 10;
-        public float AttackDelay = 3f;
-        public float SearchRadius = 3f;
+        public float AttackDelay         = 3f;
+        public float SearchRadius        = 3f;
         public LayerMask SearchLayers;
 
         private CharacterData Target;
@@ -63,6 +63,7 @@ namespace Catacumba.Data.Controllers
                 input.Direction = UpdateTargetPosition(movement, deltaToTarget, distanceToAttack);
                 UpdateNavMeshDestination(data, movement, weapon);
             }
+
             input.LookDir = UpdateLookDirection(deltaToTarget);
             input.Attack = weapon && UpdateShouldAttack(movement, distanceToAttack, out input.AttackType);
         }
@@ -102,14 +103,37 @@ namespace Catacumba.Data.Controllers
         private void CheckNewTargets(ControllerComponent component)
         {
             checkTargetTimer += Time.deltaTime;
-            if (checkTargetTimer >= 1f)
+            if (checkTargetTimer < 1f)
+                return; 
+
+            Collider[] targets = Physics.OverlapSphere(component.transform.position, SearchRadius, SearchLayers.value);
+            float minDistance = float.MaxValue;
+            int   minIndex = -1;
+
+            for (int i = 0; i < targets.Length; i++) 
             {
-                Collider[] targets = Physics.OverlapSphere(component.transform.position, SearchRadius, SearchLayers.value);
-                if (targets.Length > 0)
-                    Target = targets.Select(c => c.GetComponent<CharacterData>()).FirstOrDefault();
-                
-                checkTargetTimer = 0f;
+                Collider target = (Collider)targets[i];
+                var origin      = component.transform.position + Vector3.up;
+                var destination = target.transform.position + Vector3.up;
+                var direction   = (destination - origin).normalized;
+                float dist      = Vector3.Distance(
+                                    component.transform.position, 
+                                    target.transform.position);
+
+                if (!HasCleanLineOfSight(component.transform, target.transform))
+                    continue;
+
+                if (minDistance > dist)
+                {
+                    minDistance = dist;
+                    minIndex = i; 
+                }
             }
+
+            if (minIndex != -1)
+                Target = targets[minIndex].GetComponent<CharacterData>();
+            
+            checkTargetTimer = 0f;
         }
 
         private Vector3 UpdateTargetPosition(CharacterMovementBase movement, Vector3 deltaToTarget, float distanceToAttack)
@@ -157,8 +181,10 @@ namespace Catacumba.Data.Controllers
             bool isCloseToTarget = distanceToTarget <= distanceToAttack;
             bool canAttack = attackTimer >= AttackDelay;
 
-            if (isCloseToTarget && canAttack)
-            {
+            if (isCloseToTarget 
+            && canAttack 
+            && HasCleanLineOfSight(movement.transform, Target.transform)
+            ) {
                 if (movement)
                     movement.StopForTime(1f);
                 attackTimer = 0f;
@@ -172,6 +198,23 @@ namespace Catacumba.Data.Controllers
         private float GetDistanceToAttack(Item weapon)
         {
             return weapon.GetCharacteristic<CharacteristicWeaponizable>()?.WeaponType?.AttackStrategy?.DistanceToAttack ?? 2.5f;
+        }
+
+        private bool HasCleanLineOfSight(Transform transform, Transform target)
+        {
+            var origin      = transform.position + Vector3.up;
+            var destination = target.transform.position + Vector3.up;
+            var direction   = (destination - origin).normalized;
+            float dist      = Vector3.Distance(
+                                transform.position, 
+                                target.transform.position);
+
+            return !Physics.Raycast(
+                    origin, 
+                    direction, 
+                    dist, 
+                    1 << LayerMask.NameToLayer("Level")
+            );
         }
 
 

@@ -283,7 +283,7 @@ namespace Catacumba.LevelGen.Mesh
                     bool isOriginDoor = p.sector.GetCell(p.originalPosition, ELevelLayer.Doors) == LevelGeneration.ECellCode.Door;
                     bool isNeighborDoor = p.sector.GetCell(p.neighborPosition, ELevelLayer.Doors) == LevelGeneration.ECellCode.Door;
 
-                    bool isDoor = isOriginDoor && isNeighborDoor;
+                    bool isDoor = isOriginDoor && isNeighborDoor && differentSectors;
 
                     if ((differentTypes || differentSectors) && !isDoor)
                     {
@@ -311,7 +311,7 @@ namespace Catacumba.LevelGen.Mesh
                             directions      = p.direction,
                             prefab          = roomCfg.Doors[0],
                             cellSize        = roomCfg.CellSize(),
-                            namePreffix     = "W",
+                            namePreffix     = "D",
                             position        = it.cellPosition,
                             material        = roomCfg.EnvironmentMaterial,
                             shouldCollide   = true,
@@ -340,7 +340,7 @@ namespace Catacumba.LevelGen.Mesh
             var colliders = root.GetComponentsInChildren<Collider>();
             foreach (var collider in colliders)
             {
-                if (collider.gameObject.name.Contains("W"))
+                if (collider.gameObject.name[0] == 'D')
                     GameObject.Destroy(collider);
             }
             yield return null;

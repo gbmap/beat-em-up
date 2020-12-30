@@ -31,7 +31,7 @@ namespace Catacumba.LevelGen
 
         private bool _repeatConnections;
 
-        public LevelGenAlgoAddDoors(bool repeatConnectionsOnDifferentSides = false)
+        public LevelGenAlgoAddDoors(bool repeatConnectionsOnDifferentSides = true)
         {
             _repeatConnections = repeatConnectionsOnDifferentSides;
         }
