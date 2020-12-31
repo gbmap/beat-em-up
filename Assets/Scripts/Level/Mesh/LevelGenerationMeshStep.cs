@@ -422,7 +422,7 @@ namespace Catacumba.LevelGen.Mesh
 
         public LevelGenerationMeshStepTraps(
             BiomeTrapConfiguration config, 
-            float trapChance = 0.5f
+            float trapChance = 1.0f
         ) {
             _config = config;
             _trapChance = trapChance;
