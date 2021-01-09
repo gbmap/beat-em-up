@@ -83,7 +83,11 @@ namespace Catacumba.Entity
         [Command("spawn_prop")]
         public static GameObject SpawnProp(CharacterConfiguration configuration, Vector3 worldPosition)
         {
-            return CreateEntityInstance(configuration, "Entity", "Entities", worldPosition)?.gameObject;
+            var instance = CreateEntityInstance(configuration, "Entity", "Entities", worldPosition);
+            if (!instance) return null;
+
+            NavMeshObstacle obs = instance.gameObject.AddComponent<NavMeshObstacle>();
+            return instance.gameObject;
         }
 
         ////////////////////////////////////////
@@ -159,14 +163,6 @@ namespace Catacumba.Entity
             Vector3 worldPosition = LevelGen.Mesh.Utils.LevelToWorldPos(cellPosition, parameters.BiomeConfig.CellSize());
             worldPosition += positionOffset;
             worldPosition.y = 0f;
-
-            /*
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(worldPosition, out hit, 5f, NavMesh.AllAreas))
-            {
-                worldPosition = hit.position;
-            };
-            */
 
             return SpawnFunction(entity.Config, worldPosition);
         }
