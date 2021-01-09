@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
   m_Name: Prop_Brazier
   m_EditorClassIdentifier: 
-  Stats: {fileID: 11400000, guid: 282ce180d6f3db34fb65e3c1032c3304, type: 2}
+  Stats: {fileID: 11400000, guid: def424fe0672d284ca652d4c4ff21f41, type: 2}
   Inventory: {fileID: 0}
   Skills: {fileID: 0}
   View: {fileID: 11400000, guid: c61db47f8e184a443aa979dd5edf2815, type: 2}
