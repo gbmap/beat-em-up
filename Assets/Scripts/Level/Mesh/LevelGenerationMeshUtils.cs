@@ -241,7 +241,6 @@ namespace Catacumba.LevelGen.Mesh
                 obj.tag = "Level";
 
                 SetMaterialInObject(obj, p.material);
-                // AddVisibilityComponent(obj, p.sector.GetAbsolutePosition(p.position));
 
                 if (p.shouldCollide)
                 {

@@ -56,13 +56,25 @@ namespace Catacumba.Entity
             return data.gameObject;
         }
 
-        public static GameObject SpawnEnemy(Vector2Int cellPosition, 
-                                            LevelGenerationParams parameters, 
-                                            CharacterPool pool=null)
-        {
+        public static GameObject SpawnEnemy(
+            Vector2Int cellPosition,
+            LevelGenerationParams parameters, 
+            CharacterPool pool=null
+        ) {
             return SpawnEntityAtCellPosition(cellPosition, parameters, SpawnEnemy, pool);
         }
 
+        ////////////////////////////////////////
+        //      TRAPS
+
+        [Command("spawn_trap")]
+        public static GameObject SpawnTrap(
+            CharacterConfiguration configuration, 
+            Vector2Int position
+        ) {
+            Vector3  worldPosition = CalculateWorldPosition(position);
+            return SpawnProp(configuration, worldPosition, false);
+        }
 
         ////////////////////////////////////////
         //      PROPS
@@ -74,19 +86,27 @@ namespace Catacumba.Entity
         }
 
         [Command("spawn_prop")]
-        public static GameObject SpawnProp(CharacterConfiguration configuration, Vector2Int position)
-        {
+        public static GameObject SpawnProp(
+            CharacterConfiguration configuration, 
+            Vector2Int position
+        ) {
             Vector3 worldPosition = CalculateWorldPosition(position);
             return SpawnProp(configuration, worldPosition);
         }
 
         [Command("spawn_prop")]
-        public static GameObject SpawnProp(CharacterConfiguration configuration, Vector3 worldPosition)
-        {
+        public static GameObject SpawnProp(
+            CharacterConfiguration configuration, 
+            Vector3 worldPosition,
+            bool addNavMeshObstacle = true
+        ) {
             var instance = CreateEntityInstance(configuration, "Entity", "Entities", worldPosition);
             if (!instance) return null;
 
-            NavMeshObstacle obs = instance.gameObject.AddComponent<NavMeshObstacle>();
+            if (addNavMeshObstacle)
+            {
+                NavMeshObstacle obs = instance.gameObject.AddComponent<NavMeshObstacle>();
+            }
             return instance.gameObject;
         }
 

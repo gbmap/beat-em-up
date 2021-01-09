@@ -17,15 +17,6 @@ namespace Catacumba.Data
             {
                 Type componentType = Type.GetType(component);
                 instance.AddComponent(componentType);
-                /*
-                // Debug.Log(componentType);
-                System.Attribute[] attributes = System.Attribute.GetCustomAttributes(componentType);
-                if (attributes == null) continue;
-                foreach (System.Attribute attr in attributes)
-                {
-                    Debug.Log(attr.GetType().Name);
-                }
-                */
             }
         }
 

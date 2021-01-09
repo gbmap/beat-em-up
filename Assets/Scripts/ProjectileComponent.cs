@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Catacumba.Data.Items;
-using Catacumba.Data.Items.Characteristics;
+﻿using Catacumba.Data.Items.Characteristics;
 using UnityEngine;
 
 namespace Catacumba.Entity
