@@ -21,5 +21,14 @@ namespace Catacumba.Entity
 
             Destroy(this.gameObject);
         }
+
+        public void Reflect(CharacterData attacker)
+        {
+            Caster = attacker;
+            Vector3 rotation = attacker.transform.forward;
+            rotation.y = 0f;
+
+            transform.rotation = Quaternion.Euler(rotation);
+        }
     }
 }
