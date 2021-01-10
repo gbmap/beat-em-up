@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Characters_Texture_03
-  m_Shader: {fileID: -6465566751694194690, guid: 8b58b9be33d32e0408d64b72e250ba93,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: dea7e731d444c6b458d60aed748121cd, type: 3}
   m_ShaderKeywords: _ALBEDOCONTRIBUTION _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1

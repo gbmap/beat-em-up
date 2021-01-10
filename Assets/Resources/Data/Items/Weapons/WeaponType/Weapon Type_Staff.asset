@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2e86f0c2681408468ae07d2c9dd9ca1, type: 3}
+  m_Name: Weapon Type_Staff
+  m_EditorClassIdentifier: 
+  animatorController: {fileID: 22100000, guid: 0b16e30d84a4ff44fad1027b8a67a0cd, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: d072fbed943d5e143a94ca48a4977ae0, type: 2}

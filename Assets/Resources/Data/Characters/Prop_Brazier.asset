@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9857c80860f75584b86e454d06424d8f, type: 3}
+  m_Name: Prop_Brazier
+  m_EditorClassIdentifier: 
+  Stats: {fileID: 11400000, guid: def424fe0672d284ca652d4c4ff21f41, type: 2}
+  Inventory: {fileID: 0}
+  Skills: {fileID: 0}
+  View: {fileID: 11400000, guid: c61db47f8e184a443aa979dd5edf2815, type: 2}
+  Components: {fileID: 11400000, guid: 0431bf3f8dd9b434cbd93121a3866092, type: 2}

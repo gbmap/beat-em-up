@@ -18,6 +18,7 @@ namespace Catacumba.Entity
             velocity = base.UpdateVelocity(velocity, ref updatedValue);
             if (!updatedValue)
             {
+                updatedValue = true;
                 Direction = Vector3.ClampMagnitude(Direction, 1f);
                 velocity = UpdateVelocityWithDesiredDirection(velocity, Vector3.ClampMagnitude(Direction, 1f));
             }

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bdd4b1ced840134793406ef4dd8a9fc, type: 3}
+  m_Name: Weaponizable_Ranged_Staff
+  m_EditorClassIdentifier: 
+  Slots:
+  - BodyPart: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
+  - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
+  AttackEffect: {fileID: 0}
+  HitEffect: {fileID: 0}
+  WeaponType: {fileID: 11400000, guid: 17001ec7eba301b488e974f65b9b33a0, type: 2}
+  AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
+  Projectile: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
+    type: 3}

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5527b4a3486f36e4c9e26c14fe3275c3, type: 3}
+  m_Name: Inventory_Humanoid_Pudge
+  m_EditorClassIdentifier: 
+  Slots:
+    slots:
+    - Part: {fileID: 11400000, guid: a76c01264e1753b4e9882676c5a17c74, type: 2}
+      Item: {fileID: 0}
+    - Part: {fileID: 11400000, guid: eab9a4d3a0f7fc04a89eb9b2fb94907f, type: 2}
+      Item: {fileID: 11400000, guid: 76277abc5cdde5a4fb3fce51c6988979, type: 2}
+    - Part: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+      Item: {fileID: 0}
+    - Part: {fileID: 11400000, guid: cd6edefdcadcefa4f8ac2f065d6bba5d, type: 2}
+      Item: {fileID: 0}
+    - Part: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+      Item: {fileID: 11400000, guid: 3727f1270f63a454fbb6dc1b4f0ccd96, type: 2}
+    - Part: {fileID: 11400000, guid: b1ee5ff38c596b746b3a7b9fc2cec2df, type: 2}
+      Item: {fileID: 0}
+    WeaponSlotIndex: 4
+  Bag:
+    items:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    numberItems: 0

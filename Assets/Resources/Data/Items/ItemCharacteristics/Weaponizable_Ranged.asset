@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Weaponizable_Ranged
   m_EditorClassIdentifier: 
   Slots:
-  - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+  - BodyPart: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
     ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
   - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
     ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 0}
   WeaponType: {fileID: 11400000, guid: d879026e1fc0e6e41be6cad1d05f3d33, type: 2}
-  AttackColliderSize: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
+  AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
   Projectile: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
     type: 3}

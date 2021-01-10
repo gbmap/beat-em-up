@@ -20,12 +20,18 @@ public class AttackRequest
     public GameObject Defender { get { return DefenderData.gameObject; } }
 
     public EAttackType Type;
+    public bool IgnoreFacingDirection;
 
-    public AttackRequest(CharacterData attacker, CharacterData defender, EAttackType attackType)
-    {
+    public AttackRequest(
+        CharacterData attacker, 
+        CharacterData defender, 
+        EAttackType attackType,
+        bool ignoreFacingDirection = false
+    ) {
         AttackerData = attacker;
         DefenderData = defender;
         Type = attackType;
+        IgnoreFacingDirection = ignoreFacingDirection;
     }
 }
 
@@ -96,7 +102,7 @@ public class CombatManager : SimpleSingleton<CombatManager>
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Vigor) * 19;
+        return (c.Attributes.Vigor) * 5;
     }
 
     public static int GetMaxMana(CharacterStats c)
@@ -153,11 +159,14 @@ public class CombatManager : SimpleSingleton<CombatManager>
         if (!hasCharacterData) return null;
         if (!defender.Components.Health) return null;
 
-        Vector3 fwd = attacker.transform.forward;
-        Vector3 dir2Collider = (defender.transform.position - attacker.transform.position).normalized;
-        float attackAngle = Vector3.Angle(fwd, dir2Collider);
-        bool isValidAttackAngle = attackAngle <= 60f; 
-        if (!isValidAttackAngle) return null;
+        if (!request.IgnoreFacingDirection)
+        {
+            Vector3 fwd = attacker.transform.forward;
+            Vector3 dir2Collider = (defender.transform.position - attacker.transform.position).normalized;
+            float attackAngle = Vector3.Angle(fwd, dir2Collider);
+            bool isValidAttackAngle = attackAngle <= 60f; 
+            if (!isValidAttackAngle) return null;
+        }
 
         AttackResult attackData = new AttackResult(request);
         CalculateAttackStats(ref attackData);

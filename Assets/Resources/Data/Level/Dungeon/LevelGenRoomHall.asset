@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d3baa133c3a38468ab6f803873523f, type: 3}
+  m_Name: LevelGenRoomHall
+  m_EditorClassIdentifier: UnityEngine.CoreModule:UnityEngine:ScriptableObject
+  EnvironmentMaterial: {fileID: 2100000, guid: 1f4d20d3ee0ce0147b1987e17f1e457d, type: 2}
+  Floors:
+  - {fileID: 1270428469967565019, guid: 8b9fb011e414fe444aa6d55e63a16064, type: 3}
+  Walls:
+  - {fileID: 8638514096912393065, guid: a58d9859e35982e4a8115411e18a9aa0, type: 3}
+  Doors:
+  - {fileID: 2804478649494323333, guid: e42454e5907143e4cb80ebc20a3d4a69, type: 3}
+  PropPool: {fileID: 11400000, guid: 01164a690c6915748afa6e334979115f, type: 2}

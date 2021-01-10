@@ -15,4 +15,4 @@ MonoBehaviour:
   ParticleSystem: {fileID: 2006145276305323388, guid: 07da1ef48d51ee848b3bd9a33dffc3af,
     type: 3}
   LocalPosition: {x: 0, y: 0, z: 3}
-  StartingPosition: 3
+  StartingPosition: 1

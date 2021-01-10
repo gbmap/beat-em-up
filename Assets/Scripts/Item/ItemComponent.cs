@@ -1,10 +1,10 @@
-﻿using Catacumba.Data.Interactions;
+﻿using System;
+using Catacumba.Data.Interactions;
 using Catacumba.Data.Items;
 using UnityEngine;
 
 namespace Catacumba.Entity
 {
-    [RequireComponent(typeof(CharacterInteractive))]
     public class ItemComponent : MonoBehaviour
     {
         public Item Item;
@@ -16,8 +16,6 @@ namespace Catacumba.Entity
         private static int hashHighlighted = Animator.StringToHash("Highlighted");
         private static int hashTaken       = Animator.StringToHash("Taken");
 
-        private float lastCollisionStay = float.NegativeInfinity;
-
         private bool highlighted;
         public bool Highlighted
         {
@@ -25,34 +23,35 @@ namespace Catacumba.Entity
             set 
             {
                 if (highlighted != value)
-                    animator?.SetBool(hashHighlighted, value);
+                {
+                    if (animator != null) animator.SetBool(hashHighlighted, value);
+                }
                 highlighted = value;
             }
         }
 
-        private CharacterInteractive interactive;
+        private bool _wasTaken;
 
-        void Awake()
+        private InteractiveComponent interactive;
+
+        private void OnHighlight(bool value)
         {
-            animator = GetComponent<Animator>();
-            interactive = GetComponent<CharacterInteractive>();
-            interactive.OnInteraction += OnInteraction;
+            Highlighted = value;
         }
 
         void OnInteraction(InteractionResult result)
         {
-            if (result is InventoryEquipResult)
-            {
-                InventoryEquipResult equip = result as InventoryEquipResult;
-                if (equip.Result != InventoryEquipResult.EEquipResult.Success)
-                    return;
-
+            if (result.Code == InteractionResult.ECode.Success)
                 Take();
-            }
         }
 
         void Start()
         {
+            animator = GetComponent<Animator>();
+            interactive = GetComponent<InteractiveComponent>();
+            interactive.OnInteraction += OnInteraction;
+            interactive.OnHighlight += OnHighlight;
+
             if (!Item)
                 throw new System.Exception("No item configuration set.");
 
@@ -70,18 +69,11 @@ namespace Catacumba.Entity
             instance.transform.localPosition = Vector3.zero;
         }
 
-        void Update()
-        {
-            Highlighted = Mathf.Abs(Time.time - lastCollisionStay) < 0.05f;
-        }
-
-        void OnTriggerStay(Collider other)
-        {
-            lastCollisionStay = Time.time;
-        }
-
         public void Take()
         {
+            if (_wasTaken) return;
+
+            _wasTaken = true;
             animator?.SetTrigger(hashTaken);
         }
 
@@ -89,6 +81,5 @@ namespace Catacumba.Entity
         {
             Destroy(this.gameObject);
         }
-
     }
 }

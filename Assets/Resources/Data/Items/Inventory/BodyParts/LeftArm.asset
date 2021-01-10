@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdb2dbf47162c5b42a42442dc1435a4e, type: 3}
   m_Name: LeftArm
   m_EditorClassIdentifier: Assembly-CSharp:Catacumba.Data.Items:BodyPart
-  BoneName: Hand_L
-  LocalPosition: {x: 0, y: 0, z: 0}
+  BoneName: IndexFinger_01
+  LocalPosition: {x: 12.3, y: 1.98, z: 12.66}
   LocalRotationEuler: {x: -90, y: -16.5, z: 0}

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7819835369c0234b9c01c5353f63daf, type: 3}
   m_Name: ItemTemplate
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 953948545750414228, guid: c21f8ed8c64fb464382f6d7190091d19, type: 3}
+  AnimatorController: {fileID: 9100000, guid: 5205c3dda715db64f99be976f55a0da7, type: 2}
+  Highlight: {fileID: 5742265556757604348, guid: f236f64cfa053ac4a91f2aa98c728904,
+    type: 3}
