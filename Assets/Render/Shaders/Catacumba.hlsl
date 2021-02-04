@@ -81,9 +81,11 @@ void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
 
         // clamps light if too far 
         float  distF  = light_distance_factor(ldelta, lrange);
+        if (length(ldelta) < 7.0)
+        {
 
         // shadow attenuation
-        float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, distF);
+        float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, 1.0);
               //sa = step(0.5, sa);
               //sa = smoothstep(0.0, 0.55, sa) * sa;
               //sa *= 1/(pow(length(ldelta),0.2));
@@ -92,12 +94,14 @@ void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
         float lclamp = max(a, step(0., ldotn) * distF); 
 
 
-        a += sa; // / length(ldelta);
-        //a = lerp(a, sa, 0.5);
-        //a += smoothstep(-0.15, 0.95, sa);
+        //a += sa; // / length(ldelta);
+        a = lerp(a, sa, 0.75);
+        //a += smoothstep(-0.01, 0.95, sa);
+        a += step(0.5, a);
 
         float lcolor = 0.5 - smoothstep(0.0, 20.0, lrange)*0.4;
         color += _OtherLightColors[i] * step(lcolor, ldotn*light_distance_factor(ldelta, lrange*0.8));
+        }
     }
 
     a = saturate(a);
