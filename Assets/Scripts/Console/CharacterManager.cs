@@ -115,10 +115,14 @@ namespace Catacumba.Entity
 
             GameObject light = new GameObject("Light");
             Light l = light.AddComponent<Light>();
-            l.range = 5f;
-            l.color = Color.black;
+            l.range = 7f;
+            l.intensity = 1f;
+            l.color = new Color(0.4f, 0.2f, 0.3f);
             l.transform.parent = data.transform;
             l.transform.localPosition = Vector3.up * 1.25f;
+            l.shadows = LightShadows.Hard;
+            l.cullingMask = ~ (1 <<LayerMask.NameToLayer("Player"));
+
             return data.gameObject;
         }
 

@@ -69,7 +69,7 @@ float light_distance_factor(float3 lightToVertex, float d)
 
 void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
 {
-    a = 1.0;
+    a = 0.0;
     color = 0.0;
 
 

@@ -63,7 +63,21 @@ namespace Catacumba.Data
             modelInstance.transform.localPosition = Vector3.zero; // Somehow Instantiate with Vector3.zero is not working.
             modelInstance.transform.localRotation = Quaternion.identity;
 
+            SetLayerRecursive(modelInstance, instance.layer);
+
             return modelInstance;
+        }
+
+        public static void SetLayerRecursive(GameObject gameObject, int layer)
+        {
+            Debug.Log($"Setting layer: {layer} to {gameObject.name}");
+            gameObject.layer = layer;
+
+            for (int i = 0; i < gameObject.transform.childCount; i++)
+            {
+                Transform child = gameObject.transform.GetChild(i);
+                SetLayerRecursive(child.gameObject, layer);
+            }
         }
 
         private void SetupModelAnimator(GameObject modelInstance, GameObject modelPrefab, AnimationConfig animationConfig)

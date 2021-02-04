@@ -303,6 +303,8 @@ namespace Catacumba.Entity
 
             model.transform.localPosition = position;
             model.transform.localRotation = Quaternion.Euler(rotation);
+
+            CharacterViewConfiguration.SetLayerRecursive(model, data.gameObject.layer);
         }
 
         private void RemoveItemFromBone(BodyPart slot)
