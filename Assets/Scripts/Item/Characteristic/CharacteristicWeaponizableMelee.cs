@@ -22,16 +22,38 @@ namespace Catacumba.Data.Items.Characteristics
                 if (c.gameObject == character.gameObject) continue;
 
                 CharacterData defender = c.GetComponent<CharacterData>();
+                if (defender) {
+                    AttackCharacter(character, defender, attackType, ref attackResults, ref hits);
+                    continue;
+                }
 
-                AttackRequest request = new AttackRequest(character, defender, attackType, IgnoreFacingDirection);
-                AttackResult attackData = CombatManager.AttackCharacter(request);
-                if (attackData == null) continue;
-
-                attackResults[hits] = attackData;
-                hits++;
+                ProjectileComponent projectile = c.GetComponent<ProjectileComponent>();
+                if (projectile) {
+                    AttackProjectile(character, projectile);
+                    continue;
+                }
             }
 
             return attackResults;
+        }
+
+        private void AttackCharacter(
+            CharacterData attacker, 
+            CharacterData defender, 
+            EAttackType attackType, 
+            ref AttackResult[] attackResults, 
+            ref int hits
+        ) {
+            AttackRequest request = new AttackRequest(attacker, defender, attackType, IgnoreFacingDirection);
+            AttackResult attackData = CombatManager.AttackCharacter(request);
+            if (attackData == null) return;
+
+            attackResults[hits] = attackData;
+            hits++;
+        }
+
+        private void AttackProjectile(CharacterData attacker, ProjectileComponent projectile) {
+            projectile.Reflect(attacker);
         }
 
         protected Collider[] CollectColliders(CharacterData character, Transform origin, EAttackType attackType)

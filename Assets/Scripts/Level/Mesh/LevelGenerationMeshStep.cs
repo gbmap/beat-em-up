@@ -250,7 +250,6 @@ namespace Catacumba.LevelGen.Mesh
 
             return bothDoors && differentSectors;
         }
-
     }
 
     public class LevelGenerationMeshStepGeometry : ILevelGenerationMeshStep
@@ -378,7 +377,7 @@ namespace Catacumba.LevelGen.Mesh
                 for (int i = 0; i < 3; i++)
                 {
                     CharacterPoolItem propCfg = roomCfg.PropPool.GetRandom();
-                    propInstances.Add(CharacterManager.SpawnProp(propCfg.Config));
+                    propInstances.Add(CharacterManager.SpawnProp(propCfg.Config, Vector2Int.zero));
                 }
 
                 bufferItems.Add(new PropPlacementBufferItem
@@ -422,7 +421,7 @@ namespace Catacumba.LevelGen.Mesh
 
         public LevelGenerationMeshStepTraps(
             BiomeTrapConfiguration config, 
-            float trapChance = 0.5f
+            float trapChance = 1.0f
         ) {
             _config = config;
             _trapChance = trapChance;
@@ -436,7 +435,7 @@ namespace Catacumba.LevelGen.Mesh
                 if (traps.Length > 0 && Random.value < _trapChance)
                 {
                     TrapConfiguration t = traps[Random.Range(0, traps.Length)];
-                    CharacterManager.SpawnProp(t.Trap, it.cellPosition);
+                    CharacterManager.SpawnTrap(t.Trap, it.cellPosition);
                 }
             });
 

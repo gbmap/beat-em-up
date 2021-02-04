@@ -18,8 +18,9 @@ MonoBehaviour:
   - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
     ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
   AttackEffect: {fileID: 0}
-  HitEffect: {fileID: 0}
+  HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
   WeaponType: {fileID: 11400000, guid: 17001ec7eba301b488e974f65b9b33a0, type: 2}
   AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
+  IgnoreFacingDirection: 0
   Projectile: {fileID: 267599377664042273, guid: 85f70e4dff1085746af780aa3a09ef7b,
     type: 3}

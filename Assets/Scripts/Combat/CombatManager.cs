@@ -102,7 +102,7 @@ public class CombatManager : SimpleSingleton<CombatManager>
 
     public static int GetMaxHealth(CharacterStats c)
     {
-        return (c.Attributes.Vigor) * 19;
+        return (c.Attributes.Vigor) * 5;
     }
 
     public static int GetMaxMana(CharacterStats c)

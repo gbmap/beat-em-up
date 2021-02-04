@@ -18,6 +18,7 @@ namespace Catacumba.LevelGen
         [Command("sz")]           public static Vector2Int LevelSize = new Vector2Int(30, 30);
         [Command("prop_chance")]  public static float PropChance = 0.45f;
         [Command("enemy_chance")] public static float EnemyChance = 0.55f;
+        [Command("trap_chance")]  public static float TrapChance = 0.5f;
         
         private static BiomeConfiguration _biomeConfig;
         [Command("biome")]        public static BiomeConfiguration BiomeConfig
@@ -217,8 +218,11 @@ namespace Catacumba.LevelGen
 
             bool hasEnded = false;
             QuantumConsole.Instance.StartCoroutine(
-                LevelGenerationMesh.RunSteps(new ILevelGenerationMeshStep[] { new LevelGenerationMeshStepTraps(trapConfiguration) },
-                                             Level, BiomeConfig, LevelObject, () => { hasEnded = true; } )
+                LevelGenerationMesh.RunSteps(
+                    new ILevelGenerationMeshStep[] { 
+                        new LevelGenerationMeshStepTraps(trapConfiguration, TrapChance) 
+                        }, Level, BiomeConfig, LevelObject, () => { hasEnded = true; } 
+                )
             );
 
             while (!hasEnded)

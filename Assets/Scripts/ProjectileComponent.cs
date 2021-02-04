@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Catacumba.Data.Items;
-using Catacumba.Data.Items.Characteristics;
+﻿using Catacumba.Data.Items.Characteristics;
 using UnityEngine;
 
 namespace Catacumba.Entity
@@ -10,14 +7,28 @@ namespace Catacumba.Entity
     {
         public CharacterData Caster;
         public CharacteristicWeaponizableRanged Weapon;
-
+ 
         void OnTriggerEnter(Collider collider)
         {
             CharacterData defender = collider.GetComponent<CharacterData>();
-            if (!defender || defender == Caster) return;
+            if (defender)
+            {
+                if (defender != Caster)
+                    Weapon.ProjectileAttack(Caster, transform, EAttackType.Strong);
+                else
+                    return;
+            } 
 
-            Weapon.ProjectileAttack(Caster, transform, EAttackType.Strong);
             Destroy(this.gameObject);
+        }
+
+        public void Reflect(CharacterData attacker)
+        {
+            Caster = attacker;
+            Vector3 rotation = attacker.transform.forward;
+            rotation.y = 0f;
+
+            transform.rotation = Quaternion.Euler(rotation);
         }
     }
 }

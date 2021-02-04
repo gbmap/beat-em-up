@@ -46,7 +46,9 @@ namespace Catacumba.Entity
         protected override void Awake()
         {
             base.Awake();
-            TargetLayer = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Entities");
+            TargetLayer = 1 << LayerMask.NameToLayer("Player") 
+                        | 1 << LayerMask.NameToLayer("Entities")
+                        | 1 << LayerMask.NameToLayer("Projectiles");
         }
 
         protected override void OnEnable()
