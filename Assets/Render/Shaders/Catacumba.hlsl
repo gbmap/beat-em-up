@@ -86,7 +86,7 @@ void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
 
         // shadow attenuation
         float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, 1.0);
-              //sa = step(0.5, sa);
+              sa = step(0.5, sa);
               //sa = smoothstep(0.0, 0.55, sa) * sa;
               //sa *= 1/(pow(length(ldelta),0.2));
 
@@ -134,6 +134,7 @@ float3 lighting(float3 color, float3 normalWS, float3 vertWS)
     //return a;
 
     //return lightClr;
+    return color;
     return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 

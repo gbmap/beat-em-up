@@ -266,11 +266,12 @@ namespace Catacumba.LevelGen.Mesh
                     Utils.PutFloor(new Utils.PutFloorParams
                     {
                         sector = it.sector,
-                        floorPrefab = roomCfg.Floors[0],
+                        floorPrefab = roomCfg.Floors[Random.Range(0, roomCfg.Floors.Length)],
                         floorMaterial = roomCfg.EnvironmentMaterial,
                         cellSize = roomCfg.CellSize(),
                         floorRoot = root,
-                        position = it.cellPosition
+                        position = it.cellPosition,
+                        rotation = new Vector3(0f, Random.Range(0, 4)*90, 0f)
                     });
                 }
 
