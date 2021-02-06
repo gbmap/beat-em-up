@@ -134,7 +134,7 @@ float3 lighting(float3 color, float3 normalWS, float3 vertWS)
     //return a;
 
     //return lightClr;
-    return color;
+    //return color;
     return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 

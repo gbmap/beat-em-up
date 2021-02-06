@@ -258,7 +258,8 @@ namespace Catacumba.LevelGen.Mesh
         {
             Action<Utils.SectorCellIteration> Iterator = delegate (Utils.SectorCellIteration it)
             {
-                var roomCfg = cfg.GetRoomConfig(it.cell);
+                var roomType = level.GetCell(it.cellPosition, ELevelLayer.Rooms);
+                var roomCfg = cfg.GetRoomConfig(roomType);
 
                 bool floor = it.cell != LevelGeneration.ECellCode.Empty;
                 if (floor)
