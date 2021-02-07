@@ -17,6 +17,7 @@ public class Cameraman : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CameraManager.Follow == null) return;
         if (CameraManager.Object == null) return;
 
         _currentOffset += Vector3.ClampMagnitude(GetAdditionalOffset2() - _currentOffset, 1f) * Time.deltaTime * LerpSpeed;

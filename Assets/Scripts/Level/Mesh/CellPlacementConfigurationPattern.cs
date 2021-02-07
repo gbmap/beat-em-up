@@ -3,11 +3,12 @@ using System.Text;
 using Catacumba.LevelGen;
 using UnityEngine;
 using static Catacumba.LevelGen.LevelGeneration;
+using Random = UnityEngine.Random;
 
 namespace Catacumba.Data.Level
 {
-    [CreateAssetMenu(menuName="Data/Level/Cell Placement Configuration", fileName="CellPlacement")]
-	public class CellPlacementConfiguration : ScriptableObject
+    [CreateAssetMenu(menuName="Data/Level/Cell Placement/Pattern", fileName="CellPlacementConfigurationPattern")]
+	public class CellPlacementConfigurationPattern : CellPlacementConfiguration
 	{
 		public string Pattern       = "000000000";  // 001 011 001 = 3x3 cell matrix where 1 = cell exists
 		public int    RowWidth      = 3;            // Pattern row width
@@ -15,10 +16,10 @@ namespace Catacumba.Data.Level
 
 		public string Rotate90Degrees()
 		{
-			return CellPlacementConfiguration.RotatePattern90Degrees(Pattern, RowWidth);
+			return RotatePattern90Degrees(Pattern, RowWidth);
 		}
 
-        public bool IsPosValid(LevelGen.Level l, 
+        public override bool IsPosValid(LevelGen.Level l, 
                                Vector2Int pos, 
                                ELevelLayer layer,
                                ECellCode targetCell
@@ -80,7 +81,7 @@ namespace Catacumba.Data.Level
 		}
 
 		public static bool IsPositionValid(
-			CellPlacementConfiguration cfg, 
+			CellPlacementConfigurationPattern cfg, 
 			LevelGen.Level l,
 			Vector2Int initialPosition,
 			ELevelLayer layer,

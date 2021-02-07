@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Catacumba.LevelGen
 {
+    // 
+    //  Organizes prop objects inside a cell based on their bounds
+    //  and the provided cell's neighbors.
+    //    
     public class PropPlacement
     {
         public class BoundsSize
