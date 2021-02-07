@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Catacumba.Effects;
+using Catacumba.Configuration;
 
 namespace Catacumba.Entity
 {
@@ -23,6 +24,7 @@ namespace Catacumba.Entity
         public Vector3 Destination { get { return NavMeshAgent.destination; }}
 
         public bool CanMove { get { return true; } }
+        public virtual bool IsStopped { get { return NavMeshAgent.isStopped; } }
         public bool IsTimerStopped { get { return stopTimer < stopTime; } }
         public bool IsBeingMoved { get { return speedBumpT > 0f; } }
         public Vector3 SpeedBumpDir { get; private set; }
@@ -296,7 +298,7 @@ namespace Catacumba.Entity
         public void ApplySpeedBump(Vector3 direction, float force)
         {
             //transform.LookAt(transform.position + direction);
-            speedBumpT = 1f;
+            speedBumpT = CharacterVariables.DashDuration;
             SpeedBumpDir = direction.normalized * force;
         }
 
@@ -304,8 +306,10 @@ namespace Catacumba.Entity
         {
             if (ignoreSpeedBump) return 0f;
 
-            float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);
-            modifier = attack.Knockdown ? 3f : modifier;
+            float modifier = (attack.Type == EAttackType.Weak 
+                                          ? CharacterVariables.AttackDashForceWeak 
+                                          : CharacterVariables.AttackDashForceStrong);
+            modifier = attack.Knockdown ? CharacterVariables.KnockdownDashForce : modifier;
 
             return SpeedBumpForce * modifier;
         }

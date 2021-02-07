@@ -27,6 +27,7 @@ namespace Catacumba.Entity
             }
         }
 
+        public EAttackType LastAttackRequest { get; private set; }
         public AttackResult LastAttackData { get; private set; }
         public AttackResult LastDamageData { get; private set; }
 
@@ -144,6 +145,11 @@ namespace Catacumba.Entity
                 health.OnFall += OnFallCallback;
                 health.OnDamaged += OnDamagedCallback;
             }
+
+            else if (component is CharacterMovementWalkDodge)
+            {
+                (component as CharacterMovementWalkDodge).OnDodge += Cb_OnDodge;
+            }
         }
 
         public override void OnComponentRemoved(CharacterComponentBase component)
@@ -155,11 +161,19 @@ namespace Catacumba.Entity
                 health.OnFall -= OnFallCallback;
                 health.OnDamaged -= OnDamagedCallback;
             }
+
+            else if (component is CharacterMovementWalkDodge)
+            {
+                (component as CharacterMovementWalkDodge).OnDodge -= Cb_OnDodge;
+            }
         }
 
         public void RequestAttack(EAttackType type)
         {
             if (!CanAttack) return;
+
+            LastAttackRequest = type;
+
             if (!Animator)
             {
                 AttackImmediate(type);
@@ -177,7 +191,6 @@ namespace Catacumba.Entity
             EmitAttackEffect();
 
             if (results == null) return;
-            // EmitHitEffects(results);
             OnAttack?.Invoke(results);
 
             LastAttackData = results[results.Length-1];
@@ -212,6 +225,11 @@ namespace Catacumba.Entity
         }
 
         private void OnRollCallback()
+        {
+            OnComboEnded?.Invoke();
+        }
+
+        private void Cb_OnDodge()
         {
             OnComboEnded?.Invoke();
         }

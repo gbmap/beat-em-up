@@ -7,6 +7,7 @@ namespace Catacumba.Entity
         public System.Action OnDodge;
         //public bool IsDodging { get; private set; }
         public bool IsDodging { get { return dodgeTimer > 0f; } }
+        public override bool IsStopped => base.IsStopped && !IsDodging;
 
         private const float dodgeDuration = 1f;
         private float dodgeTimer;

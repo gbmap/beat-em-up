@@ -51,4 +51,5 @@ namespace Catacumba.Data
             Components.AddComponentsToObject(character.gameObject);
         }
     }
+
 }
