@@ -15,9 +15,9 @@ MonoBehaviour:
   Trap: {fileID: 11400000, guid: 806c309f21f46ce4f858e775ee654693, type: 2}
   PossiblePlacements:
   - {fileID: 11400000, guid: 26fd202f5467414d8b9d2d864d5b7ccd, type: 2}
-  - {fileID: 11400000, guid: 7165e2b4cd51a74118907e2d15c7cef5, type: 2}
   - {fileID: 11400000, guid: 9c6b3effde57ad83fb40862d868441e6, type: 2}
+  - {fileID: 11400000, guid: c2750495f0887a67db48c4dcd4077506, type: 2}
+  - {fileID: 11400000, guid: 7165e2b4cd51a74118907e2d15c7cef5, type: 2}
+  - {fileID: 11400000, guid: 0719b4a6752dea951b54ad7ec61aa09f, type: 2}
   - {fileID: 11400000, guid: 56e7e415bcb7d935c96f4af55196d906, type: 2}
   - {fileID: 11400000, guid: a794f272ed56f05388ee819398e3a79c, type: 2}
-  - {fileID: 11400000, guid: c2750495f0887a67db48c4dcd4077506, type: 2}
-  - {fileID: 11400000, guid: 0719b4a6752dea951b54ad7ec61aa09f, type: 2}
