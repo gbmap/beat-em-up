@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42e239278a09ca438de720656672c99, type: 3}
+  m_Name: AnimationConfig_Slime
+  m_EditorClassIdentifier: 
+  AnimatorController: {fileID: 22100000, guid: 8681c16a50fbcf64a99b47b2d938104f, type: 2}
+  Avatar: {fileID: 0}

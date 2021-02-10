@@ -57,7 +57,11 @@ namespace Catacumba.Data.Controllers
             CharacterMovementBase movement = component.Data.Components.Movement;
 
             Item weapon = component.Data.Stats.Inventory.GetWeapon();
-            float distanceToAttack = weapon.GetCharacteristic<CharacteristicWeaponizable>().WeaponType.AttackStrategy.DistanceToAttack; 
+            float distanceToAttack = float.PositiveInfinity;
+
+            if (weapon)
+                distanceToAttack = weapon.GetCharacteristic<CharacteristicWeaponizable>().WeaponType.AttackStrategy.DistanceToAttack; 
+
             if (movement)
             {
                 input.Direction = UpdateTargetPosition(movement, deltaToTarget, distanceToAttack);
@@ -70,6 +74,12 @@ namespace Catacumba.Data.Controllers
 
         public override int UpdatePriority(ControllerComponent component)
         {
+            if (component.Data.Stats.Inventory.GetWeapon() == null)
+            {
+                _currentPriority = 0;
+                return _currentPriority;
+            }
+
             if (!Target)
                 CheckNewTargets(component);
 
@@ -159,6 +169,9 @@ namespace Catacumba.Data.Controllers
 
         private Vector3 GetDesiredPositionFromItem(CharacterData data, Item item, Vector3 position)
         {
+            if (item == null)
+                return position;
+
             CharacteristicWeaponizable weapon = item.GetCharacteristic<CharacteristicWeaponizable>();
             if (weapon == null)
                 return position;

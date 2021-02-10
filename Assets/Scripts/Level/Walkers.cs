@@ -126,6 +126,9 @@ namespace Catacumba.LevelGen
                                     this.RoomSize, 
                                     this.roomCode,
                                     this.Sector); 
+
+            Room room = new Room(sec);
+            Sector.Level.Rooms.Add(room);
             //Sector.CreateSector(sec);
         }
     }

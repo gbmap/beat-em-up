@@ -20,4 +20,6 @@ MonoBehaviour:
   - Config: {fileID: 11400000, guid: e28177c3ad9bcff4ab10e0def1058051, type: 2}
     Weight: 1
   - Config: {fileID: 11400000, guid: 827718270e3ac8744abe3e35315a701a, type: 2}
-    Weight: 2
+    Weight: 1
+  - Config: {fileID: 11400000, guid: c714fc40468c3b94594cd73bb9a1d246, type: 2}
+    Weight: 1

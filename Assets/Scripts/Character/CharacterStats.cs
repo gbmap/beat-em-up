@@ -35,7 +35,7 @@ namespace Catacumba.Data
         public float StaminaBar { get { return ((float)CurrentStamina)/Stamina; } }
 
         public float PoiseChance { get { return CombatManager.GetPoiseChance(this); } }
-        public float MoveSpeed { get { return 5f; } }
+        public float MoveSpeed { get { return 0.5f+(2f*Mathf.Pow(Attributes.Dexterity, 1f/2f)); } }
 
         public bool CanBeKnockedOut { get; set; }
 

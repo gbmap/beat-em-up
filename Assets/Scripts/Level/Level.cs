@@ -149,41 +149,44 @@ namespace Catacumba.LevelGen
         {
             get
             {
-                return this.map.Size;
+                return this._map.Size;
             }
         }
 
-        private LevelBitmap map;
+        private LevelBitmap _map;
 
         public Vector2Int SpawnPoint;
         public Sector SpawnSector;
 
         public Sector BaseSector { get; private set; }
 
+        public List<Room> Rooms { get; private set; } 
+
         public Level(Vector2Int size)
         {
-            this.map = new LevelBitmap(size);
+            _map       = new LevelBitmap(size);
             BaseSector = new Sector(this, Vector2Int.zero, size, LevelGeneration.CODE_EMPTY);
+            Rooms      = new List<Room>();
         }
 
         public void SetCell(Vector2Int p, LevelGeneration.ECellCode v, ELevelLayer layer = ELevelLayer.All, bool overwrite = false)
         {
-            map.SetCell(p.x, p.y, v, layer, overwrite);
+            _map.SetCell(p.x, p.y, v, layer, overwrite);
         }
 
         public void SetCell(int x, int y, LevelGeneration.ECellCode v, ELevelLayer layer = ELevelLayer.All, bool overwrite = false)
         {
-            map.SetCell(x, y, v, layer, overwrite);
+            _map.SetCell(x, y, v, layer, overwrite);
         }
 
         public LevelGeneration.ECellCode GetCell(Vector2Int p, ELevelLayer layer = ELevelLayer.All)
         {
-            return map.GetCell(p.x, p.y, layer);
+            return _map.GetCell(p.x, p.y, layer);
         }
 
         public LevelGeneration.ECellCode GetCell(int x, int y, ELevelLayer layer = ELevelLayer.All)
         {
-            return map.GetCell(x, y, layer);
+            return _map.GetCell(x, y, layer);
         }
 
         public Sector GetSectorAt(Vector2Int position)
@@ -199,6 +202,16 @@ namespace Catacumba.LevelGen
 
         public Vector2Int WorldPositionToLevelPosition(Vector3 position, Vector3 cellSize) {
             return new Vector2Int(Mathf.CeilToInt((position.x)/cellSize.x), Mathf.FloorToInt(position.z/cellSize.z));
+        }
+
+        public void AddRoom(Room r)
+        {
+            Rooms.Add(r);
+        }
+
+        public void RemoveRoom(Room r)
+        {
+            Rooms.Remove(r);
         }
     }
 

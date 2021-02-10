@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Catacumba.LevelGen
 {
+    //
+    //  Generates rooms through randomly walking agents that explode
+    //  after a random number of steps.
+    //
     class LevelGenAlgoWalkers : ILevelGenAlgo 
     {
         public IEnumerator Run(Level l, System.Action<Level> updateVis=null)
