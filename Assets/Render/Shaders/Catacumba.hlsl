@@ -43,10 +43,28 @@ CBUFFER_END
 
 #include "Catacumba_Shadows.hlsl"
 
+float4 _Time;
+
 float4 healthEffectDisplacement(float v, float t)
 {
     float offset = sin(t*100)*0.02*v;
     return float4(offset, offset, offset, 0.0);
+}
+
+float3 textureVertexDisplacement(
+    TEXTURE2D(displacementTex), 
+    SAMPLER(sampler_Tex), 
+    float3 position, 
+    float3 normal,
+    float sampleScale=0.1, 
+    float displacementScale=0.1,
+    float timeSpeed=0.0
+) {
+    float2 uv = (position.xz+float2(_Time.y*timeSpeed, _Time.y*timeSpeed)) * sampleScale;
+    float4 displacement = SAMPLE_TEXTURE2D_LOD(displacementTex, sampler_Tex, uv, 0.0); 
+    //displacement =(displacement-0.5) * displacementScale;
+    //displacement = displacement * displacementScale;
+    return (normal * displacement) * displacementScale;
 }
 
 float4 healthEffectColor(float v)
@@ -134,7 +152,7 @@ float3 lighting(float3 color, float3 normalWS, float3 vertWS)
     //return a;
 
     //return lightClr;
-    return color;
+    //return color;
     return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 

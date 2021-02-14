@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Slime
   m_EditorClassIdentifier: 
   Stats: {fileID: 11400000, guid: 09c4cb696734ead48b9fd0c63588fc01, type: 2}
-  Inventory: {fileID: 0}
+  Inventory: {fileID: 11400000, guid: fe0cbbde126b62748b550eb61fc81c1b, type: 2}
   Skills: {fileID: 0}
   View: {fileID: 11400000, guid: 214fec95260aa564e82391cad789783a, type: 2}
   Components: {fileID: 11400000, guid: 617b52b71d036214d8198343510f32dc, type: 2}
