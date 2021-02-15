@@ -14,7 +14,7 @@ namespace Catacumba.Entity
             if (defender)
             {
                 if (defender != Caster)
-                    Weapon.ProjectileAttack(Caster, transform, EAttackType.Strong);
+                    Weapon.ProjectileAttack(Caster, defender, transform, EAttackType.Strong);
                 else
                     return;
             } 
@@ -25,7 +25,6 @@ namespace Catacumba.Entity
         public void Reflect(CharacterData attacker)
         {
             Caster = attacker;
-            Vector3 rotation = attacker.transform.forward;
             transform.forward = attacker.transform.forward;
         }
     }

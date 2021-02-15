@@ -8,8 +8,16 @@ using System.Linq;
 
 namespace Catacumba.Entity
 {
+
     public class CharacterCombat : CharacterComponentBase
     {
+        // Used only for debugging.
+        private struct AttackAttempt
+        {
+            public float Time;
+            public EAttackType Type;
+        }
+
         public LayerMask TargetLayer; 
 
         [HideInInspector] public bool IsOnCombo;
@@ -30,6 +38,8 @@ namespace Catacumba.Entity
         public EAttackType LastAttackRequest { get; private set; }
         public AttackResult LastAttackData { get; private set; }
         public AttackResult LastDamageData { get; private set; }
+
+        private AttackAttempt _lastAttack;
 
         ////////////////////////
         //  Callbacks
@@ -187,6 +197,9 @@ namespace Catacumba.Entity
         {
             if (!Weapon) return;
 
+            _lastAttack.Time = Time.time;
+            _lastAttack.Type = type;
+
             AttackResult[] results = Weapon.Attack(data, transform, type);
             EmitAttackEffect();
 
@@ -277,10 +290,10 @@ namespace Catacumba.Entity
 
             try
             {
-                if (Time.time < LastAttackData.Time + 1f)
+                if (Time.time < _lastAttack.Time + 1f)
                 {
                     if (Weapon && data)
-                        Weapon.DebugDraw(data, LastAttackData.Type);
+                        Weapon.DebugDraw(data, _lastAttack.Type);
                 }
                 else
                 {

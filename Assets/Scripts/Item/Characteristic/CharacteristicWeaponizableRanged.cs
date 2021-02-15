@@ -16,15 +16,18 @@ namespace Catacumba.Data.Items.Characteristics
             return null;
         }
 
-        public void ProjectileAttack(CharacterData data, Transform origin, EAttackType attackType)
+        public void ProjectileAttack(CharacterData data, CharacterData defender, Transform origin, EAttackType attackType)
         {
-            base.Attack(data, origin, attackType);
+            //base.Attack(data, origin, attackType);
+            AttackResult[] results = new AttackResult[1];
+            int hits = 0;
+            base.AttackCharacter(data, defender, attackType, ref results, ref hits);
         }
 
         protected GameObject InstantiateProjectile(CharacterData data, GameObject Projectile, Quaternion rotation)
         {
             GameObject projectile = Instantiate(Projectile, 
-                                                GetColliderPosition(data.transform), 
+                                                GetProjectilePosition(data.transform), 
                                                 rotation);
 
             projectile.layer = LayerMask.NameToLayer("Projectiles");
@@ -33,6 +36,18 @@ namespace Catacumba.Data.Items.Characteristics
             projComponent.Caster = data;
             projComponent.Weapon = this;
             return projectile;
+        }
+
+        public override void DebugDraw(CharacterData data, EAttackType type)
+        {
+            //base.DebugDraw(data, type);
+        }
+
+        protected Vector3 GetProjectilePosition(Transform attacker)
+        {
+            Vector3 up  = attacker.transform.up * (1 + AttackCollider.OrientationOffset.y);
+            //Vector3 fwd = attacker.transform.forward * AttackCollider.OrientationOffset.z;
+            return attacker.transform.position + up;
         }
     }
 }

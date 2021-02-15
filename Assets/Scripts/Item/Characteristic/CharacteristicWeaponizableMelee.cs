@@ -9,8 +9,11 @@ namespace Catacumba.Data.Items.Characteristics
         public AttackCollider AttackCollider;
         public bool IgnoreFacingDirection = false;
 
-        public override AttackResult[] Attack(CharacterData character, Transform origin,  EAttackType attackType)
-        {
+        public override AttackResult[] Attack(
+            CharacterData character, 
+            Transform origin,  
+            EAttackType attackType
+        ) {
             Collider[] colliders = CollectColliders(character, origin, attackType);
             if (colliders.Length == 0) return null;
 
@@ -29,6 +32,9 @@ namespace Catacumba.Data.Items.Characteristics
 
                 ProjectileComponent projectile = c.GetComponent<ProjectileComponent>();
                 if (projectile) {
+                    if (projectile.Caster == character)
+                        continue;
+
                     AttackProjectile(character, projectile);
                     continue;
                 }
@@ -37,7 +43,7 @@ namespace Catacumba.Data.Items.Characteristics
             return attackResults;
         }
 
-        private void AttackCharacter(
+        protected void AttackCharacter(
             CharacterData attacker, 
             CharacterData defender, 
             EAttackType attackType, 
@@ -72,7 +78,7 @@ namespace Catacumba.Data.Items.Characteristics
         {
             Vector3 up  = origin.transform.up * (1 + AttackCollider.OrientationOffset.y);
             Vector3 fwd = origin.transform.forward * AttackCollider.OrientationOffset.z;
-            fwd = Vector3.zero;
+            //fwd = Vector3.zero;
             return origin.transform.position + fwd + up;
         }
 
