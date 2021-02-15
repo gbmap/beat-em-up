@@ -72,6 +72,7 @@ namespace Catacumba.Data.Items.Characteristics
         {
             Vector3 up  = origin.transform.up * (1 + AttackCollider.OrientationOffset.y);
             Vector3 fwd = origin.transform.forward * AttackCollider.OrientationOffset.z;
+            fwd = Vector3.zero;
             return origin.transform.position + fwd + up;
         }
 

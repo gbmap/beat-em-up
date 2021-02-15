@@ -12,7 +12,7 @@ namespace Catacumba.Data.Items.Characteristics
 
         public override AttackResult[] Attack(CharacterData data, Transform origin, EAttackType attackType)
         {
-            InstantiateProjectile(data, Projectile);
+            InstantiateProjectile(data, Projectile, data.transform.rotation);
             return null;
         }
 
@@ -21,11 +21,11 @@ namespace Catacumba.Data.Items.Characteristics
             base.Attack(data, origin, attackType);
         }
 
-        private GameObject InstantiateProjectile(CharacterData data, GameObject Projectile)
+        protected GameObject InstantiateProjectile(CharacterData data, GameObject Projectile, Quaternion rotation)
         {
             GameObject projectile = Instantiate(Projectile, 
                                                 GetColliderPosition(data.transform), 
-                                                data.transform.rotation);
+                                                rotation);
 
             projectile.layer = LayerMask.NameToLayer("Projectiles");
 

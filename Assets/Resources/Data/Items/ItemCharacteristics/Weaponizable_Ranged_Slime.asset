@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bdd4b1ced840134793406ef4dd8a9fc, type: 3}
+  m_Script: {fileID: 11500000, guid: 68394842e9099574e908203d841900f5, type: 3}
   m_Name: Weaponizable_Ranged_Slime
   m_EditorClassIdentifier: 
   Slots:
@@ -24,3 +24,5 @@ MonoBehaviour:
   IgnoreFacingDirection: 0
   Projectile: {fileID: 241165685540888665, guid: 0a00ac123dee7f74492d9991e4308e15,
     type: 3}
+  NumberOfProjectiles: 6
+  AngleRange: 360
