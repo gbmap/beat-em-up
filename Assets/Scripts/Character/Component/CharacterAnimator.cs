@@ -252,9 +252,17 @@ namespace Catacumba.Entity
             Freeze();
         }
 
-        private void Cb_OnAttack(AttackResult[] obj)
+        private void Cb_OnAttack(AttackResult[] hits)
         {
             Freeze();
+
+            if (hits.Length == 0 || hits[0] == null)
+                return;
+
+            // TODO: optimize this mess.
+            AudioClip sfx = data.Stats.Inventory.GetWeapon().GetCharacteristic<CharacteristicWeaponizable>().SoundsHit?.GetRandomClip();
+            if (sfx)
+                AudioSource.PlayClipAtPoint(sfx, data.transform.position);
         }
         
         void OnRecover()
@@ -380,7 +388,11 @@ namespace Catacumba.Entity
                 }
             }
 
-            // SoundManager.Instance.PlayWoosh(transform.position);
+
+            // TODO: optimize this mess.
+            AudioClip sfx = data.Stats.Inventory.GetWeapon().GetCharacteristic<CharacteristicWeaponizable>().SoundsWoosh?.GetRandomClip();
+            if (sfx)
+                AudioSource.PlayClipAtPoint(sfx, data.transform.position);
         }
 
         public void Attack(EAttackType type)

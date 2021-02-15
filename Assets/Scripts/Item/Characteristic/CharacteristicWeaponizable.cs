@@ -13,6 +13,8 @@ namespace Catacumba.Data.Items.Characteristics
         public ParticleEffectConfiguration AttackEffect;
         public ParticleEffectConfiguration HitEffect;
         public WeaponType WeaponType;
+        public SFXPool SoundsWoosh;
+        public SFXPool SoundsHit;
 
         [Header("This property is optional")]
         public ControllerAI Behavior;

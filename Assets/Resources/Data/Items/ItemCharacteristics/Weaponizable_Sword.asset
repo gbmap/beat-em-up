@@ -18,5 +18,8 @@ MonoBehaviour:
   AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
   HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
   WeaponType: {fileID: 11400000, guid: 8b395ba24e2bd8146a0ebbf86dedcd6f, type: 2}
+  SoundsWoosh: {fileID: 11400000, guid: 231ab3b318fec23499a6240e97b76e81, type: 2}
+  SoundsHit: {fileID: 11400000, guid: 08f486bf66313064397c31625669c753, type: 2}
+  Behavior: {fileID: 0}
   AttackCollider: {fileID: 11400000, guid: 76092a344ef27944b96f46bdcbb6369c, type: 2}
   IgnoreFacingDirection: 0
