@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 077d2da6891e1584dbd7e4d1156bd705, type: 3}
+  m_Name: CharacterView_Slime_Red
+  m_EditorClassIdentifier: 
+  Models:
+  - {fileID: 7204471478658542209, guid: b9a42888e2ead8e4d9ebbdad94b94523, type: 3}
+  AnimationConfig: {fileID: 11400000, guid: 94724e2fc4e791b43987f9b5a5ae42eb, type: 2}
+  DamageEffect: {fileID: 11400000, guid: af4f55b956b98fc47b6a19458e8064d5, type: 2}
+  MovementEffect: {fileID: 11400000, guid: 860f51fa350b5a4428121b9eb4a99b1f, type: 2}
+  AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
+  HealthQuad: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}

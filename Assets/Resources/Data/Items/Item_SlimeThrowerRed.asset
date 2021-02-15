@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df125eb3a3892148a2349f2619eb9c3, type: 3}
+  m_Name: Item_SlimeThrowerRed
+  m_EditorClassIdentifier: 
+  Name: 
+  Description: 
+  Rarity: {fileID: 11400000, guid: d874133fb075b7f488939554ae63a99f, type: 2}
+  Attributes:
+    Vigor: 0
+    Strength: 0
+    Dexterity: 0
+    Magic: 0
+  Characteristics:
+  - {fileID: 11400000, guid: 943625263b3a9d3479f86a31532e4b3c, type: 2}
+  Model: {fileID: 0}
+  OccupiesSlot: 1

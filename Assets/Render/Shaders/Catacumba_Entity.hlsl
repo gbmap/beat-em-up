@@ -68,7 +68,7 @@ float4 frag(v2f i) : SV_TARGET
     color.xyz = lighting(color, i.normalWS, i.positionWS);
     color += healthEffectColor(_HitFactor);
     color += selectEffectColor(_Selected, i.positionCS, i.normalWS, _Time.y);
-    return color;  
+    return color * color.a;  
 }
 
 #endif

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PoolItems:
   - Config: {fileID: 11400000, guid: 8fedf7fd36266d34aa3cf0fdd55dcc18, type: 2}
-    Weight: 1
+    Weight: 4
   - Config: {fileID: 11400000, guid: 192bea3bd6febe445951c167d2fad4b0, type: 2}
-    Weight: 1
+    Weight: 3
   - Config: {fileID: 11400000, guid: c9d68c05b732f0347a2a8f7d8e2617a8, type: 2}
+    Weight: 2
+  - Config: {fileID: 11400000, guid: 16486576da3e6db48970dc988fad510b, type: 2}
     Weight: 1
