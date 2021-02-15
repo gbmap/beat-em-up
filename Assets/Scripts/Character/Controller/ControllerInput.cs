@@ -46,7 +46,8 @@ namespace Catacumba.Data.Controllers
             cameraRight.y = 0f;
             cameraRight = cameraRight.normalized;
             
-            Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
+            //Vector3 cFwd = cameraForward * vAxis + cameraRight * hAxis;
+            Vector3 cFwd = Vector3.forward * vAxis + Vector3.right * hAxis;
             cFwd.y = 0;
             return cFwd;
         }
