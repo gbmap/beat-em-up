@@ -13,9 +13,9 @@ namespace Catacumba.Data.Controllers
         private int _currentPriority = 0;
         public override int CurrentPriority => _currentPriority;
 
-        public int InitialTargetPriority = 10;
-        public float AttackDelay         = 3f;
-        public float SearchRadius        = 3f;
+        public int InitialTargetPriority                = 10;
+        public float AttackDelay                        = 3f;
+        public float SearchRadius                       = 3f;
         public LayerMask SearchLayers;
 
         private CharacterData Target;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Catacumba.Data.Character;
+using Catacumba.Data.Controllers;
 using Catacumba.Effects;
 using Catacumba.Entity;
 using UnityEngine;
@@ -12,6 +13,9 @@ namespace Catacumba.Data.Items.Characteristics
         public ParticleEffectConfiguration AttackEffect;
         public ParticleEffectConfiguration HitEffect;
         public WeaponType WeaponType;
+
+        [Header("This property is optional")]
+        public ControllerAI Behavior;
 
         public abstract AttackResult[] Attack(CharacterData data, Transform origin, EAttackType attackType);
         public virtual void DebugDraw(CharacterData data, EAttackType type) {}

@@ -20,8 +20,9 @@ MonoBehaviour:
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
   WeaponType: {fileID: 11400000, guid: 36720d2b99cae704db28a1c766032da7, type: 2}
+  Behavior: {fileID: 11400000, guid: d83860dc8a1dccf489b4816a0811900e, type: 2}
   AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
-  IgnoreFacingDirection: 0
+  IgnoreFacingDirection: 1
   Projectile: {fileID: 3527673025698809947, guid: 7eee172bf4d70274d91d2f2d4b97b161,
     type: 3}
   NumberOfProjectiles: 6

@@ -1,0 +1,19 @@
+
+level.type Dungeon
+level.sz (40, 40)
+level.prop_chance 0.45
+level.enemy_chance 0.6
+level.trap_chance 0.75
+level.biome BiomeDungeon
+level.enemy_pool CharacterPool_Dungeon
+level.prop_pool CharacterPool_Props_Dungeon
+
+level.generate
+level.spawn
+camera.spawn
+
+level.spawn_player Goblin_Swordsman
+level.spawn_props
+level.spawn_enemies
+level.spawn_traps BiomeTrapConfiguration_Dungeon
+//level.spawn_boss Pudge

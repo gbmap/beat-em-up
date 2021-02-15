@@ -25,11 +25,12 @@ namespace Catacumba.Entity
         public class ComponentsCache
         {
             // Most referenced components
-            public CharacterData Owner { get; private set; }
+            public CharacterData         Owner { get; private set; }
             public CharacterMovementBase Movement { get; private set; }
-            public CharacterCombat Combat { get; private set; }
-            public CharacterHealth Health { get; private set; }
-            public CharacterAnimator Animator { get; private set; }
+            public CharacterCombat       Combat { get; private set; }
+            public CharacterHealth       Health { get; private set; }
+            public CharacterAnimator     Animator { get; private set; }
+            public ControllerComponent   Controller { get; private set; }
             public List<CharacterComponentBase> CharacterComponents { get; private set; }
 
             public ComponentsCache(
@@ -53,6 +54,8 @@ namespace Catacumba.Entity
                     Movement = component as CharacterMovementBase;
                 else if (component is CharacterAnimator)
                     Animator = component as CharacterAnimator;
+                else if (component is ControllerComponent)
+                    Controller = component as ControllerComponent;
 
                 if (!CharacterComponents.Contains(component))
                     CharacterComponents.Add(component);
@@ -68,6 +71,8 @@ namespace Catacumba.Entity
                     Movement = null;
                 else if (component is CharacterAnimator)
                     Animator = null;
+                else if (component is ControllerComponent)
+                    Controller = null;
 
                 if (CharacterComponents.Contains(component))
                     CharacterComponents.Remove(component);

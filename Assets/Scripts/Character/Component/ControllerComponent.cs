@@ -1,5 +1,7 @@
-﻿using Catacumba.Data.Controllers;
+﻿using System;
+using Catacumba.Data.Controllers;
 using Catacumba.Data.Items;
+using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
 using UnityEngine;
 
@@ -23,10 +25,16 @@ namespace Catacumba.Entity
             Controller = Instantiate<ControllerBase>(newController);
             Controller.Setup(this);
         }
-        
+
         ////////////////////////////// 
         //      MONOBEHAVIOUR
-#region MONOBEHAVIOUR
+        #region MONOBEHAVIOUR
+
+        public override void OnConfigurationEnded()
+        {
+            base.OnConfigurationEnded();
+            data.Stats.Inventory.OnWeaponEquipped += Cb_OnWeaponEquipped;
+        }
 
         protected override void Start()
         {
@@ -38,6 +46,7 @@ namespace Catacumba.Entity
 
             input = new ControllerCharacterInput();
         }
+        
 
         void Update()
         {
@@ -84,6 +93,15 @@ namespace Catacumba.Entity
         {
             base.OnDestroy();
             Controller?.Destroy(this);
+            data.Stats.Inventory.OnWeaponEquipped -= Cb_OnWeaponEquipped;
+        }
+
+        private void Cb_OnWeaponEquipped(InventoryEquipResult result, CharacteristicWeaponizable weaponizable)
+        {
+            if (weaponizable.Behavior == null)
+                return;
+
+            SetController(weaponizable.Behavior);
         }
 
         #endregion

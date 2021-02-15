@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Catacumba.Data.Items;
 using QFSW.QC;
+using Catacumba.Data.Controllers;
 
 namespace Catacumba.Data
 {

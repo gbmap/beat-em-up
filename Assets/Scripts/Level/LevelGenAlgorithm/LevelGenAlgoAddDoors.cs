@@ -49,7 +49,7 @@ namespace Catacumba.LevelGen
                 AddDoors(level, sec, _sectorDoors);
 
                 updateVis?.Invoke(level);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.025f);
             }
             yield return null;
         }
