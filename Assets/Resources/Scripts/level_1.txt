@@ -5,7 +5,12 @@ level.prop_chance 0.45
 level.enemy_chance 0.5
 level.trap_chance 0.75
 level.biome BiomeDungeon
-level.enemy_pool CharacterPool_Dungeon
+//level.enemy_pool CharacterPool_Dungeon
+
+level.enemy_pool.add Goblin_Swordsman 4
+level.enemy_pool.add Goblin_Archer 3
+level.enemy_pool.add Slime 2
+
 level.prop_pool CharacterPool_Props_Dungeon
 
 level.generate

@@ -217,7 +217,7 @@ namespace Catacumba.Entity
             CharacterData data = instance.AddComponent<CharacterData>();
             configuration.Configure(data);
 
-            Debug.Log($"{name} created at {position}");
+            //Debug.Log($"{name} created at {position}");
 
             EntityCount++;
             return data;

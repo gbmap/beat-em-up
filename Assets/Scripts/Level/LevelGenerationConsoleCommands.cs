@@ -30,8 +30,18 @@ namespace Catacumba.LevelGen
         private static CharacterPool _characterPool;
         [Command("enemy_pool")]   public static CharacterPool EnemyPool
         {
-            get { return _characterPool ?? (_characterPool = CharacterManager.LoadPool("CharacterPool_Goblins")); }
+            get { return _characterPool ?? (_characterPool = ScriptableObject.CreateInstance<CharacterPool>()); }
             set { _characterPool = value; }
+        }
+
+        [Command("enemy_pool.add")]
+        public static void AddEnemyToPool(CharacterConfiguration character, int weight)
+        {
+            EnemyPool.PoolItems.Add(new CharacterPoolItem
+            {
+                Config = character,
+                Weight = weight
+            });
         }
 
         private static CharacterPool _propPool;
@@ -252,6 +262,7 @@ namespace Catacumba.LevelGen
             CameraManager.Target = player.transform;
             return player;
         }
+
 
         private static void Log(string str)
         {
