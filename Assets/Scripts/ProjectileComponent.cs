@@ -26,9 +26,7 @@ namespace Catacumba.Entity
         {
             Caster = attacker;
             Vector3 rotation = attacker.transform.forward;
-            rotation.y = 0f;
-
-            transform.rotation = Quaternion.Euler(rotation);
+            transform.forward = attacker.transform.forward;
         }
     }
 }
