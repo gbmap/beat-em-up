@@ -3,16 +3,60 @@ using System.Collections.Generic;
 using QFSW.QC;
 using UnityEngine;
 using System.Linq;
+using Frictionless;
 
 public class Cameraman : MonoBehaviour
 {
+    // MY NAME IS...
+    private class Shake
+    {
+        private float _trauma;
+
+        public void Update(Cinemachine.CinemachineComposer composer)
+        {
+            _trauma = Mathf.Clamp01(_trauma - Time.deltaTime * 1.25f);
+            composer.m_TrackedObjectOffset = Random.insideUnitSphere * (_trauma * _trauma) * 2f;
+        }
+
+        public void AddTrauma(float v=0.25f)
+        {
+            _trauma += v;
+        }
+    }
+
     public static Vector3 OriginalOffset = new Vector3(0, 16f, -9.89f);
 
-    public float LerpSpeed = 5f;
+    public float InLerpSpeed = 10f;
+    public float OutLerpSpeed = 5f;
     public Vector3 AdditionalOffset = new Vector3(0f, 0f, 10f);
     public float OffsetFactor = 0f;
 
     private Vector3 _currentOffset = Vector3.zero;
+    private bool _isPlayerOccluded;
+
+    private Shake _shake = new Shake();
+
+    void OnEnable()
+    {
+        ServiceFactory.Instance.Resolve<MessageRouter>().AddHandler<Catacumba.Events.OnPlayerHit>(OnPlayerHit);
+        ServiceFactory.Instance.Resolve<MessageRouter>().AddHandler<Catacumba.Events.OnPlayerDamaged>(OnPlayerDamaged);
+    }
+
+    void OnDisable()
+    {
+        ServiceFactory.Instance.Resolve<MessageRouter>().RemoveHandler<Catacumba.Events.OnPlayerHit>(OnPlayerHit);
+        ServiceFactory.Instance.Resolve<MessageRouter>().RemoveHandler<Catacumba.Events.OnPlayerDamaged>(OnPlayerDamaged);
+    }
+
+    private void OnPlayerHit(Catacumba.Events.OnPlayerHit msg)
+    {
+        _shake.AddTrauma(0.5f);
+    }
+
+    private void OnPlayerDamaged(Catacumba.Events.OnPlayerDamaged msg)
+    {
+        _shake.AddTrauma(0.8f);
+    }
 
     // Update is called once per frame
     void Update()
@@ -20,41 +64,13 @@ public class Cameraman : MonoBehaviour
         if (CameraManager.Follow == null) return;
         if (CameraManager.Object == null) return;
 
-        _currentOffset += Vector3.ClampMagnitude(GetAdditionalOffset2() - _currentOffset, 1f) * Time.deltaTime * LerpSpeed;
+        _currentOffset += Vector3.ClampMagnitude(GetAdditionalOffset(ref _isPlayerOccluded) - _currentOffset, 1f) * Time.deltaTime * (_isPlayerOccluded ? InLerpSpeed : OutLerpSpeed);
         CameraManager.Transposer.m_FollowOffset = OriginalOffset + _currentOffset;
+
+        _shake.Update(CameraManager.Composer);
     }
 
-    Vector3 GetAdditionalOffset()
-    {
-        Transform target   = CameraManager.Follow;
-        Vector3 startPos   = target.position + OriginalOffset;
-        Vector3 endPos     = CameraManager.Follow.position;
-        Vector3 dir        = (endPos - startPos);
-        int targetLayer    = (1 << LayerMask.NameToLayer("Level"))
-                           | (1 << LayerMask.NameToLayer("Player"));
-        RaycastHit hitInfo; 
-
-        bool collides = Physics.Raycast(
-            startPos, 
-            dir.normalized, 
-            out hitInfo,
-            dir.magnitude,
-            targetLayer);
-
-        if (!collides)
-            return Vector3.zero;
-
-        bool collidesWithPlayer = hitInfo.transform != target;
-        if (!collidesWithPlayer) return Vector3.zero; 
-
-        float zDelta = Mathf.Abs((Mathf.Abs(hitInfo.transform.position.z) - Mathf.Abs(target.position.z)));
-        OffsetFactor = Mathf.Max(0f, hitInfo.collider.bounds.size.y - zDelta - 2.0f); 
-        OffsetFactor = OffsetFactor / hitInfo.collider.bounds.size.y;
-        OffsetFactor *= OffsetFactor;
-        return AdditionalOffset * OffsetFactor;
-    }
-
-    Vector3 GetAdditionalOffset2()
+    Vector3 GetAdditionalOffset(ref bool isPlayerOccluded)
     {
         Transform target = CameraManager.Follow;
         Vector3 startPos   = target.position;
@@ -62,14 +78,15 @@ public class Cameraman : MonoBehaviour
         int targetLayer    = (1 << LayerMask.NameToLayer("Level"));
 
         RaycastHit hitInfo; 
-        bool collides = Physics.Raycast(
+        isPlayerOccluded = Physics.Raycast(
             startPos, 
             dir.normalized, 
             out hitInfo,
             5f,
-            targetLayer);
+            targetLayer
+        );
 
-        if (!collides)
+        if (!isPlayerOccluded)
             return Vector3.zero;
 
         
@@ -91,10 +108,12 @@ public static class CameraManager
     private static GameObject VirtualCameraObject;
     private static Cinemachine.CinemachineVirtualCamera VirtualCamera;
     private static Cinemachine.CinemachineTransposer _Transposer;
+    private static Cinemachine.CinemachineComposer _Composer;
 
     public static GameObject Object { get { return CameraObject; } }
 
     public static Cinemachine.CinemachineTransposer Transposer { get {return _Transposer; } }
+    public static Cinemachine.CinemachineComposer Composer { get { return _Composer; } }
 
     [Command("follow_target")] 
     public static Transform Follow
@@ -152,6 +171,7 @@ public static class CameraManager
         VirtualCameraObject.AddComponent<Cameraman>();
 
         var aim = VirtualCamera.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
+        _Composer = aim;
         return VirtualCameraObject;
     }
 }

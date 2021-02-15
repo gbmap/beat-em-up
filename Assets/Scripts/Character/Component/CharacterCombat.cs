@@ -5,6 +5,7 @@ using Catacumba.Data.Items.Characteristics;
 using Catacumba.Data.Items;
 using System;
 using System.Linq;
+using Frictionless;
 
 namespace Catacumba.Entity
 {
@@ -68,7 +69,7 @@ namespace Catacumba.Entity
 
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
-            OnAttack += EmitHitEffects;
+            OnAttack += Cb_OnAttack;
         }
         
         protected override void OnDisable()
@@ -77,7 +78,7 @@ namespace Catacumba.Entity
 
             OnComboStarted -= OnComboStartedCallback;
             OnComboEnded -= OnComboEndedCallback;
-            OnAttack -= EmitHitEffects;
+            OnAttack -= Cb_OnAttack;
 
         }
 
@@ -227,11 +228,32 @@ namespace Catacumba.Entity
             OnComboEnded?.Invoke();
         }
 
+        private void Cb_OnAttack(AttackResult[] results)
+        {
+            EmitHitEffects(results);
+            if (data.BrainType == ECharacterBrainType.Input)
+            {
+                ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new Catacumba.Events.OnPlayerHit
+                {
+                    Attack = results[0]
+                });
+            }
+        }
+
+
         private void OnDamagedCallback(AttackResult msg)
         {
             if (msg.CancelAnimation)
             {
                 OnComboEnded?.Invoke();
+            }
+
+            if (data.BrainType == ECharacterBrainType.Input)
+            {
+                ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new Catacumba.Events.OnPlayerDamaged
+                {
+                    Attack = msg
+                });
             }
 
             LastDamageData = msg;
