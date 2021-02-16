@@ -63,12 +63,26 @@ namespace Catacumba.Entity
         public override void OnComponentAdded(CharacterComponentBase component)
         {
             base.OnComponentAdded(component);
+
+            if (component is CharacterMovementWalkDodge)
+            {
+                CharacterMovementWalkDodge movement = (component as CharacterMovementWalkDodge);
+                movement.OnDodge += Cb_OnDodge;
+                movement.OnDodgeEnded += Cb_OnDodgeEnded;
+            }
         }
 
         public override void OnComponentRemoved(CharacterComponentBase component)
         {
             base.OnComponentRemoved(component);
+            if (component is CharacterMovementWalkDodge)
+            {
+                CharacterMovementWalkDodge movement = (component as CharacterMovementWalkDodge);
+                movement.OnDodge -= Cb_OnDodge;
+                movement.OnDodgeEnded -= Cb_OnDodgeEnded;
+            }
         }
+
 
         ////////////////////////////////////////
         //          INTERFACE
@@ -186,6 +200,16 @@ namespace Catacumba.Entity
             {
                 recoverTimer *= 2f;
             }
+        }
+
+        private void Cb_OnDodge()
+        {
+            collider.enabled = false;
+        }
+
+        private void Cb_OnDodgeEnded()
+        {
+            collider.enabled = true;
         }
 
     }

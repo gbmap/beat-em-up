@@ -5,6 +5,8 @@ namespace Catacumba.Entity
     public class CharacterMovementWalkDodge : CharacterMovementWalk
     {
         public System.Action OnDodge;
+        public System.Action OnDodgeEnded;
+
         //public bool IsDodging { get; private set; }
         public bool IsDodging { get { return dodgeTimer > 0f; } }
         public override bool IsStopped => base.IsStopped && !IsDodging;
@@ -59,6 +61,7 @@ namespace Catacumba.Entity
         public void AnimationEndDodge()
         {
             // IsDodging = false;
+            OnDodgeEnded?.Invoke();
         }
     }
 }
