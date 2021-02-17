@@ -8,13 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_ItemHighlight_Rare
-  m_Shader: {fileID: -6465566751694194690, guid: 0343ccd042041504ca5d18903181e1dd,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 311eeba0b754f0f4697a0ca82efe6c39, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -25,3 +24,4 @@ Material:
     m_Floats: []
     m_Colors:
     - Color_35CF6FB9: {r: 0.8076099, g: 0.3803922, b: 1, a: 1}
+    - _Color: {r: 0.80784315, g: 0.3803921, b: 1, a: 1}

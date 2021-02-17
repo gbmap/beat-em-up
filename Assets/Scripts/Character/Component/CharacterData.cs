@@ -158,11 +158,12 @@ namespace Catacumba.Entity
         private void Start()
         {
             SetupCharacterStats();
-            SetupCharacterComponentsCache();
 
             if (ConfigurationView != null)
                 ConfigurationView.Configure(this);
-            
+
+            SetupCharacterComponentsCache();
+
             OnCharacterConfigurationEnded();
         }
 

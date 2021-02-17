@@ -86,6 +86,8 @@ namespace Catacumba.Entity
                         Slot = slot.Part
                     });
                 }
+
+                input.DropItem = false;
             }
         }
 

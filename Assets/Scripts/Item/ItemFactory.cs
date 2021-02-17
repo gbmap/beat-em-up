@@ -16,26 +16,40 @@ namespace Catacumba.Entity
         }
     }
 
+    [CommandPrefix("entity.")]
     public static class ItemFactory 
     {    
         public const string PATH_ITEMS = "Data/Items";
         public const string PATH_INTERACTIONS = "Data/Interactions";
 
         [Command("spawn_item")]
-        public static void Command_CreateItem(string itemConfiguration)
+        public static void Command_CreateItem(Item item)
         {
-            Item item = Resources.Load<Item>($"{PATH_ITEMS}/{itemConfiguration}");
+            Command_CreateItem(item, Vector3.zero);
+        }
+
+        [Command("spawn_item")]
+        public static void Command_CreateItem(Item item, Vector3 position)
+        {
             if (item == null)
             {
-                QuantumConsole.Instance.LogToConsole($"Couldn't load item: {itemConfiguration}");
+                QuantumConsole.Instance.LogToConsole($"Item is null.");
                 return;
             }
             
-            GameObject instance = new GameObject(itemConfiguration);
-            instance.transform.localPosition = Vector3.zero;
+            GameObject instance = new GameObject(item.name);
+            instance.transform.localPosition = position;
             instance.transform.localRotation = Quaternion.identity;
             instance.layer = LayerMask.NameToLayer("Item");
             instance.tag = "Item";
+
+            SphereCollider collider = instance.AddComponent<SphereCollider>();
+            collider.isTrigger = true;
+            collider.radius = 1f;
+
+            Rigidbody rigidbody = instance.AddComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
+            rigidbody.useGravity = false;
 
             GameObject modelRoot = new GameObject("ModelRoot");
             modelRoot.transform.SetParent(instance.transform);
@@ -47,9 +61,9 @@ namespace Catacumba.Entity
 
             GameObject highlight = GameObject.Instantiate(ItemTemplateConfiguration.Default.Highlight);
             highlight.transform.SetParent(instance.transform);
-            highlight.transform.localScale    = Vector3.one;
+            highlight.transform.localScale    = Vector3.one * 2f;
             highlight.transform.localPosition = Vector3.zero;
-            highlight.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+            highlight.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
             ItemComponent itemComponent      = instance.AddComponent<ItemComponent>();
                           itemComponent.Item = item;

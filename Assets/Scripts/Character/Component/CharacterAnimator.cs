@@ -197,6 +197,7 @@ namespace Catacumba.Entity
             Item item = result.Item;
             ItemTemplate.Create(item, transform.position);
             */
+            ItemFactory.Command_CreateItem(result.Item, data.transform.position);
 
             RemoveItemFromBone(result.Params.Slot);
         }

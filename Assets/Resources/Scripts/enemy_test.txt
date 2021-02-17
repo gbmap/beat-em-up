@@ -1,4 +1,4 @@
 
 entity.spawn_player Goblin_Swordsman
-entity.spawn_enemy Slime
-entity.spawn_enemy SlimeRed
+//entity.spawn_enemy Slime
+//entity.spawn_enemy SlimeRed

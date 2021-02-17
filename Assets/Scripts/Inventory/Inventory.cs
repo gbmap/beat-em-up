@@ -404,11 +404,12 @@ namespace Catacumba.Data.Items
             // EQUIP DEFAULT WEAPON
             if (GetWeaponSlot().Part == s.Part)
             {
-                Slots.EquipOnSlot(new InventoryEquipParams
+                Equip(new InventoryEquipParams
                 {
-                    Item = Resources.Load<Item>("Data/Items/Item_Fists"), 
+                    Item = Resources.Load<Item>("Data/Items/Item_Fists"),
                     Slot = s.Part
                 });
+
             }
 
             return DropResult(parameters, item);

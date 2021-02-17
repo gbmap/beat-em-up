@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Weaponizable_Melee
   m_EditorClassIdentifier: 
   Slots:
-  - BodyPart: {fileID: 0}
+  - BodyPart: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
     ModelOffset: {fileID: 0}
   AttackEffect: {fileID: 0}
   HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}

@@ -81,29 +81,15 @@ namespace Catacumba.Data.Controllers
 
         private bool UpdateDropItem(ControllerComponent controller)
         {
-            if (RewiredInput.GetButton("Submit"))
-            {
-                dropTimer += Time.deltaTime;
-                if (dropTimer > 2f)
-                {
-                    dropTimer = 0f;
-                    return true;
+            if (!RewiredInput.GetButton("Submit"))
+                return false;
 
-                    /*
-                    InventorySlot slot = data.Stats.Inventory.GetWeaponSlot();
-                    if (slot != null)
-                    {
-                        data.Stats.Inventory.Drop(new Data.Items.InventoryDropParams
-                        {
-                            Slot = slot.Part
-                        });
-                        dropTimer = 0f;
-                    }
-                    */
-                }
-            }
+            dropTimer += Time.deltaTime;
+            if (dropTimer < 2f)
+                return false;
 
-            return false;
+            dropTimer = 0f;
+            return true;
         }
     }
 }
