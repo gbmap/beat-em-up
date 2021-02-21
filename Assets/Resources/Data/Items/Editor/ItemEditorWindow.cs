@@ -88,7 +88,7 @@ public class ItemEditorWindow : EditorWindow
         root.Query<TextField>("item-name").First().BindProperty(so.FindProperty("Name"));
         root.Query<TextField>("item-description").First().BindProperty(so.FindProperty("Description"));
         root.Query<PopupField<ItemRarity>>("item-rarity-popup").First().value = item.Rarity;
-        root.Query<AttributesVisualElement>("item-attribs-list").First().SetReference(item.AttributeStats);
+        root.Query<AttributesVisualElement>("item-attribs-list").First().SetReference(item.Attributes);
         root.Query<ItemCharacteristicsVisualElement>("item-characteristics-list").First().SetReference(item.Characteristics);
     }
 }

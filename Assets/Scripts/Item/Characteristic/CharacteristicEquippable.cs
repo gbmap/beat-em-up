@@ -5,7 +5,7 @@ using Catacumba.Data.Character;
 
 namespace Catacumba.Data.Items.Characteristics
 {
-    [CreateAssetMenu(menuName="Data/Item Characteristic/Equippable", fileName="Equippable")]
+    [CreateAssetMenu(menuName="Data/Item/Characteristic/Equippable", fileName="Equippable")]
     public class CharacteristicEquippable : ItemCharacteristic
     {
         [System.Serializable]

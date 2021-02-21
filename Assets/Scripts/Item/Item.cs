@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Catacumba.Data;
 using Catacumba.Data.Character;
 using Catacumba.Data.Items.Characteristics;
 using Catacumba.Entity;
@@ -17,9 +18,10 @@ namespace Catacumba.Data.Items
         [Multiline]
         public string Description;
         public ItemRarity Rarity;
-        public CharAttributesI Attributes;
+        //public CharAttributesI Attributes;
+        public List<AttributeValueI> Attributes;
 
-        public ItemCharacteristic[] Characteristics;
+        public List<ItemCharacteristic> Characteristics;
 
         public GameObject Model;
 
@@ -95,7 +97,7 @@ namespace Catacumba.Data.Items
         {
             Item instance = ScriptableObject.Instantiate(this);
             instance.IsInstance = true;
-            for (int i = 0; i < Characteristics.Length; i++)
+            for (int i = 0; i < Characteristics.Count; i++)
             {
                 ItemCharacteristic characteristic = (ItemCharacteristic)Characteristics[i];
                 instance.Characteristics[i] = ScriptableObject.Instantiate(characteristic);

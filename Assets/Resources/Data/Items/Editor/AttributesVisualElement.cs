@@ -69,7 +69,7 @@ public class AttributesVisualElement : VisualElement
     private PopupField<AttributeData> CreatePopupField(AttributeValueI attr, int index)
     {
         Func<AttributeData, string> formatter = (attrData) => attrData.name;
-        AttributeData defaultValue = _attributes.FirstOrDefault(a=>a==attr.Attribute) ?? _attributes[0];
+        AttributeData defaultValue = _attributes.FirstOrDefault(a=>a==attr.Definition) ?? _attributes[0];
         PopupField<AttributeData> pp = new PopupField<AttributeData>(_attributes, defaultValue, formatter, formatter);
         pp.AddToClassList("attr_popup");
         pp.RegisterValueChangedCallback(delegate (ChangeEvent<AttributeData> ce) { Cb_OnPopupItemValueChanged(ce, index);  });
@@ -83,7 +83,7 @@ public class AttributesVisualElement : VisualElement
 
     private void Cb_OnPopupItemValueChanged(ChangeEvent<AttributeData> changeEvent, int index)
     {
-        _target[index].Attribute = changeEvent.newValue;
+        _target[index].Definition = changeEvent.newValue;
     }
 
     private void Cb_OnRemoveClick(int index)
@@ -97,7 +97,7 @@ public class AttributesVisualElement : VisualElement
     {
         if (_target == null) return;
         AttributeValueI attribute = new AttributeValueI();
-        attribute.Attribute = _attributes[0];
+        attribute.Definition = _attributes[0];
         _fieldsContainer.Add(CreateListItem(attribute, _target.Count));
         _target.Add(attribute);
     }

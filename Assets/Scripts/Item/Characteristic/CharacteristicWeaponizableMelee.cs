@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items.Characteristics
 {
-    [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Melee", fileName = "WeaponizableMelee")]
+    [CreateAssetMenu(menuName = "Data/Item/Characteristic/Weaponizable/Melee", fileName = "WeaponizableMelee")]
     public class CharacteristicWeaponizableMelee : CharacteristicWeaponizable
     {
         public AttackCollider AttackCollider;

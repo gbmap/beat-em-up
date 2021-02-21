@@ -12,14 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df125eb3a3892148a2349f2619eb9c3, type: 3}
   m_Name: Item_SlimeThrower
   m_EditorClassIdentifier: 
-  Name: 
+  Name: Slime Thrower
   Description: 
   Rarity: {fileID: 11400000, guid: d874133fb075b7f488939554ae63a99f, type: 2}
-  Attributes:
-    Vigor: 0
-    Strength: 0
-    Dexterity: 0
-    Magic: 0
+  Attributes: []
   Characteristics:
   - {fileID: 11400000, guid: 70eecc2694e1a6b439c8da4b8a8e6fc2, type: 2}
   Model: {fileID: 0}

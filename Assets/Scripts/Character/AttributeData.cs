@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Catacumba.Data
@@ -11,12 +12,21 @@ namespace Catacumba.Data
         public string Description = "";
     }
 
-    public class AttributeValue<T> 
+    public abstract class AttributeValue<T> 
     {
-        public AttributeData Attribute;
+        public AttributeData Definition;
         public T Value;
     }
 
     [System.Serializable]
     public class AttributeValueI : AttributeValue<int> { }
+
+    public static class AttributeHelper
+    {
+        public static int GetSum(List<AttributeValueI> Attributes)
+        {
+            return Attributes.Sum(a => a.Value);
+        }
+
+    }
 }

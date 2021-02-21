@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items.Characteristics
 {
-    [CreateAssetMenu(menuName = "Data/Item Characteristic/Weaponizable/Ranged (Multiple Projectiles)", fileName="WeaponizableRangedMultipleProjectiles")]
+    [CreateAssetMenu(menuName = "Data/Item/Characteristic/Weaponizable/Ranged (Multiple Projectiles)", fileName="WeaponizableRangedMultipleProjectiles")]
     public class CharacteristicWeaponizableRangedMultipleProjectiles : CharacteristicWeaponizableRanged
     {
         public int NumberOfProjectiles = 3;

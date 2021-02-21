@@ -116,14 +116,14 @@ namespace Catacumba.Data.Controllers
             if (acceptableItems.Count == 0)
                 return priority;
 
-            Target = acceptableItems.OrderByDescending(i => i.Item.Item.Attributes.Sum()).First();
+            Target = acceptableItems.OrderByDescending(i => AttributeHelper.GetSum(i.Item.Item.Attributes)).First();
             priority = TargetPriority; 
             return priority;
         }
 
         private bool Compare(Item itemA, Item itemB)
         {
-            return itemA.Attributes.Sum() < itemB.Attributes.Sum();
+            return AttributeHelper.GetSum(itemA.Attributes) < AttributeHelper.GetSum(itemB.Attributes);
         }
 
         private void CheckItems()
