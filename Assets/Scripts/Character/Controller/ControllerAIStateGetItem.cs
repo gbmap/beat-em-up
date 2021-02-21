@@ -121,11 +121,9 @@ namespace Catacumba.Data.Controllers
             return priority;
         }
 
-        private bool Compare(InventorySlot slot, Item item)
+        private bool Compare(Item itemA, Item itemB)
         {
-            if (slot == null) return false;
-            if (slot.IsEmpty()) return true;
-            return slot.Item.Attributes.Sum() < item.Attributes.Sum();
+            return itemA.Attributes.Sum() < itemB.Attributes.Sum();
         }
 
         private void CheckItems()

@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5527b4a3486f36e4c9e26c14fe3275c3, type: 3}
-  m_Name: Inventory_Humanoid
+  m_Script: {fileID: 11500000, guid: f9ef641f0e5a252428fd2ee484f6eed8, type: 3}
+  m_Name: InventoryItems_SlimeRed
   m_EditorClassIdentifier: 
-  Items: {fileID: 11400000, guid: c37212dbdddec584aba82f4cb9bea5d8, type: 2}
-  Bag: {fileID: 11400000, guid: ca187ccb8c8c9064b9e121455c9b2ed3, type: 2}
+  Slots: {fileID: 11400000, guid: ce6bba416b23dbb46bd569fa8854942b, type: 2}
+  Items:
+  - {fileID: 11400000, guid: 6de69459f9c1a1e41934b6552c8fbdfe, type: 2}

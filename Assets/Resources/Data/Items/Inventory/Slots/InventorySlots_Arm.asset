@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5527b4a3486f36e4c9e26c14fe3275c3, type: 3}
-  m_Name: Inventory_Humanoid
+  m_Script: {fileID: 11500000, guid: 193e844dd59ac7743b36564e7bb70ff8, type: 3}
+  m_Name: InventorySlots_Arm
   m_EditorClassIdentifier: 
-  Items: {fileID: 11400000, guid: c37212dbdddec584aba82f4cb9bea5d8, type: 2}
-  Bag: {fileID: 11400000, guid: ca187ccb8c8c9064b9e121455c9b2ed3, type: 2}
+  Slots:
+  - {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+  WeaponSlotIndex: 0

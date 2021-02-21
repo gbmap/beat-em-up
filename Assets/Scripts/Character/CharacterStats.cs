@@ -50,7 +50,13 @@ namespace Catacumba.Data
 
             if (inventory == null)
                 inventory = Resources.Load<Inventory>("Data/Items/Inventory/Inventory_Empty");
-            Inventory = ScriptableObject.Instantiate(inventory);
+
+            Inventory       = ScriptableObject.Instantiate(inventory);
+            if (Inventory.Items)
+                Inventory.Items = ScriptableObject.Instantiate(Inventory.Items);
+
+            if (Inventory.Bag)
+                Inventory.Bag = ScriptableObject.Instantiate(Inventory.Bag);
 
             Health          = MaxHealth;
             Mana            = MaxMana;

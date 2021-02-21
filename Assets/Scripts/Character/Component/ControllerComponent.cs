@@ -1,4 +1,5 @@
 ﻿using System;
+using Catacumba.Data.Character;
 using Catacumba.Data.Controllers;
 using Catacumba.Data.Items;
 using Catacumba.Data.Items.Characteristics;
@@ -78,12 +79,13 @@ namespace Catacumba.Entity
 
             if (input.DropItem)
             {
-                InventorySlot slot = Data.Stats.Inventory.GetWeaponSlot();
-                if (slot != null)
+                Item weapon = Data.Stats.Inventory.GetWeapon();
+                BodyPart slot = Data.Stats.Inventory.GetWeaponSlot();
+                if (weapon != null)
                 {
                     data.Stats.Inventory.Drop(new Data.Items.InventoryDropParams
                     {
-                        Slot = slot.Part
+                        Slot = slot
                     });
                 }
 

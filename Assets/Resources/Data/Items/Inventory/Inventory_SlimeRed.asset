@@ -12,21 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5527b4a3486f36e4c9e26c14fe3275c3, type: 3}
   m_Name: Inventory_SlimeRed
   m_EditorClassIdentifier: 
-  Slots:
-    slots:
-    - Part: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
-      Item: {fileID: 11400000, guid: 6de69459f9c1a1e41934b6552c8fbdfe, type: 2}
-    WeaponSlotIndex: 0
-  Bag:
-    items:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    numberItems: 0
+  Items: {fileID: 11400000, guid: d21f5062629a4a64e86bdbe95fbd0508, type: 2}
+  Bag: {fileID: 11400000, guid: ca187ccb8c8c9064b9e121455c9b2ed3, type: 2}

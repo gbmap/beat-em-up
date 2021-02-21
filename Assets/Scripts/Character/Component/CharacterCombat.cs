@@ -134,7 +134,10 @@ namespace Catacumba.Entity
             if (data.IsConfigured)
             // If this is not the object's startup
             {
-                foreach (var slot in data.Stats.Inventory.Slots)
+                Item weapon = data.Stats.Inventory.GetWeapon();
+                SetupWeaponEquip(weapon);
+                /*
+                foreach (var slot in data.Stats.Inventory.Items)
                 {
                     if (slot.Item == null) continue;
 
@@ -144,6 +147,7 @@ namespace Catacumba.Entity
                     SetupWeaponEquip(slot.Item);
                     break;
                 }
+                */
             }
         }
 
