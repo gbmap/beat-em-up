@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using Catacumba.Effects;
+using Catacumba.Configuration;
 
 namespace Catacumba.Entity 
 {
@@ -193,11 +194,11 @@ namespace Catacumba.Entity
             {
                 // applies dash on attack
                 float t = 1f - speedBumpT;
-                var dir = speedBumpScale * SpeedBumpDir * Mathf.Pow(-t + 1f, 3f);
+                var dir = SpeedBumpDir;
                 //dir.y = velocity.y;
                 velocity = dir;
 
-                speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime * 5f);
+                speedBumpT = Mathf.Max(0, speedBumpT - Time.deltaTime);
             }
 
             else if (CanMove)
@@ -246,7 +247,7 @@ namespace Catacumba.Entity
         public void ApplySpeedBump(Vector3 direction, float force)
         {
             //transform.LookAt(transform.position + direction);
-            speedBumpT = 1f;
+            speedBumpT = CharacterVariables.DashDuration;
             SpeedBumpDir = direction.normalized * force;
         }
 
@@ -259,7 +260,7 @@ namespace Catacumba.Entity
                 transform.LookAt(lookAt);
             }
 
-            if (attack.Knockdown && attack.AttackerStats != data.Stats)
+            if (attack.AttackerStats != data.Stats)
             {
                 ApplySpeedBump(attack.Attacker.transform.forward, GetSpeedBumpForce(attack));
             }
@@ -272,7 +273,7 @@ namespace Catacumba.Entity
 
         void OnAttack(AttackResult attack)
         {
-            ApplySpeedBump(transform.forward, GetSpeedBumpForce(attack) * 0.5f);
+            ApplySpeedBump(transform.forward, GetSpeedBumpForce(attack) * 0.75f);
         }
 
         void OnComboStarted()
@@ -288,7 +289,9 @@ namespace Catacumba.Entity
         public float GetSpeedBumpForce(AttackResult attack)
         {
             if (IgnoreSpeedBump) return 0f;
-            return (attack.Type == EAttackType.Weak ? 3f : 6f);
+            return (attack.Type == EAttackType.Weak 
+                                ? CharacterVariables.AttackDashForceWeak 
+                                : CharacterVariables.AttackDashForceStrong);
 
             /*
             float modifier = (attack.Type == EAttackType.Weak ? 1f : 2f);

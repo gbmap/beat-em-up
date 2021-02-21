@@ -5,6 +5,7 @@ using System;
 using Catacumba.Data.Items.Characteristics;
 using System.Linq;
 using Catacumba.Data.Character;
+using Catacumba.Configuration;
 
 namespace Catacumba.Entity
 {
@@ -24,6 +25,7 @@ namespace Catacumba.Entity
         private new Renderer renderer;
 
         public float animatorSpeed = 1f;
+        private float _freezeTimer = 0f;
 
         GameObject equippedWeapon;
 
@@ -87,6 +89,7 @@ namespace Catacumba.Entity
             {
                 combat = component as CharacterCombat;
                 combat.OnRequestAttack += OnRequestCharacterAttackCallback;
+                combat.OnAttack += Cb_OnAttack;
             }
 
             else if (component is CharacterHealth)
@@ -110,6 +113,7 @@ namespace Catacumba.Entity
             else if (component is CharacterCombat)
             {
                 combat.OnRequestAttack -= OnRequestCharacterAttackCallback;
+                combat.OnAttack -= Cb_OnAttack;
                 combat = null;
             }
 
@@ -139,6 +143,13 @@ namespace Catacumba.Entity
                 if (movement.NavMeshAgent)
                     animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
             }
+
+            _freezeTimer = Mathf.Clamp(_freezeTimer + Time.deltaTime, 0f, CharacterVariables.FreezeDuration);
+
+            float freezeT = _freezeTimer / CharacterVariables.FreezeDuration;
+            freezeT = Mathf.Pow(freezeT, CharacterVariables.FreezeTimePower);
+
+            animator.speed = Mathf.SmoothStep(0f, AnimatorDefaultSpeed, freezeT);
         }
 
         private void UpdateDeathBlinkAnimation(bool isDead, float timeOfDeath)
@@ -155,6 +166,11 @@ namespace Catacumba.Entity
         public void EmitSmokeRadius()
         {
             movement?.EmitSmokeRadius();
+        }
+
+        private void Freeze()
+        {
+            _freezeTimer = 0f;
         }
 
         #endregion
@@ -181,6 +197,7 @@ namespace Catacumba.Entity
             Item item = result.Item;
             ItemTemplate.Create(item, transform.position);
             */
+            ItemFactory.Command_CreateItem(result.Item, data.transform.position);
 
             RemoveItemFromBone(result.Params.Slot);
         }
@@ -233,8 +250,20 @@ namespace Catacumba.Entity
                 animator.SetTrigger( (attack.Knockdown || attack.Dead) ? hashKnockdown : hashDamaged);
             }
 
-            // EmitHitImpact(attack);
-            // FX.Instance.DamageLabel(transform.position + Vector3.up, attack.Damage);
+            Freeze();
+        }
+
+        private void Cb_OnAttack(AttackResult[] hits)
+        {
+            Freeze();
+
+            if (hits.Length == 0 || hits[0] == null)
+                return;
+
+            // TODO: optimize this mess.
+            AudioClip sfx = data.Stats.Inventory.GetWeapon().GetCharacteristic<CharacteristicWeaponizable>().SoundsHit?.GetRandomClip();
+            if (sfx)
+                AudioSource.PlayClipAtPoint(sfx, data.transform.position);
         }
         
         void OnRecover()
@@ -303,6 +332,8 @@ namespace Catacumba.Entity
 
             model.transform.localPosition = position;
             model.transform.localRotation = Quaternion.Euler(rotation);
+
+            CharacterViewConfiguration.SetLayerRecursive(model, data.gameObject.layer);
         }
 
         private void RemoveItemFromBone(BodyPart slot)
@@ -349,10 +380,20 @@ namespace Catacumba.Entity
             if (movement)
             {
                 Vector3 dir = movement.transform.forward;
-                if (movement) movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
+                if (movement) 
+                {
+                    float force = combat.LastAttackRequest == EAttackType.Weak 
+                                                           ? CharacterVariables.AttackDashForceWeak
+                                                           : CharacterVariables.AttackDashForceStrong;
+                    movement.ApplySpeedBump(dir, force);
+                }
             }
 
-            // SoundManager.Instance.PlayWoosh(transform.position);
+
+            // TODO: optimize this mess.
+            AudioClip sfx = data.Stats.Inventory.GetWeapon().GetCharacteristic<CharacteristicWeaponizable>().SoundsWoosh?.GetRandomClip();
+            if (sfx)
+                AudioSource.PlayClipAtPoint(sfx, data.transform.position);
         }
 
         public void Attack(EAttackType type)

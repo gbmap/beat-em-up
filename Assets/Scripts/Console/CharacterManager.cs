@@ -139,10 +139,14 @@ namespace Catacumba.Entity
 
             GameObject light = new GameObject("Light");
             Light l = light.AddComponent<Light>();
-            l.range = 5f;
-            l.color = Color.black;
+            l.range = 7f;
+            l.intensity = 1f;
+            l.color = new Color(0.4f, 0.2f, 0.3f);
             l.transform.parent = data.transform;
             l.transform.localPosition = Vector3.up * 1.25f;
+            l.shadows = LightShadows.Hard;
+            l.cullingMask = ~ (1 <<LayerMask.NameToLayer("Player"));
+
             return data.gameObject;
         }
 
@@ -213,7 +217,7 @@ namespace Catacumba.Entity
             CharacterData data = instance.AddComponent<CharacterData>();
             configuration.Configure(data);
 
-            Debug.Log($"{name} created at {position}");
+            //Debug.Log($"{name} created at {position}");
 
             EntityCount++;
             return data;
@@ -229,73 +233,6 @@ namespace Catacumba.Entity
 
             Vector3 cellSize = LevelGenerationManager.Params.BiomeConfig.CellSize();
             return LevelGen.Mesh.Utils.LevelToWorldPos(position, cellSize);
-        }
-    }
-
-
-    [CommandPrefix("camera.")]
-    public static class CameraManager
-    {
-        private static GameObject CameraObject;
-        private static GameObject VirtualCameraObject;
-        private static Cinemachine.CinemachineVirtualCamera VirtualCamera;
-        private static Cinemachine.CinemachineTransposer Transposer;
-
-        [Command("follow_target")] 
-        public static Transform Follow
-        {
-            get { return VirtualCamera.Follow; }
-            set { VirtualCamera.Follow = value; }
-        }
-
-        [Command("follow_offset")]
-        public static Vector3 FollowOffset
-        {
-            get { return Transposer.m_FollowOffset; }
-            set { Transposer.m_FollowOffset = value; }
-
-        }
-
-        [Command("look_target")]  
-        public static Transform LookAt
-        {
-            get { return VirtualCamera.LookAt; }
-            set { VirtualCamera.LookAt = value; }
-        }
-
-        [Command("target")]
-        public static Transform Target
-        {
-            set 
-            { 
-                Follow = value;
-                LookAt = value;  
-            }
-        }
-
-        [Command("spawn")]
-        public static GameObject Spawn()
-        {
-            CameraObject = Camera.main?.gameObject;
-            if (CameraObject == null)
-            {
-                CameraObject = new GameObject("MainCamera");
-                CameraObject.AddComponent<Camera>();
-                CameraObject.tag = "MainCamera";
-            }
-
-            if (VirtualCameraObject)
-                GameObject.Destroy(VirtualCameraObject);
-
-            VirtualCameraObject = new GameObject("VCam");
-            VirtualCamera = VirtualCameraObject.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-
-            Transposer = VirtualCamera.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
-            Transposer.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
-            Transposer.m_FollowOffset = new Vector3(0f, 16f, -9f);
-
-            var aim = VirtualCamera.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
-            return VirtualCameraObject;
         }
     }
 }

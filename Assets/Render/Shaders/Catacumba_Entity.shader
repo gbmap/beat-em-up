@@ -3,6 +3,7 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
         _HitFactor ("Hit Factor", Range(0, 1)) = 0 
         _Selected ("Selected", Range(0, 1)) = 0 
     }
@@ -10,12 +11,16 @@
     {
         Pass
         {
+
+            Blend One OneMinusSrcAlpha
+
             Tags { 
                 "LightMode"="Entity" 
                 "Queue"="Opaque"
             }
 
             HLSLPROGRAM
+            #define TINT_COLOR
             #pragma vertex vert
             #pragma fragment frag
             #include "Catacumba_Entity.hlsl"

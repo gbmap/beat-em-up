@@ -43,10 +43,28 @@ CBUFFER_END
 
 #include "Catacumba_Shadows.hlsl"
 
+float4 _Time;
+
 float4 healthEffectDisplacement(float v, float t)
 {
     float offset = sin(t*100)*0.02*v;
     return float4(offset, offset, offset, 0.0);
+}
+
+float3 textureVertexDisplacement(
+    TEXTURE2D(displacementTex), 
+    SAMPLER(sampler_Tex), 
+    float3 position, 
+    float3 normal,
+    float sampleScale=0.1, 
+    float displacementScale=0.1,
+    float timeSpeed=0.0
+) {
+    float2 uv = (position.xz+float2(_Time.y*timeSpeed, _Time.y*timeSpeed)) * sampleScale;
+    float4 displacement = SAMPLE_TEXTURE2D_LOD(displacementTex, sampler_Tex, uv, 0.0); 
+    //displacement =(displacement-0.5) * displacementScale;
+    //displacement = displacement * displacementScale;
+    return (normal * displacement) * displacementScale;
 }
 
 float4 healthEffectColor(float v)
@@ -69,7 +87,7 @@ float light_distance_factor(float3 lightToVertex, float d)
 
 void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
 {
-    a = 1.0;
+    a = 0.0;
     color = 0.0;
 
 
@@ -81,10 +99,12 @@ void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
 
         // clamps light if too far 
         float  distF  = light_distance_factor(ldelta, lrange);
+        if (length(ldelta) < 7.0)
+        {
 
         // shadow attenuation
-        float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, distF);
-              //sa = step(0.5, sa);
+        float sa = GetPointShadowAttenuation(i, vertWS, normalWS, ldelta, 1.0);
+              sa = step(0.5, sa);
               //sa = smoothstep(0.0, 0.55, sa) * sa;
               //sa *= 1/(pow(length(ldelta),0.2));
 
@@ -92,12 +112,14 @@ void other_lights(float3 normalWS, float3 vertWS, out float a, out float3 color)
         float lclamp = max(a, step(0., ldotn) * distF); 
 
 
-        a += sa; // / length(ldelta);
-        //a = lerp(a, sa, 0.5);
-        //a += smoothstep(-0.15, 0.95, sa);
+        //a += sa; // / length(ldelta);
+        a = lerp(a, sa, 0.75);
+        //a += smoothstep(-0.01, 0.95, sa);
+        a += step(0.5, a);
 
         float lcolor = 0.5 - smoothstep(0.0, 20.0, lrange)*0.4;
         color += _OtherLightColors[i] * step(lcolor, ldotn*light_distance_factor(ldelta, lrange*0.8));
+        }
     }
 
     a = saturate(a);
@@ -130,6 +152,7 @@ float3 lighting(float3 color, float3 normalWS, float3 vertWS)
     //return a;
 
     //return lightClr;
+    //return color;
     return lerp(unity_FogColor.xyz, color+lightClr, a);
  }
 

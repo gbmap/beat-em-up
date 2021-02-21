@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ef641f0e5a252428fd2ee484f6eed8, type: 3}
+  m_Name: InventoryItems_Butcher
+  m_EditorClassIdentifier: 
+  Slots: {fileID: 11400000, guid: 5c49d3fb7deabd841923010adb0c59f2, type: 2}
+  Items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 3727f1270f63a454fbb6dc1b4f0ccd96, type: 2}
+  - {fileID: 0}

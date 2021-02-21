@@ -5,11 +5,20 @@ using Catacumba.Data.Items.Characteristics;
 using Catacumba.Data.Items;
 using System;
 using System.Linq;
+using Frictionless;
 
 namespace Catacumba.Entity
 {
+
     public class CharacterCombat : CharacterComponentBase
     {
+        // Used only for debugging.
+        private struct AttackAttempt
+        {
+            public float Time;
+            public EAttackType Type;
+        }
+
         public LayerMask TargetLayer; 
 
         [HideInInspector] public bool IsOnCombo;
@@ -27,8 +36,11 @@ namespace Catacumba.Entity
             }
         }
 
+        public EAttackType LastAttackRequest { get; private set; }
         public AttackResult LastAttackData { get; private set; }
         public AttackResult LastDamageData { get; private set; }
+
+        private AttackAttempt _lastAttack;
 
         ////////////////////////
         //  Callbacks
@@ -46,7 +58,9 @@ namespace Catacumba.Entity
         protected override void Awake()
         {
             base.Awake();
-            TargetLayer = 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Entities");
+            TargetLayer = 1 << LayerMask.NameToLayer("Player") 
+                        | 1 << LayerMask.NameToLayer("Entities")
+                        | 1 << LayerMask.NameToLayer("Projectiles");
         }
 
         protected override void OnEnable()
@@ -55,7 +69,7 @@ namespace Catacumba.Entity
 
             OnComboStarted += OnComboStartedCallback;
             OnComboEnded += OnComboEndedCallback;
-            OnAttack += EmitHitEffects;
+            OnAttack += Cb_OnAttack;
         }
         
         protected override void OnDisable()
@@ -64,7 +78,7 @@ namespace Catacumba.Entity
 
             OnComboStarted -= OnComboStartedCallback;
             OnComboEnded -= OnComboEndedCallback;
-            OnAttack -= EmitHitEffects;
+            OnAttack -= Cb_OnAttack;
 
         }
 
@@ -120,7 +134,10 @@ namespace Catacumba.Entity
             if (data.IsConfigured)
             // If this is not the object's startup
             {
-                foreach (var slot in data.Stats.Inventory.Slots)
+                Item weapon = data.Stats.Inventory.GetWeapon();
+                SetupWeaponEquip(weapon);
+                /*
+                foreach (var slot in data.Stats.Inventory.Items)
                 {
                     if (slot.Item == null) continue;
 
@@ -130,6 +147,7 @@ namespace Catacumba.Entity
                     SetupWeaponEquip(slot.Item);
                     break;
                 }
+                */
             }
         }
 
@@ -142,6 +160,11 @@ namespace Catacumba.Entity
                 health.OnFall += OnFallCallback;
                 health.OnDamaged += OnDamagedCallback;
             }
+
+            else if (component is CharacterMovementWalkDodge)
+            {
+                (component as CharacterMovementWalkDodge).OnDodge += Cb_OnDodge;
+            }
         }
 
         public override void OnComponentRemoved(CharacterComponentBase component)
@@ -153,11 +176,19 @@ namespace Catacumba.Entity
                 health.OnFall -= OnFallCallback;
                 health.OnDamaged -= OnDamagedCallback;
             }
+
+            else if (component is CharacterMovementWalkDodge)
+            {
+                (component as CharacterMovementWalkDodge).OnDodge -= Cb_OnDodge;
+            }
         }
 
         public void RequestAttack(EAttackType type)
         {
             if (!CanAttack) return;
+
+            LastAttackRequest = type;
+
             if (!Animator)
             {
                 AttackImmediate(type);
@@ -171,11 +202,13 @@ namespace Catacumba.Entity
         {
             if (!Weapon) return;
 
+            _lastAttack.Time = Time.time;
+            _lastAttack.Type = type;
+
             AttackResult[] results = Weapon.Attack(data, transform, type);
             EmitAttackEffect();
 
             if (results == null) return;
-            // EmitHitEffects(results);
             OnAttack?.Invoke(results);
 
             LastAttackData = results[results.Length-1];
@@ -199,6 +232,19 @@ namespace Catacumba.Entity
             OnComboEnded?.Invoke();
         }
 
+        private void Cb_OnAttack(AttackResult[] results)
+        {
+            EmitHitEffects(results);
+            if (data.BrainType == ECharacterBrainType.Input)
+            {
+                ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new Catacumba.Events.OnPlayerHit
+                {
+                    Attack = results[0]
+                });
+            }
+        }
+
+
         private void OnDamagedCallback(AttackResult msg)
         {
             if (msg.CancelAnimation)
@@ -206,10 +252,23 @@ namespace Catacumba.Entity
                 OnComboEnded?.Invoke();
             }
 
+            if (data.BrainType == ECharacterBrainType.Input)
+            {
+                ServiceFactory.Instance.Resolve<MessageRouter>().RaiseMessage(new Catacumba.Events.OnPlayerDamaged
+                {
+                    Attack = msg
+                });
+            }
+
             LastDamageData = msg;
         }
 
         private void OnRollCallback()
+        {
+            OnComboEnded?.Invoke();
+        }
+
+        private void Cb_OnDodge()
         {
             OnComboEnded?.Invoke();
         }
@@ -257,10 +316,10 @@ namespace Catacumba.Entity
 
             try
             {
-                if (Time.time < LastAttackData.Time + 1f)
+                if (Time.time < _lastAttack.Time + 1f)
                 {
                     if (Weapon && data)
-                        Weapon.DebugDraw(data, LastAttackData.Type);
+                        Weapon.DebugDraw(data, _lastAttack.Type);
                 }
                 else
                 {

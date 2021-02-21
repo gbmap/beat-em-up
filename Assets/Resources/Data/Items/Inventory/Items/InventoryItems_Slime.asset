@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ef641f0e5a252428fd2ee484f6eed8, type: 3}
+  m_Name: InventoryItems_Slime
+  m_EditorClassIdentifier: 
+  Slots: {fileID: 11400000, guid: ce6bba416b23dbb46bd569fa8854942b, type: 2}
+  Items:
+  - {fileID: 11400000, guid: f749bb576b746074d80779b7a874d729, type: 2}

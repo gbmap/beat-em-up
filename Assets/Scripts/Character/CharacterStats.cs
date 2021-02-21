@@ -24,22 +24,18 @@ namespace Catacumba.Data
                 OnStatsChanged?.Invoke(this);
             } 
         }
-        public int MaxHealth { get { return CombatManager.GetMaxHealth(this); } }
-        public float HealthNormalized { get { return ((float)Health / MaxHealth); } }
+        public int   MaxHealth          { get { return CombatManager.GetMaxHealth(this); } }
+        public float HealthNormalized   { get { return ((float)Health / MaxHealth); } }
+        public int   Mana               { get; set; }
+        public int   MaxMana            { get { return CombatManager.GetMaxMana(this); } }
+        public int   Stamina            { get { return MaxHealth/5; } }
+        public int   CurrentStamina     { get; set; }
+        public float StaminaBar         { get { return ((float)CurrentStamina)/Stamina; } }
+        public float PoiseChance        { get { return CombatManager.GetPoiseChance(this); } }
+        public float MoveSpeed          { get { return 0.5f+(2f*Mathf.Pow(Attributes.Dexterity, 1f/2f)); } }
+        public bool  CanBeKnockedOut    { get; set; }
 
-        public int Mana { get; set; }
-        public int MaxMana { get { return CombatManager.GetMaxMana(this); } }
-
-        public int Stamina { get { return MaxHealth/5; } }
-        public int CurrentStamina { get; set; }
-        public float StaminaBar { get { return ((float)CurrentStamina)/Stamina; } }
-
-        public float PoiseChance { get { return CombatManager.GetPoiseChance(this); } }
-        public float MoveSpeed { get { return 5f; } }
-
-        public bool CanBeKnockedOut { get; set; }
-
-        public Inventory Inventory { get; private set; }
+        public Inventory Inventory    { get; private set; }
 
         public CharacterStats(Catacumba.Data.CharacterStatConfiguration stats, Inventory inventory=null)
         {
@@ -54,7 +50,13 @@ namespace Catacumba.Data
 
             if (inventory == null)
                 inventory = Resources.Load<Inventory>("Data/Items/Inventory/Inventory_Empty");
-            Inventory = ScriptableObject.Instantiate(inventory);
+
+            Inventory       = ScriptableObject.Instantiate(inventory);
+            if (Inventory.Items)
+                Inventory.Items = ScriptableObject.Instantiate(Inventory.Items);
+
+            if (Inventory.Bag)
+                Inventory.Bag = ScriptableObject.Instantiate(Inventory.Bag);
 
             Health          = MaxHealth;
             Mana            = MaxMana;

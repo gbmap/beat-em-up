@@ -16,7 +16,7 @@ namespace Tests
         public void Test_Grab()
         {
             Item[] items = ItemTests.GetItems();
-            InventoryBag bag = new InventoryBag();
+            InventoryBag bag = ScriptableObject.CreateInstance<InventoryBag>();
 
             bag.Grab(items[0]);
             

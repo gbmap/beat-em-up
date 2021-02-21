@@ -5,6 +5,8 @@
         _MainTex ("Texture", 2D) = "white" {}
         _HitFactor ("Hit Factor", Range(0, 1)) = 0 
         _Selected ("Selected", Range(0, 1)) = 0 
+
+        [MaterialToggle] _Displacement( "Displace", Float ) = 0
     }
     SubShader
     {

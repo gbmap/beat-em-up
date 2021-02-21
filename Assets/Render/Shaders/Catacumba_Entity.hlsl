@@ -1,5 +1,4 @@
-﻿
-#ifndef CATACUMBA_ENTITY
+﻿#ifndef CATACUMBA_ENTITY
 #define CATACUMBA_ENTITY
 
 #include "Catacumba.hlsl"
@@ -25,12 +24,28 @@ CBUFFER_END
 TEXTURE2D(_MainTex);
 SAMPLER(sampler_MainTex);
 
-float4 _Time;
+#ifdef VERT_DISPLACE
+TEXTURE2D(_DisplacementTex);
+SAMPLER(sampler_DisplacementTex);
+
+float _SampleScale;
+float _DisplacementScale;
+float _TimeScale;
+#endif 
+
+#ifdef TINT_COLOR
+float4 _Color;
+#endif
 
 
 v2f vert(vertIN i) 
 {
     float3 posW = TransformObjectToWorld(i.positionOS); 
+
+    #ifdef VERT_DISPLACE
+    posW += textureVertexDisplacement(_DisplacementTex, sampler_DisplacementTex, posW, i.normalOS, _SampleScale, _DisplacementScale, _TimeScale);
+    #endif
+
     posW += healthEffectDisplacement(_HitFactor, _Time.y);
 
     float4 posCS = TransformWorldToHClip(posW);
@@ -47,10 +62,13 @@ v2f vert(vertIN i)
 float4 frag(v2f i) : SV_TARGET
 {
     float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv); 
+    #ifdef TINT_COLOR
+    color *= _Color;
+    #endif
     color.xyz = lighting(color, i.normalWS, i.positionWS);
     color += healthEffectColor(_HitFactor);
     color += selectEffectColor(_Selected, i.positionCS, i.normalWS, _Time.y);
-    return color;  
+    return color * color.a;  
 }
 
 #endif

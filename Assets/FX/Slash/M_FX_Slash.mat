@@ -21,8 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_FX_Slash
-  m_Shader: {fileID: -6465566751694194690, guid: 581de9deb1149474e8d923671e42218f,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 7244f21563fc6094881611dd37a09a3d, type: 3}
   m_ShaderKeywords: _COLORADDSUBDIFF_ON _RECEIVE_SHADOWS_OFF
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

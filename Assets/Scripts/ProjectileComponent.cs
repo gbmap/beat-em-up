@@ -14,12 +14,18 @@ namespace Catacumba.Entity
             if (defender)
             {
                 if (defender != Caster)
-                    Weapon.ProjectileAttack(Caster, transform, EAttackType.Strong);
+                    Weapon.ProjectileAttack(Caster, defender, transform, EAttackType.Strong);
                 else
                     return;
             } 
 
             Destroy(this.gameObject);
+        }
+
+        public void Reflect(CharacterData attacker)
+        {
+            Caster = attacker;
+            transform.forward = attacker.transform.forward;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Catacumba.Entity
         protected override Vector3 UpdateVelocity(Vector3 velocity, ref bool updatedValue)
         {
             velocity = base.UpdateVelocity(velocity, ref updatedValue);
-            if (!updatedValue)
+            if (!updatedValue && !IsStopped)
             {
                 updatedValue = true;
                 Direction = Vector3.ClampMagnitude(Direction, 1f);

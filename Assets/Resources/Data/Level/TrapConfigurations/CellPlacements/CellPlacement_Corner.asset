@@ -9,9 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 176b2f7b0b4ace522a07378715acee75, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ac00ee55d2e1bb4181a3901110bcaaa, type: 3}
   m_Name: CellPlacement_Corner
   m_EditorClassIdentifier: 
+  RotationType: 0
+  FixedRotation: 0
+  DiscreteInterval: 0
+  ContinuousInterval: 0
   Pattern: 010011000
   RowWidth: 3
-  AllowRotation: 1
+  AllowRotation: 0

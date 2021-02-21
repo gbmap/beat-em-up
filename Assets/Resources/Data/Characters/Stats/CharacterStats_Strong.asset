@@ -62,7 +62,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_ConstantMin: 0
-    m_ConstantMax: 0
+    m_ConstantMax: 5
   MagicCurve:
     m_Mode: 0
     m_CurveMultiplier: 0

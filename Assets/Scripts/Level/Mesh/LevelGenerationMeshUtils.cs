@@ -275,6 +275,7 @@ namespace Catacumba.LevelGen.Mesh
             public Vector3 cellSize;
             public GameObject floorRoot;
             public Vector2Int position;
+            public Vector3 rotation;
         }
 
         public static GameObject PutFloor(PutFloorParams p)
@@ -282,6 +283,7 @@ namespace Catacumba.LevelGen.Mesh
             var floor = GameObject.Instantiate(p.floorPrefab, p.floorRoot.transform);
             floor.name = string.Format("F_{0}_{1}", p.position.x, p.position.y);
             floor.transform.localPosition = new Vector3(p.position.x * p.cellSize.x, 0f, p.position.y * p.cellSize.z);
+            floor.transform.localRotation = Quaternion.Euler(p.rotation);
             floor.layer = LayerMask.NameToLayer("Level");
 
             SetMaterialInObject(floor, p.floorMaterial);

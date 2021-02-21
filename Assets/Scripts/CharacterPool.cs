@@ -20,7 +20,7 @@ namespace Catacumba.Data
     [CreateAssetMenu(menuName="Data/Character/Character Pool", fileName="CharacterPool")]
     public class CharacterPool : ScriptableObject
     {
-        public List<CharacterPoolItem> PoolItems;
+        public List<CharacterPoolItem> PoolItems = new List<CharacterPoolItem>();
 
         public CharacterPoolItem GetRandom()
         {

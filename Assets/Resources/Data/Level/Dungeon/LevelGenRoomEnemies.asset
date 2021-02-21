@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.CoreModule:UnityEngine:ScriptableObject
   EnvironmentMaterial: {fileID: 2100000, guid: 632605cd86f1788448a5eed702faa7c7, type: 2}
   Floors:
-  - {fileID: 1270428469967565019, guid: 8b9fb011e414fe444aa6d55e63a16064, type: 3}
+  - {fileID: 1258806646420516472, guid: cf32df2c3824c4747bfee29120fe7ee5, type: 3}
   Walls:
   - {fileID: 8638514096912393065, guid: a58d9859e35982e4a8115411e18a9aa0, type: 3}
   Doors:

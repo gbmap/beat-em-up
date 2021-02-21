@@ -16,9 +16,9 @@ namespace Catacumba.LevelGen
     {
         [Command("type")]         public static ELevelType LevelType = ELevelType.Dungeon;
         [Command("sz")]           public static Vector2Int LevelSize = new Vector2Int(30, 30);
-        [Command("prop_chance")]  public static float PropChance = 0.45f;
-        [Command("enemy_chance")] public static float EnemyChance = 0.55f;
-        [Command("trap_chance")]  public static float TrapChance = 0.5f;
+        [Command("prop_chance")]  public static float PropChance     = 0.45f;
+        [Command("enemy_chance")] public static float EnemyChance    = 0.55f;
+        [Command("trap_chance")]  public static float TrapChance     = 0.5f;
         
         private static BiomeConfiguration _biomeConfig;
         [Command("biome")]        public static BiomeConfiguration BiomeConfig
@@ -30,8 +30,18 @@ namespace Catacumba.LevelGen
         private static CharacterPool _characterPool;
         [Command("enemy_pool")]   public static CharacterPool EnemyPool
         {
-            get { return _characterPool ?? (_characterPool = CharacterManager.LoadPool("CharacterPool_Goblins")); }
+            get { return _characterPool ?? (_characterPool = ScriptableObject.CreateInstance<CharacterPool>()); }
             set { _characterPool = value; }
+        }
+
+        [Command("enemy_pool.add")]
+        public static void AddEnemyToPool(CharacterConfiguration character, int weight)
+        {
+            EnemyPool.PoolItems.Add(new CharacterPoolItem
+            {
+                Config = character,
+                Weight = weight
+            });
         }
 
         private static CharacterPool _propPool;
@@ -110,11 +120,20 @@ namespace Catacumba.LevelGen
             try
             {
                 bool hasEnded = false;
+
+                ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
+                {
+                    new LevelGenerationMeshStepGeometry(),
+                    new LevelGenerationMeshStepCleanColliders(),
+                    new LevelGenerationMeshStepProps()
+                };
+
                 System.Action<GameObject> OnLevelGenerationEnded = delegate(GameObject obj) { LevelObject = obj; hasEnded = true; };
                 QuantumConsole.Instance
                               .StartCoroutine(Mesh.LevelGenerationMesh
                                                   .Generate(Level, 
-                                                            Params.BiomeConfig, 
+                                                            Params.BiomeConfig,
+                                                            steps,
                                                             OnLevelGenerationEnded));
 
                 while (!hasEnded)
@@ -189,22 +208,6 @@ namespace Catacumba.LevelGen
 
             while (!hasEnded)
                 await Task.Delay(100);
-
-            Vector3 cellSize = Params.BiomeConfig.CellSize();
-
-            Mesh.Utils.IterateSector(Level.BaseSector, (it) =>
-            {
-                if (it.cell != LevelGeneration.ECellCode.Prop) return;
-
-                CharacterPoolItem propCfg = characterPool.GetRandom();
-
-                Vector3 worldPosition = Mesh.Utils.LevelToWorldPos(it.cellPosition, cellSize);
-                float   randX         = PropDistanceAdjust(Random.value);
-                float   randZ         = PropDistanceAdjust(Random.value);
-                Vector3 offset        = new Vector3(randX*cellSize.x, 0f, randZ*cellSize.z);
-
-                CharacterManager.SpawnProp(propCfg.Config, worldPosition + offset);
-            }, ELevelLayer.Props);
         }
 
         [Command("spawn_traps")]
@@ -252,6 +255,7 @@ namespace Catacumba.LevelGen
             CameraManager.Target = player.transform;
             return player;
         }
+
 
         private static void Log(string str)
         {

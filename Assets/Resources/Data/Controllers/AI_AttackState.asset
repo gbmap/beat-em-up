@@ -14,8 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InitialTargetPriority: 10
   AttackDelay: 1
-  SearchRadius: 3
-  DistanceToAttack: 2
+  SearchRadius: 5
   SearchLayers:
     serializedVersion: 2
     m_Bits: 8192

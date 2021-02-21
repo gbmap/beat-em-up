@@ -4,8 +4,14 @@ using UnityEngine;
 
 namespace Catacumba.LevelGen
 {
+    //
+    //  Generates rooms through randomly walking agents that explode
+    //  after a random number of steps.
+    //
     class LevelGenAlgoWalkers : ILevelGenAlgo 
     {
+        private const float STEP_WAIT = 0.025f;
+
         public IEnumerator Run(Level l, System.Action<Level> updateVis=null)
         {
             List<BaseWalker> walkers = GenerateWalkers(l);
@@ -19,7 +25,7 @@ namespace Catacumba.LevelGen
                 }
 
                 updateVis?.Invoke(l);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(STEP_WAIT);
             }
         }
 

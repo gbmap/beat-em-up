@@ -9,10 +9,21 @@ namespace Catacumba.Effects
     {
         public void CleanPool()
         {
+            MonoBehaviour keyRef = null;
             foreach (var key in Keys)
             {
-                if (this[key] == null)
-                    Remove(key);
+                keyRef = key;
+                if (this[keyRef] == null)
+                {
+                    break;
+                }
+            }
+
+            // Hack to prevent editing collection while in foreach.
+            if (keyRef != null)
+            {
+                Remove(keyRef);
+                CleanPool();
             }
         }
 

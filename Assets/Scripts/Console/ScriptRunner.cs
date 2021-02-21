@@ -8,8 +8,18 @@ using System.Linq;
 namespace Catacumba
 {
     [CommandPrefix("script.")]
-    public static class ScriptRunner
+    public class ScriptRunner : MonoBehaviour
     {
+        public string StartingCommand = "";
+
+        void Start() 
+        {
+            if (string.IsNullOrEmpty(StartingCommand))
+                return;
+
+            QuantumConsole.Instance.InvokeCommand(StartingCommand);
+        }
+
         [Command("run_commands")]
         public static async Task Run(string[] commands)
         {

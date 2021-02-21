@@ -15,6 +15,10 @@ MonoBehaviour:
   EnvironmentMaterial: {fileID: 2100000, guid: 1f4d20d3ee0ce0147b1987e17f1e457d, type: 2}
   Floors:
   - {fileID: 1270428469967565019, guid: 8b9fb011e414fe444aa6d55e63a16064, type: 3}
+  - {fileID: 4759448789327821484, guid: f495951b6e26110459648b9b6f58b05b, type: 3}
+  - {fileID: 3821192808064207549, guid: 60c5e036437fd5c409dcb88a9533ae08, type: 3}
+  - {fileID: 5883334840552895575, guid: adcf697bf8b247348a9f376293116d8a, type: 3}
+  - {fileID: 3452258284908938497, guid: 210c9cc82e1e2834bb2ce9cdfbcd500b, type: 3}
   Walls:
   - {fileID: 8638514096912393065, guid: a58d9859e35982e4a8115411e18a9aa0, type: 3}
   Doors:

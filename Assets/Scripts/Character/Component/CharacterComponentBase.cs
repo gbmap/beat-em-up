@@ -19,6 +19,7 @@ namespace Catacumba.Entity
 
         protected virtual void Start()
         {
+            //data.SignalComponentAdded(this);
             data.SignalComponentAdded(this);
         }
 

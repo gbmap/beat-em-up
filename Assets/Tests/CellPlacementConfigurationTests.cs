@@ -13,17 +13,17 @@ namespace Tests
         [Test]
         public void Test_Rotation()
         {
-			CellPlacementConfiguration cfg = new CellPlacementConfiguration()
+			CellPlacementConfigurationPattern cfg = new CellPlacementConfigurationPattern()
 			{
 				Pattern = "001011001",
 				RowWidth = 3,
 				AllowRotation = true
 			};
 
-			string nPattern = CellPlacementConfiguration.RotatePattern90Degrees(cfg.Pattern, cfg.RowWidth); 
+			string nPattern = CellPlacementConfigurationPattern.RotatePattern90Degrees(cfg.Pattern, cfg.RowWidth); 
 			Assert.AreEqual(nPattern, "000010111");
 
-			nPattern = CellPlacementConfiguration.RotatePattern90Degrees(nPattern, cfg.RowWidth); 
+			nPattern = CellPlacementConfigurationPattern.RotatePattern90Degrees(nPattern, cfg.RowWidth); 
 			Assert.AreEqual(nPattern, "100110100");
         }
 
@@ -47,7 +47,7 @@ namespace Tests
 
 			for (int i = 0; i < offsets.Length; i++)
 			{
-				Vector2Int offset = CellPlacementConfiguration.IndexToOffset(p, w, i);
+				Vector2Int offset = CellPlacementConfigurationPattern.IndexToOffset(p, w, i);
 				Assert.AreEqual(offset, offsets[i]);
 			}
 		}
@@ -71,7 +71,7 @@ namespace Tests
 
 			for (int i = 0; i < positions.Length; i++)
 		    	{
-				Vector2Int position = CellPlacementConfiguration.IndexToPosition(i, w);
+				Vector2Int position = CellPlacementConfigurationPattern.IndexToPosition(i, w);
 				Assert.AreEqual(positions[i], position);
 			}
 		}
@@ -79,7 +79,7 @@ namespace Tests
 		[Test]
 		public void Test_IsPositionValid()
 		{
-			CellPlacementConfiguration cfg = new CellPlacementConfiguration();
+			CellPlacementConfigurationPattern cfg = new CellPlacementConfigurationPattern();
 			cfg.Pattern 	  = "010101010";
 			cfg.AllowRotation = false;
 			cfg.RowWidth      = 3;
@@ -97,7 +97,7 @@ namespace Tests
 		[Test]
 		public void Test_IsPositionValid_Invalid()
 		{
-			CellPlacementConfiguration cfg = new CellPlacementConfiguration();
+			CellPlacementConfigurationPattern cfg = new CellPlacementConfigurationPattern();
 			cfg.Pattern 	  = "000000000";
 			cfg.AllowRotation = false;
 			cfg.RowWidth      = 3;
@@ -115,7 +115,7 @@ namespace Tests
 		[Test]
 		public void Test_IsPositionValidRotation()
 		{
-			CellPlacementConfiguration cfg = new CellPlacementConfiguration();
+			CellPlacementConfigurationPattern cfg = new CellPlacementConfigurationPattern();
 			cfg.Pattern 	  = "111000000";
 			cfg.AllowRotation = true;
 			cfg.RowWidth      = 3;

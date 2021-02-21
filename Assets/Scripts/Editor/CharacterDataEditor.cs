@@ -41,11 +41,11 @@ public class CharacterDataEditor : Editor
         sb.AppendLine("-----");
         if (stats.Inventory)
         {
-            foreach (var slot in stats.Inventory.Slots)
+            foreach (var slot in stats.Inventory.Items.GetEnumerable())
             {
-                Item item = slot.Item;
+                Item item = slot.Item2;
                 string itemName = item ? item.Name : "Empty";
-                sb.AppendFormat("{0}: {1}\n", slot.Part.name, itemName);
+                sb.AppendFormat("{0}: {1}\n", slot.Item1.name, itemName);
             }
         }
         return sb.ToString();

@@ -20,6 +20,7 @@ namespace Frictionless
 		static ServiceFactory()
 		{
 			instance = new ServiceFactory();
+			instance.RegisterSingleton<MessageRouter>(new MessageRouter());
 		}
 
 		protected ServiceFactory()

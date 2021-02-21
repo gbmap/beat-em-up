@@ -16,5 +16,4 @@ MonoBehaviour:
   - Catacumba.Entity.CharacterHealth
   - Catacumba.Entity.CharacterCombat
   - Catacumba.Entity.CharacterMovementWalkDodge
-  - Catacumba.Entity.CharacterAnimator
   - Catacumba.Entity.CharacterHealthQuad

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68394842e9099574e908203d841900f5, type: 3}
+  m_Name: Weaponizable_Ranged_Slime
+  m_EditorClassIdentifier: 
+  Slots:
+  - BodyPart: {fileID: 11400000, guid: a7d5bd3883415434181c73aaa1f7e98f, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
+  - BodyPart: {fileID: 11400000, guid: 4e12c81bd4bcc6b42af539fd8facb505, type: 2}
+    ModelOffset: {fileID: 11400000, guid: ba718de76c280a940942407d37d57d81, type: 2}
+  AttackEffect: {fileID: 0}
+  HitEffect: {fileID: 11400000, guid: 3c635e4d447a6c3419db0cbc80b1731c, type: 2}
+  WeaponType: {fileID: 11400000, guid: 36720d2b99cae704db28a1c766032da7, type: 2}
+  SoundsWoosh: {fileID: 11400000, guid: 231ab3b318fec23499a6240e97b76e81, type: 2}
+  SoundsHit: {fileID: 11400000, guid: 08f486bf66313064397c31625669c753, type: 2}
+  Behavior: {fileID: 11400000, guid: d83860dc8a1dccf489b4816a0811900e, type: 2}
+  AttackCollider: {fileID: 11400000, guid: a03180b6b81f6c748a7068f9b707b745, type: 2}
+  IgnoreFacingDirection: 1
+  Projectile: {fileID: 241165685540888665, guid: 0a00ac123dee7f74492d9991e4308e15,
+    type: 3}
+  NumberOfProjectiles: 4
+  AngleRange: 360
