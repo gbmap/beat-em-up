@@ -12,40 +12,38 @@ namespace Catacumba.LevelGen.Mesh
 
     public static class LevelGenerationMesh
     {
-        public static IEnumerator Generate(Level l, BiomeConfiguration cfg, System.Action<GameObject> OnGenerationEnded)
-        {
+        public static IEnumerator Generate(
+            Level l, 
+            BiomeConfiguration cfg, 
+            ILevelGenerationMeshStep[] steps,
+            System.Action<GameObject> OnGenerationEnded
+        ) {
             //////////////////
             /// Roots
 
             GameObject root = new GameObject("Level");
-            root.transform.position = Vector3.zero;
-            root.transform.rotation = Quaternion.identity;
-            root.transform.localScale = Vector3.one;
+            root.transform.position         = Vector3.zero;
+            root.transform.rotation         = Quaternion.identity;
+            root.transform.localScale       = Vector3.one;
             root.isStatic = true;
 
             GameObject floorRoot = new GameObject("Floors");
-            floorRoot.transform.parent = root.transform;
+            floorRoot.transform.parent        = root.transform;
             floorRoot.transform.localPosition = Vector3.zero;
             floorRoot.transform.localRotation = Quaternion.identity;
             floorRoot.isStatic = true;
 
             GameObject wallRoot = new GameObject("Walls");
-            wallRoot.transform.parent = root.transform;
+            wallRoot.transform.parent        = root.transform;
             wallRoot.transform.localPosition = Vector3.zero;
             wallRoot.transform.localRotation = Quaternion.identity;
             wallRoot.isStatic = true;
 
             GameObject propRoot = new GameObject("Props");
-            propRoot.transform.parent = root.transform;
+            propRoot.transform.parent        = root.transform;
             propRoot.transform.localPosition = Vector3.zero;
             propRoot.transform.localRotation = Quaternion.identity;
             propRoot.isStatic = true;
-
-            ILevelGenerationMeshStep[] steps = new ILevelGenerationMeshStep[]
-            {
-                new LevelGenerationMeshStepGeometry(),
-                new LevelGenerationMeshStepCleanColliders()
-            };
 
             yield return RunSteps(steps, l, cfg, root);
 
