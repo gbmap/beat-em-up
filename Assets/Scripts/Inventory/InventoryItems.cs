@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Catacumba.Data.Character;
@@ -8,23 +6,24 @@ using UnityEngine;
 
 namespace Catacumba.Data.Items
 {
-    [System.Serializable]
-    public class InventorySlot
-    {
-        public BodyPart Part;
-        public Item Item;
-
-        public bool IsEmpty()
-        {
-            return Item == null || !Item.OccupiesSlot;
-        }
-    }
-
     [CreateAssetMenu(menuName="Data/Inventory/Items", fileName="InventoryItems")]
     public class InventoryItems : ScriptableObject
     {
         public InventorySlots Slots;
         public List<Item> Items;
+
+        public void SetSlots(InventorySlots slots)
+        {
+            // Garantee same list size
+            if (Slots.Count < Items.Count)
+                Items.RemoveRange(Slots.Count-1, Items.Count - Slots.Count);
+        }
+
+        void OnEnable()
+        {
+            if (Slots.Count < Items.Count)
+                Items.RemoveRange(Slots.Count-1, Items.Count - Slots.Count);
+        }
 
         public System.Tuple<BodyPart, Item> GetSlot(BodyPart slot, out bool hasSlot)
         {

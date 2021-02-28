@@ -51,6 +51,7 @@ namespace Catacumba.LevelGen.Mesh
 
                     if ((differentTypes || differentSectors) && !isDoor)
                     {
+                        /*
                         Utils.PutWall(new Utils.PutWallParams
                         {
                             sector          = it.sector,
@@ -64,6 +65,7 @@ namespace Catacumba.LevelGen.Mesh
                             material        = roomCfg.EnvironmentMaterial,
                             shouldCollide   = true
                         });
+                        */
                     }
                     else if (isDoor)
                     {

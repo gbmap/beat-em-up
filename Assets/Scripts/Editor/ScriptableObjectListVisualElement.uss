@@ -1,0 +1,12 @@
+﻿
+.btn-add {
+    width: 70px;
+}
+
+.popup {
+    flex-grow: 1;
+}
+
+.btn-remove {
+    flex-grow: 0;
+}

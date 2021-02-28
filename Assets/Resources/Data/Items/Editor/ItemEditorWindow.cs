@@ -12,7 +12,7 @@ using Catacumba.Data;
 public class ItemEditorWindow : EditorWindow
 {
     [MenuItem("Catacumba/Item Editor %i")]
-    public static void ShowExample()
+    public static void Show()
     {
         ItemEditorWindow wnd = GetWindow<ItemEditorWindow>();
         wnd.titleContent = new GUIContent("ItemEditorWindow");

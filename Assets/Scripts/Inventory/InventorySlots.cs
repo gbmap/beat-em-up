@@ -11,7 +11,7 @@ namespace Catacumba.Data.Items
     [CreateAssetMenu(menuName="Data/Inventory/Slots", fileName="InventorySlots")]
     public class InventorySlots : ScriptableObject
     {
-        [SerializeField] List<BodyPart> Slots = new List<BodyPart>();
+        public List<BodyPart> Slots = new List<BodyPart>();
         [SerializeField] int WeaponSlotIndex = 0;
 
         public int Count { get { return Slots.Count; } }
