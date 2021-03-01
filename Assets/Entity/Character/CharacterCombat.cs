@@ -24,6 +24,8 @@ public class CharacterCombat : MonoBehaviour
     private CharacterMovement movement;
     private CharacterAnimator animator;
 
+    public SoundManager Sounds;
+
     public bool IsOnHeavyAttack;
 
     private Vector3 attackColliderBasePosition
@@ -95,6 +97,7 @@ public class CharacterCombat : MonoBehaviour
 
     private void OnRollCallback()
     {
+        Sounds.PlayRoll(transform.position);
         OnComboEnded?.Invoke();
     }
 
@@ -215,7 +218,7 @@ public class CharacterCombat : MonoBehaviour
         Vector3 dir = movement.transform.forward;
 
         movement.ApplySpeedBump(dir, movement.SpeedBumpForce);
-        SoundManager.Instance.PlayWoosh(transform.position);
+        Sounds.PlayWoosh(transform.position);
     }
 
 #if UNITY_EDITOR

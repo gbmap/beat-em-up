@@ -50,10 +50,9 @@ public struct CharacterAttackData
     public Quaternion ColliderRot;
 }
 
-
-public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerConfig>
+public class CombatManager : SimpleSingleton<CombatManager>
 {
-    protected override string Path => "Data/CombatManagerConfig";
+    public SoundManager HitSounds;
 
     private static CharacterAttackData lastAttack;
 
@@ -209,7 +208,8 @@ public class CombatManager : ConfigurableSingleton<CombatManager, CombatManagerC
 
         if (hits > 0)
         {
-            SoundManager.Instance.PlayHit(colliderPos);
+            Instance.HitSounds.PlayHit(colliderPos);
+            //SoundManager.Instance.PlayHit(colliderPos);
         }
 
         lastAttack = attack;

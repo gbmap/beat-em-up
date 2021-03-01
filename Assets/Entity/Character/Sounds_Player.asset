@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5982799a7f5d8d14e8186fde6cca31e3, type: 3}
+  m_Name: Sounds_Player
+  m_EditorClassIdentifier: 
+  Wooshes:
+  - {fileID: 8300000, guid: 4b8c74f404c04a640a9e1742390f3698, type: 3}
+  - {fileID: 8300000, guid: eadf884380be68541afbf196f2accd46, type: 3}
+  - {fileID: 8300000, guid: d444ad732e31417469804afc57a1f1e0, type: 3}
+  Hits: []
+  Roll:
+  - {fileID: 8300000, guid: 52b92910daacffa408f0111dde9fa7dc, type: 3}
+  - {fileID: 8300000, guid: 8328a08f690409546ad4880edbee6fa4, type: 3}
+  Walk:
+  - {fileID: 8300000, guid: bd7906bb97ed39f4cae142ccdc7cb0a6, type: 3}
+  - {fileID: 8300000, guid: 4d7a04b0df50c68418d3380ca93cd876, type: 3}
+  - {fileID: 8300000, guid: 8352a88b10c1e4349b1a0ae5d1f2480d, type: 3}
+  - {fileID: 8300000, guid: 255ddd65b69b81943a23046271951729, type: 3}

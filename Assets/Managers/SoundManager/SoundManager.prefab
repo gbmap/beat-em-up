@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2101799336990181228}
-  - component: {fileID: 4277765181671513080}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -31,24 +30,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4277765181671513080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6868629485870471351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5982799a7f5d8d14e8186fde6cca31e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Wooshes:
-  - {fileID: 8300000, guid: 5d73335a1e7cd684bbd6985be24ee038, type: 3}
-  - {fileID: 8300000, guid: ab59ace8e2a28794aba9b1386db869fa, type: 3}
-  - {fileID: 8300000, guid: f631ed93a8695074aa77fd88b1d0c210, type: 3}
-  - {fileID: 8300000, guid: d89a63b044116b540a5e2ab8738adca0, type: 3}
-  Hits:
-  - {fileID: 8300000, guid: ace4dc32f2e81ca4fbbef1f0b03e5140, type: 3}
-  - {fileID: 8300000, guid: 9a93d9d7bf6c24f4384d9135ebf30a0a, type: 3}
-  - {fileID: 8300000, guid: c01737d20f0ef5647b0cf9dda02066cd, type: 3}

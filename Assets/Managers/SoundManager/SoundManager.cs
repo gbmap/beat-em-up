@@ -1,33 +1,44 @@
 ﻿using System;
 using UnityEngine;
 
-public class SoundManager : SimpleSingleton<SoundManager>
+[CreateAssetMenu(menuName="SoundManager", fileName="SoundManager")]
+public class SoundManager : ScriptableObject
 {
     public AudioClip[] Wooshes;
     public AudioClip[] Hits;
 
-    private AudioClip GetRandomWoosh()
-    {
-        return Wooshes[UnityEngine.Random.Range(0, Wooshes.Length)];
-    }
+    public AudioClip[] Roll;
+    public AudioClip[] Walk;
 
-    private AudioClip GetRandomHit()
+    private AudioClip GetRandom(AudioClip[] clips)
     {
-        return Hits[UnityEngine.Random.Range(0, Hits.Length)];
+        if (clips.Length == 0) return null;
+        return clips[UnityEngine.Random.Range(0, clips.Length)];
     }
 
     public void PlayWoosh(Vector3 position)
     {
-        PlayRandomAudio(position, GetRandomWoosh);
+        PlayRandomAudio(position, GetRandom(Wooshes));
     }
 
     public void PlayHit(Vector3 position)
     {
-        PlayRandomAudio(position, GetRandomHit);
+        PlayRandomAudio(position, GetRandom(Hits));
     }
 
-    private void PlayRandomAudio(Vector3 position, Func<AudioClip> selector)
+    public void PlayRoll(Vector3 position)
     {
-        AudioSource.PlayClipAtPoint(selector(), position);
+        PlayRandomAudio(position, GetRandom(Roll));
+    }
+
+    public void PlayStep(Vector3 position)
+    {
+        PlayRandomAudio(position, GetRandom(Walk));
+    }
+
+    private void PlayRandomAudio(Vector3 position, AudioClip clip)
+    {
+        if (clip == null) return;
+        AudioSource.PlayClipAtPoint(clip, position);
     }
 }

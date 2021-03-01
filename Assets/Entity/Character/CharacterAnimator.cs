@@ -129,13 +129,25 @@ public class CharacterAnimator : MonoBehaviour
 
         movement.OnRoll -= OnRollCallback;
     }
+
+    private float stepTimer = 0f;
     
     // Update is called once per frame
     void Update()
     {
         if (movement.NavMeshAgent)
         {
-            animator.SetBool(hashMoving, movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove);
+            bool moving = movement.Velocity.sqrMagnitude > 0.0f && movement.CanMove;
+            animator.SetBool(hashMoving, moving);
+            if (moving)
+            {
+                stepTimer += Time.deltaTime;
+                if (stepTimer >= 0.33f)
+                {
+                    stepTimer = 0f;
+                    PlayWalkSound();
+                }
+            }
         }
         
         UpdateSmokeEmission();
@@ -144,6 +156,7 @@ public class CharacterAnimator : MonoBehaviour
         {
             UpdateDeathBlinkAnimation(health.IsDead, combat.LastDamageData.Time);
         }
+
 
 #if UNITY_EDITOR
         CheckDebugInput();
@@ -525,6 +538,11 @@ public class CharacterAnimator : MonoBehaviour
     {
         animator.SetInteger(hashSkillIndex, index);
         animator.SetTrigger(hashUseSkill);
+    }
+
+    public void PlayWalkSound()
+    {
+        combat.Sounds.PlayStep(transform.position);
     }
 
 #if UNITY_EDITOR
