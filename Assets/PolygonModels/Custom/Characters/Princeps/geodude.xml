@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<scene fps="24" version="1">
+	<timeline>
+		<markers>
+			<marker frame="5" name="Attack"/>
+			<marker frame="1" name="AnimPlayWoosh"/>
+		</markers>
+	</timeline>
+	<actions>
+		<action name="Attack">
+			<markers>
+				<marker frame="2" name="AnimPlayWoosh"/>
+				<marker frame="4" name="Attack(1)"/>
+			</markers>
+		</action>
+		<action name="Idle">
+			<markers/>
+		</action>
+	</actions>
+</scene>

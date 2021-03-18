@@ -6,10 +6,11 @@ using UnityEngine;
 
 public class LevelMeshImporter : AssetPostprocessor
 {
+    private bool IsAssetValid { get { return assetPath.Contains("Mesh_Env_"); }}
 
     void OnPreprocessModel()
     {
-        if (!assetPath.Contains("Mesh_Env_"))
+        if (!IsAssetValid)
             return;
 
         Debug.Log($"Processing level mesh: {assetPath}");
@@ -18,6 +19,7 @@ public class LevelMeshImporter : AssetPostprocessor
 
     void OnPostprocessModel(GameObject model)
     {
+        if (!IsAssetValid) return;
         CreatePrefab(assetPath, model);
     }
 
