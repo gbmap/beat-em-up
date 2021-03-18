@@ -7,10 +7,10 @@
 		</markers>
 	</timeline>
 	<actions>
-		<action name="Attack">
+		<action name="Attack_01">
 			<markers>
 				<marker frame="2" name="AnimPlayWoosh"/>
-				<marker frame="4" name="Attack(1)"/>
+				<marker frame="4" name="Attack(0)"/>
 			</markers>
 		</action>
 		<action name="Idle">

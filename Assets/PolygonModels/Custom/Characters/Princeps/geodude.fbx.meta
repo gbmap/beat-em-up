@@ -4,17 +4,11 @@ ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable:
   - first:
-      74: 4723146814002874508
-    second: Attack
-  - first:
-      74: -8945691123924629249
-    second: Armature|Idle
-  - first:
-      74: 6720303635017113406
-    second: Attack
-  - first:
       74: -3100369314251171874
     second: Idle
+  - first:
+      74: -2516013265382948196
+    second: Attack_01
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -44,9 +38,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Attack
-      takeName: Armature|Attack
-      internalID: 4723146814002874508
+      name: Attack_01
+      takeName: Armature|Attack_01
+      internalID: -2516013265382948196
       firstFrame: 0
       lastFrame: 8
       wrapMode: 0
@@ -80,7 +74,7 @@ ModelImporter:
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
-        intParameter: 1
+        intParameter: 0
         messageOptions: 0
       transformMask: []
       maskType: 3
@@ -91,7 +85,7 @@ ModelImporter:
       takeName: Armature|Idle
       internalID: -3100369314251171874
       firstFrame: 0
-      lastFrame: 40
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -174,7 +168,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

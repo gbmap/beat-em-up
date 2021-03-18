@@ -6,27 +6,20 @@ AnimatorOverrideController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: AOC_Slime
+  m_Name: AOC_geodude
   m_Controller: {fileID: 9100000, guid: 20955b1c4a75b2648bee2b2eac8aed06, type: 2}
   m_Clips:
   - m_OriginalClip: {fileID: 398027492087232581, guid: 1cbfe14fe80a3ed4382d7bf2be6f9530,
       type: 3}
-    m_OverrideClip: {fileID: -1978303741906493279, guid: 18cad3f2473332c48bd33fe4865e783b,
+    m_OverrideClip: {fileID: -3100369314251171874, guid: 560f92f82ded7384ebd41df9d3ea7aec,
       type: 3}
   - m_OriginalClip: {fileID: 7400000, guid: 9f05fc509e0896b42899e02a00961ff7, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: ecf3515c726b47a418584a16435da7a0, type: 2}
+    m_OverrideClip: {fileID: -2516013265382948196, guid: 560f92f82ded7384ebd41df9d3ea7aec,
+      type: 3}
   - m_OriginalClip: {fileID: 1335679570341400972, guid: ff724ec2500222d4caac2a769d83d56a,
       type: 3}
     m_OverrideClip: {fileID: -4799524434163024911, guid: 18cad3f2473332c48bd33fe4865e783b,
       type: 3}
-  - m_OriginalClip: {fileID: 7400000, guid: ac00411713170854d9d9785ad58390a4, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: ecf3515c726b47a418584a16435da7a0, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: baa1a2d5675387e46bb31730c3ea4a26, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: ecf3515c726b47a418584a16435da7a0, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 50ec3c4c13f81804f8c6a729e1cc29bf, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: ecf3515c726b47a418584a16435da7a0, type: 2}
-  - m_OriginalClip: {fileID: 7400000, guid: 21379c6fe37e7dd41a9b1245c64f31bb, type: 2}
-    m_OverrideClip: {fileID: 7400000, guid: ecf3515c726b47a418584a16435da7a0, type: 2}
   - m_OriginalClip: {fileID: 7400000, guid: bb8dd9d44836a5745bbb3acac5e78a91, type: 2}
     m_OverrideClip: {fileID: -4253252195837313033, guid: 18cad3f2473332c48bd33fe4865e783b,
       type: 3}

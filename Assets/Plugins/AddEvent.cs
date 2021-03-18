@@ -199,8 +199,11 @@ public class AddEvent {
 		
 	}
 
-    public static void SetEvents(ModelImporter importer, string clipName, AnimationEvent[] events)
-    {
+    public static void SetEvents(
+        ModelImporter importer, 
+        string clipName,
+        AnimationEvent[] events
+    ) {
         ModelImporter modelImporter = importer;
 		if (modelImporter == null)
 			return;
@@ -219,7 +222,7 @@ public class AddEvent {
 				//AnimationEvent[] sourceAnimEvents = AnimationUtility.GetAnimationEvents(sourceAnimClip);
 				clipInfoProperties.SetEvents(events);
 				serializedObject.ApplyModifiedProperties();
-				//AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(targetAnimClip));
+				AssetDatabase.ImportAsset(modelImporter.assetPath);
 				break;
 			}
 		}
