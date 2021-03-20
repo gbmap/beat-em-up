@@ -80,6 +80,8 @@ public class CharacterAnimationEventDataImporter : AssetPostprocessor
                 continue;
 
             ActionInfo actionInfo = actionInfoLookup[animationClip.name];
+            if (actionInfo.eventList.Count == 0)
+                continue;
 
             // get existing animation events if they're defined through mecanim
             List<AnimationEvent> animationEventList = new List<AnimationEvent>();
