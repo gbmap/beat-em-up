@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName="SFX/SFX Pool", fileName="SFXPool")]
+[CreateAssetMenu(menuName="Catacumba/SFX/SFX Pool", fileName="SFXPool")]
 public class SFXPool : ScriptableObject
 {
     public AudioClip[] Clips;

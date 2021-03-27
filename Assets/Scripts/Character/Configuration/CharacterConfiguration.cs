@@ -35,7 +35,6 @@ namespace Catacumba.Data
 
         public CharacterStatConfiguration Stats;
         public Inventory Inventory;
-        public CharacterSkillConfiguration Skills;
         public CharacterViewConfiguration View;
         public CharacterComponentConfiguration Components;
 

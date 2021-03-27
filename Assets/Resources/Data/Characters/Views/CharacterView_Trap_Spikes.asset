@@ -19,3 +19,4 @@ MonoBehaviour:
   MovementEffect: {fileID: 0}
   AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
   HealthQuad: {fileID: 0}
+  SFXBank: {fileID: 11400000, guid: 3c0dfed14207cb64b8bc58d8a870fba3, type: 2}

@@ -16,6 +16,8 @@ namespace Catacumba.Data.Items.Characteristics
         public SFXPool SoundsWoosh;
         public SFXPool SoundsHit;
 
+        public SFXBank SFXBank;
+
         [Header("This property is optional")]
         public ControllerAI Behavior;
 

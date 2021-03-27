@@ -24,3 +24,4 @@ MonoBehaviour:
   MovementEffect: {fileID: 11400000, guid: 860f51fa350b5a4428121b9eb4a99b1f, type: 2}
   AttackEffect: {fileID: 11400000, guid: 68188c0bcd3c77c42bd46574eac197d8, type: 2}
   HealthQuad: {fileID: 11400000, guid: 938b259e70f8bed468ee5b295a150333, type: 2}
+  SFXBank: {fileID: 11400000, guid: 3c0dfed14207cb64b8bc58d8a870fba3, type: 2}

@@ -47,7 +47,7 @@ namespace Catacumba.Data.Items
             return Slots.IndexOf(part);
         }
 
-        private bool SetSlot(BodyPart part, Item item)
+        public bool SetSlot(BodyPart part, Item item)
         {
             int index = GetSlotIndex(part);
             if (index == -1) return false;

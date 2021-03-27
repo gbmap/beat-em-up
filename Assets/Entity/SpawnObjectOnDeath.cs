@@ -22,7 +22,7 @@ public class SpawnObjectOnDeath : MonoBehaviour
             Health = GetComponent<CharacterHealth>();
             if (!Health)
             {
-                Debug.LogError("No Character Health found!");
+                Log.Error(ELogSystemBitmask.Scripts, $"No Character Health found in object: {gameObject.name}. Destroying it.");
                 Destroy(this);
             }
         }

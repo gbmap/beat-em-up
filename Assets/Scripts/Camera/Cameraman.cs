@@ -24,7 +24,7 @@ public class Cameraman : MonoBehaviour
         }
     }
 
-    public static Vector3 OriginalOffset = new Vector3(0, 16f, -9.89f);
+    public Vector3 OriginalOffset = new Vector3(0, 22f, -12f);
 
     public float InLerpSpeed = 10f;
     public float OutLerpSpeed = 5f;
@@ -166,9 +166,9 @@ public static class CameraManager
 
         _Transposer = VirtualCamera.AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
         _Transposer.m_BindingMode = Cinemachine.CinemachineTransposer.BindingMode.WorldSpace;
-        _Transposer.m_FollowOffset = Cameraman.OriginalOffset;
+        //_Transposer.m_FollowOffset = Cameraman.OriginalOffset;
 
-        VirtualCameraObject.AddComponent<Cameraman>();
+        Cameraman cameraman = VirtualCameraObject.AddComponent<Cameraman>();
 
         var aim = VirtualCamera.AddCinemachineComponent<Cinemachine.CinemachineComposer>();
         _Composer = aim;

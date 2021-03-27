@@ -45,6 +45,7 @@ CBUFFER_END
 
 float4 _Time;
 
+
 float4 healthEffectDisplacement(float v, float t)
 {
     float offset = sin(t*100)*0.02*v;
@@ -141,13 +142,14 @@ float directional_lights(float3 normalWS, float3 vertWS)
     //return color;
 }
  
-float3 lighting(float3 color, float3 normalWS, float3 vertWS)
+float3 lighting(float3 color, float3 normalWS, float3 vertWS, out float light)
  {
     float3 normal = TransformWorldToObject(normalWS);
     float a = 0.0;
     float3 lightClr = float3(0.0, 0.0, 0.0);
 
     other_lights(normalWS, vertWS, a, lightClr);
+    light = a;
 
     //return a;
 

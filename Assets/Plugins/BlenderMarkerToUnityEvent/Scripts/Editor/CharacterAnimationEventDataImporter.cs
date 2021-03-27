@@ -23,7 +23,7 @@ public class CharacterAnimationEventDataImporter : AssetPostprocessor
     void OnPreprocessAnimation()
     { 
         if (!IsValid) return;
-        Debug.Log($"Processing model {assetImporter.assetPath}");
+        Log.Message(ELogSystemBitmask.AssetProcessor, $"Processing model {assetImporter.assetPath}");
         RenameClips();
     }
 

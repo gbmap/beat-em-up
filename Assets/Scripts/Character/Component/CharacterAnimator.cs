@@ -261,9 +261,7 @@ namespace Catacumba.Entity
                 return;
 
             // TODO: optimize this mess.
-            AudioClip sfx = data.Stats.Inventory.GetWeapon().GetCharacteristic<CharacteristicWeaponizable>().SoundsHit?.GetRandomClip();
-            if (sfx)
-                AudioSource.PlayClipAtPoint(sfx, data.transform.position);
+            PlaySound("HIT");
         }
         
         void OnRecover()
@@ -396,13 +394,44 @@ namespace Catacumba.Entity
                 AudioSource.PlayClipAtPoint(sfx, data.transform.position);
         }
 
+        #region ANIMATOR EVENTS
+
         public void Attack(EAttackType type)
         {
-            if (!combat) return;
-            if (!combat.CanAttack) return;
-
-            combat.AttackImmediate(type);
+            CharacterAnimatorEvents.Attack(combat, type);
         }
+
+        public void Dash(float force)
+        {
+            CharacterAnimatorEvents.Dash(data, force);
+        }
+
+        public void UseSkill(string skill)
+        {
+            CharacterAnimatorEvents.UseSkill(data, skill);
+        }
+
+        public void PlaySound(string sound)
+        {
+            CharacterAnimatorEvents.PlaySound(data, sound);
+        }
+
+        public void EmitParticle(string particle)
+        {
+
+        }
+
+        public void EmitParticleRing(string particle)
+        {
+
+        }
+
+        public void FreeAnimator()
+        {
+
+        }
+
+        #endregion
 
     }
 }

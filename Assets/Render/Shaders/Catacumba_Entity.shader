@@ -3,6 +3,7 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _NoiseTex ("Noise Texture", 2D) = "white" {}
         _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
         _HitFactor ("Hit Factor", Range(0, 1)) = 0 
         _Selected ("Selected", Range(0, 1)) = 0 

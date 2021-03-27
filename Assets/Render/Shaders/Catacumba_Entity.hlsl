@@ -24,6 +24,9 @@ CBUFFER_END
 TEXTURE2D(_MainTex);
 SAMPLER(sampler_MainTex);
 
+TEXTURE2D(_NoiseTex);
+SAMPLER(sampler_NoiseTex);
+
 #ifdef VERT_DISPLACE
 TEXTURE2D(_DisplacementTex);
 SAMPLER(sampler_DisplacementTex);
@@ -37,6 +40,16 @@ float _TimeScale;
 float4 _Color;
 #endif
 
+float4 triplanarNoise(float3 v, float3 n)
+{
+    float3 x = SAMPLE_TEXTURE2D(_NoiseTex, sampler_NoiseTex, v.xy);
+    float3 y = SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex, v.zx);
+    float3 z = SAMPLE_TEXTURE2D(_NoiseTex,sampler_NoiseTex, v.xy);
+
+    float3 t = pow(abs(n), 0.5);
+
+    return float4((x * t.x + y * t.y + z * t.z), 1.0);
+}
 
 v2f vert(vertIN i) 
 {
@@ -65,9 +78,17 @@ float4 frag(v2f i) : SV_TARGET
     #ifdef TINT_COLOR
     color *= _Color;
     #endif
-    color.xyz = lighting(color, i.normalWS, i.positionWS);
+    float light = 0.;
+    color.xyz = lighting(color, i.normalWS, i.positionWS, light);
     color += healthEffectColor(_HitFactor);
     color += selectEffectColor(_Selected, i.positionCS, i.normalWS, _Time.y);
+
+
+    float noise = (triplanarNoise(i.positionWS, i.normalWS)).r;
+    noise = clamp(noise+.35, 0., 1.);
+    color.rgb -= .07*noise*light;
+    
+    return  color * color.a;
     return color * color.a;  
 }
 

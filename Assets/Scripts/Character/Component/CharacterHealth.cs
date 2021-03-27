@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Frictionless;
-using UnityEngine;
-using Catacumba.Data;
+﻿using UnityEngine;
 using Catacumba.Effects;
 
 namespace Catacumba.Entity
@@ -82,7 +77,6 @@ namespace Catacumba.Entity
                 movement.OnDodgeEnded -= Cb_OnDodgeEnded;
             }
         }
-
 
         ////////////////////////////////////////
         //          INTERFACE

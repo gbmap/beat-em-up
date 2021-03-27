@@ -3,7 +3,7 @@ using Catacumba.Effects;
 
 namespace Catacumba.Data
 {
-    [CreateAssetMenu()]
+    [CreateAssetMenu(menuName="Catacumba/Character/View Configuration", fileName="CharacterViewConfiguration")]
     public class CharacterViewConfiguration : ScriptableObject
     {
         public GameObject[] Models;
@@ -13,6 +13,8 @@ namespace Catacumba.Data
         public ParticleEffectConfiguration MovementEffect;
         public ParticleEffectConfiguration AttackEffect;
         public HealthEffectsConfiguration HealthQuad;
+    
+        public SFXBank SFXBank;
 
         public GameObject GetRandomModel()
         {

@@ -48,7 +48,13 @@ public class InventoryItemsVisualElement : VisualElement
             ObjectField of = new ObjectField(t.Item1.name);
             of.objectType =typeof(Item);
             of.value = t.Item2;
+            of.RegisterValueChangedCallback(delegate(ChangeEvent<Object> ce)
+            {
+                InventoryItems.SetSlot(t.Item1, ce.newValue as Item);
+            });
             _itemList.Add(of);
+
+            i++;
         }
     }
 
